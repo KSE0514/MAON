@@ -1,11 +1,11 @@
 version: "3"
 services:
   # eureka, api-gateway는 blue-blue 전략을 사용하지 않는다.
-  eureka-server:
+  eureka-server-blue:
     build:
       context: ./back/eureka
       dockerfile: Dockerfile
-    container_name: eureka-server
+    container_name: eureka-server-blue
     ports:
       - "8761:8761"
     networks:
@@ -15,15 +15,15 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
 
-  api-gateway:
+  api-gateway-blue:
     build:
       context: ./back/gateway
       dockerfile: Dockerfile
-    container_name: api-gateway
+    container_name: api-gateway-blue
     ports:
       - "8765:8765"
     depends_on:
-      - eureka-server
+      - eureka-server-blue
     networks:
       - maonnet
     restart: always
@@ -42,8 +42,8 @@ services:
     networks:
       - maonnet
     depends_on:
-      - eureka-server
-      - api-gateway
+      - eureka-server-blue
+      - api-gateway-blue
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
@@ -59,8 +59,8 @@ services:
     networks:
       - maonnet
     depends_on:
-      - eureka-server
-      - api-gateway
+      - eureka-server-blue
+      - api-gateway-blue
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
@@ -76,8 +76,8 @@ services:
     networks:
       - maonnet
     depends_on:
-      - eureka-server
-      - api-gateway
+      - eureka-server-blue
+      - api-gateway-blue
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
