@@ -32,11 +32,11 @@ services:
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
 
   # member / blue, blue
-  member-blue:
+  member-green:
     build:
       context: ./back/member
       dockerfile: Dockerfile
-    container_name: member-blue
+    container_name: member-green
     ports:
       - "18011:8080"
     networks:
@@ -49,11 +49,11 @@ services:
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
       - SPRING_PROFILES_COLOR=blue
 
-  tournament-blue:
+  tournament-green:
     build:
       context: ./back/route
       dockerfile: Dockerfile
-    container_name: tournament-blue
+    container_name: tournament-green
     ports:
       - "18021:8080"
     networks:
@@ -66,11 +66,11 @@ services:
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
       - SPRING_PROFILES_COLOR=blue
 
-  route-blue:
+  route-green:
     build:
       context: ./back/route
       dockerfile: Dockerfile
-    container_name: route-blue
+    container_name: route-green
     ports:
       - "18031:8080"
     networks:
