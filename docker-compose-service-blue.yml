@@ -42,8 +42,8 @@ services:
     networks:
       - maonnet
     depends_on:
-      - eureka-server-blue
-      - api-gateway-blue
+      - eureka-server
+      - api-gateway
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
@@ -59,8 +59,8 @@ services:
     networks:
       - maonnet
     depends_on:
-      - eureka-server-blue
-      - api-gateway-blue
+      - eureka-server
+      - api-gateway
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
@@ -76,8 +76,8 @@ services:
     networks:
       - maonnet
     depends_on:
-      - eureka-server-blue
-      - api-gateway-blue
+      - eureka-server
+      - api-gateway
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
