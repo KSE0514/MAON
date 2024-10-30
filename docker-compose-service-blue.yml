@@ -1,0 +1,88 @@
+version: "3"
+services:
+  # eureka, api-gateway는 blue-blue 전략을 사용하지 않는다.
+  eureka-server-blue:
+    build:
+      context: ./back/eureka
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - maonnet
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+
+  api-gateway-blue:
+    build:
+      context: ./back/gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8765:8765"
+    depends_on:
+      - eureka-server-blue
+    networks:
+      - maonnet
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+
+  # member / blue, blue
+  member-blue:
+    build:
+      context: ./back/member
+      dockerfile: Dockerfile
+    container_name: member-blue
+    ports:
+      - "18010:8080"
+    networks:
+      - maonnet
+    depends_on:
+      - eureka-server-blue
+      - api-gateway-blue
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      - SPRING_PROFILES_COLOR=blue
+
+  tournament-blue:
+    build:
+      context: ./back/route
+      dockerfile: Dockerfile
+    container_name: tournament-blue
+    ports:
+      - "18020:8080"
+    networks:
+      - maonnet
+    depends_on:
+      - eureka-server-blue
+      - api-gateway-blue
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      - SPRING_PROFILES_COLOR=blue
+
+  route-blue:
+    build:
+      context: ./back/route
+      dockerfile: Dockerfile
+    container_name: route-blue
+    ports:
+      - "18030:8080"
+    networks:
+      - maonnet
+    depends_on:
+      - eureka-server-blue
+      - api-gateway-blue
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      - SPRING_PROFILES_COLOR=blue
+
+networks:
+  maonnet:
+    external: true
