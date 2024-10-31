@@ -1,12 +1,16 @@
 package com.easter.gateway.global.config;
 
+import com.easter.gateway.global.security.NotAuthorizedServerEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
 import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher;
 
 @Configuration
@@ -21,9 +25,10 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable) // oauth를 위해 기본 로그인 비활성화
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/maon/member/**").permitAll()
+                        .pathMatchers("/maon/member/**").authenticated()
                         .anyExchange().permitAll()
                 )
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint()))
                 .oauth2Login(Customizer.withDefaults())
 //                .authorizeHttpRequests(request -> request // 인증 설정
 //                        .securityMatchers(CorsUtils::isPreFlightRequest).permitAll()

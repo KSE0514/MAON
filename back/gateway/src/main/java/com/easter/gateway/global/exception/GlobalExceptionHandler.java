@@ -20,21 +20,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     protected ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
-        ex.printStackTrace();
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.NOT_FOUND, "게이트웨이에서 서비스를 찾지 못했습니다.");
         return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }
 
-//    @ExceptionHandler(NoResourceFoundException.class)
-//    protected ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex) {
-//
-//    }
-//
-//    @ExceptionHandler(Exception.class)
-//    protected ResponseEntity<ErrorResponse> handleException(Exception ex) {
-//        ex.printStackTrace();
-//        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생했습니다.");
-//        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
-//    }
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<ErrorResponse> handleException(Exception ex) {
+        ex.printStackTrace();
+        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생했습니다.");
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+    }
 
 }
