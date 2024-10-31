@@ -1,5 +1,6 @@
 version: "3"
 services:
+# eureka, api-gateway는 blue-blue 전략을 사용하지 않는다.
   eureka-server:
     build:
       context: ./back/eureka
