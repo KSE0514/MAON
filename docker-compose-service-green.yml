@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: eureka-server-green
     ports:
-      - "8761:8761"
+      - "8762:8761"
     networks:
       - maonnet
     restart: always
