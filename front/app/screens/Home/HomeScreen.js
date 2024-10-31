@@ -1,6 +1,6 @@
 import { SafeAreaView, View, Text, Button } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
-import { OpenModalBtn, OpenModalBtnText } from "./HomeScreenStyle";
+import { OpenModalPageBtn, OpenModalPageBtnText } from "./HomeScreenStyle";
 const HomeScreen = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
 
@@ -10,15 +10,15 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <View>
-        <OpenModalBtn
+        <OpenModalPageBtn
           title=""
           onPress={() => {
             console.log("here");
             navigation.navigate("Modal");
           }}
         >
-          <OpenModalBtnText>모달열기</OpenModalBtnText>
-        </OpenModalBtn>
+          <OpenModalPageBtnText>모달 테스트 페이지로 이동</OpenModalPageBtnText>
+        </OpenModalPageBtn>
       </View>
     </SafeAreaView>
   );

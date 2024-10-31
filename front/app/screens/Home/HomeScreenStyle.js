@@ -3,7 +3,7 @@ import colors from "../../styles/fonts";
 import fonts from "../../styles/fonts";
 import { Text, TouchableOpacity } from "react-native";
 
-export const OpenModalBtn = styled.TouchableOpacity``;
-export const OpenModalBtnText = styled(Text)`
+export const OpenModalPageBtn = styled.TouchableOpacity``;
+export const OpenModalPageBtnText = styled(Text)`
   font-family: ${fonts.gMarketLight};
 `;

@@ -1,8 +1,9 @@
 import styled from "styled-components/native";
 import colors from "../../../styles/colors";
-import { Text, TouchableOpacity } from "react-native";
+import fonts from "../../../styles/fonts";
+import { Text, TouchableOpacity, SafeAreaView } from "react-native";
 
-export const ModalContainer = styled.View`
+export const ModalContainer = styled.SafeAreaView`
   flex: 1;
   top: 0;
   bottom: 0;
@@ -15,11 +16,24 @@ export const ModalContainer = styled.View`
 `;
 export const ModalContent = styled.View`
   background-color: ${colors.white};
-  width: 50%;
+  width: 70%;
+  align-items: center;
+  padding: 10% 0%;
+  border-radius: 21px;
+`;
+export const ModalSubText = styled(Text)`
+  font-size: 15px;
+  font-family: ${fonts.gMarketMedium};
+  margin-bottom: 10%;
+  color: "#B1B1B1";
 `;
 export const ModalText = styled(Text)`
   color: ${colors.black};
   font-size: 20px;
+  line-height: 30px;
+  font-family: ${fonts.gMarketMedium};
+  text-align: center;
+  margin-bottom: 10%;
 `;
 export const ButtonView = styled.View`
   flex-direction: row;
@@ -28,10 +42,15 @@ export const ModalButton = styled.TouchableOpacity`
   width: 40%;
   background-color: ${({ index }) =>
     index === 0 ? `${colors.light_begie}` : `${colors.dark_mandarind}`};
+  border-radius: 28px;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
 `;
 export const ButtonText = styled(Text)`
   color: ${({ index }) =>
     index === 0 ? `${colors.black}` : `${colors.white}`};
+  margin-right: ${({ index }) => (index === 0 ? "10px" : "0px")};
   font-size: 16px;
   padding: 15px 20px;
 `;
