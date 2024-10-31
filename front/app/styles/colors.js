@@ -8,7 +8,7 @@ const color = {
   nav_orange: "#FF740E", // navbar용 오렌지
   light_grape_fruit: "#FA9987", // 연한 자몽
   grape_fruit: "#FE7A58", // 자몽
-  ligth_begie: "#FFF1E2", // 연한 베이지
+  light_begie: "#FFF1E2", // 연한 베이지
   begie: "#FFE4C8", // 진한 베이지(모달 버튼용)
   orange_gradient:
     "linear-gradient(180deg, rgba(255, 116, 14, 0.88) 0%, rgba(255, 166, 70, 0.88) 100%)",

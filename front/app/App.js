@@ -1,20 +1,49 @@
-import { StatusBar } from 'expo-status-bar';
-import { Alert, StyleSheet, Text, View } from 'react-native';
-import SquareBtn from './components/Button/SquareBtn/SquareBtn';
-import RoundBtn from './components/Button/RoundBtn/RoundBtn';
-import InputBox from './components/InputBox/InputBox';
-import UserBtn from './components/Button/UserBtn/UserBtn';
-import SearchBar from './components/SearchBar/SearchBar';
-import HeaderNavigation from './components/HeaderNavigation/HeaderNavigation';
-import FooterNavigation from './components/FooterNavigation/FooterNavigation';
-import UserStatusBtn from './components/Button/UserStatusBtn/UserStatusBtn';
+import { useState, useEffect, createContext, useContext } from "react";
+import * as Font from "expo-font";
+import { StatusBar } from "expo-status-bar";
+import { Alert, StyleSheet, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import ModalTestScreen from "./screens/ModalTest/ModalTestScreen";
+import HomeScreen from "./screens/Home/HomeScreen.js";
+import { FontContext } from "./utils/fontContext.js";
 
-// import testProfile from "./assets/images/testProfile.jpg"
-// import testProfile from "./assets/images/testProfile1.jpg"
-import testProfile from "./assets/images/testProfile2.jpg"
+const Stack = createStackNavigator();
 
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFonts() {
+      await Font.loadAsync({
+        gMarketBold: require("../app/assets/fonts/GmarketSansTTFBold.ttf"),
+        gMarketLight: require("../app/assets/fonts/GmarketSansTTFLight.ttf"),
+        gMarketMedium: require("../app/assets/fonts/GmarketSansTTFMedium.ttf"),
+      });
+      setFontsLoaded(true);
+    }
+
+    loadFonts();
+  }, []);
+
+  if (!fontsLoaded) {
+    return null; // 폰트 로딩 중에는 렌더링을 방지
+  }
+
   return (
+<<<<<<< HEAD
+    <FontContext.Provider value={fontsLoaded}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="Home"
+        >
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Modal" component={ModalTestScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </FontContext.Provider>
+=======
     <View style={styles.container}>
       <Text>안녕하세요!</Text>
       <HeaderNavigation />
@@ -30,15 +59,6 @@ export default function App() {
       <FooterNavigation />
       <StatusBar style="auto" />
     </View>
+>>>>>>> dev
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    // backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
