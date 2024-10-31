@@ -1,8 +1,6 @@
 import { SafeAreaView, View, Text, Button } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
-import { OpenModalPageBtn, OpenModalPageBtnText } from "./HomeScreenStyle";
-import FooterNavigation from "../../components/FooterNavigation/FooterNavigation";
-const HomeScreen = ({ navigation }) => {
+const MarathonScreen = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
@@ -11,7 +9,8 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <View>
-        <OpenModalPageBtn
+      <Text>마라톤 정보 화면</Text>
+        {/* <OpenModalPageBtn
           title=""
           onPress={() => {
             console.log("here");
@@ -19,10 +18,9 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           <OpenModalPageBtnText>모달 테스트 페이지로 이동</OpenModalPageBtnText>
-        </OpenModalPageBtn>
-        {/* <FooterNavigation /> */}
+        </OpenModalPageBtn> */}
       </View>
     </SafeAreaView>
   );
 };
-export default HomeScreen;
+export default MarathonScreen;
