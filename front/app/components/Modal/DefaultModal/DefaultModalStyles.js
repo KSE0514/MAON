@@ -21,36 +21,43 @@ export const ModalContent = styled.View`
   padding: 10% 0%;
   border-radius: 21px;
 `;
-export const ModalSubText = styled(Text)`
-  font-size: 15px;
-  font-family: ${fonts.gMarketMedium};
-  margin-bottom: 10%;
-  color: "#B1B1B1";
-`;
 export const ModalText = styled(Text)`
   color: ${colors.black};
   font-size: 20px;
   line-height: 30px;
   font-family: ${fonts.gMarketMedium};
   text-align: center;
-  margin-bottom: 10%;
+  justify-content: center;
+  margin-bottom: ${({ subText }) => {
+    return subText ? "3%" : "10%";
+  }};
 `;
+
+export const ModalSubText = styled(Text)`
+  font-size: 15px;
+  font-family: ${fonts.gMarketMedium};
+  margin-bottom: 10%;
+  color: #b1b1b1;
+  display: ${({ subText }) => {
+    return subText ? "flex" : "none";
+  }};
+`;
+
 export const ButtonView = styled.View`
   flex-direction: row;
 `;
 export const ModalButton = styled.TouchableOpacity`
-  width: 40%;
+  width: 35%;
   background-color: ${({ index }) =>
     index === 0 ? `${colors.light_begie}` : `${colors.dark_mandarind}`};
   border-radius: 28px;
   justify-content: center;
   align-items: center;
-  gap: 30px;
+  margin-left: ${({ index }) => (index === 1 ? `5%` : `0px`)};
 `;
 export const ButtonText = styled(Text)`
   color: ${({ index }) =>
     index === 0 ? `${colors.black}` : `${colors.white}`};
-  margin-right: ${({ index }) => (index === 0 ? "10px" : "0px")};
   font-size: 16px;
   padding: 15px 20px;
 `;
