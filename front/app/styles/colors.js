@@ -16,5 +16,6 @@ const color = {
   mandarin_gradient: " linear-gradient(180deg, #FFB727 0%, #FDD048 100%)",
   modal_background: " rgba(0, 0, 0, 0.26)",
   box_shadow: "4px 4px 4px 0px rgba(122, 122, 122, 0.25)",
+  grey: "#B1B1B1",
 };
 export default color;

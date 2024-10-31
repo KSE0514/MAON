@@ -20,8 +20,12 @@ const DefaultModal = ({ isVisible, content }) => {
   return (
     <ModalContainer>
       <ModalContent>
-        <ModalText>{content.text}</ModalText>
-        <ModalSubText>{content.subText}</ModalSubText>
+        <ModalText subText={content.subText.length > 1}>
+          {content.text}
+        </ModalText>
+        <ModalSubText subText={content.subText.length > 1}>
+          {content.subText}
+        </ModalSubText>
         <ButtonView>
           {content.buttons.map((button, index) => (
             <ModalButton
