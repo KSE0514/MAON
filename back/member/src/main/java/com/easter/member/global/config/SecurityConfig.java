@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsUtils;
 
 @Configuration
 @Order(1)
@@ -23,9 +22,7 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable) // oauth를 위해 기본 로그인 비활성화
-                .authorizeHttpRequests(request -> request // 인증 설정
-                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers("/free").permitAll()
+                .authorizeHttpRequests(request -> request // 인증 필터링은 gateway에서 시행하므로 여기에서는 permit all
                         .anyRequest().permitAll())
                 // oauth
                 .oauth2Login(oauth2 -> oauth2

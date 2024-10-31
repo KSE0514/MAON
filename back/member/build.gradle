@@ -41,6 +41,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.3.4'
+	implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
+	implementation 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
 }
 
 dependencyManagement {
