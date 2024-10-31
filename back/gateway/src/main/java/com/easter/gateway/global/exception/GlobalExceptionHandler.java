@@ -1,40 +1,40 @@
-package com.easter.gateway.global.exception;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.gateway.support.NotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.reactive.resource.NoResourceFoundException;
-
-@Slf4j
-@RestControllerAdvice
-public class GlobalExceptionHandler {
-
-    @ExceptionHandler(BusinessException.class)
-    protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
-        ErrorResponse errorResponse = ErrorResponse.of(ex.getStatus(), ex.getMessage());
-        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
-        ex.printStackTrace();
-        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.NOT_FOUND, "게이트웨이에서 서비스를 찾지 못했습니다.");
-        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
-    }
-
-//    @ExceptionHandler(NoResourceFoundException.class)
-//    protected ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex) {
+//package com.easter.gateway.global.exception;
 //
-//    }
+//import lombok.extern.slf4j.Slf4j;
+//import org.springframework.cloud.gateway.support.NotFoundException;
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.ExceptionHandler;
+//import org.springframework.web.bind.annotation.RestControllerAdvice;
+//import org.springframework.web.reactive.resource.NoResourceFoundException;
 //
-//    @ExceptionHandler(Exception.class)
-//    protected ResponseEntity<ErrorResponse> handleException(Exception ex) {
-//        ex.printStackTrace();
-//        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생했습니다.");
+//@Slf4j
+//@RestControllerAdvice
+//public class GlobalExceptionHandler {
+//
+//    @ExceptionHandler(BusinessException.class)
+//    protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
+//        ErrorResponse errorResponse = ErrorResponse.of(ex.getStatus(), ex.getMessage());
 //        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
 //    }
-
-}
+//
+//    @ExceptionHandler(NotFoundException.class)
+//    protected ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
+//        ex.printStackTrace();
+//        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.NOT_FOUND, "게이트웨이에서 서비스를 찾지 못했습니다.");
+//        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+//    }
+//
+////    @ExceptionHandler(NoResourceFoundException.class)
+////    protected ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex) {
+////
+////    }
+////
+////    @ExceptionHandler(Exception.class)
+////    protected ResponseEntity<ErrorResponse> handleException(Exception ex) {
+////        ex.printStackTrace();
+////        ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, "서버에서 오류가 발생했습니다.");
+////        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+////    }
+//
+//}
