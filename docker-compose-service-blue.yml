@@ -51,7 +51,7 @@ services:
 
   tournament-blue:
     build:
-      context: ./back/route
+      context: ./back/tournament
       dockerfile: Dockerfile
     container_name: tournament-blue
     ports:
