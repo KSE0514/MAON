@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: api-gateway-green
     ports:
-      - "8765:8765"
+      - "8766:8765"
     networks:
       - maonnet
     restart: always
