@@ -29,7 +29,7 @@ export const ModalText = styled(Text)`
   text-align: center;
   justify-content: center;
   margin-bottom: ${({ subText }) => {
-    return subText ? "3%" : "10%";
+    return subText ? "3%" : "8%";
   }};
 `;
 
@@ -60,4 +60,5 @@ export const ButtonText = styled(Text)`
     index === 0 ? `${colors.black}` : `${colors.white}`};
   font-size: 16px;
   padding: 15px 20px;
+  font-family: ${fonts.gMarketMedium};
 `;

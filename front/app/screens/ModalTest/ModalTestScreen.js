@@ -15,18 +15,26 @@ const ModalTestScreen = ({ navigation }) => {
   const modalContent = {
     // text: `상대가 요청한 상태입니다.\n알림창을 통해\n친구요청을 확인하세요.`,
     // text: "종료 하시겠습니까?",
-    text: "예빈님에게\n친추를 거시겠습니까?",
+    // text: "예빈님에게\n친추를 거시겠습니까?",
+    // text: "상대가 요청한 상태입니다.\n알림 창을 통해\n친구 요청을 확인하세요.",
+    text: "마라톤 신청이\n완료되었습니다.",
     // subText: "현재까지의 기록은 저장됩니다.",
     subText: "",
     buttons: [
+      // {
+      //   title: "취소",
+      //   onPress: () => {
+      //     closeModal();
+      //   },
+      // },
+      // {
+      //   title: "종료",
+      //   onPress: () => {
+      //     closeModal();
+      //   },
+      // },
       {
-        title: "취소",
-        onPress: () => {
-          closeModal();
-        },
-      },
-      {
-        title: "종료",
+        title: "확인",
         onPress: () => {
           closeModal();
         },
