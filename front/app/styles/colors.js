@@ -8,7 +8,7 @@ const color = {
   orange: "#FF740E",
   light_grape_fruit: "#FA9987",
   grape_fruit: "#FE7A58",
-  ligth_begie: "#FFF1E2",
+  light_begie: "#FFF1E2",
   begie: "#FFE4C8",
   orange_gradient:
     "linear-gradient(180deg, rgba(255, 116, 14, 0.88) 0%, rgba(255, 166, 70, 0.88) 100%)",
