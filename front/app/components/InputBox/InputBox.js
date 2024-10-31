@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   innerContainer: {
-    flex: 0.75,
+    flex: 0.8,
   },
   label: {
     paddingHorizontal: 10,
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   input: {
     // flex: 0.7,
-    aspectRatio: 5, // 가로가 세로의 4.5배 비율
+    aspectRatio: 5.5, // 가로가 세로의 5.5배 비율
     borderRadius: 12,
     borderColor: '#D5D5D5',
     borderWidth: 1,

@@ -1,18 +1,35 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
-import testProfile from "./../../../assets/images/testProfile.jpg"
+import Svg, { Path } from 'react-native-svg'
+import UserStatusBtn from "../UserStatusBtn/UserStatusBtn";
+import color from "../../../styles/colors";
+// import testProfile from "./../../../assets/images/testProfile.jpg"
 
-const UserBtn = () => {
+const UserBtn = ({proImg, level, name, status}) => {
   return(
     <View style={styles.container}>
       <View style={styles.userBox}>
         <View style={styles.innerContainer}>
           <Image 
-            source={testProfile} 
+            source={proImg} // 프로필 이미지
             style={styles.profileImg} />
           <View style={styles.profileContent}>
-            <Text style={styles.level}>챌린지 Lv.5</Text>
-            <Text style={styles.name}>마미남</Text>
+            <View style={styles.ProfileContentInfo}>
+              {/* 챌린지 레벨 및 닉네임 */}
+              <Text style={styles.level}>챌린지 Lv.{level}</Text>
+              <Text style={styles.name}>{name}</Text>
+            </View>
+
+            {/* 상태에 따라 바뀌는 부분 >, 요청하기Btn, 수락대기Btn, 친구 신청Btn */}
+            <View style={styles.changeArea}>
+              {status === 'show-detail'?
+                <Svg width={30} height={30} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill={color.light_grape_fruit}>
+                  <Path d="M273 239c9.4 9.4 9.4 24.6 0 33.9L113 433c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l143-143L79 113c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L273 239z"/>
+                </Svg>
+              : 
+                <UserStatusBtn text={status} />
+              }
+            </View>
           </View>
         </View>
       </View>
@@ -28,7 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   userBox:{
-    flex: 0.75,
+    flex: 0.8,
     backgroundColor: 'white',
     aspectRatio: 3,
     borderColor: 'rgba(188, 188, 188, 0.56)',
@@ -56,8 +73,17 @@ const styles = StyleSheet.create({
   },
   profileContent: {
     flex: 1,
-    paddingHorizontal: 10,
+    flexDirection: 'row',
+    // paddingHorizontal: 10, 
+    paddingLeft: 10, 
+    // gap: 3
+  },
+  ProfileContentInfo: {
     gap: 3
+  },
+  changeArea: {
+    flex: 1,
+    alignItems: 'flex-end',
   },
   level: {
     color: '#989898',
@@ -65,7 +91,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16
-  }
+  },
 })
 
 export default UserBtn
