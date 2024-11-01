@@ -13,6 +13,7 @@ import ChallengeScreen from "./screens/Challenge/ChallengeScreen.js";
 import LoginScreen from "./screens/Login/LoginScreen.js";
 import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
 import { FontContext } from "./utils/fontContext.js";
+import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -49,6 +50,7 @@ export default function App() {
           {/* FooterNavigation이 포함되지 않은 화면 */}
           <Stack.Screen name="Modal" component={ModalTestScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="SelectRunType" component={SelectRunType} />
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
           <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />

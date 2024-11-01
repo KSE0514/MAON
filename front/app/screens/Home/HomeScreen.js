@@ -33,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={{ flexDirection: "row", flex: 1 }}>
           <GradientButton
             onPress={() => {
-              navigation.navigate("Home");
+              navigation.navigate("SelectRunType");
             }}
             title={`혼자\n달리기\n모드`}
             gradientType="orange_gradient"
@@ -43,7 +43,7 @@ const HomeScreen = ({ navigation }) => {
           <View style={{ flex: "1", marginLeft: 10 }}>
             <GradientButton
               onPress={() => {
-                navigation.navigate("Home");
+                navigation.navigate("SelectRunType");
               }}
               title={`함께\n달리기`}
               gradientType="grape_fruit_gradient"

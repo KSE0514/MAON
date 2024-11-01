@@ -5,12 +5,14 @@ import {
   StyleSheet,
   View,
   Dimensions,
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faPersonRunning,
   faUserGroup,
+  faRoute,
 } from "@fortawesome/free-solid-svg-icons";
 import { ButtonContainer, ButtonText, GradientBtn } from "./GradientBtnStyle";
 
@@ -35,6 +37,9 @@ const fontStyle = {
   alone: { fontSize: 40, lineHeight: 50 },
   together: { fontSize: 32, lineHeight: 42 },
   friend: { fontSize: 20, lineHeight: 30 },
+  selectedRoute: { fontSize: 40, lineHeight: 50 },
+  notSelectedRoute: { fontSize: 40, lineHeight: 50 },
+  ghost: { fontSize: 40, lineHeight: 50 },
 };
 const GradientButton = ({
   onPress,
@@ -85,9 +90,39 @@ const GradientButton = ({
             />
           </View>
         ) : null}
+        {mode == "selectedRoute" ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faRoute}
+              style={{ color: "#ffffff" }}
+              size={screenWidth * 0.25}
+            />
+          </View>
+        ) : null}
+        {mode == "ghost" ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+            }}
+          >
+            <Image
+              style={[
+                { width: screenWidth * 0.25, height: screenWidth * 0.25 },
+              ]} // 너비와 높이를 화면 너비의 25%로 설정
+              source={require("../../../assets/images/ghost.png")} // 로컬 이미지 경로
+            />
+          </View>
+        ) : null}
       </GradientBtn>
     </ButtonContainer>
   );
 };
-
 export default GradientButton;
