@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/maon/member/member")
 public class MemberController {
-
     /* 테스트용 메서드들 : 추후 삭제 예정 */
     @GetMapping("/test")
     public String test() {
@@ -27,7 +26,4 @@ public class MemberController {
     public String failed() {
         return "member - failed";
     }
-
-
-
 }

@@ -27,6 +27,7 @@ public class SecurityConfig {
                 // oauth
                 .oauth2Login(oauth2 -> oauth2
                                 .authorizationEndpoint(auth -> auth.baseUri("/maon/member/member/login"))
+                                .redirectionEndpoint(redirect -> redirect.baseUri("/maon/member/login/oauth2/code/*"))
 //                        .userInfoEndpoint(userInfo -> userInfo
 //                                .userService(customOAuth2UserService) // 로그인 성공 후 사용자 정보 처리할 클래스 지정
 //                                .oidcUserService(customOidcUserService)

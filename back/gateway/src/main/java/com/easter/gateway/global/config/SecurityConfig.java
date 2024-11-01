@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable) // oauth를 위해 기본 로그인 비활성화
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/maon/member/member/login/**", "/maon/member/member/oauth2/**").permitAll()
+                        .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**","/maon/member/member/oauth2/**").permitAll()
                         .pathMatchers("/maon/member/**").authenticated()
                         .anyExchange().permitAll()
                 )
