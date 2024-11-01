@@ -10,27 +10,30 @@ import { useFontsLoaded } from "../../utils/fontContext";
 import { ButtonList, Wrapper } from "./SelectRunTypeStyle";
 import GradientButton from "../../components/Button/GradientsBtn/GradientsButton";
 
-const SelectRunType = () => {
+const SelectRunType = ({ navigation }) => {
+  const fontsLoaded = useFontsLoaded();
+
+  if (!fontsLoaded) {
+    return null; // 폰트 로드 전까지 렌더링 방지
+  }
   const buttons = [
     {
       onPress: () => {
-        alert("hello");
+        navigation.navigate("SelectRunRoute");
       },
       title: `지정코스로\n달리기`,
       gradientType: "orange_gradient",
       mode: "selectedRoute",
     },
     {
-      onPress: () => {
-        alert("hello");
-      },
+      onPress: () => {},
       title: `지정코스없이\n달리기`,
       gradientType: "mandarin_gradient",
       mode: "notSelectedRoute",
     },
     {
       onPress: () => {
-        alert("hello");
+        navigation.navigate("SelectRunRoute");
       },
       title: `고스트\n모드`,
       gradientType: "grape_fruit_gradient",

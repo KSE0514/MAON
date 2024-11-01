@@ -14,6 +14,7 @@ import LoginScreen from "./screens/Login/LoginScreen.js";
 import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
 import { FontContext } from "./utils/fontContext.js";
 import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
+import SelectRunRoute from "./screens/SelectRunRoute/SelectRunRoute.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -51,6 +52,7 @@ export default function App() {
           <Stack.Screen name="Modal" component={ModalTestScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SelectRunType" component={SelectRunType} />
+          <Stack.Screen name="SelectRunRoute" component={SelectRunRoute} />
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
           <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />
