@@ -1,13 +1,13 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import * as Font from "expo-font";
 import { StatusBar } from "expo-status-bar";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View, sta } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ModalTestScreen from "./screens/ModalTest/ModalTestScreen";
 import HomeScreen from "./screens/Home/HomeScreen.js";
-import MarathonInfoScreen from "./screens/Marathon/MarathonInfoScreen.js";
+import MarathonInfoScreen from "./screens/MarathonInfo/MarathonInfoScreen.js";
 import RecordScreen from "./screens/Record/RecordScreen.js";
 import ChallengeScreen from "./screens/Challenge/ChallengeScreen.js";
 import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
@@ -41,14 +41,15 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="Home">
+          initialRouteName="Home"
+        >
           {/* FooterNavigation이 포함된 화면들 */}
           <Stack.Screen name="MainTabs" component={MainTabs} />
           {/* FooterNavigation이 포함되지 않은 화면 */}
           <Stack.Screen name="Modal" component={ModalTestScreen} />
 
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
-          <Stack.Screen name="Marathon" component={ScreenWithFooter(MarathonScreen)} />
+          <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />
           <Stack.Screen name="Challenge" component={ScreenWithFooter(ChallengeScreen)} />
           <Stack.Screen name="Modal" component={ScreenWithFooter(ModalTestScreen)} /> */}
@@ -66,9 +67,10 @@ const MainTabs = () => {
       screenOptions={{
         headerShown: false, // 헤더 숨기기
         animationEnabled: false, // 애니메이션 비활성화
-      }}>
+      }}
+    >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Marathon" component={MarathonScreen} />
+      <Tab.Screen name="Marathon" component={MarathonInfoScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />
       <Tab.Screen name="Challenge" component={ChallengeScreen} />
     </Tab.Navigator>
