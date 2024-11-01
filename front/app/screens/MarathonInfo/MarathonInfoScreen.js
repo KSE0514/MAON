@@ -1,6 +1,6 @@
 import { SafeAreaView, View, Text, Button } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
-const MarathonScreen = ({ navigation }) => {
+const MarathonInfoScreen = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
@@ -9,7 +9,7 @@ const MarathonScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <View>
-      <Text>마라톤 정보 화면</Text>
+        <Text>마라톤 정보 화면</Text>
         {/* <OpenModalPageBtn
           title=""
           onPress={() => {
@@ -23,4 +23,4 @@ const MarathonScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-export default MarathonScreen;
+export default MarathonInfoScreen;

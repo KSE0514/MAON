@@ -7,6 +7,7 @@ import {
   Wrapper,
 } from "./ModalTestScreenStyle";
 import SelectModal from "../../components/Modal/SelectModal/SelectModal";
+import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 const ModalTestScreen = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -15,6 +16,9 @@ const ModalTestScreen = ({ navigation }) => {
 
   const [runType, setRunType] = useState("");
 
+  const startTimer = () => {
+    closeModal();
+  };
   const defalutModalContent = {
     // text: `상대가 요청한 상태입니다.\n알림창을 통해\n친구요청을 확인하세요.`,
     // text: "종료 하시겠습니까?",
@@ -77,20 +81,27 @@ const ModalTestScreen = ({ navigation }) => {
         >
           <OpenModalBtnText>기본 모달 열기</OpenModalBtnText>
         </OpenModalBtn> */}
-        <OpenModalBtn
+        {/* <DefaultModal isVisible={isModalVisible} content={defalutModalContent} /> */}
+        {/* <OpenModalBtn
           title=""
           onPress={() => {
             openModal();
-          }}
-        >
+          }}>
           <OpenModalBtnText>셀렉트 모달 열기</OpenModalBtnText>
         </OpenModalBtn>
-        {/* <DefaultModal isVisible={isModalVisible} content={defalutModalContent} /> */}
         <SelectModal
           isVisible={isModalVisible}
           content={SelectModalContent}
           setRunType={setRunType}
-        />
+        /> */}
+        <OpenModalBtn
+          title=""
+          onPress={() => {
+            openModal();
+          }}>
+          <OpenModalBtnText>달리기 시작 모달 열기</OpenModalBtnText>
+        </OpenModalBtn>
+        <TimerModal isVisible={isModalVisible} startTimer={startTimer} />
       </Wrapper>
     </SafeAreaView>
   );
