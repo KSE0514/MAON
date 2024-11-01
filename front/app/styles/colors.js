@@ -11,6 +11,7 @@ const color = {
   light_begie: "#FFF1E2", // 연한 베이지
   begie: "#FFE4C8", // 진한 베이지(모달 버튼용)
   modal_background: " rgba(0, 0, 0, 0.26)",
+  o_btn: "linear-gradient(91deg, #FF740E 0.26%, #FFA646 97.6%)",
   box_shadow: "4px 4px 4px 0px rgba(122, 122, 122, 0.25)",
   grey: "#B1B1B1",
 };

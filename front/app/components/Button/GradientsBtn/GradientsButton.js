@@ -1,9 +1,20 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  View,
+  Dimensions,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import fonts from "../../../styles/fonts";
-import colors from "../../../styles/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faPersonRunning,
+  faUserGroup,
+} from "@fortawesome/free-solid-svg-icons";
+import { ButtonContainer, ButtonText, GradientBtn } from "./GradientBtnStyle";
 
+const screenWidth = Dimensions.get("window").width;
 // 그라데이션 스타일별 색상 배열
 const gradients = {
   orange_gradient: ["rgba(255, 116, 14, 0.88)", "rgba(255, 166, 70, 0.88)"],
@@ -35,44 +46,48 @@ const GradientButton = ({
   const { start, end } = directions[direction];
 
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.buttonContainer]}>
-      <LinearGradient
+    <ButtonContainer mode={mode} onPress={onPress}>
+      <GradientBtn
+        mode={mode}
         colors={gradients[gradientType] || gradients.orange_gradient}
         start={start}
         end={end}
-        style={[
-          styles.gradient,
-          mode == "alone"
-            ? styles.alone
-            : mode == "together"
-            ? styles.together
-            : styles.friend,
-        ]}
       >
-        <Text style={[styles.buttonText, fontStyle[mode]]}>{title}</Text>
-      </LinearGradient>
-    </TouchableOpacity>
+        <ButtonText mode={mode} style={[fontStyle[mode]]}>
+          {title}
+        </ButtonText>
+        {mode == "alone" ? (
+          <View
+            style={{
+              flex: 1,
+              alignItems: "flex-end",
+              justifyContent: "flex-end",
+            }}
+          >
+            <FontAwesomeIcon
+              size={screenWidth * 0.2} // 화면 너비의 10% 크기 설정
+              style={{ color: "white" }}
+              icon={faPersonRunning}
+            />
+          </View>
+        ) : null}
+        {mode == "friend" ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "flex-end",
+            }}
+          >
+            <FontAwesomeIcon
+              style={{ color: "white" }}
+              icon={faUserGroup}
+              size={screenWidth * 0.14} // 화면 너비의 10% 크기 설정
+            />
+          </View>
+        ) : null}
+      </GradientBtn>
+    </ButtonContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  buttonContainer: {
-    flex: 1,
-  },
-  gradient: {
-    flex: 1,
-
-    paddingHorizontal: "10%",
-    paddingVertical: "10%",
-    borderRadius: 14,
-  },
-  buttonText: {
-    fontFamily: fonts.gMarketBold,
-    color: colors.white,
-  },
-  alone: {},
-  together: {},
-  friend: {},
-});
 
 export default GradientButton;

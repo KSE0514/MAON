@@ -9,7 +9,7 @@ export const Wrapper = styled.SafeAreaView`
 
 export const ButtonList = styled.View`
   flex: 1;
-  padding: 5% 5% 5% 10%;
+  padding: 5% 5% 10% 5%;
 `;
 export const AloneRunBtn = styled(TouchableOpacity)`
   flex: 1;

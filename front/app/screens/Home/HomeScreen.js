@@ -1,4 +1,11 @@
-import { StyleSheet, SafeAreaView, View, Text, Button } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import {
   AloneRunBtn,
@@ -33,7 +40,7 @@ const HomeScreen = ({ navigation }) => {
             direction="diagonalTopLeftToBottomRight"
             mode="alone"
           />
-          <View style={{ flex: "1" }}>
+          <View style={{ flex: "1", marginLeft: 10 }}>
             <GradientButton
               onPress={() => {
                 navigation.navigate("Home");
