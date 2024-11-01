@@ -26,4 +26,6 @@ public class MemberController {
     public String failed() {
         return "member - failed";
     }
+    
+    /* 테스트 메서드 종료  */
 }

@@ -43,6 +43,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.3.4'
 	implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
 	implementation 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.3.5'
+	implementation 'org.springframework.session:spring-session-data-redis'
+
 }
 
 dependencyManagement {
