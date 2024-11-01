@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, Button } from "react-native";
+import { SafeAreaView, View, Text, Button, TouchableOpacity } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import { OpenModalPageBtn, OpenModalPageBtnText } from "./HomeScreenStyle";
 import FooterNavigation from "../../components/FooterNavigation/FooterNavigation";
@@ -21,6 +21,13 @@ const HomeScreen = ({ navigation }) => {
           <OpenModalPageBtnText>모달 테스트 페이지로 이동</OpenModalPageBtnText>
         </OpenModalPageBtn>
         {/* <FooterNavigation /> */}
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
+          >
+            <Text>로그인 화면</Text>
+          </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
