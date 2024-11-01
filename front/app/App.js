@@ -11,6 +11,7 @@ import MarathonInfoScreen from "./screens/MarathonInfo/MarathonInfoScreen.js";
 import RecordScreen from "./screens/Record/RecordScreen.js";
 import ChallengeScreen from "./screens/Challenge/ChallengeScreen.js";
 import LoginScreen from "./screens/Login/LoginScreen.js";
+import SignUpScreen from "./screens/SignUpScreen/SignUpScreen.js";
 import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
 import { FontContext } from "./utils/fontContext.js";
 
@@ -49,6 +50,7 @@ export default function App() {
           {/* FooterNavigation이 포함되지 않은 화면 */}
           <Stack.Screen name="Modal" component={ModalTestScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
           <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />
