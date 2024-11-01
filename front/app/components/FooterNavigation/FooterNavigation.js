@@ -1,7 +1,13 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, Platform } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import Svg, { Path } from "react-native-svg";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import color from "../../styles/colors";
 
 const FooterNavigation = ({ currentRoute }) => {
@@ -79,8 +85,8 @@ const FooterNavigation = ({ currentRoute }) => {
         </View>
       </LinearGradient>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   safeArea: {
