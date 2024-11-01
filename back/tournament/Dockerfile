@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 
 # Copy the JAR file to the container
-COPY build/libs/*.jar app.jar
+COPY build/libs/*.jar /app/app.jar
 
 # Expose the port
 EXPOSE 18020
