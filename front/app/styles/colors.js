@@ -10,12 +10,9 @@ const color = {
   grape_fruit: "#FE7A58", // 자몽
   light_begie: "#FFF1E2", // 연한 베이지
   begie: "#FFE4C8", // 진한 베이지(모달 버튼용)
-  orange_gradient:
-    "linear-gradient(180deg, rgba(255, 116, 14, 0.88) 0%, rgba(255, 166, 70, 0.88) 100%)",
-  grape_fruit_gradient: "linear-gradient(180deg, #FE7A58 0%, #FA9987 100%)",
-  mandarin_gradient: " linear-gradient(180deg, #FFB727 0%, #FDD048 100%)",
   modal_background: " rgba(0, 0, 0, 0.26)",
   box_shadow: "4px 4px 4px 0px rgba(122, 122, 122, 0.25)",
   grey: "#B1B1B1",
 };
+
 export default color;
