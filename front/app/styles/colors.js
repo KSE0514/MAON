@@ -15,6 +15,7 @@ const color = {
   grape_fruit_gradient: "linear-gradient(180deg, #FE7A58 0%, #FA9987 100%)",
   mandarin_gradient: " linear-gradient(180deg, #FFB727 0%, #FDD048 100%)",
   modal_background: " rgba(0, 0, 0, 0.26)",
+  o_btn: "linear-gradient(91deg, #FF740E 0.26%, #FFA646 97.6%)",
   box_shadow: "4px 4px 4px 0px rgba(122, 122, 122, 0.25)",
   grey: "#B1B1B1",
 };

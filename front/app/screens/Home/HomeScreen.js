@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, Button } from "react-native";
+import { SafeAreaView, View, Text, Button, TouchableOpacity } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import {
   AloneRunBtn,
