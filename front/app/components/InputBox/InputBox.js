@@ -7,7 +7,8 @@ import { useState } from 'react';
 const InputBox = ({label, placeholder}) => {
   const fontsLoaded = useFontsLoaded();
   const [selectedGender, setSelectedGender] = useState(null); // 선택된 성별 상태 관리
-  const [date, setDate] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState(''); // 생년월일 상태 관리
+  const [phoneNumber, setPhoneNumber] = useState(''); // 전화번호 상태 관리
 
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
@@ -18,17 +19,36 @@ const InputBox = ({label, placeholder}) => {
     setSelectedGender(gender);
   };
 
-  // // 생년월일
-  // const handleDateChange = (text) => {
-  //   // 정규식을 사용하여 YYYY-MM-DD 형식인지 확인
-  //   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  //   if (dateRegex.test(text)) {
-  //     setDate(text);
-  //   } else {
-  //     // 유효하지 않은 경우 처리
-  //     setDate('');
-  //   }
-  // };
+
+  // 전화번호 형식 자동 변환
+  const handlePhoneNumberChange = (text) => {
+    // 숫자만 남기기
+    const cleaned = text.replace(/\D/g, '');
+
+    // 번호 형식에 맞게 변환
+    let formatted = cleaned;
+    if (cleaned.length > 3 && cleaned.length <= 7) {
+      formatted = `${cleaned.slice(0, 3)}-${cleaned.slice(3)}`;
+    } else if (cleaned.length > 7) {
+      formatted = `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
+    }
+
+    setPhoneNumber(formatted);
+  };
+
+// 생년월일 형식 자동 변환
+const handleDateOfBirthChange = (text) => {
+  const cleaned = text.replace(/\D/g, ''); // 숫자만 남기기
+
+  let formatted = cleaned;
+  if (cleaned.length > 4 && cleaned.length <= 6) {
+    formatted = `${cleaned.slice(0, 4)}/${cleaned.slice(4)}`;
+  } else if (cleaned.length > 6) {
+    formatted = `${cleaned.slice(0, 4)}/${cleaned.slice(4, 6)}/${cleaned.slice(6, 8)}`;
+  }
+
+  setDateOfBirth(formatted);
+};
 
   return (
     <View style={styles.container}>
@@ -59,29 +79,48 @@ const InputBox = ({label, placeholder}) => {
           </View>
         ) :
 
-        // 그외 input
-
-        // 1. 생년월일일 경우
+        // 그외 input(1.숫자 키보드이용 / 2. 숫자 키보드X)
+        // 1. 생년월일 or 전화번호일 경우(숫자 패드)
         label === "생년월일" ?
         (
           <TextInput
               style={styles.input}
               placeholder={placeholder}
-              // value={date}
-              // onChangeText={handleDateChange}
+              value={dateOfBirth}
+              onChangeText={handleDateOfBirthChange}
               keyboardType="numeric"
             />
         )
         :
-        // 2. 생일을 제외한 모든 input
+        label === '전화번호' ?
         (
           <TextInput
-            style={styles.input}
-            placeholder={placeholder}
-            inputMode={label==="이메일"? 'email' : 'text'}
-            // inputMode='email'
-          />
-        )}
+              style={styles.input}
+              placeholder={placeholder}
+              value={phoneNumber}
+            onChangeText={handlePhoneNumberChange}
+              keyboardType="numeric"
+            />
+        )
+        :
+        label === ''?
+          (
+            <TextInput
+              style={[styles.input, {textAlign: 'center'}]}
+              placeholder={placeholder}
+            />
+          )
+          :
+          (
+            // 2. 생일과 전화번호를 제외한 모든 input
+            <TextInput
+              style={styles.input}
+              placeholder={placeholder}
+              inputMode={label==="이메일"? 'email' : 'text'}
+            />
+          )
+
+        }
       </View>
     </View>
   )

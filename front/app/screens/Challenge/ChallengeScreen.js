@@ -26,6 +26,20 @@ const ChallengeScreen = ({ navigation }) => {
           >
             <Text style={{fontSize: 30}}>로그인 화면</Text>
           </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("MyPage");
+            }}
+          >
+            <Text style={{fontSize: 30}}>마이페이지</Text>
+          </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("FriendList");
+            }}
+          >
+            <Text style={{fontSize: 30}}>친구목록</Text>
+          </TouchableOpacity>
 
       </View>
     </SafeAreaView>

@@ -5,7 +5,7 @@ import UserStatusBtn from "../UserStatusBtn/UserStatusBtn";
 import color from "../../../styles/colors";
 // import testProfile from "./../../../assets/images/testProfile.jpg"
 
-const UserBtn = ({proImg, level, name, status}) => {
+const UserInfoBox = ({proImg, level, name, status}) => {
   return(
     <View style={styles.container}>
       <View style={styles.userBox}>
@@ -39,13 +39,12 @@ const UserBtn = ({proImg, level, name, status}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   userBox:{
-    flex: 0.8,
+    flex: 1,
     backgroundColor: 'white',
     aspectRatio: 3,
     borderColor: 'rgba(188, 188, 188, 0.56)',
@@ -94,4 +93,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default UserBtn
+export default UserInfoBox

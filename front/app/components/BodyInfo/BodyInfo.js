@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoWrapper:{
+    // flex: 1,
     flexDirection: 'row',
     borderRadius: 12,
     borderColor: '#D5D5D5',
@@ -56,7 +57,8 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50, // 높이를 직접 설정하여 일관되게 만듦
-
+    width: '90%',
+    // flex: 4,
     fontSize: 15,
     fontFamily: fonts.gMarketLight,
   },
