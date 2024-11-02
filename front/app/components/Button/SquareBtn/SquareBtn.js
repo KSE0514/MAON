@@ -25,18 +25,18 @@ export default function SquareBtn({text, onPress}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     // flexDirection: 'row',
     // backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   touchableOpacity: { 
-    flex: 1, 
+    // flex: 1, 
     flexDirection: 'row'
   },
   gradientButton: {
-    flex: 0.8,
+    flex: 1,
     // height: 60,
     aspectRatio: 6, // 가로가 세로의 6배 비율
     // backgroundColor: '#FF740E',
@@ -47,5 +47,7 @@ const styles = StyleSheet.create({
   btnText: {    
     color: color.white,
     fontSize: 18,
+    lineHeight: 22, // 글자 높이 맞춤
+    paddingVertical: 2, // 위아래 약간의 여백 추가
   }
 });

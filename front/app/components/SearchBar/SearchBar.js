@@ -37,11 +37,10 @@ const SearchBar = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'row',
   },
   innerContainer: {
-    flex: 0.8,
+    flex: 1,
   },
   innerWrap: {
     flexDirection: 'row',
