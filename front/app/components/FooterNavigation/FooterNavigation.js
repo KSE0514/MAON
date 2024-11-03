@@ -5,10 +5,12 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Platform
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useNavigation } from "@react-navigation/native";
 import color from "../../styles/colors";
+import fonts from "../../styles/fonts";
 
 const FooterNavigation = ({ currentRoute }) => {
   const navigation = useNavigation();
@@ -119,6 +121,8 @@ const styles = StyleSheet.create({
   label: {
     color: color.white,
     fontSize: 18,
+    paddingTop: 3,
+    fontFamily: fonts.gMarketLight,
   },
 });
 
