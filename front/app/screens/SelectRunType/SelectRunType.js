@@ -19,7 +19,10 @@ const SelectRunType = ({ navigation }) => {
   const buttons = [
     {
       onPress: () => {
-        navigation.navigate("SelectRunRoute", { mode: "run" });
+        navigation.navigate("SelectRunRoute", {
+          mode: "selectedRoute",
+          searchType: "run",
+        });
       },
       title: `지정코스로\n달리기`,
       gradientType: "orange_gradient",

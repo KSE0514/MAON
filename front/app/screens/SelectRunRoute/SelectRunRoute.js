@@ -20,7 +20,7 @@ const SelectRunRoute = () => {
   return (
     <Wrapper>
       <MarathonInfoSearchBar
-        mode={"run"}
+        searchType={"run"}
         onPress={() => {
           alert("hello");
         }}

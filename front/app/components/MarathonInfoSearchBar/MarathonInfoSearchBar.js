@@ -74,7 +74,7 @@ const MarathonInfoSearchBar = ({ mode, onPress }) => {
           thumbTintColor="#FF6347" // 슬라이더 핸들 색상
         />
       </Top>
-      {mode == "run" && (
+      {searchType == "run" && (
         <>
           <Middle>
             <OptionTitle>코스 선택</OptionTitle>
@@ -114,7 +114,7 @@ const MarathonInfoSearchBar = ({ mode, onPress }) => {
           </Bottom>
         </>
       )}
-      {mode == "searchInfo" && (
+      {searchType == "searchInfo" && (
         <>
           <Middle>
             <SelectView>
