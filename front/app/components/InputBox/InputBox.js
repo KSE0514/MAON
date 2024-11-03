@@ -2,22 +2,19 @@ import { View, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-nativ
 import { useFontsLoaded } from "../../utils/fontContext";
 import fonts from '../../styles/fonts';
 import colors from '../../styles/colors';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const InputBox = ({label, placeholder}) => {
+const InputBox = ({label, placeholder, value, setValue, isEditMode}) => {
   const fontsLoaded = useFontsLoaded();
-  const [selectedGender, setSelectedGender] = useState(null); // 선택된 성별 상태 관리
-  const [dateOfBirth, setDateOfBirth] = useState(''); // 생년월일 상태 관리
-  const [phoneNumber, setPhoneNumber] = useState(''); // 전화번호 상태 관리
 
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
   // 성별
-  const handleGenderSelect = (gender) => {
-    setSelectedGender(gender);
-  };
+  // const handleGenderSelect = (gender) => {
+  //   setSelectedGender(gender);
+  // };
 
 
   // 전화번호 형식 자동 변환
@@ -33,7 +30,7 @@ const InputBox = ({label, placeholder}) => {
       formatted = `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
     }
 
-    setPhoneNumber(formatted);
+    setValue(formatted);
   };
 
 // 생년월일 형식 자동 변환
@@ -47,7 +44,7 @@ const handleDateOfBirthChange = (text) => {
     formatted = `${cleaned.slice(0, 4)}/${cleaned.slice(4, 6)}/${cleaned.slice(6, 8)}`;
   }
 
-  setDateOfBirth(formatted);
+  setValue(formatted);
 };
 
   return (
@@ -56,67 +53,111 @@ const handleDateOfBirthChange = (text) => {
         {label && <Text style={styles.label}>{label}</Text>}
 
         {/* 성별 버튼 */}
-        {label === '성별' ? (
-          <View style={styles.genderContainer}>
-            <TouchableOpacity
-              style={[
-                styles.genderButton,
-                selectedGender === '남' && { backgroundColor: colors.light_begie }
-              ]}
-              onPress={() => handleGenderSelect('남')}
-            >
-              <Text style={styles.genderText}>남</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.genderButton,
-                selectedGender === '여' && { backgroundColor: colors.light_begie }
-              ]}
-              onPress={() => handleGenderSelect('여')}
-            >
-              <Text style={styles.genderText}>여</Text>
-            </TouchableOpacity>
-          </View>
-        ) :
+        {label === '성별' ?
+        isEditMode?
+          (
+            <View style={styles.genderContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.genderButton,
+                  (value === '남' || value === 'male') && { backgroundColor: colors.light_begie },
+                  !isEditMode&&{borderWidth: 0}
+                ]}
+                onPress={() => setValue('남')}
+              >
+                <Text style={styles.genderText}>남</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.genderButton,
+                  (value === '여' || value==='female') && { backgroundColor: colors.light_begie },
+                  !isEditMode&&{borderWidth: 0}
+                ]}
+                onPress={() => setValue('여')}
+              >
+                <Text style={styles.genderText}>여</Text>
+              </TouchableOpacity>
+            </View>
+          )
+          :
+          (
+            <View style={styles.genderContainer}>
+              <View
+                style={[
+                  styles.genderButton,
+                  (value === '남' || value === 'male') && { backgroundColor: colors.light_begie },
+                  !isEditMode&&{borderWidth: 0}
+                ]}
+              >
+                <Text style={styles.genderText}>남</Text>
+              </View>
+              <View
+                style={[
+                  styles.genderButton,
+                  (value === '여' || value==='female') && { backgroundColor: colors.light_begie },
+                  !isEditMode&&{borderWidth: 0}
+                ]}
+              >
+                <Text style={styles.genderText}>여</Text>
+              </View>
+            </View>
+          )
+
+         :
 
         // 그외 input(1.숫자 키보드이용 / 2. 숫자 키보드X)
         // 1. 생년월일 or 전화번호일 경우(숫자 패드)
         label === "생년월일" ?
         (
           <TextInput
-              style={styles.input}
+              style={[styles.input,
+                !isEditMode && { backgroundColor: colors.light_begie, borderWidth: 0 }
+              ]}
               placeholder={placeholder}
-              value={dateOfBirth}
+              value={value}
               onChangeText={handleDateOfBirthChange}
               keyboardType="numeric"
+              editable={isEditMode} // 입력 불가능 상태 여부
             />
         )
         :
         label === '전화번호' ?
         (
           <TextInput
-              style={styles.input}
+              style={[styles.input,
+                !isEditMode && { backgroundColor: colors.light_begie, borderWidth: 0 }
+              ]}
               placeholder={placeholder}
-              value={phoneNumber}
+              value={value}
             onChangeText={handlePhoneNumberChange}
               keyboardType="numeric"
+              editable={isEditMode} // 입력 불가능 상태 여부
             />
         )
         :
+        // 닉네임
         label === ''?
           (
             <TextInput
               style={[styles.input, {textAlign: 'center'}]}
               placeholder={placeholder}
+              value={value}
+              onChangeText={(text)=>setValue(text)}
+              editable={isEditMode} // 입력 불가능 상태 여부
             />
           )
           :
           (
             // 2. 생일과 전화번호를 제외한 모든 input
             <TextInput
-              style={styles.input}
+              style={[styles.input,
+                !isEditMode && { backgroundColor: colors.light_begie, borderWidth: 0 }
+              ]}
               placeholder={placeholder}
               inputMode={label==="이메일"? 'email' : 'text'}
+              value={value}
+              onChangeText={(text)=>setValue(text)}
+              editable={isEditMode} // 입력 불가능 상태 여부
             />
           )
 

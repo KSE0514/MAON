@@ -14,6 +14,7 @@ import LoginScreen from "./screens/Login/LoginScreen.js";
 import SignUpScreen from "./screens/SignUpScreen/SignUpScreen.js";
 import MyPageScreen from "./screens/MyPage/MyPageScreen.js";
 import FriendListScreen from "./screens/FriendList/FriendListScreen.js";
+import NotificationScreen from "./screens/Notification/NotificationScreen.js";
 import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
 import { FontContext } from "./utils/fontContext.js";
 
@@ -54,6 +55,7 @@ export default function App() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="MyPage" component={MyPageScreen} />
+          <Stack.Screen name="Notification" component={NotificationScreen} />
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
           <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />
