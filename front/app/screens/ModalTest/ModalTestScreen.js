@@ -7,7 +7,7 @@ import {
   Wrapper,
 } from "./ModalTestScreenStyle";
 import SelectModal from "../../components/Modal/SelectModal/SelectModal";
-import TimerModal from "../../components/Modal/TimerModal/TimerModal";
+import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 const ModalTestScreen = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -101,7 +101,7 @@ const ModalTestScreen = ({ navigation }) => {
           }}>
           <OpenModalBtnText>달리기 시작 모달 열기</OpenModalBtnText>
         </OpenModalBtn>
-        <TimerModal isVisible={isModalVisible} startTimer={startTimer} />
+        <RunStartModal isVisible={isModalVisible} startTimer={startTimer} />
       </Wrapper>
     </SafeAreaView>
   );

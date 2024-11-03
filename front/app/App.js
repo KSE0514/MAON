@@ -16,6 +16,7 @@ import { FontContext } from "./utils/fontContext.js";
 import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
 import SelectRunRoute from "./screens/SelectRunRoute/SelectRunRoute.js";
 import MarathonInfo from "./screens/MarathonInfo/MarathonInfoScreen.js";
+import RunningAlone from "./screens/RunningAlone/RunningAlone.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -54,6 +55,7 @@ export default function App() {
           <Stack.Screen name="SelectRunType" component={SelectRunType} />
           <Stack.Screen name="SelectRunRoute" component={SelectRunRoute} />
           <Stack.Screen name="MarathonInfo" component={MarathonInfo} />
+          <Stack.Screen name="RunningAlone" component={RunningAlone} />
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
           <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />

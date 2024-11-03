@@ -13,6 +13,7 @@ export const ModalContainer = styled.SafeAreaView`
   align-items: center;
   background-color: ${colors.modal_background};
   position: absolute;
+  z-index: 10;
 `;
 export const ModalContent = styled.View`
   background-color: ${colors.white};

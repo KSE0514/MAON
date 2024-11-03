@@ -26,7 +26,9 @@ const SelectRunType = ({ navigation }) => {
       mode: "selectedRoute",
     },
     {
-      onPress: () => {},
+      onPress: () => {
+        navigation.navigate("RunningAlone");
+      },
       title: `지정코스없이\n달리기`,
       gradientType: "mandarin_gradient",
       mode: "notSelectedRoute",
