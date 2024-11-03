@@ -4,7 +4,7 @@ import fonts from '../../styles/fonts';
 import colors from '../../styles/colors';
 import { useState } from 'react';
 
-const BodyInfo = ({label, placeholder}) => {
+const BodyInfo = ({label, placeholder, value, setValue}) => {
   const fontsLoaded = useFontsLoaded();
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
@@ -19,6 +19,8 @@ const BodyInfo = ({label, placeholder}) => {
             style={styles.input}
             placeholder={placeholder}
             keyboardType="numeric"
+            value={value}
+            onChangeText={(text)=>setValue(text)}
           />
           <Text>
             {label === "키"? 'cm' : 'kg'}
