@@ -35,10 +35,10 @@ const ChallengeScreen = ({ navigation }) => {
           </TouchableOpacity>
         <TouchableOpacity
             onPress={() => {
-              navigation.navigate("FriendList");
+              navigation.navigate("CreateTeam");
             }}
           >
-            <Text style={{fontSize: 30}}>친구목록</Text>
+            <Text style={{fontSize: 30}}>팀 생성</Text>
           </TouchableOpacity>
 
       </View>
