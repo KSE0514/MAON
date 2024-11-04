@@ -17,6 +17,7 @@ import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
 import SelectRunRoute from "./screens/SelectRunRoute/SelectRunRoute.js";
 import MarathonInfo from "./screens/MarathonInfo/MarathonInfoScreen.js";
 import RunningAlone from "./screens/RunningAlone/RunningAlone.js";
+import RunResult from "./screens/RunResult/RunResult.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -46,7 +47,8 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="Home">
+          initialRouteName="Home"
+        >
           {/* FooterNavigation이 포함된 화면들 */}
           <Stack.Screen name="MainTabs" component={MainTabs} />
           {/* FooterNavigation이 포함되지 않은 화면 */}
@@ -56,6 +58,7 @@ export default function App() {
           <Stack.Screen name="SelectRunRoute" component={SelectRunRoute} />
           <Stack.Screen name="MarathonInfo" component={MarathonInfo} />
           <Stack.Screen name="RunningAlone" component={RunningAlone} />
+          <Stack.Screen name="RunResult" component={RunResult} />
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
           <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />
@@ -77,7 +80,8 @@ const MainTabs = ({ route }) => {
       screenOptions={{
         headerShown: false, // 헤더 숨기기
         animationEnabled: false, // 애니메이션 비활성화
-      }}>
+      }}
+    >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Marathon" component={MarathonInfoScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />

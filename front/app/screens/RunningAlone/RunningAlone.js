@@ -27,15 +27,13 @@ const RunningAlone = ({ navigation }) => {
       {
         title: "취소",
         onPress: () => {
-          //타이머 재시작 버튼
-          closeModal();
+          setShowStopModal(false);
         },
       },
       {
         title: "종료",
         onPress: () => {
-          // 결과이동
-          closeModal();
+          navigation.navigate("RunResult");
         },
       },
     ],
@@ -60,7 +58,8 @@ const RunningAlone = ({ navigation }) => {
               if (!showStopModal) {
                 setShowStopModal(true);
               }
-            }}>
+            }}
+          >
             {runStart && !showStopModal && <FontAwesomeIcon icon={faPause} />}
             {runStart && showStopModal && <FontAwesomeIcon icon={faPlay} />}
           </StopBtn>

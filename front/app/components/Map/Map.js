@@ -15,6 +15,9 @@ export default function Map({ navigation, setShowStartModal, runStart }) {
   const [locationPermissionGranted, setLocationPermissionGranted] =
     useState(false);
 
+  /**
+   * 위치 허가 여부를 판단
+   */
   useEffect(() => {
     const requestLocationPermission = async () => {
       const { status } = await Location.getForegroundPermissionsAsync();
@@ -59,6 +62,9 @@ export default function Map({ navigation, setShowStartModal, runStart }) {
     requestLocationPermission();
   }, []);
 
+  /**
+   * 내 위치 받아오기
+   */
   useEffect(() => {
     const getLocation = async () => {
       if (locationPermissionGranted) {
@@ -78,6 +84,9 @@ export default function Map({ navigation, setShowStartModal, runStart }) {
     setShowStartModal(true);
   }, [locationPermissionGranted]);
 
+  /**
+   * 1초마다 위치 변경하기
+   */
   const handleUserLocationChange = (e) => {
     if (runStart) {
       const newCoordinate = {
@@ -89,6 +98,33 @@ export default function Map({ navigation, setShowStartModal, runStart }) {
     }
   };
 
+  useEffect(() => {
+    let locationInterval;
+
+    const startTracking = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+
+      locationInterval = setInterval(async () => {
+        const location = await Location.getCurrentPositionAsync({});
+        handleUserLocationChange(location);
+      }, 1000); // 1초마다 위치 업데이트
+    };
+
+    if (runStart) {
+      startTracking();
+    }
+
+    return () => {
+      if (locationInterval) {
+        clearInterval(locationInterval);
+      }
+    };
+  }, [runStart]);
+
   return (
     <View style={styles.container}>
       <View style={styles.map}>
@@ -97,7 +133,8 @@ export default function Map({ navigation, setShowStartModal, runStart }) {
           customMapStyle={MapStyle}
           style={{ alignSelf: "stretch", height: "100%" }}
           region={mapRegion}
-          showsUserLocation={true}>
+          showsUserLocation={true}
+        >
           <Marker coordinate={mapRegion}>
             <Callout>
               <Text>This is Callout</Text>
