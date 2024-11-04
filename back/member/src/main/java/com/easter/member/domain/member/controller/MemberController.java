@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -20,7 +22,10 @@ public class MemberController {
 
     /* 테스트용 메서드들 : 추후 삭제 예정 */
     @GetMapping("/test")
-    public String test() {
+    public String test(@RequestHeader Map<String, String> headers) {
+        for(Map.Entry<String, String> entry : headers.entrySet()) {
+            log.info(entry.getKey() + ":" + entry.getValue());
+        }
         return "member - test";
     }
 

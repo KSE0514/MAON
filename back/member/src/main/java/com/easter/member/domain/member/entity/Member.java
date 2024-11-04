@@ -56,6 +56,9 @@ public class Member {
     @Column(name = "birth_date", columnDefinition = "Date")
     private Date birthDate;
 
+    @Column(name = "address", length = 50)
+    private String address;
+
     @Column(name = "image_url", length = 200)
     private String imageUrl;
 
