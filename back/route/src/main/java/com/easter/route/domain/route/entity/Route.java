@@ -41,5 +41,5 @@ public class Route {
     private GeoJsonLineString track;
 
     @Field("special_point")
-    private HashMap<SpecialPointType, GeoJsonMultiPoint> specialPoint;
+    private HashMap<SpecialPointType, GeoJsonMultiPoint> specialPoint = new HashMap<>();
 }
