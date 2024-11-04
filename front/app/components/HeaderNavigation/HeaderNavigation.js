@@ -1,8 +1,11 @@
 import { StyleSheet, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import Svg, { Path } from "react-native-svg";
 import color from "../../styles/colors";
 
 const HeaderNavigation = () => {
+  const navigation = useNavigation(); // useNavigation으로 navigation 객체 가져오기
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -13,6 +16,7 @@ const HeaderNavigation = () => {
             fill={color.grape_fruit}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"
+            onPress={() => navigation.navigate("Notification")}
           >
             <Path
               className="fa-secondary"
@@ -31,6 +35,7 @@ const HeaderNavigation = () => {
             fill={color.grape_fruit}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"
+            onPress={() => navigation.navigate("MyPage")}
           >
             <Path
               class="fa-secondary"

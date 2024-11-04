@@ -2,15 +2,19 @@ import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
 import color from "../../styles/colors";
+import backImg from "./../../assets/images/Login_Back_cut2.jpg"
 import { 
   Container,
   Logo,
+  Wrap,
  } from "./LoginScreenStyles";
-import { StyleSheet, Text, SafeAreaView } from "react-native";
+import { StyleSheet,View, Text, SafeAreaView, Image } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import { Dimensions } from "react-native";
 
-const LoginScreen = () => {
+import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
+
+const LoginScreen = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
 
   // 화면 크기에 따라 텍스트 크기 조정
@@ -23,22 +27,33 @@ const LoginScreen = () => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
+  const checkUser = () => {
+    console.log("가입한적 있으면 버튼도 안 보이고 바로 홈 화면으로")
+    navigation.navigate("SignUp");
+  }
+
   return (
     <Container>
-      <MaskedView
-      style={{width: screenWidth, height: screenHeight}}
-        maskElement={
-          <Logo>MA:ON</Logo> // 텍스트를 마스킹 요소로 설정
-        }
-      >
-        {/* <Text>assdkgljsdgkjla;</Text> */}
-        <LinearGradient
-          colors={[color.nav_orange, color.dark_mandarind]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={{ flex: 1 }}
-        />
-      </MaskedView>
+      <View
+      style={{
+        width: '100%',
+        height: screenHeight,
+        zIndex: 2,
+        position: "absolute",
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      }}
+      ></View>
+      <Image 
+        source={backImg}
+        style={{
+          position: "absolute",
+          height: screenHeight,
+        }}
+      />
+      <Wrap>
+        <Logo>MA:ON</Logo>
+        <RoundBtn text={"Google로 로그인"} onPress={checkUser} />
+      </Wrap>
     </Container>
   );
 };

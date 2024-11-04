@@ -1,11 +1,9 @@
-import { LinearGradient } from 'expo-linear-gradient';
+// LoginScreenStyles.js
 import styled from 'styled-components/native';
-import color from "../../styles/colors";
 import fonts from "../../styles/fonts";
-import { Text, SafeAreaView } from "react-native";
 import { Dimensions } from "react-native";
+import colors from '../../styles/colors';
 
-// 화면 크기에 따라 텍스트 크기 조정
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
@@ -15,7 +13,15 @@ export const Container = styled.SafeAreaView`
   align-items: center;
 `;
 
+export const Wrap = styled.View`
+  display: flex;
+  z-index: 1000;
+  gap: 50px;
+`
+
 export const Logo = styled.Text`
-  flex: 1;
   font-family: ${fonts.gMarketBold};
+  font-size: 75%;
+  text-align: center;
+  color: ${colors.nav_orange};
 `;

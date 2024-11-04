@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, Button } from "react-native";
+import { SafeAreaView, View, Text, Button, TouchableOpacity } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 const ChallengeScreen = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
@@ -19,6 +19,28 @@ const ChallengeScreen = ({ navigation }) => {
         >
           <OpenModalPageBtnText>모달 테스트 페이지로 이동</OpenModalPageBtnText>
         </OpenModalPageBtn> */}
+        <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
+          >
+            <Text style={{fontSize: 30}}>로그인 화면</Text>
+          </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("MyPage");
+            }}
+          >
+            <Text style={{fontSize: 30}}>마이페이지</Text>
+          </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("CreateTeam");
+            }}
+          >
+            <Text style={{fontSize: 30}}>팀 생성</Text>
+          </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );

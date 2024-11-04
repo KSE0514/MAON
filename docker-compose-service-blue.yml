@@ -1,20 +1,6 @@
 version: "3"
 services:
-  api-gateway-blue:
-    build:
-      context: ./back/gateway
-      dockerfile: Dockerfile
-    container_name: api-gateway-blue
-    ports:
-      - "8765:8765"
-    networks:
-      - maonnet
-    restart: always
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
-
-  # member / blue, blue
+  # blue, green
   member-blue:
     build:
       context: ./back/member
@@ -24,8 +10,6 @@ services:
       - "18010:8080"
     networks:
       - maonnet
-    depends_on:
-      - api-gateway-blue
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
@@ -40,8 +24,6 @@ services:
       - "18020:8080"
     networks:
       - maonnet
-    depends_on:
-      - api-gateway-blue
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
@@ -56,8 +38,6 @@ services:
       - "18030:8080"
     networks:
       - maonnet
-    depends_on:
-      - api-gateway-blue
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_CONFIG_URI=http://config-server:8888

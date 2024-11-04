@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import color from '../../../styles/colors';
+import fonts from '../../../styles/fonts';
 
 export default function RoundBtn({text, onPress}) {
   return (
@@ -25,18 +26,18 @@ export default function RoundBtn({text, onPress}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     // flexDirection: 'row',
     // backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   touchableOpacity: { 
-    flex: 1, 
+    // flex: 1, 
     flexDirection: 'row'
   },
   gradientButton: {
-    flex: 0.8,
+    flex: 1,
     // height: 60,
     aspectRatio: 5.5, // 가로가 세로의 5.5배 비율
     // backgroundColor: '#FF740E',
@@ -46,6 +47,10 @@ const styles = StyleSheet.create({
   },
   btnText: {    
     color: color.white,
-    fontSize: 18,
+    fontSize: 16,
+    fontFamily: fonts.gMarketLight,
+    lineHeight: 22, // 글자 높이 맞춤
+    paddingVertical: 2, // 위아래 약간의 여백 추가
+    // height: '50%',
   }
 });

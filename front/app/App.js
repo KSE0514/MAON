@@ -11,6 +11,10 @@ import MarathonInfoScreen from "./screens/MarathonInfo/MarathonInfoScreen.js";
 import RecordScreen from "./screens/Record/RecordScreen.js";
 import ChallengeScreen from "./screens/Challenge/ChallengeScreen.js";
 import LoginScreen from "./screens/Login/LoginScreen.js";
+import SignUpScreen from "./screens/SignUpScreen/SignUpScreen.js";
+import MyPageScreen from "./screens/MyPage/MyPageScreen.js";
+import CreateTeamScreen from "./screens/CreateTeam/CreateTeamScreen.js";
+import NotificationScreen from "./screens/Notification/NotificationScreen.js";
 import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
 import { FontContext } from "./utils/fontContext.js";
 import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
@@ -59,6 +63,10 @@ export default function App() {
           <Stack.Screen name="MarathonInfo" component={MarathonInfo} />
           <Stack.Screen name="RunningAlone" component={RunningAlone} />
           <Stack.Screen name="RunResult" component={RunResult} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="MyPage" component={MyPageScreen} />
+          <Stack.Screen name="Notification" component={NotificationScreen} />
+          <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
           <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />
@@ -86,6 +94,7 @@ const MainTabs = ({ route }) => {
       <Tab.Screen name="Marathon" component={MarathonInfoScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />
       <Tab.Screen name="Challenge" component={ChallengeScreen} />
+      {/* <Tab.Screen name="FriendList" component={CreateTeamScreen} /> */}
     </Tab.Navigator>
   );
 };
