@@ -1,10 +1,7 @@
 package com.easter.member.global.security.userinfo;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,6 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class PassportDto implements Serializable {
@@ -24,5 +22,5 @@ public class PassportDto implements Serializable {
     private String nickname;
     private String email;
     private String imageUrl;
-    private boolean registered;
+    private Role role;
 }

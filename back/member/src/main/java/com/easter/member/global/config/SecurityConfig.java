@@ -12,7 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.NullSecurityContextRepository;
 
 @Configuration
 @Order(1)
@@ -29,8 +31,10 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable) // oauth를 위해 기본 로그인 비활성화
+                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용하지 않음
                 .authorizeHttpRequests(request -> request // 인증 필터링은 gateway에서 시행하므로 여기에서는 permit all
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
+//                .securityContext(context -> context.securityContextRepository(new NullSecurityContextRepository()))
                 // oauth
                 .oauth2Login(oauth2 -> oauth2
                                 .authorizationEndpoint(auth -> auth.baseUri("/maon/member/member/login"))

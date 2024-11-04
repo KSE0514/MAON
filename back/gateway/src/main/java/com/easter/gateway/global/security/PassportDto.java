@@ -23,5 +23,5 @@ public class PassportDto implements Serializable {
     private String nickname;
     private String email;
     private String imageUrl;
-    private boolean registered;
+    private Role role;
 }

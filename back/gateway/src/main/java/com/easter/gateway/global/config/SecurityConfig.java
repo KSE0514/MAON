@@ -4,19 +4,25 @@ import com.easter.gateway.global.security.NotAuthorizedServerEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.context.NullSecurityContextRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher;
 
 @Configuration
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final RedisConnectionFactory redisConnectionFactory;
+
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) throws Exception {
         http
@@ -25,10 +31,13 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable) // oauth를 위해 기본 로그인 비활성화
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers("/favicon.ico", "/error").permitAll()
                         .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**","/maon/member/member/oauth2/**").permitAll()
-                        .pathMatchers("/maon/member/**").authenticated()
+                        .pathMatchers("/maon/member/**").permitAll()
                         .anyExchange().permitAll()
                 )
+                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+//                .securityContextRepository(redisConnectionFactory)
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint()))
                 .oauth2Login(Customizer.withDefaults())
 //                .authorizeHttpRequests(request -> request // 인증 설정

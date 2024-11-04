@@ -43,6 +43,7 @@ public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest,
                     .nickname(memberInfo.getNickname())
                     .email(memberInfo.getEmail())
                     .imageUrl(memberInfo.getImageUrl())
+                    .role(Role.REGISTERED)
                     .build();
             return CustomOidcUser.builder()
                     .passport(passport)
@@ -58,6 +59,7 @@ public class CustomOidcUserService implements OAuth2UserService<OidcUserRequest,
                 .nickname("")
                 .email(email)
                 .imageUrl((String)attributes.get("picture"))
+                .role(Role.UNREGISTERED)
                 .build();
         return CustomOidcUser.builder()
                 .passport(passport)
