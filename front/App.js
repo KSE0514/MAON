@@ -32,9 +32,9 @@ export default function App() {
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        gMarketBold: require("../app/assets/fonts/GmarketSansTTFBold.ttf"),
-        gMarketLight: require("../app/assets/fonts/GmarketSansTTFLight.ttf"),
-        gMarketMedium: require("../app/assets/fonts/GmarketSansTTFMedium.ttf"),
+        gMarketBold: require("./assets/fonts/GmarketSansTTFBold.ttf"),
+        gMarketLight: require("./assets/fonts/GmarketSansTTFLight.ttf"),
+        gMarketMedium: require("./assets/fonts/GmarketSansTTFMedium.ttf"),
       });
       setFontsLoaded(true);
     }
