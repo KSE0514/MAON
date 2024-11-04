@@ -4,8 +4,8 @@ import { ModalContainer } from "../DefaultModal/DefaultModalStyles";
 import { useFontsLoaded } from "../../../utils/fontContext";
 import colors from "../../../styles/colors";
 import fonts from "../../../styles/fonts";
-const TimerModal = ({ isVisible, startTimer }) => {
-  if (!isVisible) return null;
+const RunStartModal = ({ showStartModal, setShowStartModal, setRunStart }) => {
+  if (!showStartModal) return null;
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
@@ -13,7 +13,12 @@ const TimerModal = ({ isVisible, startTimer }) => {
   }
   return (
     <ModalContainer>
-      <TouchableOpacity onPress={startTimer} style={styles.base}>
+      <TouchableOpacity
+        onPress={() => {
+          setShowStartModal(false);
+          setRunStart(true);
+        }}
+        style={styles.base}>
         <View style={[styles.whiteBorder]}>
           <Text style={styles.whiteFont}>{`탭하여\n시작하기`}</Text>
         </View>
@@ -48,4 +53,4 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
 });
-export default TimerModal;
+export default RunStartModal;

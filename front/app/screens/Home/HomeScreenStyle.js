@@ -9,10 +9,20 @@ export const Wrapper = styled.SafeAreaView`
 
 export const ButtonList = styled.View`
   flex: 1;
+  padding: 5% 5% 10% 5%;
 `;
-export const AloneRunBtn = styled(TouchableOpacity)``;
-export const TogetherRunBtn = styled(TouchableOpacity)``;
-export const FriendList = styled(TouchableOpacity)``;
+export const AloneRunBtn = styled(TouchableOpacity)`
+  flex: 1;
+  background: ${colors.orange_gradient};
+`;
+export const TogetherRunBtn = styled(TouchableOpacity)`
+  flex: 1;
+  background: ${colors.grape_fruit_gradient};
+`;
+export const FriendList = styled(TouchableOpacity)`
+  flex: 1;
+  background: ${colors.black};
+`;
 export const MaraThonInfoArea = styled.View`
   flex: 1;
 `;

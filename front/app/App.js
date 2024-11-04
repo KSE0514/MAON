@@ -17,6 +17,11 @@ import CreateTeamScreen from "./screens/CreateTeam/CreateTeamScreen.js";
 import NotificationScreen from "./screens/Notification/NotificationScreen.js";
 import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
 import { FontContext } from "./utils/fontContext.js";
+import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
+import SelectRunRoute from "./screens/SelectRunRoute/SelectRunRoute.js";
+import MarathonInfo from "./screens/MarathonInfo/MarathonInfoScreen.js";
+import RunningAlone from "./screens/RunningAlone/RunningAlone.js";
+import RunResult from "./screens/RunResult/RunResult.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -53,6 +58,11 @@ export default function App() {
           {/* FooterNavigation이 포함되지 않은 화면 */}
           <Stack.Screen name="Modal" component={ModalTestScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="SelectRunType" component={SelectRunType} />
+          <Stack.Screen name="SelectRunRoute" component={SelectRunRoute} />
+          <Stack.Screen name="MarathonInfo" component={MarathonInfo} />
+          <Stack.Screen name="RunningAlone" component={RunningAlone} />
+          <Stack.Screen name="RunResult" component={RunResult} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="MyPage" component={MyPageScreen} />
           <Stack.Screen name="Notification" component={NotificationScreen} />

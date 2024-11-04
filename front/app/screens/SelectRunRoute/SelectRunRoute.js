@@ -1,18 +1,26 @@
-import { SafeAreaView, View, Text, Button } from "react-native";
-import { useFontsLoaded } from "../../utils/fontContext";
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import MarathonInfoSearchBar from "../../components/MarathonInfoSearchBar/MarathonInfoSearchBar";
-import { Wrapper } from "./MarathonInfoScreenStyle";
-const MarathonInfo = ({ navigation, route }) => {
+import { useFontsLoaded } from "../../utils/fontContext";
+import { Wrapper } from "./SelectRunRouteStyle";
+
+const SelectRunRoute = () => {
   const fontsLoaded = useFontsLoaded();
-  const { mode } = route.params;
 
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
+
   return (
     <Wrapper>
       <MarathonInfoSearchBar
-        mode={mode}
+        searchType={"run"}
         onPress={() => {
           alert("hello");
         }}
@@ -20,4 +28,4 @@ const MarathonInfo = ({ navigation, route }) => {
     </Wrapper>
   );
 };
-export default MarathonInfo;
+export default SelectRunRoute;

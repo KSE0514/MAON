@@ -1,12 +1,12 @@
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
+    presets: ["babel-preset-expo"],
     plugins: [
       [
         "module-resolver",
         {
-          root: ["./app"],
+          root: ["./front/app"],
           extensions: [
             ".ios.ts",
             ".android.ts",
@@ -19,10 +19,10 @@ module.exports = function(api) {
             ".json",
           ],
           alias: {
-            '@': './app',
-            '@components': './app/components',
-            '@screens': './app/screens',
-            '@assets': './app/assets',
+            "@": "./front/app",
+            "@components": "./front/app/components",
+            "@screens": "./front/app/screens",
+            "@assets": "./front/app/assets",
           },
         },
       ],
