@@ -109,17 +109,4 @@ public class TokenProvider {
         return claims.getExpiration().after(new Date());
     }
 
-    public String reissueAccessToken(PassportDto passport, String refreshToken) {
-        if (StringUtils.hasText(refreshToken)) {
-            String foundRefreshToken = getTokenByEmail(passport.getEmail(), TokenType.REFRESH);
-            if(!foundRefreshToken.isEmpty() && foundRefreshToken.equals(refreshToken)) {
-                if (validateToken(refreshToken)) { // refresh token이 유효하다면 재발급 진행
-                    return generateAccessToken(passport);
-                }
-            }
-        }
-        log.error("invalid refresh token : {}", refreshToken);
-        return null;
-    }
-
 }

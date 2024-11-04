@@ -90,12 +90,12 @@ public class TokenProvider {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
     }
 
-    public Authentication getAuthentication(String token) {
-        Claims claims = decode(token);
-        List<SimpleGrantedAuthority> authorities = getAuthorities(claims);
-        User principal = new User((String) claims.get("name"), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
-    }
+//    public Authentication getAuthentication(String token) {
+//        Claims claims = decode(token);
+//        List<SimpleGrantedAuthority> authorities = getAuthorities(claims);
+//        User principal = new User((String) claims.get("name"), "", authorities);
+//        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+//    }
 
     //header에서 Access Bearer 토큰 가져오기
     public String getJwtTokenFromRequestHeader(ServerWebExchange exchange) {
