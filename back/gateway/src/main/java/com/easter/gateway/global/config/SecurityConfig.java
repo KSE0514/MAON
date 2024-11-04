@@ -32,8 +32,7 @@ public class SecurityConfig {
                 )
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 //                .securityContextRepository(redisConnectionFactory)
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint());
-                        // todo : authorize 이후 passport 헤더 작성
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint()))
 //                .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
         ;
         return http.build();
