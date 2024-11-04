@@ -32,6 +32,7 @@ const testUser = {
   userPhoneNum: '01012340000',
   userEmail: 'test@email.com',
   userBirth: '20011119',
+  userAddress: '광주광역시 하남 산단 5번로 12-345',
   userGender: 'female',
   userHeight: '162',
   userWeight: '1000'
@@ -44,6 +45,7 @@ const MyPageScreen = ({navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState(''); // 전화번호 상태 관리
   const [name, setName] = useState('') // 이름 상태관리
   const [email, setEmail] = useState('') // 이메일 상태관리
+  const [address, setAddress] = useState('') // 주소 상태관리
   const [nickName, setNickName] = useState('') // 닉네임 상태관리
   const [selectedGender, setSelectedGender] = useState(null); // 선택된 성별 상태 관리
 
@@ -91,6 +93,7 @@ const handleDateOfBirthChange = (text) => {
     handlePhoneNumberChange(testUser.userPhoneNum)
     setEmail(testUser.userEmail)
     handleDateOfBirthChange(testUser.userBirth)
+    setAddress(testUser.userAddress)
     setSelectedGender(testUser.userGender)
     setHeightInfo(testUser.userHeight)
     setWeightInfo(testUser.userWeight)
@@ -237,11 +240,12 @@ const handleDateOfBirthChange = (text) => {
                 </TopInfoContainer>
               </Top>
               <Content>
-                <InputBox label={'이름'} value={name} setValue={setName} isEditMode={editMode} />
-                <InputBox label={'전화번호'} value={phoneNumber} setValue={setPhoneNumber} isEditMode={editMode} />
-                <InputBox label={'이메일'} value={email} setValue={setEmail} isEditMode={editMode} />
-                <InputBox label={'생년월일'} value={dateOfBirth} setValue={setDateOfBirth} isEditMode={editMode} />
-                <InputBox label={'성별'} value={selectedGender} setValue={setSelectedGender} isEditMode={editMode} />
+                <InputBox label={'이름'} placeholder={'이름을 입력해주세요.'} value={name} setValue={setName} isEditMode={editMode} />
+                <InputBox label={'전화번호'} placeholder={'010-XXXX-XXXX'} value={phoneNumber} setValue={setPhoneNumber} isEditMode={editMode} />
+                <InputBox label={'이메일'} placeholder={'email@email.com'} value={email} setValue={setEmail} isEditMode={editMode} />
+                <InputBox label={'생년월일'} placeholder={'YYYY/MM/DD'} value={dateOfBirth} setValue={setDateOfBirth} isEditMode={editMode} />
+                <InputBox label={'주소'} placeholder={'주소를 입력해주세요.'} value={address} setValue={setAddress} isEditMode={editMode} />
+                <InputBox label={'성별'} placeholder={''} value={selectedGender} setValue={setSelectedGender} isEditMode={editMode} />
               {editMode&&
               <BtnArea>
                 <SquareBtn text={'수정하기'} onPress={editComplete} />

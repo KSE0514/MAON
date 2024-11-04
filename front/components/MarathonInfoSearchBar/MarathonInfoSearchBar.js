@@ -22,7 +22,7 @@ import Slider from "@react-native-community/slider";
 import { RadioButton } from "react-native-paper";
 import RNPickerSelect from "react-native-picker-select";
 
-const MarathonInfoSearchBar = ({ mode, onPress }) => {
+const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
   const fontsLoaded = useFontsLoaded();
   const [routeType, setRouteType] = useState("");
   const [routeName, setRouteName] = useState("");
