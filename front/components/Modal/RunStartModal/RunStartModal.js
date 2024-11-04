@@ -4,7 +4,12 @@ import { ModalContainer } from "../DefaultModal/DefaultModalStyles";
 import { useFontsLoaded } from "../../../utils/fontContext";
 import colors from "../../../styles/colors";
 import fonts from "../../../styles/fonts";
-const RunStartModal = ({ showStartModal, setShowStartModal, setRunStart }) => {
+const RunStartModal = ({
+  showStartModal,
+  setShowStartModal,
+  setRunStart,
+  setRunning,
+}) => {
   if (!showStartModal) return null;
   const fontsLoaded = useFontsLoaded();
 
@@ -17,8 +22,10 @@ const RunStartModal = ({ showStartModal, setShowStartModal, setRunStart }) => {
         onPress={() => {
           setShowStartModal(false);
           setRunStart(true);
+          setRunning(true);
         }}
-        style={styles.base}>
+        style={styles.base}
+      >
         <View style={[styles.whiteBorder]}>
           <Text style={styles.whiteFont}>{`탭하여\n시작하기`}</Text>
         </View>

@@ -22,7 +22,7 @@ import Slider from "@react-native-community/slider";
 import { RadioButton } from "react-native-paper";
 import RNPickerSelect from "react-native-picker-select";
 
-const MarathonInfoSearchBar = ({ mode, onPress }) => {
+const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
   const fontsLoaded = useFontsLoaded();
   const [routeType, setRouteType] = useState("");
   const [routeName, setRouteName] = useState("");
@@ -80,7 +80,8 @@ const MarathonInfoSearchBar = ({ mode, onPress }) => {
             <OptionTitle>코스 선택</OptionTitle>
             <RadioButton.Group
               onValueChange={(value) => setRouteType(value)}
-              value={routeType}>
+              value={routeType}
+            >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <RadioButton value="myRoute" />
                 <Text>내 코스</Text>
@@ -108,7 +109,8 @@ const MarathonInfoSearchBar = ({ mode, onPress }) => {
             <SearchButton
               onPress={() => {
                 alert("검색버튼 눌림");
-              }}>
+              }}
+            >
               <Text>검색</Text>
             </SearchButton>
           </Bottom>
@@ -122,23 +124,27 @@ const MarathonInfoSearchBar = ({ mode, onPress }) => {
                 onValueChange={(value) => setYear(value)}
                 items={years}
                 value={year}
-                placeholder={{}}></RNPickerSelect>
+                placeholder={{}}
+              ></RNPickerSelect>
               <RNPickerSelect
                 onValueChange={(value) => setMonth(value)}
                 items={months}
                 value={month}
-                placeholder={{}}></RNPickerSelect>
+                placeholder={{}}
+              ></RNPickerSelect>
               <RNPickerSelect
                 onValueChange={(value) => setRegion(value)}
                 items={regions}
                 value={region}
-                placeholder={{}}></RNPickerSelect>
+                placeholder={{}}
+              ></RNPickerSelect>
             </SelectView>
           </Middle>
           <Bottom>
             <RadioButton.Group
               onValueChange={(value) => setRouteType(value)}
-              value={routeType}>
+              value={routeType}
+            >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <RadioButton value="possible" />
                 <Text>접수 가능한 마라톤</Text>

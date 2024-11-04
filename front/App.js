@@ -91,7 +91,7 @@ const MainTabs = ({ route }) => {
       }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Marathon" component={MarathonInfoScreen} />
+      <Tab.Screen name="MarathonInfo" component={MarathonInfoScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />
       <Tab.Screen name="Challenge" component={ChallengeScreen} />
       {/* <Tab.Screen name="FriendList" component={CreateTeamScreen} /> */}

@@ -1,6 +1,7 @@
 // Timer.js
 import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
+import fonts from "../../styles/fonts";
 
 const Timer = ({ showStopModal, runStart, onTimeUpdate }) => {
   const [seconds, setSeconds] = useState(0);
@@ -30,8 +31,10 @@ const Timer = ({ showStopModal, runStart, onTimeUpdate }) => {
   }, [seconds, onTimeUpdate]);
 
   return (
-    <View>
-      <Text>{`${Math.floor(seconds / 3600)
+    <View style={{ marginTop: 10 }}>
+      <Text
+        style={{ fontSize: 48, fontFamily: fonts.gMarketBold }}
+      >{`${Math.floor(seconds / 3600)
         .toString()
         .padStart(2, "0")}:${Math.floor((seconds % 3600) / 60)
         .toString()

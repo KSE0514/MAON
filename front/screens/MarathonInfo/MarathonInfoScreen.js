@@ -12,7 +12,7 @@ const MarathonInfo = ({ navigation, route }) => {
   return (
     <Wrapper>
       <MarathonInfoSearchBar
-        mode={mode}
+        searchType="searchInfo"
         onPress={() => {
           alert("hello");
         }}
