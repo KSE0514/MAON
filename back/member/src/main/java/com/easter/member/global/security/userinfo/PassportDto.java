@@ -1,6 +1,5 @@
 package com.easter.member.global.security.userinfo;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serial;

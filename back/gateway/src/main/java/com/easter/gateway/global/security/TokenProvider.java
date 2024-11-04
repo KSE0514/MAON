@@ -1,26 +1,26 @@
-package com.easter.member.global.security.jwt;
+package com.easter.gateway.global.security;
 
-import com.easter.member.global.security.userinfo.CustomOidcUser;
-import com.easter.member.global.security.userinfo.PassportDto;
-import com.easter.member.global.security.userinfo.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecureDigestAlgorithm;
-import io.jsonwebtoken.security.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ServerWebExchange;
 
 import javax.crypto.SecretKey;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 //@RequiredArgsConstructor
@@ -90,9 +90,17 @@ public class TokenProvider {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
     }
 
+    public Authentication getAuthentication(String token) {
+        Claims claims = decode(token);
+        List<SimpleGrantedAuthority> authorities = getAuthorities(claims);
+        User principal = new User((String) claims.get("name"), "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+    }
+
     //header에서 Access Bearer 토큰 가져오기
-    public String getJwtTokenFromRequestHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+    public String getJwtTokenFromRequestHeader(ServerWebExchange exchange) {
+        ServerHttpRequest request = exchange.getRequest();
+        String bearerToken = request.getHeaders().getFirst("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
@@ -104,21 +112,29 @@ public class TokenProvider {
         if (!StringUtils.hasText(token)) {
             return false;
         }
-
         Claims claims = decode(token);
         return claims.getExpiration().after(new Date());
     }
 
-    public String reissueAccessToken(PassportDto passport, String refreshToken) {
-        if (StringUtils.hasText(refreshToken)) {
-            String foundRefreshToken = getTokenByEmail(passport.getEmail(), TokenType.REFRESH);
-            if(!foundRefreshToken.isEmpty() && foundRefreshToken.equals(refreshToken)) {
-                if (validateToken(refreshToken)) { // refresh token이 유효하다면 재발급 진행
-                    return generateAccessToken(passport);
-                }
-            }
+    private List<SimpleGrantedAuthority> getAuthorities(Claims claims) {
+        return Collections.singletonList(new SimpleGrantedAuthority(
+                claims.get("role").toString()));
+    }
+
+    public String reissueAccessToken(PassportDto passport) {
+        String foundRefreshToken = getTokenByEmail(passport.getEmail(), TokenType.REFRESH);
+        if (!foundRefreshToken.isEmpty() && validateToken(foundRefreshToken)) {
+            // 재발급 후 redis 등록, 반환
+            String reissuedAccessToken = generateAccessToken(passport);
+            String redisKey = TokenType.ACCESS.name()+":" + passport.getEmail();
+            redisTemplate.opsForValue().set(
+                    redisKey,
+                    reissuedAccessToken,
+                    accessExpirationTime,
+                    TimeUnit.MILLISECONDS
+            );
+            return reissuedAccessToken;
         }
-        log.error("invalid refresh token : {}", refreshToken);
         return null;
     }
 

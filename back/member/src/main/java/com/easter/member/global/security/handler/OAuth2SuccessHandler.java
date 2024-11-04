@@ -32,7 +32,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("access token : {}, refresh token : {}", accessToken, refreshToken);
         String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:8765/maon/member")
                 .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
+//                .queryParam("refreshToken", refreshToken)
                 .build().toUriString();
         response.sendRedirect(redirectUrl);
 //        getRedirectStrategy().sendRedirect(request, response, "http://localhost:8765/maon/member"); // todo : success handler redirect 고치기
