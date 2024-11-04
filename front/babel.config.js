@@ -6,7 +6,7 @@ module.exports = function (api) {
       [
         "module-resolver",
         {
-          root: ["./front/app"],
+          root: ["./"],
           extensions: [
             ".ios.ts",
             ".android.ts",
@@ -19,10 +19,10 @@ module.exports = function (api) {
             ".json",
           ],
           alias: {
-            "@": "./front/app",
-            "@components": "./front/app/components",
-            "@screens": "./front/app/screens",
-            "@assets": "./front/app/assets",
+            "@": ".",
+            "@components": "./components",
+            "@screens": "./screens",
+            "@assets": "./assets",
           },
         },
       ],
