@@ -1,3 +1,7 @@
+import {
+  Wrapper
+} from "./ChallengeScreenStyles"
+
 import { SafeAreaView, View, Text, Button, TouchableOpacity } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 const ChallengeScreen = ({ navigation }) => {
@@ -7,18 +11,9 @@ const ChallengeScreen = ({ navigation }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
   return (
-    <SafeAreaView>
+    <Wrapper>
       <View>
       <Text>챌린지 화면</Text>
-        {/* <OpenModalPageBtn
-          title=""
-          onPress={() => {
-            console.log("here");
-            navigation.navigate("Modal");
-          }}
-        >
-          <OpenModalPageBtnText>모달 테스트 페이지로 이동</OpenModalPageBtnText>
-        </OpenModalPageBtn> */}
         <TouchableOpacity
             onPress={() => {
               navigation.navigate("Login");
@@ -40,9 +35,23 @@ const ChallengeScreen = ({ navigation }) => {
           >
             <Text style={{fontSize: 30}}>팀 생성</Text>
           </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("MarathonEntryForm");
+            }}
+          >
+            <Text style={{fontSize: 30}}>마라톤 신청서</Text>
+          </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("MarathonInfoDetail");
+            }}
+          >
+            <Text style={{fontSize: 30}}>마라톤 정보 디테일</Text>
+          </TouchableOpacity>
 
       </View>
-    </SafeAreaView>
+    </Wrapper>
   );
 };
 export default ChallengeScreen;

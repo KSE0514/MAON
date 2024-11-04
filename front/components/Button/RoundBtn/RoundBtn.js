@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   btnText: {    
     color: color.white,
     fontSize: 16,
-    fontFamily: fonts.gMarketLight,
+    fontFamily: fonts.gMarketMedium,
     lineHeight: 22, // 글자 높이 맞춤
     paddingVertical: 2, // 위아래 약간의 여백 추가
     // height: '50%',
