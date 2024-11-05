@@ -1,0 +1,59 @@
+import { SafeAreaView, View, Text, Button, Image } from "react-native";
+import { useFontsLoaded } from "../../utils/fontContext";
+import { Col, Row, Wrapper, styles } from "./RouteInfoPreviewStyle";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faLocationDot,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
+import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
+import color from "../../styles/colors";
+const RouteInfoPreview = ({ navigation, data, mode }) => {
+  const fontsLoaded = useFontsLoaded();
+
+  if (!fontsLoaded) {
+    return null; // 폰트 로드 전까지 렌더링 방지
+  }
+  return (
+    <Wrapper>
+      <Col>
+        <View>
+          <Image source={require("../../assets/images/route.png")} />
+        </View>
+      </Col>
+      <Col style={styles.secondCol}>
+        <Row style={{ marginTop: 5 }}>
+          <FontAwesomeIcon icon={faLocationDot} color={color.red} />
+          <Text style={[styles.SmallText]}>{data.address}</Text>
+        </Row>
+        <Row>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={[styles.LargeText]}
+          >
+            {data.name}
+          </Text>
+        </Row>
+        <Row>
+          <Text style={[styles.LargeText]}>{data.routeLenght}Km</Text>
+        </Row>
+        <Row>
+          <FontAwesomeIcon
+            icon={faCalendarDays}
+            color={color.grape_fruit}
+            secondaryColor={color.light_mandarin}
+            swapOpacity={true} // 필요에 따라 두 색상 간의 불투명도 조정
+          />
+
+          <Text style={[styles.SmallText]}>등록일: {data.registerDate}</Text>
+        </Row>
+        <Row>
+          <FontAwesomeIcon color={color.grape_fruit} icon={faPenToSquare} />
+          <Text style={[styles.SmallText]}>작성자: {data.register}</Text>
+        </Row>
+      </Col>
+    </Wrapper>
+  );
+};
+export default RouteInfoPreview;

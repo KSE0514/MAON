@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, Button } from "react-native";
+import { SafeAreaView, View, Text, Button, ScrollView } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import MarathonInfoSearchBar from "../../components/MarathonInfoSearchBar/MarathonInfoSearchBar";
 import {
@@ -7,8 +7,8 @@ import {
   Top,
   Wrapper,
 } from "../SelectRunRoute/SelectRunRouteStyle";
-import InfoPreview from "../../components/InfoPreview/InfoPreview";
 import { useState } from "react";
+import MarathonInfoPreview from "../../components/MaraThonInfoPreview/MaraThonInfoPreview";
 const MarathonInfo = ({ navigation, route }) => {
   const fontsLoaded = useFontsLoaded();
   const { mode } = route.params;
@@ -18,7 +18,7 @@ const MarathonInfo = ({ navigation, route }) => {
       name: "2024 무안 해안 노을길 마라톤",
       price: "무료",
       eventDate: "2024.11.03",
-      routeLenght: ["5", "10", "full", "half"],
+      routeLength: ["Full", "Half", "10km", "5km"],
       id: "123",
     },
   ]);
@@ -26,24 +26,26 @@ const MarathonInfo = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Wrapper>
-        <Top>
-          <MarathonInfoSearchBar
-            searchType={"searchInfo"}
-            onPress={() => {
-              alert("hello");
-            }}
-          />
-        </Top>
-        <Bottom>
-          <List>
-            {infos.map((info) => (
-              <InfoPreview data={info} mode="searchInfo" />
-            ))}
-          </List>
-        </Bottom>
-      </Wrapper>
+    <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
+      <ScrollView>
+        <Wrapper>
+          <Top>
+            <MarathonInfoSearchBar
+              searchType={"searchInfo"}
+              onPress={() => {
+                alert("hello");
+              }}
+            />
+          </Top>
+          <Bottom>
+            <List>
+              {infos.map((info) => (
+                <MarathonInfoPreview data={info} mode="searchInfo" />
+              ))}
+            </List>
+          </Bottom>
+        </Wrapper>
+      </ScrollView>
     </SafeAreaView>
   );
 };
