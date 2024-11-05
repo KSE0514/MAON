@@ -34,10 +34,8 @@ public class SecurityConfig {
                         .anyExchange().permitAll()
                 )
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-//                .securityContextRepository(redisConnectionFactory)
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint()))
                 .addFilterBefore(passportFilter, SecurityWebFiltersOrder.AUTHORIZATION)
-//                .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
         ;
         return http.build();
     }
