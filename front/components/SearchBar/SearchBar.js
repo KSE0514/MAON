@@ -8,7 +8,7 @@ const SearchBar = () => {
 
   return(
     <View style={styles.container}>
-      <Text>{searchName}</Text>
+      {/* <Text>{searchName}</Text> */}
       <View style={styles.innerContainer}>
         <View style={styles.innerWrap}>
           {/* 검색창에서 사용자가 입력하는 부분 */}
