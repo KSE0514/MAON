@@ -20,3 +20,4 @@ export const Bottom = styled.View`
   /* flex: 3; */
   flex: 1;
 `;
+export const List = styled.View``;
