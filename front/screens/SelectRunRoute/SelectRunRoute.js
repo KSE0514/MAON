@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import MarathonInfoSearchBar from "../../components/MarathonInfoSearchBar/MarathonInfoSearchBar";
 import { useFontsLoaded } from "../../utils/fontContext";
-import { Wrapper } from "./SelectRunRouteStyle";
+import { Bottom, Top, Wrapper } from "./SelectRunRouteStyle";
 
 const SelectRunRoute = () => {
   const fontsLoaded = useFontsLoaded();
@@ -18,14 +18,19 @@ const SelectRunRoute = () => {
   }
 
   return (
-    <Wrapper>
-      <MarathonInfoSearchBar
-        searchType={"run"}
-        onPress={() => {
-          alert("hello");
-        }}
-      />
-    </Wrapper>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Wrapper>
+        <Top>
+          <MarathonInfoSearchBar
+            searchType={"run"}
+            onPress={() => {
+              alert("hello");
+            }}
+          />
+        </Top>
+        <Bottom></Bottom>
+      </Wrapper>
+    </SafeAreaView>
   );
 };
 export default SelectRunRoute;
