@@ -7,7 +7,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,51 +37,9 @@ public class TokenProvider {
 
     private SecretKey secretKey;
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-
     @PostConstruct
     private void setSecretKey() {
         secretKey = Keys.hmacShaKeyFor(key.getBytes());
-    }
-
-    private String generateToken(PassportDto passport, long expireTime, TokenType type) {
-        Date now = new Date();
-        Date expiredDate = new Date(now.getTime() + expireTime);
-
-        log.info("passport : {}", passport.toString());
-        String generatedToken = Jwts.builder()
-//                .subject(authentication.getName())
-                .claim("type", type.name())
-                .claim("email", passport.getEmail())
-                .claim("name", passport.getName())
-                .claim("image_url", passport.getImageUrl())
-                .claim("role", passport.getRole().name())
-                .issuedAt(now)
-                .expiration(expiredDate)
-                .signWith(secretKey, Jwts.SIG.HS512)
-                .compact();
-        // 토큰 생성 후 redis에 저장
-        String redisKey = type.name()+":" + passport.getEmail();
-        redisTemplate.opsForValue().set(
-                redisKey,
-                generatedToken,
-                expireTime,
-                TimeUnit.MILLISECONDS
-        );
-        return generatedToken;
-    }
-
-    public String generateAccessToken(PassportDto passport) {
-        return generateToken(passport, accessExpirationTime, TokenType.ACCESS);
-    }
-
-    public String generateRefreshToken(PassportDto passport) {
-        return generateToken(passport, refreshExpirationTime, TokenType.REFRESH);
-    }
-
-    private String getTokenByEmail(String email, TokenType type) {
-        return redisTemplate.opsForValue().get(type.name()+":" + email);
     }
 
     public Claims decode(String token) {
@@ -119,23 +76,6 @@ public class TokenProvider {
     private List<SimpleGrantedAuthority> getAuthorities(Claims claims) {
         return Collections.singletonList(new SimpleGrantedAuthority(
                 claims.get("role").toString()));
-    }
-
-    public String reissueAccessToken(PassportDto passport) {
-        String foundRefreshToken = getTokenByEmail(passport.getEmail(), TokenType.REFRESH);
-        if (!foundRefreshToken.isEmpty() && validateToken(foundRefreshToken)) {
-            // 재발급 후 redis 등록, 반환
-            String reissuedAccessToken = generateAccessToken(passport);
-            String redisKey = TokenType.ACCESS.name()+":" + passport.getEmail();
-            redisTemplate.opsForValue().set(
-                    redisKey,
-                    reissuedAccessToken,
-                    accessExpirationTime,
-                    TimeUnit.MILLISECONDS
-            );
-            return reissuedAccessToken;
-        }
-        return null;
     }
 
 }

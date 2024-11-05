@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +22,6 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class CustomAuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
-
-    private final TokenProvider tokenProvider;
-    private final ObjectMapper objectMapper;
-    private final RestClient restClient;
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public Mono<AuthorizationDecision> check(Mono supplier, AuthorizationContext context) { // 헤더 뜯어서 값 존재하는지만 검사
