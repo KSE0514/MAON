@@ -2,6 +2,7 @@ package com.easter.route.domain.route.controller;
 
 import java.util.UUID;
 
+import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.route.entity.dto.CreateRouteRequestDto;
 import com.easter.route.domain.route.entity.dto.CreateRouteResponseDto;
 import com.easter.route.domain.route.entity.dto.CreateRunningDto;
@@ -12,6 +13,7 @@ import com.easter.route.domain.route.service.RouteService;
 import com.easter.route.global.response.ResultResponse;
 import lombok.RequiredArgsConstructor;
 
+import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,14 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class RouteController {
     private final RouteService routeService;
     private final LocationProducer locationProducer;
-
-    @PostMapping("/createRunning")
-    public ResponseEntity<ResultResponse> createRunning(@RequestBody CreateRunningDto createRunningDto) {
-        UUID runningID = routeService.createRunning(createRunningDto);
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "Running Id를 생성했습니다.", runningID);
-        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
-    }
-
 
     @PostMapping("/course/create")
     public ResponseEntity<ResultResponse> createRoute(@RequestBody CreateRouteRequestDto createRouteRequestDto) {
