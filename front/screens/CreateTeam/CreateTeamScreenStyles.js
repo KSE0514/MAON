@@ -15,19 +15,31 @@ export const Wapper = styled.SafeAreaView`
 `
 
 export const Container = styled.View`
+  flex:1;
   padding-top: ${screenHeight*0.05}px;
   padding-horizontal: ${screenWidth*0.07}px;
-  padding-bottom: ${screenHeight*0.05}px;
+`
+export const ListContainer = styled.View`
+  flex:4;
 `
 
 export const TitleArea = styled.View`
-  padding-vertical: 22px;
-`
+  {/* padding-vertical: 22px; */}
+  flex:1;
+  justify-content: flex-end;
+  padding-bottom: 10px;
+
+  `
 
 export const TitleText = styled.Text`
   font-family: ${fonts.gMarketMedium};
   font-size: 30px;
 `
+
+export const SearchBarArea = styled.View`
+  flex:1;
+`
+
 export const ListView = styled.View`
   padding-top: 5px;
 `
