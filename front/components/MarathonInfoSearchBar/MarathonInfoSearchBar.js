@@ -17,10 +17,14 @@ import {
   Middle,
   Bottom,
   SelectView,
+  styles,
+  pickerSelectStyles,
 } from "./MarathonInfoSearchBarStyle";
 import Slider from "@react-native-community/slider";
-import { RadioButton } from "react-native-paper";
 import RNPickerSelect from "react-native-picker-select";
+import color from "../../styles/colors";
+import { LinearGradient } from "expo-linear-gradient";
+import RadioButton from "../RadioButton/RadioButton";
 
 const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
   const fontsLoaded = useFontsLoaded();
@@ -29,6 +33,15 @@ const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
   const [year, setYear] = useState("전체년도");
   const [month, setMonth] = useState("전체월");
   const [region, setRegion] = useState("지역");
+  //루트 타입 선택 옵션
+  const routeTypeOptions = [
+    { label: "북마크한 코스", value: "bookmark" },
+    { label: "나의 코스", value: "mine" },
+    { label: "마라톤 코스", value: "marathon" },
+    { label: "일반 코스", value: "general" },
+  ];
+  //신청 가능 마라톤 선택 옵션
+  const [possible, setPossible] = useState("");
   const years = [
     { label: "전체년도", value: "all" },
     { label: "2024년", value: "2024" },
@@ -59,94 +72,113 @@ const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
 
   const [distance, setDistance] = useState(0); // 초기 슬라이더 값 설정
   return (
-    <Wrapper>
+    <Wrapper style={styles.shadow}>
       <Top>
-        <OptionTitle>거리선택</OptionTitle>
+        <OptionTitle>거리선택 {distance}km</OptionTitle>
         <Slider
-          style={{ width: 200, height: 40 }}
-          minimumValue={0}
-          maximumValue={100}
+          style={styles.slider}
+          minimumValue={1}
+          maximumValue={43}
           step={1} // 1씩 증가/감소
           value={distance} // 현재 슬라이더 값
           onValueChange={(newValue) => setDistance(newValue)} // 값이 변경될 때 호출
-          minimumTrackTintColor="#FF6347" // 최소값 트랙 색상
-          maximumTrackTintColor="#000000" // 최대값 트랙 색상
-          thumbTintColor="#FF6347" // 슬라이더 핸들 색상
+          minimumTrackTintColor={color.light_orange} // 선택된 트랙 색상
+          maximumTrackTintColor="#E0E0E0" // 선택되지 않은 트랙 색상
+          thumbTintColor="transparent" // thumb 색상 투명으로 설정
         />
       </Top>
       {searchType == "run" && (
         <>
           <Middle>
             <OptionTitle>코스 선택</OptionTitle>
-            <RadioButton.Group
-              onValueChange={(value) => setRouteType(value)}
-              value={routeType}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <RadioButton value="myRoute" />
-                <Text>내 코스</Text>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <RadioButton value="bookMarkRoute" />
-                <Text>북마크한 코스</Text>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <RadioButton value="marathonRoute" />
-                <Text>마라톤 코스</Text>
-              </View>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <RadioButton value="generalRoute" />
-                <Text>일반 코스</Text>
-              </View>
-            </RadioButton.Group>
+            <RadioButton
+              options={routeTypeOptions}
+              selectedOption={routeType}
+              setSelectedOption={setRouteType}
+            />
           </Middle>
           <Bottom>
             <TextInput
+              style={styles.input}
               placeholder="코스명을 입력해주세요"
               value={routeName}
               onChangeText={setRouteName}
             />
-            <SearchButton
-              onPress={() => {
-                alert("검색버튼 눌림");
-              }}>
-              <Text>검색</Text>
-            </SearchButton>
+            <LinearGradient
+              colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.gradient}
+            >
+              <SearchButton
+                onPress={() => {
+                  alert("검색버튼 눌림");
+                }}
+              >
+                <Text style={styles.buttonText}>검색</Text>
+              </SearchButton>
+            </LinearGradient>
           </Bottom>
         </>
       )}
       {searchType == "searchInfo" && (
         <>
-          <Middle>
+          <Middle style={{ paddingTop: 0, paddingBottom: 20 }}>
             <SelectView>
-              <RNPickerSelect
-                onValueChange={(value) => setYear(value)}
-                items={years}
-                value={year}
-                placeholder={{}}></RNPickerSelect>
-              <RNPickerSelect
-                onValueChange={(value) => setMonth(value)}
-                items={months}
-                value={month}
-                placeholder={{}}></RNPickerSelect>
-              <RNPickerSelect
-                onValueChange={(value) => setRegion(value)}
-                items={regions}
-                value={region}
-                placeholder={{}}></RNPickerSelect>
+              <View style={styles.pickerContainer}>
+                <RNPickerSelect
+                  onValueChange={(value) => setYear(value)}
+                  items={years}
+                  value={year}
+                  style={pickerSelectStyles} // 커스텀 스타일 적용
+                  placeholder={{}}
+                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
+                ></RNPickerSelect>
+              </View>
+              <View style={[styles.pickerContainer, { marginHorizontal: 20 }]}>
+                <RNPickerSelect
+                  onValueChange={(value) => setMonth(value)}
+                  items={months}
+                  value={month}
+                  style={pickerSelectStyles} // 커스텀 스타일 적용
+                  placeholder={{}}
+                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
+                ></RNPickerSelect>
+              </View>
+              <View style={styles.pickerContainer}>
+                <RNPickerSelect
+                  onValueChange={(value) => setRegion(value)}
+                  items={regions}
+                  value={region}
+                  style={pickerSelectStyles} // 커스텀 스타일 적용
+                  placeholder={{}}
+                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
+                ></RNPickerSelect>
+              </View>
             </SelectView>
           </Middle>
           <Bottom>
-            <RadioButton.Group
-              onValueChange={(value) => setRouteType(value)}
-              value={routeType}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <RadioButton value="possible" />
-                <Text>접수 가능한 마라톤</Text>
-              </View>
-            </RadioButton.Group>
-            <SearchButton>
-              <Text>검색</Text>
-            </SearchButton>
+            <View style={{ flex: 4 }}>
+              <RadioButton
+                options={[{ label: "접수 가능한 마라톤", value: "possible" }]}
+                selectedOption={possible}
+                setSelectedOption={setPossible}
+              />
+            </View>
+            <LinearGradient
+              colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[styles.gradient]}
+            >
+              <SearchButton
+                onPress={() => {
+                  alert("검색버튼 눌림");
+                }}
+              >
+                <Text style={styles.buttonText}>검색</Text>
+              </SearchButton>
+            </LinearGradient>
           </Bottom>
         </>
       )}
