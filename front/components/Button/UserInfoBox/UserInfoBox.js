@@ -5,7 +5,7 @@ import UserStatusBtn from "../UserStatusBtn/UserStatusBtn";
 import color from "../../../styles/colors";
 // import testProfile from "./../../../assets/images/testProfile.jpg"
 
-const UserInfoBox = ({proImg, level, name, status}) => {
+const UserInfoBox = ({proImg, level, name, status, onPress}) => {
   return(
     <View style={styles.container}>
       <View style={styles.userBox}>
@@ -27,7 +27,7 @@ const UserInfoBox = ({proImg, level, name, status}) => {
                   <Path d="M273 239c9.4 9.4 9.4 24.6 0 33.9L113 433c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l143-143L79 113c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L273 239z"/>
                 </Svg>
               : 
-                <UserStatusBtn text={status} />
+                <UserStatusBtn text={status} onPress={onPress} />
               }
             </View>
           </View>
@@ -66,22 +66,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileImg: {
-    flex:0.35,
+    flex:1,
     aspectRatio: 1,
     borderRadius: 17,
   },
   profileContent: {
-    flex: 1,
+    flex: 3,
     flexDirection: 'row',
     // paddingHorizontal: 10, 
     paddingLeft: 10, 
     // gap: 3
   },
   ProfileContentInfo: {
+    flex: 3,
     gap: 3
   },
   changeArea: {
-    flex: 1,
+    flex: 2,
     alignItems: 'flex-end',
   },
   level: {

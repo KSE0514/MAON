@@ -3,30 +3,35 @@ import { SafeAreaView, View, Text, Image } from "react-native";
 import colors from "../../styles/colors";
 import fonts from "../../styles/fonts";
 import React from "react";
+import { Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
+
 
 export const Wapper = styled.SafeAreaView`
   flex:1;
   background-color: ${colors.white};
 `
 
-export const BackBtn = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 5px;
-  padding-vertical: 10px;
-  padding-horizontal: 10px;
+export const Container = styled.View`
+  padding-top: ${screenHeight*0.05}px;
+  padding-horizontal: ${screenWidth*0.07}px;
+  padding-bottom: ${screenHeight*0.05}px;
 `
-export const FollowerBtn = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 5px;
-  padding-vertical: 10px;
-  padding-horizontal: 10px;
+
+export const TitleArea = styled.View`
+  padding-vertical: 22px;
 `
-export const FollowerBtnText = styled.Text`
-  font-size: 15px;
+
+export const TitleText = styled.Text`
   font-family: ${fonts.gMarketMedium};
-  color: ${colors.nav_orange};
+  font-size: 30px;
+`
+export const ListView = styled.View`
+  padding-top: 5px;
+`
+
+export const UserInfoBoxView = styled.View`
+  padding-top: 25px;
 `
