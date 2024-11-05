@@ -1,35 +1,21 @@
 package com.easter.route.domain.route.controller;
 
-import java.util.UUID;
+import java.util.List;
 
-import com.easter.route.domain.record.entity.Record;
-import com.easter.route.domain.route.entity.dto.CreateRouteRequestDto;
-import com.easter.route.domain.route.entity.dto.CreateRouteResponseDto;
-import com.easter.route.domain.route.entity.dto.CreateRunningDto;
-import com.easter.route.domain.route.entity.dto.DeleteRouteRequestDto;
-import com.easter.route.domain.route.entity.dto.LocationDto;
-import com.easter.route.domain.route.service.LocationProducer;
+import com.easter.route.domain.route.entity.dto.*;
 import com.easter.route.domain.route.service.RouteService;
 import com.easter.route.global.response.ResultResponse;
 import lombok.RequiredArgsConstructor;
 
-import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/route")
 @RequiredArgsConstructor
 public class RouteController {
     private final RouteService routeService;
-    private final LocationProducer locationProducer;
 
     @PostMapping("/course/create")
     public ResponseEntity<ResultResponse> createRoute(@RequestBody CreateRouteRequestDto createRouteRequestDto) {
@@ -42,6 +28,13 @@ public class RouteController {
     public ResponseEntity<ResultResponse> deleteRoute(@RequestBody DeleteRouteRequestDto deleteRouteRequestDto) {
         routeService.deleteRoute(deleteRouteRequestDto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "저장된 경로를 삭제했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    @GetMapping("/course/list")
+    public ResponseEntity<ResultResponse> getRouteList() {
+        List<RouteDto> routeList = routeService.getRouteList();
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "경로 리스트를 조회했습니다.", routeList);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 }

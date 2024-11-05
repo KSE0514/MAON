@@ -33,6 +33,9 @@ public class Route {
     @Field("writer_name")
     private String writerName;
 
+    @Field("route_name")
+    private String routeName;
+
     @Field("route_type")
     private RouteType routeType;
 
@@ -42,12 +45,15 @@ public class Route {
     @Field("start_point")
     private String startPoint;
 
-    private Double length;
+    private Double distance;
 
     private GeoJsonLineString track;
 
     @Field("special_point")
     private HashMap<SpecialPointType, GeoJsonMultiPoint> specialPoint = new HashMap<>();
+
+    @Field("route_image_url")
+    private String routeImageUrl;
 
     @CreatedDate
     private LocalDateTime createdAt;

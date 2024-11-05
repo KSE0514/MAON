@@ -7,6 +7,7 @@ import com.easter.route.global.response.ResultResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,8 @@ public class RecordController {
     @PostMapping("/running/createRunning")
     public ResponseEntity<ResultResponse> createRunning(@RequestBody CreateRunningDto createRunningDto) {
         Record record = recordService.createRunning(createRunningDto);
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "Running Id를 생성했습니다.", record.getId());
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "Record를 생성했습니다.", record.getId());
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
+
 }

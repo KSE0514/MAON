@@ -34,11 +34,14 @@ public class Record {
 	@Field("completed")
 	private boolean completed;
 
-	@Field("total_time")
-	private double totalTime;
+	@Field("running_time")
+	private double runningTime;
 
 	@Field("average_pace")
 	private Double averagePace;
+
+	@Field("heart_rate")
+	private int heartRate;
 
 	@Field("recorded_track")
 	private GeoJsonLineString recordedTrack;
