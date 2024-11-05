@@ -10,7 +10,7 @@ import fonts from "../../styles/fonts";
 import colors from "../../styles/colors";
 import styled from "styled-components";
 export const Wrapper = styled.View`
-  padding: 26px 19px;
+  padding: 26px 25px;
   background-color: white;
   border-radius: 21px;
 `;
@@ -80,33 +80,33 @@ export const styles = StyleSheet.create({
     color: "#A1A1A1",
     fontSize: 12,
   },
+  pickerContainer: {
+    flex: 1,
+    alignItems: "center", // 수평 가운데 정렬
+    justifyContent: "center", // 수직 가운데 정렬
+    borderBottomWidth: 2, // 아래쪽 border 두께
+    borderBottomColor: colors.light_orange, // 아래쪽 border 색상
+  },
 });
 export const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
     fontSize: 12,
     paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderBottomWidth: 2, // 아래쪽 border 두께
-    borderBottomColor: colors.light_orange, // 아래쪽 border 색상
     color: "#A1A1A1",
     paddingRight: 30, // 아이콘 표시할 공간 확보
+    textAlign: "center",
+    width: "100%", // iOS에서 중앙 정렬 강제
   },
   inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 8,
-    color: "black",
+    fontSize: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    color: "#A1A1A1",
     paddingRight: 30, // 아이콘 표시할 공간 확보
-  },
-  placeholder: {
-    color: "#9EA0A4",
-    fontSize: 16,
-  },
-  iconContainer: {
-    top: 10,
-    right: 12,
+    textAlign: "center",
+    width: "100%", // iOS에서 중앙 정렬 강제
   },
 });
