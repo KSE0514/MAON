@@ -22,6 +22,7 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -38,6 +39,9 @@ public class PassportFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         log.info("jwt passport manager entered");
+        if(exchange.getRequest().getHeaders().containsKey("passport")) {
+            return chain.filter(exchange);
+        }
         String token = tokenProvider.getJwtTokenFromRequestHeader(exchange);
         if (token == null) {
             log.info("this request has no token");
@@ -68,9 +72,12 @@ public class PassportFilter implements WebFilter {
         }
         log.info("passport created : {}", passport.toString());
         Map<String, String> passportMap = objectMapper.convertValue(passport, Map.class);
+        Base64.Encoder encoder = Base64.getEncoder();
         Consumer<HttpHeaders> headersConsumer = httpHeaders -> {
             for(Map.Entry<String, String> entry : passportMap.entrySet()) {
-                httpHeaders.add(entry.getKey(), entry.getValue());
+                if(entry.getValue() != null) {
+                    httpHeaders.add(entry.getKey(), encoder.encodeToString(entry.getValue().getBytes()));
+                }
             }
             httpHeaders.add("passport", "confirmed");
         };

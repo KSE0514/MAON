@@ -1,6 +1,7 @@
 package com.easter.member.domain.member.controller;
 
 import com.easter.member.domain.member.model.dto.ConfirmMemberResponseDto;
+import com.easter.member.domain.member.model.dto.PassportDto;
 import com.easter.member.domain.member.repository.MemberRepository;
 import com.easter.member.domain.member.service.MemberService;
 import com.easter.member.global.response.ResultResponse;
@@ -23,11 +24,11 @@ public class MemberController {
 
     /* 테스트용 메서드들 : 추후 삭제 예정 */
     @GetMapping("/test")
-    public String test(@RequestHeader("name") String name) throws Exception {
+    public String test(@RequestAttribute("passport") PassportDto passport) throws Exception {
 //        for(Map.Entry<String, String> entry : headers.entrySet()) {
 //            log.info(entry.getKey() + ":" + entry.getValue());
 //        }
-        log.info(name);
+        log.info(passport.toString());
         return "member - test";
     }
 

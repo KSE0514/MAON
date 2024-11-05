@@ -1,5 +1,6 @@
 package com.easter.member.global.config;
 
+import com.easter.member.global.filter.PassportFilter;
 import com.easter.member.global.security.handler.OAuth2SuccessHandler;
 import com.easter.member.global.security.userinfo.CustomOidcUserService;
 import lombok.RequiredArgsConstructor;
@@ -14,16 +15,19 @@ import org.springframework.security.config.annotation.web.configurers.FormLoginC
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.authentication.AuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.NullSecurityContextRepository;
 
 @Configuration
-@Order(1)
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final CustomOidcUserService customOidcUserService;
+//    private final PassportFilter passportFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,6 +52,7 @@ public class SecurityConfig {
 //                        .successHandler(successHandler) // 로그인 성공시 실행할 클래스 지정
 //                        .failureHandler(failureHandler) // 로그인 실패시 실행할 클래스 지정
                 )
+                .addFilterAfter(new PassportFilter(), AuthorizationFilter.class)
         ;
         return http.build();
     }
