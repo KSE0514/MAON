@@ -15,6 +15,8 @@ import SignUpScreen from "./screens/SignUpScreen/SignUpScreen.js";
 import MyPageScreen from "./screens/MyPage/MyPageScreen.js";
 import CreateTeamScreen from "./screens/CreateTeam/CreateTeamScreen.js";
 import NotificationScreen from "./screens/Notification/NotificationScreen.js";
+import MarathonEntryFormScreen from "./screens/MarathonEntryForm/MarathonEntryFormScreen.js";
+import MarathonInfoDetailScreen from "./screens/MarathonInfoDetail/MarathonInfoDetailScreen.js";
 import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
 import { FontContext } from "./utils/fontContext.js";
 import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
@@ -67,6 +69,8 @@ export default function App() {
           <Stack.Screen name="MyPage" component={MyPageScreen} />
           <Stack.Screen name="Notification" component={NotificationScreen} />
           <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
+          <Stack.Screen name="MarathonEntryForm" component={MarathonEntryFormScreen} />
+          <Stack.Screen name="MarathonInfoDetail" component={MarathonInfoDetailScreen} />
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
           <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />

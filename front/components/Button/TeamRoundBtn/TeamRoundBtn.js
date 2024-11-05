@@ -13,7 +13,7 @@ const TeamRoundBtn = ({text, onPress, backColor}) => {
         style={[styles.btn, {backgroundColor: backColor}]}
         onPress={onPress}
         >
-          {backColor === 'o_btn'?
+          {backColor === color.o_btn?
             <LinearGradient 
             style={styles.btn}
             start={{ x: 0, y: 0.5}} // 왼쪽 중앙 시작
@@ -23,7 +23,11 @@ const TeamRoundBtn = ({text, onPress, backColor}) => {
                 <Text style={styles.text}>{text}</Text>
             </LinearGradient> 
           :
+          <View
+            style={styles.btn}
+          >
             <Text style={styles.text}>{text}</Text>
+          </View>
           }
       </TouchableOpacity>
     </View>
@@ -32,12 +36,11 @@ const TeamRoundBtn = ({text, onPress, backColor}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection:"row",
   },
   btn: {
-    // flex:0.3,
-    aspectRatio: 2.5, // 가로가 세로의 5배 비율
+    // flex:1,
+    aspectRatio: 3.5, // 가로가 세로의 5배 비율
     // backgroundColor: color.dark_mandarind,
     borderRadius: 28,
     alignItems: 'center',
@@ -45,7 +48,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: color.white,
-    fontSize: 14,
+    fontSize: 16,
+    marginVertical: 5,
   },
   // gradientButton: {
   //   // flex: 1,
