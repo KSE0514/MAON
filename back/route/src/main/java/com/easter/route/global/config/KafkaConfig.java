@@ -24,11 +24,6 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 public class KafkaConfig {
 
 	@Bean
-	public ProducerFactory<String, String> producerFactory() {
-		return new DefaultKafkaProducerFactory<>(producerConfigs());
-	}
-
-	@Bean
 	public Map<String, Object> producerConfigs() {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "k11c207.p.ssafy.io:29094,k11c207.p.ssafy.io:39094,k11c207.p.ssafy.io:49094");
@@ -41,19 +36,30 @@ public class KafkaConfig {
 		props.put(ProducerConfig.LINGER_MS_CONFIG, 10);
 		return props;
 	}
+
 	@Bean
-	public ConsumerFactory<String, String> consumerFactory() {
+	public <K, V>ProducerFactory<K, V> producerFactory() {
+		return new DefaultKafkaProducerFactory<>(producerConfigs());
+	}
+
+	@Bean
+	public <K, V>KafkaTemplate<K, V> kafkaTemplate() {
+		return new KafkaTemplate<>(producerFactory());
+	}
+
+	@Bean
+	public Map<String, Object> consumerConfigs() {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "k11c207.p.ssafy.io:29094,k11c207.p.ssafy.io:39094,k11c207.p.ssafy.io:49094");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-		return new DefaultKafkaConsumerFactory<>(props);
+		return props;
 	}
 
 	@Bean
-	public KafkaTemplate<String, String> kafkaTemplate() {
-		return new KafkaTemplate<>(producerFactory());
+	public <K, V>ConsumerFactory<K, V> consumerFactory() {
+		return new DefaultKafkaConsumerFactory<>(consumerConfigs());
 	}
 
 	// @Bean

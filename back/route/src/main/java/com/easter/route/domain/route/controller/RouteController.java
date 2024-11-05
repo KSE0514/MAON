@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RouteController {
     private final RouteService routeService;
+
+    @MessageMapping("/running")
+    @SendTo("/topic/")
+    public CreateRouteResponseDto running(CreateRouteRequestDto createRouteRequestDto) {
+        return routeService.createRoute(createRouteRequestDto);
+    }
 
     // 경로 생성
     @PostMapping("/course/create")
