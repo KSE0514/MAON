@@ -1,7 +1,7 @@
 package com.easter.route.domain.record.controller;
 
 import com.easter.route.domain.record.service.RecordService;
-import com.easter.route.domain.record.entity.LocationDto;
+import com.easter.route.domain.record.entity.dto.LocationDto;
 import com.easter.route.domain.record.service.LocationProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -10,14 +10,14 @@ import { faBookmark as faBookmarkSolid } from "@fortawesome/free-solid-svg-icons
 import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
 import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
 import color from "../../styles/colors";
-const RouteInfoPreview = ({ navigation, data, mode }) => {
+const RouteInfoPreview = ({ navigation, data, mode, moveDetail }) => {
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
   return (
-    <Wrapper>
+    <Wrapper onPress={moveDetail}>
       <Col>
         <View>
           <Image source={require("../../assets/images/route.png")} />
@@ -30,8 +30,7 @@ const RouteInfoPreview = ({ navigation, data, mode }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-          }}
-        >
+          }}>
           <View style={{ flexDirection: "row" }}>
             <FontAwesomeIcon icon={faLocationDot} color={color.red} />
             <Text style={[styles.SmallText]}>{data.address}</Text>
@@ -47,8 +46,7 @@ const RouteInfoPreview = ({ navigation, data, mode }) => {
           <Text
             numberOfLines={1}
             ellipsizeMode="tail"
-            style={[styles.LargeText]}
-          >
+            style={[styles.LargeText]}>
             {data.name}
           </Text>
         </Row>
