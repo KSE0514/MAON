@@ -134,6 +134,7 @@ const RunningAlone = ({ navigation }) => {
           </RunInfo>
         </Bottom>
       )}
+      {/* step1 . 시작버튼 누르면 소켓 열기 */}
       {showStartModal && (
         <RunStartModal
           showStartModal={showStartModal}

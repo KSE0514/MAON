@@ -30,8 +30,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addHeader("accessToken", accessToken);
         response.addHeader("refreshToken", refreshToken);
         log.info("access token : {}, refresh token : {}", accessToken, refreshToken);
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:8765/maon/member")
-                .queryParam("accessToken", accessToken)
+        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:8765/maon/member/member/logindone")
+                .queryParam("token", accessToken)
 //                .queryParam("refreshToken", refreshToken)
                 .build().toUriString();
         response.sendRedirect(redirectUrl);

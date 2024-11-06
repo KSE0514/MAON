@@ -11,12 +11,13 @@ import styled from "styled-components";
 export const Wrapper = styled.View`
   flex: 1;
   padding: 5% 5% 0px 5%;
+  background-color: white;
 `;
-export const Top = styled.View`
-  /* flex: 1; */
-  height: 30%;
-`;
+export const Top = styled.View``;
 export const Bottom = styled.View`
-  /* flex: 3; */
+  margin-top: 27px;
+  flex: 1;
+`;
+export const List = styled.View`
   flex: 1;
 `;
