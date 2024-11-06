@@ -1,6 +1,7 @@
 package com.easter.gateway.global.config;
 import com.easter.gateway.global.filter.PassportFilter;
 import com.easter.gateway.global.security.CustomAuthorizationManager;
+import com.easter.gateway.global.security.HmacProvider;
 import com.easter.gateway.global.security.NotAuthorizedServerEntryPoint;
 import com.easter.gateway.global.security.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
     private final RestClient restClient;
+    private final HmacProvider hmacProvider;
 
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) throws Exception {
@@ -44,7 +46,7 @@ public class SecurityConfig {
                 )
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint()))
-                .addFilterBefore(new PassportFilter(tokenProvider, objectMapper, restClient, hmacKey), SecurityWebFiltersOrder.AUTHORIZATION)
+                .addFilterBefore(new PassportFilter(tokenProvider, objectMapper, restClient, hmacProvider), SecurityWebFiltersOrder.AUTHORIZATION)
         ;
         return http.build();
     }

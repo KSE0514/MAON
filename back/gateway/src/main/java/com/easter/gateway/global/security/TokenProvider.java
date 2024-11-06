@@ -91,11 +91,4 @@ public class TokenProvider {
                 claims.get("role").toString()));
     }
 
-    public String hmac(String data, String key) throws NoSuchAlgorithmException, InvalidKeyException {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), "HmacSHA256");
-        Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(secretKeySpec);
-        return Base64.encodeBase64String(mac.doFinal(data.getBytes()));
-    }
-
 }

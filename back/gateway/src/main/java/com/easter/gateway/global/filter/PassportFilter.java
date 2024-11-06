@@ -2,6 +2,7 @@ package com.easter.gateway.global.filter;
 
 import com.easter.gateway.global.exception.BusinessException;
 import com.easter.gateway.global.model.ConfirmMemberResponseDto;
+import com.easter.gateway.global.security.HmacProvider;
 import com.easter.gateway.global.security.PassportDto;
 import com.easter.gateway.global.security.Role;
 import com.easter.gateway.global.security.TokenProvider;
@@ -34,19 +35,18 @@ public class PassportFilter implements WebFilter {
     private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
     private final RestClient restClient;
-    private final String hmacKey;
+    private final HmacProvider hmacProvider;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        log.info("jwt passport manager entered");
+        log.debug("jwt passport manager entered");
         if(exchange.getRequest().getHeaders().containsKey("passport")) {
             log.info("duplicated passport filter");
             return chain.filter(exchange);
         }
         String token = tokenProvider.getJwtTokenFromRequestHeader(exchange);
-        log.info("hmacKey : {}", hmacKey);
         if (token == null) {
-            log.info("this request has no token");
+            log.debug("this request has no token");
             return chain.filter(exchange); // 토큰이 없으므로 그대로 다음 필터로 진행
         }
         Claims claims = tokenProvider.decode(token);
@@ -79,12 +79,12 @@ public class PassportFilter implements WebFilter {
             passport.setEmail(email);
             passport.setImageUrl((String) claims.get("image_url"));
         }
-        log.info("passport created : {}", passport.toString());
+        log.debug("passport created : {}", passport.toString());
         Map<String, String> passportMap = objectMapper.convertValue(passport, Map.class);
         // encoding 이전의 값을 기준으로 hmac 시행
         String hmacValue;
         try {
-            hmacValue = tokenProvider.hmac(objectMapper.writeValueAsString(passport), hmacKey);
+            hmacValue = hmacProvider.hmac(objectMapper.writeValueAsString(passport));
         } catch (Exception e) {
             log.error("error occurred while hmac processing");
             throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[Passport] hmac 과정에서 오류가 발생했습니다.");

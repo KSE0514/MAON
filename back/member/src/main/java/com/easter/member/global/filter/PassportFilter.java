@@ -1,7 +1,7 @@
 package com.easter.member.global.filter;
 
 import com.easter.member.global.exception.BusinessException;
-import com.easter.member.global.security.jwt.TokenProvider;
+import com.easter.member.global.security.HmacProvider;
 import com.easter.member.global.security.userinfo.PassportDto;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,13 +22,11 @@ import java.util.*;
 public class PassportFilter extends OncePerRequestFilter {
 
     private final ObjectMapper mapper;
-    private final TokenProvider tokenProvider;
-    private final String hmacKey;
+    private final HmacProvider hmacProvider;
 
-    public PassportFilter(TokenProvider tokenProvider, String hmacKey) {
+    public PassportFilter(HmacProvider hmacProvider) {
         mapper = new ObjectMapper();
-        this.tokenProvider = tokenProvider;
-        this.hmacKey = hmacKey;
+        this.hmacProvider = hmacProvider;
         mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
     }
 
@@ -56,7 +54,7 @@ public class PassportFilter extends OncePerRequestFilter {
                 passportMap.put(headerName, headerValue);
 //                request.setAttribute(headerName, headerValue);
             }
-            else headerValue = request.getHeader(headerName);
+//            else headerValue = request.getHeader(headerName);
 //            log.info("headerName: {}, headerValue: {}", headerName, headerValue);
         }
         if(!passportExists) { // passport가 없다면 attribute설정 및 hmac 검사 생략
@@ -67,8 +65,8 @@ public class PassportFilter extends OncePerRequestFilter {
             // hmac 무결성 검사
             String passportValue = mapper.writeValueAsString(passport);
             try {
-                String convertedHmac = tokenProvider.hmac(passportValue, hmacKey);
-                log.info("convertedHmac : {}, receivedHmac : {}", convertedHmac, hmacValue);
+                String convertedHmac = hmacProvider.hmac(passportValue);
+                log.debug("convertedHmac : {}, receivedHmac : {}", convertedHmac, hmacValue);
                 if(!convertedHmac.equals(hmacValue)) {
                     log.error("hmac inconsistency problem has been occurred");
                     throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[Passport] hmac값이 일치하지 않습니다.");
