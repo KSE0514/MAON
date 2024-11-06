@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { SafeAreaView, View, Text } from "react-native";
+import { SafeAreaView, View, Text, TouchableOpacity } from "react-native";
 import colors from "../../styles/colors";
 import fonts from "../../styles/fonts";
 import { Dimensions } from "react-native";
@@ -41,13 +41,11 @@ export const TitleText = styled.Text`
 `
 
 export const DetailInfoArea = styled.View`
-  flex: 8;
-  align-items: center;
+  padding-horizontal: ${screenWidth*0.09}px;
 `
 
 export const DetailInfoView = styled.View`
   gap: 15px;
-  overflow: auto;
 `
 
 export const LineInfoView = styled.View`
@@ -61,7 +59,47 @@ export const LineInfoText = styled.Text`
 `
 
 export const BtnArea = styled.View`
-  padding-top: ${screenHeight*0.015}px;
+  padding-top: ${screenHeight*0.05}px;
   align-items: center;
   justify-content: center;
+
+
+`
+
+export const HalfBtnContainer = styled.View`
+  flex-direction: row;
+  gap: 10px;
+`
+
+export const BtnHalfArea = styled.View`
+  width:  ${screenWidth*0.39}px;
+`
+export const TeamContainer = styled.View`
+`
+
+export const TeamTitleArea = styled.View`
+  height: ${screenHeight*0.11}px;
+  justify-content: flex-end;
+  padding-bottom: 20px;
+
+`
+
+export const TeamTitleText= styled.Text`
+  font-family: ${fonts.gMarketMedium};
+  font-size: 30px;
+`
+
+export const AddUserView = styled.TouchableOpacity`
+  position: absolute;
+  padding-bottom: 20px;
+  right: 0;
+`
+
+export const AddUserText = styled.Text`
+  font-family: ${fonts.gMarketMedium};
+  font-size: 17px;
+`
+
+export const TeamListArea = styled.View`
+  gap: 20px;
 `

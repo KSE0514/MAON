@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/route")
+@RequestMapping("/maon/route")
 @RequiredArgsConstructor
 public class RouteController {
     private final RouteService routeService;

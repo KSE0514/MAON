@@ -1,4 +1,4 @@
-package com.easter.route.domain.record.entity;
+package com.easter.route.domain.record.entity.dto;
 
 import lombok.Data;
 

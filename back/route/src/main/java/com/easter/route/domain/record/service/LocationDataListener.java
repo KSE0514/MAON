@@ -1,6 +1,6 @@
 package com.easter.route.domain.record.service;
 
-import com.easter.route.domain.record.entity.LocationDto;
+import com.easter.route.domain.record.entity.dto.LocationDto;
 import com.easter.route.domain.route.service.RouteService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
