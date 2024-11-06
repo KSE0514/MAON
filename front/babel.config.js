@@ -1,12 +1,12 @@
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
+    presets: ["babel-preset-expo"],
     plugins: [
       [
         "module-resolver",
         {
-          root: ["./app"],
+          root: ["./"],
           extensions: [
             ".ios.ts",
             ".android.ts",
@@ -19,11 +19,20 @@ module.exports = function(api) {
             ".json",
           ],
           alias: {
-            '@': './app',
-            '@components': './app/components',
-            '@screens': './app/screens',
-            '@assets': './app/assets',
+            "@": ".",
+            "@components": "./components",
+            "@screens": "./screens",
+            "@assets": "./assets",
           },
+        },
+      ],
+      [
+        "module:react-native-dotenv",
+        {
+          moduleName: "@env",
+          path: ".env",
+          safe: false,
+          allowUndefined: true,
         },
       ],
     ],
