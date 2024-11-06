@@ -3,7 +3,7 @@ import colors from "../../../styles/colors";
 import fonts from "../../../styles/fonts";
 import Svg, { Path } from "react-native-svg";
 
-const BookmarkBtn = ({isActivated, text, onPress}) => {
+const BookmarkBtn = ({isActivated, text, toggleBookmark}) => {
   // text === '수락대기'일 경우 버튼이 눌리지 않도록.
   // text === '요청하기' or '친구 신청'일 경우 버튼이 눌리되 각각의 함수가 작동하도록
 
@@ -11,7 +11,7 @@ const BookmarkBtn = ({isActivated, text, onPress}) => {
     <View style={styles.container}>
       <TouchableOpacity 
         style={styles.btn}
-        onPress={onPress}
+        onPress={toggleBookmark}
         >
           {isActivated?
             // {/* 북마크 색칠 O */}
