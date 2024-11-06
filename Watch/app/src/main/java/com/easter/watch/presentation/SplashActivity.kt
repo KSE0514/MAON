@@ -25,6 +25,9 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        // 윈도우 배경을 투명하게 설정하여 더 빠른 로딩처럼 보이게 함
+        window.setBackgroundDrawable(null)
+
         nodeClient = Wearable.getNodeClient(this)
 
 

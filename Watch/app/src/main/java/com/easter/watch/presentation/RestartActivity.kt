@@ -27,12 +27,12 @@ class RestartActivity : AppCompatActivity() {
     }
 
     fun restartApp(){
-        val intent = Intent(this,SplashActivity::class.java)
-        if(intent!=null){
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-            finish()
-            Runtime.getRuntime().exit(0)
-        }
+        val intent = Intent(this, SplashActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+
+        // 선택적으로 애니메이션 제거
+        overridePendingTransition(0, 0)
+        finish()
     }
 }
