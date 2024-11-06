@@ -15,11 +15,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 		// 클라이언트가 보낸 메시지 받는 prefix
 		config.setApplicationDestinationPrefixes("/app");
 		// 구독자가 queue, topic 구독하도록 설정
-		config.enableSimpleBroker("/queue", "/topic");
+		config.enableSimpleBroker("/topic");
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws/tracking").setAllowedOrigins("*").withSockJS();
+		registry.addEndpoint("/ws/").setAllowedOrigins("*").withSockJS();
 	}
 }

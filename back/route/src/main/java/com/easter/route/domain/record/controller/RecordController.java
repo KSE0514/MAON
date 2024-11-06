@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecordController {
 
     private final RecordService recordService;
+
+    //TODO: routeType
     @PostMapping("/running/createRunning")
     public ResponseEntity<ResultResponse> createRunning(@RequestBody CreateRunningDto createRunningDto) {
         Record record = recordService.createRunning(createRunningDto);

@@ -15,7 +15,7 @@ public class LocationDataListener {
 	private final RouteService routeService;
 	private final LocationProducer locationProducer;
 
-	@KafkaListener(topics = "maon.route.location")
+	@KafkaListener(topics = "maon.route.location", groupId = "location")
 	public void listenLocation(String message) {
 		log.info("Received location data: {}", message);
 	}
