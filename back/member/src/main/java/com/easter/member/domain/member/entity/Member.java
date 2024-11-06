@@ -59,6 +59,9 @@ public class Member {
     @Column(name = "address", length = 50)
     private String address;
 
+    @Column(name = "phone_number", length = 15)
+    private String phoneNumber;
+
     @Column(name = "image_url", length = 200)
     private String imageUrl;
 

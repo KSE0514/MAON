@@ -29,7 +29,8 @@ const SelectRunType = ({ navigation }) => {
       mode: "selectedRoute",
     },
     {
-      onPress: () => {
+      onPress: async () => {
+        await getPracticeRoomId();
         navigation.navigate("RunningAlone");
       },
       title: `지정코스없이\n달리기`,
@@ -45,6 +46,7 @@ const SelectRunType = ({ navigation }) => {
       mode: "ghost",
     },
   ];
+
   return (
     <Wrapper>
       <ButtonList>
