@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable) // oauth를 위해 기본 로그인 비활성화
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/favicon.ico", "/error").permitAll()
-                        .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**","/maon/member/member/oauth2/**", "/maon/member/service/**").permitAll()
+                        .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**","/maon/member/member/oauth2/**", "/maon/member/service/**", "/maon/member/member/logindone").permitAll()
                         .pathMatchers("/maon/member/**").access(customAuthorizationManager)
                         .anyExchange().permitAll()
                 )
