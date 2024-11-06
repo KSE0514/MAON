@@ -1,4 +1,3 @@
-// Timer.js
 import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import fonts from "../../styles/fonts";
@@ -8,39 +7,36 @@ const Timer = ({ showStopModal, runStart, onTimeUpdate }) => {
 
   useEffect(() => {
     let interval;
+
+    // 타이머 시작 조건: runStart가 true이고 showStopModal이 false일 때만 타이머 동작
     if (runStart && !showStopModal) {
       interval = setInterval(() => {
         setSeconds((prev) => prev + 1);
       }, 1000);
-    } else {
-      clearInterval(interval);
     }
+
+    // runStart 또는 showStopModal이 변경될 때 interval을 정리
     return () => clearInterval(interval);
   }, [runStart, showStopModal]);
 
+  // 초 단위 타이머 업데이트를 onTimeUpdate로 전달
   useEffect(() => {
-    if (onTimeUpdate) {
-      const hours = String(Math.floor(seconds / 3600)).padStart(2, "0");
-      const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(
-        2,
-        "0"
-      );
-      const secs = String(seconds % 60).padStart(2, "0");
-      onTimeUpdate(`${hours}:${minutes}:${secs}`);
-    }
-  }, [seconds, onTimeUpdate]);
+    // console.log("hello");
+    const hours = String(Math.floor(seconds / 3600)).padStart(2, "0");
+    const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+    const secs = String(seconds % 60).padStart(2, "0");
+
+    // 타이머 포맷을 업데이트
+    onTimeUpdate(`${hours}:${minutes}:${secs}`);
+  }, [seconds]); // seconds 변경 시마다 호출
 
   return (
     <View style={{ marginTop: 10 }}>
-      <Text
-        style={{ fontSize: 48, fontFamily: fonts.gMarketBold }}
-      >{`${Math.floor(seconds / 3600)
-        .toString()
-        .padStart(2, "0")}:${Math.floor((seconds % 3600) / 60)
-        .toString()
-        .padStart(2, "0")}:${(seconds % 60)
-        .toString()
-        .padStart(2, "0")}`}</Text>
+      <Text style={{ fontSize: 48, fontFamily: fonts.gMarketBold }}>
+        {`${String(Math.floor(seconds / 3600)).padStart(2, "0")}:${String(
+          Math.floor((seconds % 3600) / 60)
+        ).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`}
+      </Text>
     </View>
   );
 };

@@ -11,6 +11,7 @@ export default function Map({
   runStart,
   setRunningDistance,
   mode,
+  onLocationChange, // 위치 변경 콜백
 }) {
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
@@ -132,6 +133,8 @@ export default function Map({
         }
         return [...prevGps, newCoordinate];
       });
+      onLocationChange(newCoordinate);
+
       setMarkers((prevMarkers) =>
         prevMarkers.map((marker) =>
           marker.id === "current-point"
@@ -154,7 +157,7 @@ export default function Map({
           accuracy: Location.Accuracy.Balanced,
         });
         handleUserLocationChange(location);
-      }, 2000); // 1초마다 위치 업데이트
+      }, 1500); // 1초마다 위치 업데이트
     };
 
     if (runStart) {
@@ -201,7 +204,8 @@ export default function Map({
           customMapStyle={MapStyle}
           style={{ alignSelf: "stretch", height: "100%" }}
           region={mapRegion}
-          showsUserLocation={false}>
+          showsUserLocation={false}
+        >
           {markers.map((marker) => (
             <Marker
               key={marker.id}
@@ -210,7 +214,8 @@ export default function Map({
                 longitude: marker.longitude,
               }}
               title={marker.title}
-              description={marker.description}>
+              description={marker.description}
+            >
               {/* 시작 */}
               {marker.title == "Start Point" && (
                 <View
@@ -226,7 +231,8 @@ export default function Map({
                     shadowOpacity: 1,
                     shadowRadius: 5,
                     elevation: 15, // Android 그림자 효과
-                  }}></View>
+                  }}
+                ></View>
               )}
               {/* 내 위치 */}
               {marker.title == "Current Point" && (
