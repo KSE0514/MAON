@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- res/values/colors.xml -->
 <resources>
+    <color name="real_black">#000000</color>
     <color name="black">#5E584F</color>
     <color name="white">#FFFFFF</color>
     <color name="light_mandarin">#FDD048</color> <!-- 덜 익은 귤 -->

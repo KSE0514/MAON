@@ -1,10 +1,8 @@
-package com.easter.watch.presentation
+package com.easter.watch.presentation.service
 
-import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.IBinder
-import androidx.core.content.ContextCompat.startActivity
+import com.easter.watch.presentation.view.intro.AuthActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -30,7 +28,7 @@ class WatchMessageService : FirebaseMessagingService() {
                             .putString("device_token", deviceToken)
                             .apply()
 
-                        // SplashActivity 다시 시작
+                        // AuthActivity 다시 시작
                         val intent = Intent(this, AuthActivity::class.java)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         startActivity(intent)

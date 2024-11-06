@@ -3,18 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:background="@color/light_beige"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/circular_background"
-    tools:context=".presentation.view.intro.SplashActivity">
+    tools:context=".presentation.view.run.StartActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/runStartBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/start_button_background"
         android:fontFamily="@font/gmarketsansttfbold"
-        android:text="MAON"
+        android:text="달리기\n시작하기"
         android:textColor="@color/white"
-        android:textSize="35dp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

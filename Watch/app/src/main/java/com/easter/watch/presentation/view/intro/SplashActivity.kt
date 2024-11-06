@@ -1,4 +1,4 @@
-package com.easter.watch.presentation
+package com.easter.watch.presentation.view.intro
 
 import android.content.Intent
 import android.os.Bundle
@@ -26,7 +26,8 @@ class SplashActivity : AppCompatActivity() {
 
         Handler().postDelayed(Runnable { // 타이머가 끝나면 내부 실행
 
-            intent = Intent(this@SplashActivity,AuthActivity::class.java) // 앱의 MainActivity로 넘어가기
+            //test용 - 후에 주석 쳐주기
+            intent = Intent(this@SplashActivity, AuthActivity::class.java) // 앱의 MainActivity로 넘어가기
             startActivity(intent)
             finish()
 
