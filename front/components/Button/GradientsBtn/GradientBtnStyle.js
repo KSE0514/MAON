@@ -8,7 +8,7 @@ export const ButtonContainer = styled(TouchableOpacity)`
     mode == "ghost" || mode === "selectedRoute" || mode === "notSelectedRoute"
       ? "85%"
       : "100%"};
-  flex: ${({ mode }) => (mode == "together" ? "1.5" : "1")};
+  flex: ${({ mode }) => (mode == "together" ? 1.5 : 1)};
 `;
 export const GradientBtn = styled(LinearGradient)`
   flex: 1;
