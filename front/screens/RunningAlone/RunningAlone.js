@@ -25,7 +25,7 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
-import SockJS from "sockjs-client";
+// import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
 
@@ -88,11 +88,11 @@ const RunningAlone = ({ navigation, route }) => {
       timestamp: new Date().getTime(),
     };
 
-    console.log(`주소 :https://k11c207.p.ssafy.io/maon/ws`);
     // SockJS를 통해 STOMP 클라이언트 생성
-    const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
+    // const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
     const stompClient = new Client({
-      webSocketFactory: () => new WebSocket("wss://k11c207.p.ssafy.io/maon/ws"), // wss://로 수정
+      webSocketFactory: () =>
+        new WebSocket("https://k11c207.p.ssafy.io/maon/ws"), // wss://로 수정
       debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
     });
 
@@ -169,7 +169,7 @@ const RunningAlone = ({ navigation, route }) => {
   };
 
   return (
-    <View style={{ flex: "1" }}>
+    <View style={{ flex: 1 }}>
       {running && (
         <Top>
           <StopBtn
@@ -179,8 +179,7 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}
-          >
+            }}>
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}

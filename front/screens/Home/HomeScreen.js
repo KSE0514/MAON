@@ -40,7 +40,7 @@ const HomeScreen = ({ navigation }) => {
             direction="diagonalTopLeftToBottomRight"
             mode="alone"
           />
-          <View style={{ flex: "1", marginLeft: 10 }}>
+          <View style={{ flex: 1, marginLeft: 10 }}>
             <GradientButton
               onPress={() => {
                 navigation.navigate("SelectRunType");
