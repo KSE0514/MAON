@@ -38,7 +38,7 @@ public class ServiceServiceImpl implements ServiceService{
         if (optionalMember.isPresent()) {
             // 찾는데에 성공했다면 정보를 담는다
             Member member = optionalMember.get();
-            log.info("found member : {}", email);
+            log.debug("found member : {}", email);
             passport = PassportDto.builder()
                     .id(member.getUuid())
                     .name(member.getName())

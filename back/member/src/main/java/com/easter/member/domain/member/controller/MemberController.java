@@ -42,6 +42,12 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    @PatchMapping("/info")
+    public ResponseEntity<ResultResponse> modify(@RequestAttribute("passport") PassportDto passport, @RequestBody Object o) {
+        log.info("modify member info");
+        return null;
+    }
+
     @GetMapping("/logout")
     public ResponseEntity<ResultResponse> logout(@RequestAttribute("passport") PassportDto passport) {
         memberService.logout(passport.getEmail());
