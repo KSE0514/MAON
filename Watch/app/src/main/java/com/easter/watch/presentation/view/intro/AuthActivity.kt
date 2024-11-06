@@ -3,26 +3,18 @@ package com.easter.watch.presentation.view.intro
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.easter.watch.databinding.ActivityAuthBinding
-import com.easter.watch.presentation.ApiService
+import com.easter.watch.presentation.service.ApiService
 import com.easter.watch.presentation.MainActivity
 import com.easter.watch.presentation.dataModel.AuthInfo
-import com.easter.watch.presentation.dataModel.MemberInfo
-import com.easter.watch.presentation.service.WatchMessageService
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ua.naiksoftware.stomp.Stomp
-import ua.naiksoftware.stomp.StompClient
-import java.util.concurrent.TimeUnit
 
 class AuthActivity : AppCompatActivity() {
 
