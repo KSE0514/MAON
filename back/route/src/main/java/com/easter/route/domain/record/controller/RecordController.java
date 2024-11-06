@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/route")
+@RequestMapping("/maon/route")
 public class RecordController {
 
     private final RecordService recordService;
