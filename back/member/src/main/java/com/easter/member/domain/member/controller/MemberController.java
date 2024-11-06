@@ -45,6 +45,7 @@ public class MemberController {
     @PatchMapping("/info")
     public ResponseEntity<ResultResponse> modify(@RequestAttribute("passport") PassportDto passport, @RequestBody Object o) {
         log.info("modify member info");
+        return null;
     }
 
     @GetMapping("/logout")
