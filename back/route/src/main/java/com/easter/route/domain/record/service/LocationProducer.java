@@ -15,7 +15,7 @@ public class LocationProducer {
 	private final KafkaTemplate<String, LocationDto> kafkaTemplate;
 
     public void send(LocationDto locationDto) {
-		String key = locationDto.getUserId();
+		String key = locationDto.getMemberId();
         String topic = "maon.route.location";
         log.info("Sending location data to topic: {}, key: {}, data: {}", topic, key, locationDto);
 		this.kafkaTemplate.send(topic, key, locationDto);

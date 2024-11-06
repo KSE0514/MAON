@@ -1,12 +1,15 @@
 package com.easter.gateway.global.security;
 
+import com.easter.gateway.global.exception.BusinessException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,7 +47,12 @@ public class TokenProvider {
 
     public Claims decode(String token) {
         // todo : 각종 exception 처리
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+        try {
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+        }
+        catch(ExpiredJwtException ex) {
+            throw new BusinessException(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다. 재발급해주세요.");
+        }
     }
 
 //    public Authentication getAuthentication(String token) {

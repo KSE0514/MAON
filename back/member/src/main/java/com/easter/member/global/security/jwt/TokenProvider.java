@@ -81,7 +81,7 @@ public class TokenProvider {
         return generateToken(passport, refreshExpirationTime, TokenType.REFRESH);
     }
 
-    private String getTokenByEmail(String email, TokenType type) {
+    public String getTokenByEmail(String email, TokenType type) {
         return redisTemplate.opsForValue().get(type.name()+":" + email);
     }
 

@@ -1,4 +1,4 @@
-package com.easter.member.domain.member.model.dto;
+package com.easter.member.domain.service.model.dto;
 
 import com.easter.member.global.security.userinfo.PassportDto;
 import lombok.*;
@@ -10,5 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 public class ConfirmMemberResponseDto {
     private boolean registered;
+    private boolean valid;
     private PassportDto passport;
 }

@@ -10,5 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 public class ConfirmMemberResponseDto {
     private boolean registered;
+    private boolean valid;
     private PassportDto passport;
 }
