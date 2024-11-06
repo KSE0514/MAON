@@ -35,10 +35,10 @@ public class Record {
 	private boolean completed;
 
 	@Field("running_time")
-	private double runningTime;
+	private String runningTime;
 
 	@Field("average_pace")
-	private Double averagePace;
+	private String averagePace;
 
 	@Field("heart_rate")
 	private int heartRate;
