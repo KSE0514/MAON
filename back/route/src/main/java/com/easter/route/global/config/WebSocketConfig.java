@@ -9,12 +9,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
+	//클라이언트가 데이터를 서버로 보낼 때: /app 접두사 사용
+	//클라이언트가 서버의 데이터를 받을 때: /topic 접두사 사용
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		// 클라이언트가 보낸 메시지 받는 prefix
 		config.setApplicationDestinationPrefixes("/app");
-		// 구독자가 queue, topic 구독하도록 설정
 		config.enableSimpleBroker("/topic");
 	}
 
