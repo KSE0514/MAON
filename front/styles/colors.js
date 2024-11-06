@@ -14,6 +14,7 @@ const color = {
   o_btn: "linear-gradient(91deg, #FF740E 0.26%, #FFA646 97.6%)",
   box_shadow: "4px 4px 4px 0px rgba(122, 122, 122, 0.25)",
   grey: "#B1B1B1",
+  red: "#FF0000",
 };
 
 export default color;
