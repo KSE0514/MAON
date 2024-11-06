@@ -1,18 +1,16 @@
 package com.easter.member.domain.member.controller;
 
 import com.easter.member.domain.member.model.dto.ConfirmMemberResponseDto;
-import com.easter.member.domain.member.model.dto.PassportDto;
-import com.easter.member.domain.member.repository.MemberRepository;
+import com.easter.member.domain.member.model.dto.RegisterMemberRequestDto;
+import com.easter.member.domain.member.model.dto.RegisterMemberResponseDto;
 import com.easter.member.domain.member.service.MemberService;
 import com.easter.member.global.response.ResultResponse;
+import com.easter.member.global.security.userinfo.PassportDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URLEncoder;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,9 +44,17 @@ public class MemberController {
 
     @GetMapping("/confirm/{email}")
     public ResponseEntity<ResultResponse> confirm(@PathVariable String email) {
-        log.info("confirm email : {}", email);
+        log.debug("confirm email : {}", email);
         ConfirmMemberResponseDto responseDto = memberService.confirmMember(email);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "멤버 정보 확인 완료", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    @PostMapping("/info")
+    public ResponseEntity<ResultResponse> register(@RequestAttribute("passport") PassportDto passport, @RequestBody RegisterMemberRequestDto requestDto) {
+        log.info("register new member info");
+        RegisterMemberResponseDto responseDto = memberService.registerMember(passport, requestDto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "회원 가입을 완료했습니다.", responseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 

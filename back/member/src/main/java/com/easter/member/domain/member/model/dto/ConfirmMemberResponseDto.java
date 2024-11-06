@@ -1,5 +1,6 @@
 package com.easter.member.domain.member.model.dto;
 
+import com.easter.member.global.security.userinfo.PassportDto;
 import lombok.*;
 
 @Getter
