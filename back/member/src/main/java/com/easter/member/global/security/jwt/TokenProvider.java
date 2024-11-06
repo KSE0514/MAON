@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -82,7 +83,7 @@ public class TokenProvider {
     }
 
     public String getTokenByEmail(String email, TokenType type) {
-        return redisTemplate.opsForValue().get(type.name()+":" + email);
+        return redisTemplate.opsForValue().get(type.name() + ":" + email);
     }
 
     public Claims decode(String token) {
@@ -90,23 +91,9 @@ public class TokenProvider {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
     }
 
-    //header에서 Access Bearer 토큰 가져오기
-    public String getJwtTokenFromRequestHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
-    /* 유효성 검사 관련 */
-    public boolean validateToken(String token) {
-        if (!StringUtils.hasText(token)) {
-            return false;
-        }
-
-        Claims claims = decode(token);
-        return claims.getExpiration().after(new Date());
+    public boolean removeToken(String email) {
+        // refresh, access 전부 제거
+        return redisTemplate.delete(TokenType.ACCESS.name() + ":" + email) && redisTemplate.delete(TokenType.REFRESH.name() + ":" + email);
     }
 
 }
