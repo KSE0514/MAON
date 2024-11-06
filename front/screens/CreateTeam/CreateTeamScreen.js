@@ -1,20 +1,29 @@
 import {
   Wapper,
   Container,
+  ListContainer,
   TitleArea,
   TitleText,
+  SearchBarArea,
   ListView,
   UserInfoBoxView,
   BackBtn,
   FollowerBtn,
   FollowerBtnText,
 } from "./CreateTeamScreenStyles"
+import { FlatList } from 'react-native';
 import HeaderNavigation from "../../components/HeaderNavigation/HeaderNavigation";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import UserInfoBox from "../../components/Button/UserInfoBox/UserInfoBox";
 import { useState, useEffect } from "react";
 import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
 import {  KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView, Image, TextInput, TouchableOpacity, Text } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
+import { Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
+
 import testImg from './../../assets/images/testProfile2.jpg'
 import testImg1 from "./../../assets/images/testProfile1.jpg"
 import testImg2 from "./../../assets/images/testProfile.jpg"
@@ -80,24 +89,37 @@ const testUsers = [
 
 
 const CreateTeamScreen = ({navigation}) => {
+  const [searchName, setSearchName] = useState('') // 사용자가 입력할 값을 담을 state변수
+
   const [recipientIndex, setRecipientIndex] = useState(null)  // 초기값을 null로 설정
   const [showSendRequestModal, setShowSendRequestModal] =useState(false)
   const [members, setMembers] = useState([])
+  const [filteredMembers, setFilteredMembers] = useState([]); // 필터링된 사용자 리스트
 
   useEffect(() => {
     setMembers(testUsers)
+    setFilteredMembers(testUsers); // 초기 필터링된 사용자 리스트 설정
   }, [])
+
+  useEffect(() => {
+    // searchName이 변경될 때마다 필터링
+    const filtered = members.filter(member =>
+      member.userNickName.includes(searchName)
+    );
+    setFilteredMembers(filtered);
+  }, [searchName, members]);
 
   // 팀 참여 요청
   const sendRequestContent = recipientIndex !== null && recipientIndex >= 0 && recipientIndex < members.length
   ? {
-      text: `'${members[recipientIndex].userNickName}'님에게\n요청을 보내겠습니까?`,
+      text: `'${filteredMembers[recipientIndex].userNickName}'님에게\n요청을 보내겠습니까?`,
       subText: "",
       buttons: [
         {
           title: "취소",
           onPress: () => {
-            setShowSendRequestModal(false);
+            cancelBtn()
+            // setShowSendRequestModal(false);
           },
         },
         {
@@ -122,10 +144,18 @@ const CreateTeamScreen = ({navigation}) => {
     // 실제로 요청 보내기
 
     // members에서 상태를 수락 대기 상태로 바꾸기
-    const updateMembers = [...members]
+    const updateMembers = [...filteredMembers]
     updateMembers[recipientIndex].userStatus = '수락대기'
-    setMembers(updateMembers)
+    setFilteredMembers(updateMembers)
 
+    // 수신자 state변수 초기화
+    setRecipientIndex(null)
+
+    // 모달 닫기
+    setShowSendRequestModal(false);
+  }
+
+  const cancelBtn = () => {
     // 수신자 state변수 초기화
     setRecipientIndex(null)
 
@@ -135,7 +165,7 @@ const CreateTeamScreen = ({navigation}) => {
 
   return(
     <Wapper>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -143,13 +173,49 @@ const CreateTeamScreen = ({navigation}) => {
           <ScrollView 
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyboardShouldPersistTaps="handled" // 스크롤 중에도 키보드가 사라지지 않도록 설정
-          >
-            <Container>
-              <TitleArea>
-                <TitleText>Team</TitleText>
-              </TitleArea>
-              <SearchBar />
-              <ListView>
+          > */}
+              <Container>
+                <TitleArea>
+                  <TitleText>Team</TitleText>
+                </TitleArea>
+                <SearchBarArea>
+                  <SearchBar searchName={searchName} setSearchName={setSearchName} />
+                </SearchBarArea>
+              </Container>
+              <ListContainer>
+                <FlatList
+                  contentContainerStyle={{
+                    paddingHorizontal: screenWidth * 0.07,
+                    paddingBottom: screenHeight * 0.05,
+                  }}
+                  showsVerticalScrollIndicator={false} // 스크롤바 숨김
+                  data={filteredMembers}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({ item, index }) => (
+                    <UserInfoBoxView key={index}>
+                      <UserInfoBox
+                        proImg={item.userProfileImg}
+                        level={item.level}
+                        name={item.userNickName}
+                        status={item.userStatus}
+                        onPress={() => clickRequestBtn(index)}
+                      />
+                    </UserInfoBoxView>
+                  )}
+                />
+                {/* 상단 그라데이션 레이어 */}
+                <LinearGradient
+                  colors={["rgba(255, 255, 255, 1)", "rgba(255, 255, 255, 0)"]}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 55,  // 그라데이션 영역의 높이 조절
+                  }}
+                />
+              </ListContainer>
+              {/* <ListView>
                 {
                   members.map((user, index) => (
                     <UserInfoBoxView key={index}>
@@ -157,11 +223,10 @@ const CreateTeamScreen = ({navigation}) => {
                     </UserInfoBoxView>
                   ))
                 }
-              </ListView>
-            </Container>
-          </ScrollView>
+              </ListView> */}
+          {/* </ScrollView>
         </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback> */}
       {showSendRequestModal&&
         <DefaultModal isVisible={showSendRequestModal} content={sendRequestContent} />
       }
