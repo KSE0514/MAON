@@ -21,16 +21,17 @@ class RestartActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_restart)
         binding.restartBtn.setOnClickListener {
-            restartApp(this@RestartActivity)
+            restartApp()
         }
 
     }
 
-    fun restartApp(context: Context){
-        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+    fun restartApp(){
+        val intent = Intent(this,SplashActivity::class.java)
         if(intent!=null){
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            context.startActivity(intent)
+            startActivity(intent)
+            finish()
             Runtime.getRuntime().exit(0)
         }
     }
