@@ -23,7 +23,7 @@ const SelectRunType = ({ navigation }) => {
   const buttons = [
     {
       onPress: async () => {
-        await getPracticeRoomIdWithRoute();
+        const roomid = await getPracticeRoomIdWithRoute();
         navigation.navigate("SelectRunRoute", {
           mode: "selectedRoute",
           searchType: "run",
@@ -35,8 +35,8 @@ const SelectRunType = ({ navigation }) => {
     },
     {
       onPress: async () => {
-        await getPracticeRoomId();
-        navigation.navigate("RunningAlone");
+        const roomId = await getPracticeRoomId();
+        navigation.navigate("RunningAlone", { roomId: roomId });
       },
       title: `지정코스없이\n달리기`,
       gradientType: "mandarin_gradient",
@@ -44,7 +44,7 @@ const SelectRunType = ({ navigation }) => {
     },
     {
       onPress: async () => {
-        await getPracticeRoomIdWithRoute();
+        const roomId = await getPracticeRoomIdWithRoute();
         navigation.navigate("SelectRunRoute");
       },
       title: `고스트\n모드`,

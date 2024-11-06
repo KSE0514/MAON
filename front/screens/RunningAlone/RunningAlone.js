@@ -15,7 +15,7 @@ import {
   Top,
   Wrapper,
 } from "./RunningAloneStyle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Map from "../../components/Map/Map";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 import Timer from "../../components/Timer/Timer";
@@ -25,7 +25,12 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
-const RunningAlone = ({ navigation }) => {
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { RUN_API } from "@env";
+
+const RunningAlone = ({ navigation, route }) => {
+  const { roomId } = route.params;
   const fontsLoaded = useFontsLoaded();
   //시작버튼
   const [showStartModal, setShowStartModal] = useState(false);
@@ -73,6 +78,47 @@ const RunningAlone = ({ navigation }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
+  useEffect(() => {
+    const locationDto = {
+      latitude: 37.5665,
+      longitude: 126.978,
+      memberId: "",
+      heartRate: 12345,
+      pace: "pace",
+      timestamp: new Date().getTime(),
+    };
+
+    // SockJS를 통해 STOMP 클라이언트 생성
+    const socket = new SockJS(`${RUN_API}/ws`);
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      debug: (str) => console.log(str), // 디버그 로그 출력
+      reconnectDelay: 5000, // 연결 재시도 시간
+    });
+
+    // 연결 및 메시지 전송
+    stompClient.onConnect = () => {
+      console.log("Connected");
+
+      // 서버로 메시지 전송
+      // stompClient.publish({
+      //   destination: "/app/running/roomId",
+      //   body: JSON.stringify(locationDto),
+      // });
+    };
+
+    // 오류 처리
+    stompClient.onStompError = (frame) => {
+      console.error("STOMP error:", frame);
+    };
+
+    // STOMP 클라이언트 활성화
+    stompClient.activate();
+
+    return () => {
+      stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
+    };
+  }, []);
   return (
     <View style={{ flex: "1" }}>
       {running && (
