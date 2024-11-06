@@ -1,8 +1,8 @@
-import { runClient } from "../customAxios";
+import { apiClient } from "../customAxios";
 
 export const getPracticeRoomIdWithRoute = async (routeId) => {
   try {
-    const response = await runClient.post(`/route/running/createRunning`, {
+    const response = await apiClient.post(`/route/running/createRunning`, {
       routeId: routeId,
       memberId: "dpqls0356",
       routeType: "PRACTICE",
@@ -16,7 +16,7 @@ export const getPracticeRoomIdWithRoute = async (routeId) => {
 
 export const getPracticeRoomId = async () => {
   try {
-    const response = await runClient.post(`/route/running/createRunning`, {
+    const response = await apiClient.post(`/route/running/createRunning`, {
       routeId: "",
       memberId: "dpqls0356",
       routeType: "PRACTICE",
@@ -30,7 +30,7 @@ export const getPracticeRoomId = async () => {
 
 export const getRaceRoomId = async (routeId) => {
   try {
-    const response = await runClient.post(`/route/running/createRunning`, {
+    const response = await apiClient.post(`/route/running/createRunning`, {
       routeId: routeId,
       memberId: "dpqls0356",
       routeType: "RACE",

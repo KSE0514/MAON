@@ -25,9 +25,9 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
-import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { RUN_API } from "@env";
+import { Client } from "@stomp/stompjs";
+import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
 
 const RunningAlone = ({ navigation, route }) => {
   const { roomId } = route.params;
@@ -82,29 +82,36 @@ const RunningAlone = ({ navigation, route }) => {
     const locationDto = {
       latitude: 37.5665,
       longitude: 126.978,
-      memberId: "",
+      memberId: "adfasdf",
       heartRate: 12345,
       pace: "pace",
       timestamp: new Date().getTime(),
     };
 
+    console.log(`주소 : https://k11c207.p.ssafy.io/maon/ws/`);
     // SockJS를 통해 STOMP 클라이언트 생성
-    const socket = new SockJS(`${RUN_API}/ws`);
+    const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
     const stompClient = new Client({
-      webSocketFactory: () => socket,
-      debug: (str) => console.log(str), // 디버그 로그 출력
-      reconnectDelay: 5000, // 연결 재시도 시간
+      webSocketFactory: () =>
+        new WebSocket("https://k11c207.p.ssafy.io/maon/ws"),
+      debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
+      reconnectDelay: 5000,
     });
 
-    // 연결 및 메시지 전송
     stompClient.onConnect = () => {
-      console.log("Connected");
+      console.log("Connected to STOMP WebSocket");
+      stompClient.publish({
+        destination: `/app/running/${roomId}`, // 정확한 경로로 설정
+        body: JSON.stringify(locationDto),
+      });
+    };
 
-      // 서버로 메시지 전송
-      // stompClient.publish({
-      //   destination: "/app/running/roomId",
-      //   body: JSON.stringify(locationDto),
-      // });
+    stompClient.onWebSocketError = (error) => {
+      console.error("WebSocket connection error:", error);
+    };
+
+    stompClient.onDisconnect = () => {
+      console.log("Disconnected from WebSocket");
     };
 
     // 오류 처리
@@ -118,7 +125,7 @@ const RunningAlone = ({ navigation, route }) => {
     return () => {
       stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
     };
-  }, []);
+  }, [roomId]);
   return (
     <View style={{ flex: "1" }}>
       {running && (
