@@ -12,9 +12,19 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <activity
-            android:name=".presentation.SplashActivity"
+            android:name=".presentation.RestartActivity"
             android:exported="false"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".presentation.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <uses-library
             android:name="com.google.android.wearable"
@@ -31,13 +41,7 @@
             android:name=".presentation.MainActivity"
             android:exported="true"
             android:taskAffinity=""
-            android:theme="@style/MainActivityTheme.Starting">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/MainActivityTheme.Starting"></activity>
     </application>
 
 </manifest>

@@ -46,6 +46,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 dependencies {
@@ -67,4 +70,6 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+
+    implementation ("com.google.android.gms:play-services-wearable:18.1.0")
 }
