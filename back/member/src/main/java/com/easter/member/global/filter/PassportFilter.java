@@ -23,7 +23,7 @@ public class PassportFilter extends OncePerRequestFilter {
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("passport filter test");
+        log.debug("passport filter entered");
         Enumeration<String> headerNames = request.getHeaderNames();
         Field[] passportField = PassportDto.class.getDeclaredFields();
         List<String> fieldList = new ArrayList<>();

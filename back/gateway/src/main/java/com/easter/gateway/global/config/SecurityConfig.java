@@ -2,6 +2,8 @@ package com.easter.gateway.global.config;
 import com.easter.gateway.global.filter.PassportFilter;
 import com.easter.gateway.global.security.CustomAuthorizationManager;
 import com.easter.gateway.global.security.NotAuthorizedServerEntryPoint;
+import com.easter.gateway.global.security.TokenProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher;
+import org.springframework.web.client.RestClient;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -18,7 +21,9 @@ import org.springframework.security.web.server.util.matcher.PathPatternParserSer
 public class SecurityConfig {
 
     private final CustomAuthorizationManager customAuthorizationManager;
-    private final PassportFilter passportFilter;
+    private final TokenProvider tokenProvider;
+    private final ObjectMapper objectMapper;
+    private final RestClient restClient;
 
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) throws Exception {
@@ -35,7 +40,7 @@ public class SecurityConfig {
                 )
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint()))
-                .addFilterBefore(passportFilter, SecurityWebFiltersOrder.AUTHORIZATION)
+                .addFilterBefore(new PassportFilter(tokenProvider, objectMapper, restClient), SecurityWebFiltersOrder.AUTHORIZATION)
         ;
         return http.build();
     }

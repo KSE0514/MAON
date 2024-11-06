@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class PassportFilter implements WebFilter {
 
@@ -40,6 +39,7 @@ public class PassportFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         log.info("jwt passport manager entered");
         if(exchange.getRequest().getHeaders().containsKey("passport")) {
+            log.info("duplicated passport filter");
             return chain.filter(exchange);
         }
         String token = tokenProvider.getJwtTokenFromRequestHeader(exchange);
