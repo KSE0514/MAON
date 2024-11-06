@@ -20,7 +20,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-import com.easter.route.domain.record.entity.LocationDto;
+import com.easter.route.domain.record.entity.dto.LocationDto;
 
 @Configuration
 @EnableKafka

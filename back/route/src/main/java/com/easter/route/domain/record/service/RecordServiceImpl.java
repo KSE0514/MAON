@@ -1,11 +1,19 @@
 package com.easter.route.domain.record.service;
 
+import java.util.List;
+
 import com.easter.route.domain.record.entity.Record;
-import com.easter.route.domain.record.entity.UpdateRecordDto;
+import com.easter.route.domain.record.entity.dto.RecordDto;
+import com.easter.route.domain.record.entity.dto.UpdateRecordDto;
 import com.easter.route.domain.record.repository.RecordRepository;
 import com.easter.route.domain.route.entity.dto.CreateRunningDto;
 import com.easter.route.domain.route.entity.enums.RouteType;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class RecordServiceImpl implements RecordService {
 
+    private final MongoTemplate mongoTemplate;
     private final RecordRepository recordRepository;
 
     @Override
@@ -23,8 +32,8 @@ public class RecordServiceImpl implements RecordService {
                 .raceId(createRunningDto.getRouteId())
                 .routeType(RouteType.valueOf(createRunningDto.getRouteType()))
                 .completed(false)
-                .runningTime(0)
-                .averagePace(0.0)
+                .runningTime("00:00:00")
+                .averagePace("00:00")
                 .routeId(createRunningDto.getRouteId())
                 .build();
         return recordRepository.save(record);
@@ -33,6 +42,16 @@ public class RecordServiceImpl implements RecordService {
     @Override
     @Transactional
     public void updateRecord(UpdateRecordDto updateRecordDto) {
+        // Record record = recordRepository.findById(updateRecordDto.getRecordId())
+        //         .orElseThrow(() -> new IllegalArgumentException("해당 Record가 존재하지 않습니다."));
+        // record.updateRecord(updateRecordDto);
+    }
 
+    @Override
+    public List<RecordDto> getRecordListByMemberId(String memberId) {
+        Query query = new Query(Criteria.where("memberId").is(memberId));
+        query.with(Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<Record> records = mongoTemplate.find(query, Record.class);
+        return records.stream().map(RecordDto::of).toList();
     }
 }
