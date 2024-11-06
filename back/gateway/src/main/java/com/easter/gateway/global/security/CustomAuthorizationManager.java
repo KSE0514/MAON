@@ -18,10 +18,7 @@ public class CustomAuthorizationManager implements ReactiveAuthorizationManager<
     @Override
     public Mono<AuthorizationDecision> check(Mono supplier, AuthorizationContext context) { // 헤더 뜯어서 값 존재하는지만 검사
         ServerWebExchange exchange = context.getExchange();
-        log.info("jwt custom authorization manager entered");
-//        for(String value : exchange.getRequest().getHeaders().keySet()) {
-//            log.info(exchange.getRequest().getHeaders().getFirst(value));
-//        }
+        log.debug("jwt custom authorization manager entered");
         HttpHeaders headers = exchange.getRequest().getHeaders();
         if(headers.containsKey(HttpHeaders.AUTHORIZATION) && headers.containsKey("passport")) {
             log.debug("valid jwt : {}", headers.get(HttpHeaders.AUTHORIZATION));
@@ -30,6 +27,5 @@ public class CustomAuthorizationManager implements ReactiveAuthorizationManager<
             log.error("invalid request -> Access Denied");
             return Mono.just(new AuthorizationDecision(false));
         }
-
     }
 }
