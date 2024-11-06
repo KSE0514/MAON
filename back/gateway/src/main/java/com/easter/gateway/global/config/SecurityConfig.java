@@ -5,6 +5,7 @@ import com.easter.gateway.global.security.NotAuthorizedServerEntryPoint;
 import com.easter.gateway.global.security.TokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -19,6 +20,9 @@ import org.springframework.web.client.RestClient;
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    @Value("${spring.hmac.key}")
+    private String hmacKey;
 
     private final CustomAuthorizationManager customAuthorizationManager;
     private final TokenProvider tokenProvider;
@@ -40,7 +44,7 @@ public class SecurityConfig {
                 )
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint()))
-                .addFilterBefore(new PassportFilter(tokenProvider, objectMapper, restClient), SecurityWebFiltersOrder.AUTHORIZATION)
+                .addFilterBefore(new PassportFilter(tokenProvider, objectMapper, restClient, hmacKey), SecurityWebFiltersOrder.AUTHORIZATION)
         ;
         return http.build();
     }

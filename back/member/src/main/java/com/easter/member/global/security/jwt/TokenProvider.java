@@ -12,6 +12,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,7 +21,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -94,6 +99,13 @@ public class TokenProvider {
     public boolean removeToken(String email) {
         // refresh, access 전부 제거
         return redisTemplate.delete(TokenType.ACCESS.name() + ":" + email) && redisTemplate.delete(TokenType.REFRESH.name() + ":" + email);
+    }
+
+    public String hmac(String data, String key) throws NoSuchAlgorithmException, InvalidKeyException {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), "HmacSHA256");
+        Mac mac = Mac.getInstance("HmacSHA256");
+        mac.init(secretKeySpec);
+        return Base64.encodeBase64String(mac.doFinal(data.getBytes()));
     }
 
 }

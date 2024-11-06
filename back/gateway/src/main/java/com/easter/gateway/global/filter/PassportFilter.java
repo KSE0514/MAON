@@ -5,17 +5,17 @@ import com.easter.gateway.global.model.ConfirmMemberResponseDto;
 import com.easter.gateway.global.security.PassportDto;
 import com.easter.gateway.global.security.Role;
 import com.easter.gateway.global.security.TokenProvider;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.HmacUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -34,6 +34,7 @@ public class PassportFilter implements WebFilter {
     private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
     private final RestClient restClient;
+    private final String hmacKey;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -43,6 +44,7 @@ public class PassportFilter implements WebFilter {
             return chain.filter(exchange);
         }
         String token = tokenProvider.getJwtTokenFromRequestHeader(exchange);
+        log.info("hmacKey : {}", hmacKey);
         if (token == null) {
             log.info("this request has no token");
             return chain.filter(exchange); // 토큰이 없으므로 그대로 다음 필터로 진행
@@ -79,6 +81,14 @@ public class PassportFilter implements WebFilter {
         }
         log.info("passport created : {}", passport.toString());
         Map<String, String> passportMap = objectMapper.convertValue(passport, Map.class);
+        // encoding 이전의 값을 기준으로 hmac 시행
+        String hmacValue;
+        try {
+            hmacValue = tokenProvider.hmac(objectMapper.writeValueAsString(passport), hmacKey);
+        } catch (Exception e) {
+            log.error("error occurred while hmac processing");
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[Passport] hmac 과정에서 오류가 발생했습니다.");
+        }
         Base64.Encoder encoder = Base64.getEncoder();
         Consumer<HttpHeaders> headersConsumer = httpHeaders -> {
             for(Map.Entry<String, String> entry : passportMap.entrySet()) {
@@ -87,6 +97,7 @@ public class PassportFilter implements WebFilter {
                 }
             }
             httpHeaders.add("passport", "confirmed");
+            httpHeaders.add("passport-hmac", hmacValue); // todo : hmac값 추가
         };
         ServerWebExchange newExchange = exchange
                 .mutate()

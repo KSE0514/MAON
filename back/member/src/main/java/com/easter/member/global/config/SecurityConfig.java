@@ -2,8 +2,10 @@ package com.easter.member.global.config;
 
 import com.easter.member.global.filter.PassportFilter;
 import com.easter.member.global.security.handler.OAuth2SuccessHandler;
+import com.easter.member.global.security.jwt.TokenProvider;
 import com.easter.member.global.security.userinfo.CustomOidcUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,8 +22,12 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Value("${spring.hmac.key}")
+    private String hmacKey;
+
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final CustomOidcUserService customOidcUserService;
+    private final TokenProvider tokenProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,7 +44,7 @@ public class SecurityConfig {
                                 .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
                                 .successHandler(oAuth2SuccessHandler)
                 )
-                .addFilterAfter(new PassportFilter(), AuthorizationFilter.class)
+                .addFilterAfter(new PassportFilter(tokenProvider, hmacKey), AuthorizationFilter.class)
         ;
         return http.build();
     }
