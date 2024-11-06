@@ -14,8 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 public class LocationProducer {
 	private final KafkaTemplate<String, LocationDto> kafkaTemplate;
 
-    public void send(LocationDto locationDto) {
-		String key = locationDto.getMemberId();
+    public void send(String recordId, LocationDto locationDto) {
+		//String key = locationDto.getMemberId();
+		String key = recordId;
         String topic = "maon.route.location";
         log.info("Sending location data to topic: {}, key: {}, data: {}", topic, key, locationDto);
 		this.kafkaTemplate.send(topic, key, locationDto);

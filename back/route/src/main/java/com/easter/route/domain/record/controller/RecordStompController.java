@@ -19,6 +19,6 @@ public class RecordStompController {
     @MessageMapping("/running/{recordId}")
     public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data: {}", recordId);
-        locationProducer.send(locationDto);
+        locationProducer.send(recordId, locationDto);
     }
 }
