@@ -57,7 +57,10 @@ public class PassportFilter implements WebFilter {
                 .uri(uriBuilder -> uriBuilder.path("/service/confirm/" + email).queryParam("token", token).build())
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
-                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "응답 실패");
+                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[Passport] member 서비스와 통신하지 못했습니다.");
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[Passport] member 서비스에서 문제가 발생했습니다.");
                 })
                 .toEntity(Map.class);
         ConfirmMemberResponseDto responseDto = objectMapper.convertValue(passportResult.getBody().get("data"), ConfirmMemberResponseDto.class);
