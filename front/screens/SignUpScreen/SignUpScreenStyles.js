@@ -13,12 +13,11 @@ export const Wrapper = styled.SafeAreaView`
   `
 
 export const Content = styled.View`
-  padding-horizontal: 10%;
-  padding-vertical: 5%;
+  padding: 5% 10% 5%;
 `
 
 export const Title = styled.View`
-  padding-vertical: 5%;
+  padding: 5% 0;
 `
 
 export const TitleContent = styled.Text`
@@ -29,7 +28,7 @@ export const TitleContent = styled.Text`
 
 export const Main = styled.View`
   gap: 30%;
-  margin-vertical: 9%;
+  margin: 9% 0;
   align-items: center;
 `
 
