@@ -9,6 +9,10 @@ import {
 import { useFontsLoaded } from "../../utils/fontContext";
 import { ButtonList, Wrapper } from "./SelectRunTypeStyle";
 import GradientButton from "../../components/Button/GradientsBtn/GradientsButton";
+import {
+  getPracticeRoomId,
+  getPracticeRoomIdWithRoute,
+} from "../../utils/getRoomId";
 
 const SelectRunType = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
@@ -18,7 +22,8 @@ const SelectRunType = ({ navigation }) => {
   }
   const buttons = [
     {
-      onPress: () => {
+      onPress: async () => {
+        await getPracticeRoomIdWithRoute();
         navigation.navigate("SelectRunRoute", {
           mode: "selectedRoute",
           searchType: "run",
@@ -38,7 +43,8 @@ const SelectRunType = ({ navigation }) => {
       mode: "notSelectedRoute",
     },
     {
-      onPress: () => {
+      onPress: async () => {
+        await getPracticeRoomIdWithRoute();
         navigation.navigate("SelectRunRoute");
       },
       title: `고스트\n모드`,
