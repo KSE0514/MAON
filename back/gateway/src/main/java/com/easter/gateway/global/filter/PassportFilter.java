@@ -54,13 +54,17 @@ public class PassportFilter implements WebFilter {
         String email = (String) claims.get("email");
         // 찾을 수 있었다면, passportDto에 들어갈 정보 수령
         ResponseEntity<Map> passportResult = restClient.get()
-                .uri("/member/confirm/" + email)
+                .uri(uriBuilder -> uriBuilder.path("/service/confirm/" + email).queryParam("token", token).build())
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                     throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "응답 실패");
                 })
                 .toEntity(Map.class);
         ConfirmMemberResponseDto responseDto = objectMapper.convertValue(passportResult.getBody().get("data"), ConfirmMemberResponseDto.class);
+        if(!responseDto.isValid()) {
+            log.info("invalid token");
+            return chain.filter(exchange);
+        }
         PassportDto passport = responseDto.getPassport();
         if (responseDto.isRegistered()) {
             passport.setRole(Role.REGISTERED);
