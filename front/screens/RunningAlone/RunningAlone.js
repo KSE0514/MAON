@@ -88,18 +88,17 @@ const RunningAlone = ({ navigation, route }) => {
       timestamp: new Date().getTime(),
     };
 
-    console.log(`주소 : https://k11c207.p.ssafy.io/maon/ws/`);
+    console.log(`주소 :https://k11c207.p.ssafy.io/maon/ws`);
     // SockJS를 통해 STOMP 클라이언트 생성
     const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
     const stompClient = new Client({
-      webSocketFactory: () =>
-        new WebSocket("https://k11c207.p.ssafy.io/maon/ws"),
+      webSocketFactory: () => new WebSocket("wss://k11c207.p.ssafy.io/maon/ws"), // wss://로 수정
       debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
-      reconnectDelay: 5000,
     });
 
     stompClient.onConnect = () => {
       console.log("Connected to STOMP WebSocket");
+      alert("wow connected!");
       stompClient.publish({
         destination: `/app/running/${roomId}`, // 정확한 경로로 설정
         body: JSON.stringify(locationDto),
@@ -125,7 +124,50 @@ const RunningAlone = ({ navigation, route }) => {
     return () => {
       stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
     };
-  }, [roomId]);
+  }, []);
+
+  // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
+  const handleUserLocationChange = (location) => {
+    // const locationDto = {
+    //   latitude: location.latitude,
+    //   longitude: location.longitude,
+    //   pace, // 최신 페이스
+    //   timestamp: elapsedTime, // 최신 경과 시간
+    //   // distance: runningDistance, //달린 거리
+    //   memberId: "dpqls3056",
+    //   heartRate: 0,
+    // };
+    // console.log(
+    //   "latitude: ",
+    //   locationDto.latitude,
+    //   " longitude:",
+    //   locationDto.longitude,
+    //   " pace:",
+    //   locationDto.pace,
+    //   " timestamp:",
+    //   locationDto.timestamp,
+    //   " memberId:",
+    //   locationDto.memberId,
+    //   " heartRate:",
+    //   locationDto.heartRate
+    // );
+    // if (stompClientRef.current && stompClientRef.current.connected) {
+    //   const locationDto = {
+    //     latitude: location.latitude,
+    //     longitude: location.longitude,
+    //     pace, // 최신 페이스
+    //     timestamp: elapsedTime, // 최신 경과 시간
+    //     // distance: runningDistance, //달린 거리
+    //     memberId: "dpqls3056",
+    //     heartRate: 0,
+    //   };
+    //   stompClientRef.current.publish({
+    //     destination: `/app/running/${roomId}`,
+    //     body: JSON.stringify(locationDto),
+    //   });
+    // }
+  };
+
   return (
     <View style={{ flex: "1" }}>
       {running && (
@@ -160,6 +202,7 @@ const RunningAlone = ({ navigation, route }) => {
         runStart={runStart}
         setRunningDistance={setRunningDistance}
         mode={mode}
+        onLocationChange={handleUserLocationChange}
       />
 
       {running && (
