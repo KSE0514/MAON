@@ -14,6 +14,7 @@ import {
 import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
 import color from "../../styles/colors";
 import fonts from "../../styles/fonts";
+import { status } from "./MaraThonInfoPreviewStyle";
 const MaraThonInfoPreview = ({ navigation, data, mode }) => {
   const fontsLoaded = useFontsLoaded();
 
@@ -25,6 +26,13 @@ const MaraThonInfoPreview = ({ navigation, data, mode }) => {
       <Col>
         <View>
           <Image source={require("../../assets/images/route.png")} />
+          <View style={status.status}>
+            {true ? (
+              <Text style={status.ing}>접수중</Text>
+            ) : (
+              <Text style={status.end}>접수종료</Text>
+            )}
+          </View>
         </View>
       </Col>
       <Col style={styles.secondCol}>

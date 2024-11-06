@@ -6,6 +6,8 @@ import {
   faLocationDot,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as faBookmarkSolid } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
 import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
 import color from "../../styles/colors";
 const RouteInfoPreview = ({ navigation, data, mode }) => {
@@ -22,9 +24,24 @@ const RouteInfoPreview = ({ navigation, data, mode }) => {
         </View>
       </Col>
       <Col style={styles.secondCol}>
-        <Row style={{ marginTop: 5 }}>
-          <FontAwesomeIcon icon={faLocationDot} color={color.red} />
-          <Text style={[styles.SmallText]}>{data.address}</Text>
+        <Row
+          style={{
+            marginTop: 5,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <FontAwesomeIcon icon={faLocationDot} color={color.red} />
+            <Text style={[styles.SmallText]}>{data.address}</Text>
+          </View>
+
+          {true ? (
+            <FontAwesomeIcon size={16} icon={faBookmarkSolid} />
+          ) : (
+            <FontAwesomeIcon size={16} icon={faBookmarkRegular} />
+          )}
         </Row>
         <Row>
           <Text
