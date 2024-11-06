@@ -1,6 +1,6 @@
 package com.easter.member.domain.member.controller;
 
-import com.easter.member.domain.member.model.dto.ConfirmMemberResponseDto;
+import com.easter.member.domain.service.model.dto.ConfirmMemberResponseDto;
 import com.easter.member.domain.member.model.dto.RegisterMemberRequestDto;
 import com.easter.member.domain.member.model.dto.RegisterMemberResponseDto;
 import com.easter.member.domain.member.service.MemberService;
@@ -41,14 +41,6 @@ public class MemberController {
     }
     
     /* 테스트 메서드 종료  */
-
-    @GetMapping("/confirm/{email}")
-    public ResponseEntity<ResultResponse> confirm(@PathVariable String email) {
-        log.debug("confirm email : {}", email);
-        ConfirmMemberResponseDto responseDto = memberService.confirmMember(email);
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "멤버 정보 확인 완료", responseDto);
-        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
-    }
 
     @PostMapping("/info")
     public ResponseEntity<ResultResponse> register(@RequestAttribute("passport") PassportDto passport, @RequestBody RegisterMemberRequestDto requestDto) {

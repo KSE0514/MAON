@@ -1,7 +1,7 @@
 package com.easter.member.domain.member.service;
 
 import com.easter.member.domain.member.entity.Member;
-import com.easter.member.domain.member.model.dto.ConfirmMemberResponseDto;
+import com.easter.member.domain.service.model.dto.ConfirmMemberResponseDto;
 import com.easter.member.domain.member.model.dto.RegisterMemberRequestDto;
 import com.easter.member.domain.member.model.dto.RegisterMemberResponseDto;
 import com.easter.member.domain.member.repository.MemberRepository;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,33 +27,6 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository MemberRepository;
     private final TokenProvider tokenProvider;
-
-    @Override
-    public ConfirmMemberResponseDto confirmMember(String email) {
-        Optional<Member> optionalMember = MemberRepository.findByEmail(email);
-        PassportDto passport;
-        if (optionalMember.isPresent()) {
-            // 찾는데에 성공했다면 정보를 담는다
-            Member member = optionalMember.get();
-            log.info("found member : {}", email);
-            passport = PassportDto.builder()
-                    .id(member.getUuid())
-                    .name(member.getName())
-                    .nickname(member.getNickname())
-                    .email(member.getEmail())
-                    .imageUrl(member.getImageUrl())
-                    .build();
-        } else {
-            log.info("unfounded member : {}", email);
-            passport = PassportDto.builder()
-                    .email(email)
-                    .build();
-        }
-        return ConfirmMemberResponseDto.builder()
-                .registered(optionalMember.isPresent())
-                .passport(passport)
-                .build();
-    }
 
     @Override
     @Transactional
