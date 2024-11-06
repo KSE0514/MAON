@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -49,7 +50,9 @@ android {
     buildFeatures {
         dataBinding = true
     }
+
 }
+
 
 dependencies {
 
@@ -66,10 +69,24 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.firebase.messaging.ktx)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
+    // Firebase Cloud Messaging
+    implementation ("com.google.firebase:firebase-messaging")
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-analytics")
+
+    // STOMP 클라이언트
+    implementation ("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
+    // Rx Java (STOMP 클라이언트의 의존성)
+    implementation ("io.reactivex.rxjava2:rxjava:2.2.5")
+    implementation ("io.reactivex.rxjava2:rxandroid:2.1.1")
+
     implementation ("com.google.android.gms:play-services-wearable:18.1.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 }
