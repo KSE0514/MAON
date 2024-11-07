@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.easter.watch.app-mergeDebugResources-4:/layout/activity_restart.xml",
+        "source": "com.easter.watch.app-main-7:/layout/activity_restart.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-mergeDebugResources-4:/layout/activity_auth.xml",
+        "source": "com.easter.watch.app-main-7:/layout/activity_auth.xml"
+    }
+]
