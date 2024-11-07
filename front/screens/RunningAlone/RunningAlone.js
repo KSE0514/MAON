@@ -79,8 +79,6 @@ const RunningAlone = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  /** Stomp 연결 작성 */
-  // wss://j11c201.p.ssafy.io/api/moapay/core/ws/dutchpay
   const locationDto = {
     latitude: 37.5665,
     longitude: 126.978,
@@ -89,155 +87,43 @@ const RunningAlone = ({ navigation, route }) => {
     pace: "pace",
     timestamp: new Date().getTime(),
   };
-
-  const stompConfig = {
-    connectHeaders: {
-      login: "guest",
-      passcode: "guest",
-    },
-    brokerURL: "ws://k11c207.p.ssafy/ws",
-    debug: function (str) {
-      console.log("STOMP: " + str);
-    },
-    // If disconnected, it will retry after 200ms
-    reconnectDelay: 200,
-    // Subscriptions should be done inside onConnect as those need to reinstated when the broker reconnects
-    onConnect: function (frame) {
-      const subscription = stompClient.subscribe(
-        "/sub/handshake",
-        function (message) {
-          console.log(message);
-        }
-      );
-    },
-  };
-
-  stompClient = new Client(stompConfig);
-  stompClient.activate();
-  function sendLocation() {
-    // trying to publish a message when the broker is not connected will throw an exception
-    if (!stompClient.connected) {
-      console.log("Broker disconnected, can't send message.");
-      return false;
-    }
-    stompClient.publish({
-      destination: `/pub/running/${roomId}`,
-      body: JSON.stringify(payLoad),
-    });
-    return true;
-  }
-
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      console.log("@@");
-      if (stompClient.current.connected) {
-        sendLocation(); // 0.9초마다 위치 정보 전송
-      }
-    }, 900); // 900ms = 0.9초
+    // SockJS를 통해 STOMP 클라이언트 생성
+    //const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
+    const stompClient = new Client({
+      brokerURL: "wss://k11c207.p.ssafy.io/ws",
+      debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
+    });
+
+    stompClient.onConnect = () => {
+      console.log("Connected to STOMP WebSocket");
+      alert("wow connected!");
+      stompClient.publish({
+        destination: `/pub/running/${roomId}`, // 정확한 경로로 설정
+        body: JSON.stringify(locationDto),
+      });
+    };
+
+    stompClient.onWebSocketError = (error) => {
+      console.error("WebSocket connection error:", error);
+    };
+
+    stompClient.onDisconnect = () => {
+      console.log("Disconnected from WebSocket");
+    };
+
+    // 오류 처리
+    stompClient.onStompError = (frame) => {
+      console.error("STOMP error:", frame);
+    };
+
+    // STOMP 클라이언트 활성화
+    stompClient.activate();
 
     return () => {
-      clearInterval(intervalId);
-      if (stompClient.current && stompClient.current.connected) {
-        stompClient.current.disconnect(() => {
-          console.log("WebSocket disconnected");
-        });
-      }
+      stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
     };
   }, []);
-
-  // const stompClient = useRef(null);
-  // const connectHandler = useCallback(() => {
-  //   stompClient.current = Stomp.over(() => {
-  //     const sock = new SockJS("https://k11c201.p.ssafy.io/ws/location"); // Gateway에 맞게 URL 수정
-  //     return sock;
-  //   });
-
-  //   stompClient.current.over(
-  //     {},
-  //     (frame) => {
-  //       console.log("WebSocket connected: " + frame);
-  //       stompClient.current.send(
-  //         `/app/running/${roomId}`,
-  //         {},
-  //         JSON.stringify(locationDto)
-  //       );
-  //     },
-  //     (error) => {
-  //       console.error("WebSocket 초기 연결 실패 " + error);
-  //     }
-  //   );
-  // }, [roomId]);
-
-  // const sendLocation = useCallback(() => {
-  //   if (stompClient.current.connected) {
-  //     console.log("WebSocket connected, sending location data...");
-  //     stompClient.current.send(
-  //       `/app/running/${roomId}`,
-  //       {},
-  //       JSON.stringify(locationDto)
-  //     );
-  //   } else {
-  //     console.log("WebSocket is not connected yet");
-  //   }
-  // }, [roomId]);
-
-  // useEffect(() => {
-  //   connectHandler(); // 최초 연결 시 connectHandler 호출
-
-  //   const intervalId = setInterval(() => {
-  //     console.log("@@");
-  //     if (stompClient.current.connected) {
-  //       sendLocation(); // 0.9초마다 위치 정보 전송
-  //     }
-  //   }, 900); // 900ms = 0.9초
-
-  //   return () => {
-  //     clearInterval(intervalId);
-  //     if (stompClient.current && stompClient.current.connected) {
-  //       stompClient.current.disconnect(() => {
-  //         console.log("WebSocket disconnected");
-  //       });
-  //     }
-  //   };
-  // }, []);
-
-  //   // SockJS를 통해 STOMP 클라이언트 생성
-  //   //const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
-  //   const stompClient = new Client({
-  //     brokerURL: "wss://k11c207.p.ssafy.io/maon/ws",
-  //     //new WebSocket("https://k11c207.p.ssafy.io/maon/ws"), // wss://로 수정
-  //     debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
-  //   });
-
-  //   stompClient.onConnect = () => {
-  //     console.log("Connected to STOMP WebSocket");
-  //     alert("wow connected!");
-  //     stompClient.publish({
-  //       destination: `/app/running/${roomId}`, // 정확한 경로로 설정
-  //       body: JSON.stringify(locationDto),
-  //     });
-  //   };
-
-  //   stompClient.onWebSocketError = (error) => {
-  //     console.error("WebSocket connection error:", error);
-  //   };
-
-  //   stompClient.onDisconnect = () => {
-  //     console.log("Disconnected from WebSocket");
-  //   };
-
-  //   // 오류 처리
-  //   stompClient.onStompError = (frame) => {
-  //     console.error("STOMP error:", frame);
-  //   };
-
-  //   // STOMP 클라이언트 활성화
-  //   stompClient.activate();
-
-  //   return () => {
-  //     stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
-  //   };
-  // }, []);
 
   // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
   const handleUserLocationChange = (location) => {
