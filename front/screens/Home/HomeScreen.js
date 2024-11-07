@@ -5,21 +5,22 @@ import {
   Text,
   Button,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import {
   AloneRunBtn,
   ButtonList,
+  CarouselView,
   FriendList,
   MaraThonInfoArea,
   TogetherRunBtn,
   Wrapper,
 } from "./HomeScreenStyle";
-import FooterNavigation from "../../components/FooterNavigation/FooterNavigation";
 import HeaderNavigation from "../../components/HeaderNavigation/HeaderNavigation";
 import fonts from "../../styles/fonts";
 import GradientButton from "../../components/Button/GradientsBtn/GradientsButton";
-
+import CustomCarousel from "../../components/CustomCarousel/CustomCarousel";
 const HomeScreen = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
 
@@ -62,7 +63,15 @@ const HomeScreen = ({ navigation }) => {
         </View>
       </ButtonList>
       <MaraThonInfoArea>
-        <Text style={styles.font}>마라톤 정보</Text>
+        <View>
+          <View></View>
+          <View>
+            <Text style={styles.font}>참여예정인 마라톤</Text>
+          </View>
+        </View>
+        <CarouselView>
+          <CustomCarousel />
+        </CarouselView>
       </MaraThonInfoArea>
     </Wrapper>
   );
@@ -70,6 +79,15 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   font: {
     fontFamily: fonts.gMarketBold,
+  },
+  shadowContainer: {
+    flex: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4.65,
+    elevation: 5, // Android 전용
+    borderRadius: 20,
   },
 });
 export default HomeScreen;
