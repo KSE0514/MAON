@@ -26,7 +26,6 @@ import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
 import SockJS from "sockjs-client";
-// import SockJS from "sockjs-client";
 import { Client, Stomp } from "@stomp/stompjs";
 import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
 
@@ -87,11 +86,16 @@ const RunningAlone = ({ navigation, route }) => {
     pace: "pace",
     timestamp: new Date().getTime(),
   };
+
   useEffect(() => {
     // SockJS를 통해 STOMP 클라이언트 생성
     //const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
     const stompClient = new Client({
-      brokerURL: "wss://k11c207.p.ssafy.io/ws",
+      connectionHeaders: [
+        { Authorization: "Bearer xyz)" },
+        { "heart-beat": "0,10000" },
+      ],
+      brokerURL: "wss://k11c207.p.ssafy.io/ws/location",
       debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
     });
 
