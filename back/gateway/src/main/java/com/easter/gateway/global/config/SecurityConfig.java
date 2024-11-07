@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/favicon.ico", "/error").permitAll()
                         .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**","/maon/member/member/oauth2/**", "/maon/member/service/**", "/maon/member/member/logindone").permitAll()
+                        .pathMatchers("/maon/member/member/reissue").permitAll()
                         .pathMatchers("/maon/member/**").access(customAuthorizationManager)
                         .anyExchange().permitAll()
                 )
