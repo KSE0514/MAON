@@ -25,9 +25,9 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
-
+import SockJS from "sockjs-client";
 // import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
+import { Client, Stomp } from "@stomp/stompjs";
 import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
 
 const RunningAlone = ({ navigation, route }) => {
@@ -90,51 +90,116 @@ const RunningAlone = ({ navigation, route }) => {
     timestamp: new Date().getTime(),
   };
 
-  const clientRef = useRef(
-    new Client({
-      brokerURL: "http://k11c201.p.ssafy.io/maon/ws",
-      // connectHeaders: {
-      //   Authorization: "Bearer " + accessToken,
-      // },
-      onConnect: () => {
-        console.log("웹소켓 연결 완료");
-      },
-      onDisconnect: () => {
-        console.log("웹소켓 연결 종료");
-      },
-      onStompError: (frame) => {
-        console.error("Broker error: ", frame.headers["message"]);
-      },
-    })
-  );
+  const stompConfig = {
+    connectHeaders: {
+      login: "guest",
+      passcode: "guest",
+    },
+    brokerURL: "ws://k11c207.p.ssafy/ws",
+    debug: function (str) {
+      console.log("STOMP: " + str);
+    },
+    // If disconnected, it will retry after 200ms
+    reconnectDelay: 200,
+    // Subscriptions should be done inside onConnect as those need to reinstated when the broker reconnects
+    onConnect: function (frame) {
+      const subscription = stompClient.subscribe(
+        "/sub/handshake",
+        function (message) {
+          console.log(message);
+        }
+      );
+    },
+  };
 
-  const sendLocation = useCallback(() => {
-    if (clientRef.current.connected) {
-      console.log("연결이 됐다.");
-      clientRef.current.publish({
-        destination: `/pub/running/${roomId}`,
-        body: JSON.stringify(locationDto),
-      });
-    } else {
-      console.log(" 왜 연결이 안됩니까");
+  stompClient = new Client(stompConfig);
+  stompClient.activate();
+  function sendLocation() {
+    // trying to publish a message when the broker is not connected will throw an exception
+    if (!stompClient.connected) {
+      console.log("Broker disconnected, can't send message.");
+      return false;
     }
-  }, [roomId, locationDto]);
+    stompClient.publish({
+      destination: `/pub/running/${roomId}`,
+      body: JSON.stringify(payLoad),
+    });
+    return true;
+  }
 
   useEffect(() => {
-    clientRef.current.activate();
-    console.log("@@@@@@@@@@@@@@2");
-    console.log(roomId);
     const intervalId = setInterval(() => {
-      sendLocation();
-    }, 900);
+      console.log("@@");
+      if (stompClient.current.connected) {
+        sendLocation(); // 0.9초마다 위치 정보 전송
+      }
+    }, 900); // 900ms = 0.9초
 
     return () => {
       clearInterval(intervalId);
-      if (clientRef.current.connected) {
-        clientRef.current.deactivate();
+      if (stompClient.current && stompClient.current.connected) {
+        stompClient.current.disconnect(() => {
+          console.log("WebSocket disconnected");
+        });
       }
     };
-  }, [sendLocation]);
+  }, []);
+
+  // const stompClient = useRef(null);
+  // const connectHandler = useCallback(() => {
+  //   stompClient.current = Stomp.over(() => {
+  //     const sock = new SockJS("https://k11c201.p.ssafy.io/ws/location"); // Gateway에 맞게 URL 수정
+  //     return sock;
+  //   });
+
+  //   stompClient.current.over(
+  //     {},
+  //     (frame) => {
+  //       console.log("WebSocket connected: " + frame);
+  //       stompClient.current.send(
+  //         `/app/running/${roomId}`,
+  //         {},
+  //         JSON.stringify(locationDto)
+  //       );
+  //     },
+  //     (error) => {
+  //       console.error("WebSocket 초기 연결 실패 " + error);
+  //     }
+  //   );
+  // }, [roomId]);
+
+  // const sendLocation = useCallback(() => {
+  //   if (stompClient.current.connected) {
+  //     console.log("WebSocket connected, sending location data...");
+  //     stompClient.current.send(
+  //       `/app/running/${roomId}`,
+  //       {},
+  //       JSON.stringify(locationDto)
+  //     );
+  //   } else {
+  //     console.log("WebSocket is not connected yet");
+  //   }
+  // }, [roomId]);
+
+  // useEffect(() => {
+  //   connectHandler(); // 최초 연결 시 connectHandler 호출
+
+  //   const intervalId = setInterval(() => {
+  //     console.log("@@");
+  //     if (stompClient.current.connected) {
+  //       sendLocation(); // 0.9초마다 위치 정보 전송
+  //     }
+  //   }, 900); // 900ms = 0.9초
+
+  //   return () => {
+  //     clearInterval(intervalId);
+  //     if (stompClient.current && stompClient.current.connected) {
+  //       stompClient.current.disconnect(() => {
+  //         console.log("WebSocket disconnected");
+  //       });
+  //     }
+  //   };
+  // }, []);
 
   //   // SockJS를 통해 STOMP 클라이언트 생성
   //   //const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
