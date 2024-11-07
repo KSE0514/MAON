@@ -1,9 +1,7 @@
 package com.easter.member.domain.member.controller;
 
-import com.easter.member.domain.member.model.dto.LoginResponseDto;
+import com.easter.member.domain.member.model.dto.*;
 import com.easter.member.domain.service.model.dto.ConfirmMemberResponseDto;
-import com.easter.member.domain.member.model.dto.RegisterMemberRequestDto;
-import com.easter.member.domain.member.model.dto.RegisterMemberResponseDto;
 import com.easter.member.domain.member.service.MemberService;
 import com.easter.member.global.response.ResultResponse;
 import com.easter.member.global.security.userinfo.PassportDto;
@@ -54,7 +52,15 @@ public class MemberController {
     @PatchMapping("/info")
     public ResponseEntity<ResultResponse> modify(@RequestAttribute("passport") PassportDto passport, @RequestBody Object o) {
         log.info("modify member info");
-        return null;
+        return null; // todo : 회원정보 수정 제작
+    }
+    
+    @PostMapping("/reissue")
+    public ResponseEntity<ResultResponse> reissue(@RequestBody ReissueTokenRequestDto requestDto) {
+        log.info("reissue member info");
+        ReissueTokenResponseDto responseDto = memberService.reissueToken(requestDto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "액세스 토큰을 재발급했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     @GetMapping("/logout")
