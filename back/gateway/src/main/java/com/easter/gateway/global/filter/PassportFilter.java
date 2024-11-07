@@ -40,6 +40,13 @@ public class PassportFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         log.debug("jwt passport manager entered");
+        log.info("new request reached");
+        log.info("uri : {}", exchange.getRequest().getURI().toString());
+        log.info("-----headers-----");
+        for(String keys : exchange.getRequest().getHeaders().keySet()) {
+            log.info("{} : {}", keys, exchange.getRequest().getHeaders().get(keys));
+        }
+//        log.info("body : {}", exchange.getRequest().getBody());
         if(exchange.getRequest().getHeaders().containsKey("passport")) {
             log.info("duplicated passport filter");
             return chain.filter(exchange);
