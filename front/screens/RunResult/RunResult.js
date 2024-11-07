@@ -16,7 +16,7 @@ const RunResult = ({ navigation }) => {
   }
 
   return (
-    <View style={{ flex: "1" }}>
+    <View style={{ flex: 1 }}>
       <Text>run result</Text>
     </View>
   );

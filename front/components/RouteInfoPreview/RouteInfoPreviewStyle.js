@@ -8,7 +8,7 @@ import {
 import fonts from "../../styles/fonts";
 import colors from "../../styles/colors";
 import styled from "styled-components";
-export const Wrapper = styled.View`
+export const Wrapper = styled.TouchableOpacity`
   flex: 1;
   width: 100%;
   flex-direction: row;
