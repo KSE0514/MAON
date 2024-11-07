@@ -36,29 +36,24 @@ public class Tournament {
     private String title;
 
     @NotNull
-    @Column(name = "category")
-    private String category;
-
-    @NotNull
     @Column(name = "location")
     private String location;
 
     @NotNull
-    @Column(name = "tournament_day")
-    private LocalDateTime tournamentDay;
+    @Column(name = "tournament_day_start")
+    private LocalDateTime tournamentDayStart;
+
+    @NotNull
+    @Column(name = "tournament_day_end")
+    private LocalDateTime tournamentDayEnd;
 
     @NotNull
     @Column(name = "closed")
     @DefaultValue(value = "false")
     private boolean closed;
 
-    @NotNull
-    @Column(name = "ended")
-    @DefaultValue(value = "false")
-    private boolean ended;
-
     @Column(name = "homepage")
-    private boolean homepage;
+    private String homepage;
 
     @Column(name = "receipt_start")
     private LocalDateTime receiptStart;
