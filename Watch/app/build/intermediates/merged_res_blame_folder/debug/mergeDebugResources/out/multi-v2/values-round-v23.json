@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.easter.watch.app-mergeDebugResources-3:/values-round-v23/values-round-v23.xml",
+            "map": [
+                {
+                    "source": "C:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\src\\main\\res\\values-round\\strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "75",
+                        "endOffsets": "87"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "75",
+                        "endOffsets": "126"
+                    }
+                }
+            ]
+        }
+    ]
+}

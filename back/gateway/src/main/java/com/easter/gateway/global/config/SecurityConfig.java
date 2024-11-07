@@ -41,6 +41,8 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/favicon.ico", "/error").permitAll()
                         .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**","/maon/member/member/oauth2/**", "/maon/member/service/**", "/maon/member/member/logindone", "/ws/**").permitAll()
+                        .pathMatchers("/maon/member/member/reissue").permitAll()
+>>>>>>> back/gateway/src/main/java/com/easter/gateway/global/config/SecurityConfig.java
                         .pathMatchers("/maon/member/**").access(customAuthorizationManager)
                         .anyExchange().permitAll()
                 )
