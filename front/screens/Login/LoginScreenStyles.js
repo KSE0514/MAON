@@ -21,7 +21,7 @@ export const Wrap = styled.View`
 
 export const Logo = styled.Text`
   font-family: ${fonts.gMarketBold};
-  font-size: 75%;
+  font-size: 75px;
   text-align: center;
   color: ${colors.nav_orange};
 `;

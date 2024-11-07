@@ -2,20 +2,21 @@ package com.easter.gateway.global.filter;
 
 import com.easter.gateway.global.exception.BusinessException;
 import com.easter.gateway.global.model.ConfirmMemberResponseDto;
+import com.easter.gateway.global.security.HmacProvider;
 import com.easter.gateway.global.security.PassportDto;
 import com.easter.gateway.global.security.Role;
 import com.easter.gateway.global.security.TokenProvider;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.HmacUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -28,23 +29,31 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class PassportFilter implements WebFilter {
 
     private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
     private final RestClient restClient;
+    private final HmacProvider hmacProvider;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        log.info("jwt passport manager entered");
+        log.debug("jwt passport manager entered");
+        log.info("new request reached");
+        log.info("uri : {}", exchange.getRequest().getURI().toString());
+        log.info("-----headers-----");
+        for(String keys : exchange.getRequest().getHeaders().keySet()) {
+            log.info("{} : {}", keys, exchange.getRequest().getHeaders().get(keys));
+        }
+//        log.info("body : {}", exchange.getRequest().getBody());
         if(exchange.getRequest().getHeaders().containsKey("passport")) {
+            log.info("duplicated passport filter");
             return chain.filter(exchange);
         }
         String token = tokenProvider.getJwtTokenFromRequestHeader(exchange);
         if (token == null) {
-            log.info("this request has no token");
+            log.debug("this request has no token");
             return chain.filter(exchange); // 토큰이 없으므로 그대로 다음 필터로 진행
         }
         Claims claims = tokenProvider.decode(token);
@@ -57,7 +66,10 @@ public class PassportFilter implements WebFilter {
                 .uri(uriBuilder -> uriBuilder.path("/service/confirm/" + email).queryParam("token", token).build())
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
-                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "응답 실패");
+                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[Passport] member 서비스와 통신하지 못했습니다.");
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[Passport] member 서비스에서 문제가 발생했습니다.");
                 })
                 .toEntity(Map.class);
         ConfirmMemberResponseDto responseDto = objectMapper.convertValue(passportResult.getBody().get("data"), ConfirmMemberResponseDto.class);
@@ -74,8 +86,16 @@ public class PassportFilter implements WebFilter {
             passport.setEmail(email);
             passport.setImageUrl((String) claims.get("image_url"));
         }
-        log.info("passport created : {}", passport.toString());
+        log.debug("passport created : {}", passport.toString());
         Map<String, String> passportMap = objectMapper.convertValue(passport, Map.class);
+        // encoding 이전의 값을 기준으로 hmac 시행
+        String hmacValue;
+        try {
+            hmacValue = hmacProvider.hmac(objectMapper.writeValueAsString(passport));
+        } catch (Exception e) {
+            log.error("error occurred while hmac processing");
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[Passport] hmac 과정에서 오류가 발생했습니다.");
+        }
         Base64.Encoder encoder = Base64.getEncoder();
         Consumer<HttpHeaders> headersConsumer = httpHeaders -> {
             for(Map.Entry<String, String> entry : passportMap.entrySet()) {
@@ -84,6 +104,7 @@ public class PassportFilter implements WebFilter {
                 }
             }
             httpHeaders.add("passport", "confirmed");
+            httpHeaders.add("passport-hmac", hmacValue); // todo : hmac값 추가
         };
         ServerWebExchange newExchange = exchange
                 .mutate()

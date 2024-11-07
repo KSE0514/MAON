@@ -1,0 +1,86 @@
+[
+    {
+        "merged": "com.easter.watch.app-debug-5:/drawable_ic_calory.png.flat",
+        "source": "com.easter.watch.app-main-7:/drawable/ic_calory.png"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/layout_activity_main.xml.flat",
+        "source": "com.easter.watch.app-main-7:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/layout_activity_start.xml.flat",
+        "source": "com.easter.watch.app-main-7:/layout/activity_start.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/drawable_start_button_background.xml.flat",
+        "source": "com.easter.watch.app-main-7:/drawable/start_button_background.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/layout_activity_auth.xml.flat",
+        "source": "com.easter.watch.app-main-7:/layout/activity_auth.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/layout_activity_splash.xml.flat",
+        "source": "com.easter.watch.app-main-7:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/font_gmarketsansttfbold.ttf.flat",
+        "source": "com.easter.watch.app-main-7:/font/gmarketsansttfbold.ttf"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/drawable_circular_background.xml.flat",
+        "source": "com.easter.watch.app-main-7:/drawable/circular_background.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.easter.watch.app-main-7:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/drawable_ic_line.png.flat",
+        "source": "com.easter.watch.app-main-7:/drawable/ic_line.png"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.easter.watch.app-main-7:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.easter.watch.app-main-7:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.easter.watch.app-main-7:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/layout_fragment_run1.xml.flat",
+        "source": "com.easter.watch.app-main-7:/layout/fragment_run1.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/layout_fragment_run2.xml.flat",
+        "source": "com.easter.watch.app-main-7:/layout/fragment_run2.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/font_gmarketsansttfmedium.ttf.flat",
+        "source": "com.easter.watch.app-main-7:/font/gmarketsansttfmedium.ttf"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/font_gmarketsansttflight.ttf.flat",
+        "source": "com.easter.watch.app-main-7:/font/gmarketsansttflight.ttf"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/drawable_splash_icon.xml.flat",
+        "source": "com.easter.watch.app-main-7:/drawable/splash_icon.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/layout_activity_restart.xml.flat",
+        "source": "com.easter.watch.app-main-7:/layout/activity_restart.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.easter.watch.app-main-7:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/drawable_button_background.xml.flat",
+        "source": "com.easter.watch.app-main-7:/drawable/button_background.xml"
+    }
+]
