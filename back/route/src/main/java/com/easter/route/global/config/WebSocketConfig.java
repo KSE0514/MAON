@@ -37,7 +37,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint("/ws/location")
-			.setAllowedOrigins("http:://k11c207.p.ssafy.io","https:://k11c207.p.ssafy.io")
+			.setAllowedOrigins("http://k11c207.p.ssafy.io","https://k11c207.p.ssafy.io")
 			.addInterceptors(new HandshakeInterceptor() {
 				@Override
 				public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
