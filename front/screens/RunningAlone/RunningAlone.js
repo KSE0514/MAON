@@ -78,53 +78,94 @@ const RunningAlone = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  useEffect(() => {
-    const locationDto = {
-      latitude: 37.5665,
-      longitude: 126.978,
-      memberId: "adfasdf",
-      heartRate: 12345,
-      pace: "pace",
-      timestamp: new Date().getTime(),
-    };
+  /** Stomp 연결 작성 */
+  // wss://j11c201.p.ssafy.io/api/moapay/core/ws/dutchpay
+  const locationDto = {
+    latitude: 37.5665,
+    longitude: 126.978,
+    memberId: "adfasdf",
+    heartRate: 12345,
+    pace: "pace",
+    timestamp: new Date().getTime(),
+  };
 
-    // SockJS를 통해 STOMP 클라이언트 생성
-    // const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
-    const stompClient = new Client({
-      webSocketFactory: () =>
-        new WebSocket("https://k11c207.p.ssafy.io/maon/ws"), // wss://로 수정
-      debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
-    });
+  const [client] = useState(
+    new Client({
+      brokerURL: "wss://k11c201.p.ssafy.io/ws/",
+      // connectHeaders: {
+      //   Authorization: "Bearer " + accessToken, // 여기에서 JWT 토큰을 추가합니다.
+      // },
+      onConnect: () => {
+        console.log("웹소켓 연결 완료");
+      },
+      onDisconnect: () => {
+        console.log("웹소켓 연결 종료");
+      },
+      onStompError: (frame) => {
+        console.error("Broker error: ", frame.headers["message"]);
+      },
+    })
+  );
 
-    stompClient.onConnect = () => {
-      console.log("Connected to STOMP WebSocket");
-      alert("wow connected!");
-      stompClient.publish({
-        destination: `/app/running/${roomId}`, // 정확한 경로로 설정
+  const sendLocation = () => {
+    if (client.connected) {
+      client.publish({
+        destination: `/pub/running/${roomId}`,
         body: JSON.stringify(locationDto),
       });
-    };
+    }
+  };
 
-    stompClient.onWebSocketError = (error) => {
-      console.error("WebSocket connection error:", error);
-    };
-
-    stompClient.onDisconnect = () => {
-      console.log("Disconnected from WebSocket");
-    };
-
-    // 오류 처리
-    stompClient.onStompError = (frame) => {
-      console.error("STOMP error:", frame);
-    };
-
-    // STOMP 클라이언트 활성화
-    stompClient.activate();
-
+  useEffect(() => {
+    client.activate();
+    const intervalId = setInterval(() => {
+      sendLocation();
+    }, 900);
     return () => {
-      stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
+      clearInterval(intervalId);
+      if (client.connected) {
+        client.deactivate();
+      }
     };
-  }, []);
+  }, [client]);
+
+  //   // SockJS를 통해 STOMP 클라이언트 생성
+  //   //const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
+  //   const stompClient = new Client({
+  //     brokerURL: "wss://k11c207.p.ssafy.io/maon/ws",
+  //     //new WebSocket("https://k11c207.p.ssafy.io/maon/ws"), // wss://로 수정
+  //     debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
+  //   });
+
+  //   stompClient.onConnect = () => {
+  //     console.log("Connected to STOMP WebSocket");
+  //     alert("wow connected!");
+  //     stompClient.publish({
+  //       destination: `/app/running/${roomId}`, // 정확한 경로로 설정
+  //       body: JSON.stringify(locationDto),
+  //     });
+  //   };
+
+  //   stompClient.onWebSocketError = (error) => {
+  //     console.error("WebSocket connection error:", error);
+  //   };
+
+  //   stompClient.onDisconnect = () => {
+  //     console.log("Disconnected from WebSocket");
+  //   };
+
+  //   // 오류 처리
+  //   stompClient.onStompError = (frame) => {
+  //     console.error("STOMP error:", frame);
+  //   };
+
+  //   // STOMP 클라이언트 활성화
+  //   stompClient.activate();
+
+  //   return () => {
+  //     stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
+  //   };
+  // }, []);
 
   // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
   const handleUserLocationChange = (location) => {
@@ -179,7 +220,8 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}>
+            }}
+          >
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}
