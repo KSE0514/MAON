@@ -13,7 +13,7 @@ import { Bottom, List, Top, Wrapper } from "./SelectRunRouteStyle";
 import { useState } from "react";
 import RouteInfoPreview from "../../components/RouteInfoPreview/RouteInfoPreview";
 
-const SelectRunRoute = () => {
+const SelectRunRoute = ({ navigation }) => {
   const [info, setInfo] = useState([
     {
       address: "전남, 무안군",
@@ -54,7 +54,14 @@ const SelectRunRoute = () => {
           <Bottom>
             <List>
               {info.map((route) => (
-                <RouteInfoPreview data={route} mode="searchInfo" />
+                <RouteInfoPreview
+                  data={route}
+                  mode="searchInfo"
+                  moveDetail={() => {
+                    // routeId랑 같이 보내기
+                    navigation.navigate("RouteDetail", { routeId: 1 });
+                  }}
+                />
               ))}
             </List>
           </Bottom>

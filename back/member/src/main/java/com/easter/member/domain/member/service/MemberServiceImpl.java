@@ -1,30 +1,108 @@
 package com.easter.member.domain.member.service;
 
 import com.easter.member.domain.member.entity.Member;
-import com.easter.member.domain.member.model.dto.RegisterMemberRequestDto;
-import com.easter.member.domain.member.model.dto.RegisterMemberResponseDto;
+import com.easter.member.domain.member.model.dto.*;
 import com.easter.member.domain.member.repository.MemberRepository;
 import com.easter.member.global.exception.BusinessException;
 import com.easter.member.global.security.jwt.TokenProvider;
 import com.easter.member.global.security.userinfo.PassportDto;
 import com.easter.member.global.security.userinfo.Role;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MemberServiceImpl implements MemberService {
 
+    private final MemberRepository memberRepository;
+    @Value("${external-url.google-oauth}")
+    private String googleOauthUrl;
+
     private final MemberRepository MemberRepository;
     private final TokenProvider tokenProvider;
+    private final RestClient restClient;
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public LoginResponseDto login(String token) {
+        // token을 통해 google 서버에 질의를 시도
+        ResponseEntity<Map> loginResult = restClient.get().uri(uriBuilder -> uriBuilder.path(googleOauthUrl)
+                .queryParam("id_token", token).build())
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
+                    Map<String, String> bodyMap = objectMapper.readValue(response.getBody(), Map.class);
+                    throw new BusinessException(HttpStatus.valueOf(response.getStatusCode().value()), "oauth 정보 접근 실패 : " + bodyMap.get("error_description"));
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "구글 api 서버에서 문제가 발생했습니다.");
+                })
+                .toEntity(Map.class);
+        Map<String, String> responseMap = loginResult.getBody();
+        String email = responseMap.get("email");
+        Optional<Member> member = memberRepository.findByEmail(email);
+        PassportDto passport;
+        LoginResponseDto responseDto;
+        if(member.isPresent()) {
+            // 이미 가입이 된 회원이라면 그 값을 기반으로 response 작성
+            Member memberInfo = member.get();
+            passport = PassportDto.builder()
+                    .id(memberInfo.getUuid())
+                    .name(memberInfo.getName())
+                    .nickname(memberInfo.getNickname())
+                    .email(memberInfo.getEmail())
+                    .imageUrl(memberInfo.getImageUrl())
+                    .role(Role.REGISTERED)
+                    .build();
+            String accessToken = tokenProvider.generateAccessToken(passport);
+            String refreshToken = tokenProvider.generateRefreshToken(passport);
+            responseDto = LoginResponseDto.builder()
+                    .registered(true)
+                    .id(memberInfo.getUuid())
+                    .name(memberInfo.getName())
+                    .email(memberInfo.getEmail())
+                    .imageUrl(memberInfo.getImageUrl())
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        } else {
+            // 가입되지 않은 유저라면, 최소한의 값만 삽입
+            passport = PassportDto.builder()
+                    .id(null)
+                    .name((String) responseMap.get("name"))
+                    .nickname("")
+                    .email(email)
+                    .imageUrl((String)responseMap.get("picture"))
+                    .role(Role.UNREGISTERED)
+                    .build();
+            String accessToken = tokenProvider.generateAccessToken(passport);
+            String refreshToken = tokenProvider.generateRefreshToken(passport);
+            responseDto = LoginResponseDto.builder()
+                    .registered(true)
+                    .id(null)
+                    .name(passport.getName())
+                    .email(passport.getEmail())
+                    .imageUrl(passport.getImageUrl())
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        }
+        return responseDto;
+    }
 
     @Override
     @Transactional
@@ -72,6 +150,12 @@ public class MemberServiceImpl implements MemberService {
                 .imageUrl(member.getImageUrl())
                 .accessToken(token)
                 .build();
+    }
+
+    @Override
+    public ReissueTokenResponseDto reissueToken(ReissueTokenRequestDto dto) {
+        String newAccessToken = tokenProvider.reissueToken(dto.getRefreshToken());
+        return ReissueTokenResponseDto.builder().accessToken(newAccessToken).build();
     }
 
     @Override

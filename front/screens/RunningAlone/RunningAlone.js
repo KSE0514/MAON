@@ -15,7 +15,7 @@ import {
   Top,
   Wrapper,
 } from "./RunningAloneStyle";
-import { useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Map from "../../components/Map/Map";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 import Timer from "../../components/Timer/Timer";
@@ -25,7 +25,12 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
-const RunningAlone = ({ navigation }) => {
+import SockJS from "sockjs-client";
+import { Client, Stomp } from "@stomp/stompjs";
+import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
+
+const RunningAlone = ({ navigation, route }) => {
+  const { roomId } = route.params;
   const fontsLoaded = useFontsLoaded();
   //시작버튼
   const [showStartModal, setShowStartModal] = useState(false);
@@ -73,8 +78,101 @@ const RunningAlone = ({ navigation }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
+  const locationDto = {
+    latitude: 37.5665,
+    longitude: 126.978,
+    memberId: "adfasdf",
+    heartRate: 12345,
+    pace: "pace",
+    timestamp: new Date().getTime(),
+  };
+
+  useEffect(() => {
+    // SockJS를 통해 STOMP 클라이언트 생성
+    //const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
+    const stompClient = new Client({
+      connectionHeaders: [
+        { Authorization: "Bearer xyz)" },
+        { "heart-beat": "0,10000" },
+      ],
+      brokerURL: "wss://k11c207.p.ssafy.io/ws/location",
+      debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
+    });
+
+    stompClient.onConnect = () => {
+      console.log("Connected to STOMP WebSocket");
+      alert("wow connected!");
+      stompClient.publish({
+        destination: `/pub/running/${roomId}`, // 정확한 경로로 설정
+        body: JSON.stringify(locationDto),
+      });
+    };
+
+    stompClient.onWebSocketError = (error) => {
+      console.error("WebSocket connection error:", error);
+    };
+
+    stompClient.onDisconnect = () => {
+      console.log("Disconnected from WebSocket");
+    };
+
+    // 오류 처리
+    stompClient.onStompError = (frame) => {
+      console.error("STOMP error:", frame);
+    };
+
+    // STOMP 클라이언트 활성화
+    stompClient.activate();
+
+    return () => {
+      stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
+    };
+  }, []);
+
+  // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
+  const handleUserLocationChange = (location) => {
+    // const locationDto = {
+    //   latitude: location.latitude,
+    //   longitude: location.longitude,
+    //   pace, // 최신 페이스
+    //   timestamp: elapsedTime, // 최신 경과 시간
+    //   // distance: runningDistance, //달린 거리
+    //   memberId: "dpqls3056",
+    //   heartRate: 0,
+    // };
+    // console.log(
+    //   "latitude: ",
+    //   locationDto.latitude,
+    //   " longitude:",
+    //   locationDto.longitude,
+    //   " pace:",
+    //   locationDto.pace,
+    //   " timestamp:",
+    //   locationDto.timestamp,
+    //   " memberId:",
+    //   locationDto.memberId,
+    //   " heartRate:",
+    //   locationDto.heartRate
+    // );
+    // if (stompClientRef.current && stompClientRef.current.connected) {
+    //   const locationDto = {
+    //     latitude: location.latitude,
+    //     longitude: location.longitude,
+    //     pace, // 최신 페이스
+    //     timestamp: elapsedTime, // 최신 경과 시간
+    //     // distance: runningDistance, //달린 거리
+    //     memberId: "dpqls3056",
+    //     heartRate: 0,
+    //   };
+    //   stompClientRef.current.publish({
+    //     destination: `/app/running/${roomId}`,
+    //     body: JSON.stringify(locationDto),
+    //   });
+    // }
+  };
+
   return (
-    <View style={{ flex: "1" }}>
+    <View style={{ flex: 1 }}>
       {running && (
         <Top>
           <StopBtn
@@ -107,6 +205,7 @@ const RunningAlone = ({ navigation }) => {
         runStart={runStart}
         setRunningDistance={setRunningDistance}
         mode={mode}
+        onLocationChange={handleUserLocationChange}
       />
 
       {running && (

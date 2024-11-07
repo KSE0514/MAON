@@ -1,9 +1,12 @@
 package com.easter.member.global.security.jwt;
 
+import com.easter.member.global.exception.BusinessException;
 import com.easter.member.global.security.userinfo.CustomOidcUser;
 import com.easter.member.global.security.userinfo.PassportDto;
+import com.easter.member.global.security.userinfo.Role;
 import com.easter.member.global.security.userinfo.TokenType;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecureDigestAlgorithm;
@@ -12,15 +15,22 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -84,6 +94,35 @@ public class TokenProvider {
 
     public String getTokenByEmail(String email, TokenType type) {
         return redisTemplate.opsForValue().get(type.name() + ":" + email);
+    }
+
+    public String reissueToken(String refreshToken) {
+        Claims claims;
+        try {
+            claims = decode(refreshToken);
+            if(!claims.getExpiration().after(new Date())) {
+                throw new BusinessException(HttpStatus.UNAUTHORIZED, "만료된 리프레쉬 토큰입니다. 다시 로그인해주세요.");
+            }
+        } catch(ExpiredJwtException e) {
+            log.error("expired refresh token : {}", refreshToken);
+            throw new BusinessException(HttpStatus.UNAUTHORIZED, "만료된 리프레쉬 토큰입니다. 다시 로그인해주세요.");
+        } catch(Exception e) {
+            log.error("this refresh token has some problems : {}", refreshToken);
+            throw new BusinessException(HttpStatus.UNAUTHORIZED, "리프레쉬 토큰에 문제가 있습니다.");
+        }
+        String email = claims.get("email", String.class);
+        String foundToken = getTokenByEmail(email, TokenType.REFRESH);
+        if(!foundToken.equals(refreshToken)) {
+            throw new BusinessException(HttpStatus.UNAUTHORIZED, "서버에 등록되지 않은 토큰입니다.");
+        }
+        // refresh token 검증이 끝났다면 access token 재발급 시행
+        PassportDto passport = PassportDto.builder()
+                .email(email)
+                .name(claims.get("name", String.class))
+                .imageUrl(claims.get("image_url", String.class))
+                .role(Role.valueOf(claims.get("role", String.class)))
+                .build();
+        return generateAccessToken(passport);
     }
 
     public Claims decode(String token) {

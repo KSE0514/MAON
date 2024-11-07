@@ -32,16 +32,16 @@ export const TitleArea = styled.View`
   flex-direction: row;
   align-items: center;
   height: ${screenHeight*0.09}px;
-  padding-horizontal: ${screenWidth*0.05}px;
+  padding: 0 ${screenWidth*0.05}px;
 `
 
 export const TitleText = styled.Text`
-  font-size: 25%;
+  font-size: 25px;
   font-family: ${fonts.gMarketMedium};
 `
 
 export const DetailInfoArea = styled.View`
-  padding-horizontal: ${screenWidth*0.09}px;
+  padding: 0 ${screenWidth*0.09}px;
 `
 
 export const DetailInfoView = styled.View`
