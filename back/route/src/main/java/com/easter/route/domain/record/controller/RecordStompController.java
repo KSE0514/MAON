@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -16,10 +17,19 @@ public class RecordStompController {
     private final RecordService recordService;
     private final LocationProducer locationProducer;
 
+    @MessageMapping("/handshake")
+    @SendTo("/sub/handshake")
+    public String handshake() {
+        log.info("Handshake received");
+        return "Handshake successful";
+    }
+
     @MessageMapping("/running/{recordId}")
-    public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
+    @SendTo("/sub/running/{recordId}")
+    public String sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data: {}", recordId);
         locationProducer.sendLocation(recordId, locationDto);
+        return "success";
     }
 
     // @MessageMapping("/running/{recordId}/end")
