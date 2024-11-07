@@ -15,7 +15,7 @@ import {
   Top,
   Wrapper,
 } from "./RunningAloneStyle";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Map from "../../components/Map/Map";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 import Timer from "../../components/Timer/Timer";
@@ -25,6 +25,7 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
+
 // import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
@@ -89,11 +90,11 @@ const RunningAlone = ({ navigation, route }) => {
     timestamp: new Date().getTime(),
   };
 
-  const [client] = useState(
+  const clientRef = useRef(
     new Client({
-      brokerURL: "wss://k11c201.p.ssafy.io/ws/",
+      brokerURL: "http://k11c201.p.ssafy.io/maon/ws",
       // connectHeaders: {
-      //   Authorization: "Bearer " + accessToken, // 여기에서 JWT 토큰을 추가합니다.
+      //   Authorization: "Bearer " + accessToken,
       // },
       onConnect: () => {
         console.log("웹소켓 연결 완료");
@@ -107,27 +108,33 @@ const RunningAlone = ({ navigation, route }) => {
     })
   );
 
-  const sendLocation = () => {
-    if (client.connected) {
-      client.publish({
+  const sendLocation = useCallback(() => {
+    if (clientRef.current.connected) {
+      console.log("연결이 됐다.");
+      clientRef.current.publish({
         destination: `/pub/running/${roomId}`,
         body: JSON.stringify(locationDto),
       });
+    } else {
+      console.log(" 왜 연결이 안됩니까");
     }
-  };
+  }, [roomId, locationDto]);
 
   useEffect(() => {
-    client.activate();
+    clientRef.current.activate();
+    console.log("@@@@@@@@@@@@@@2");
+    console.log(roomId);
     const intervalId = setInterval(() => {
       sendLocation();
     }, 900);
+
     return () => {
       clearInterval(intervalId);
-      if (client.connected) {
-        client.deactivate();
+      if (clientRef.current.connected) {
+        clientRef.current.deactivate();
       }
     };
-  }, [client]);
+  }, [sendLocation]);
 
   //   // SockJS를 통해 STOMP 클라이언트 생성
   //   //const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
