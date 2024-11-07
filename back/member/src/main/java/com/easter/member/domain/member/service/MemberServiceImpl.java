@@ -1,9 +1,7 @@
 package com.easter.member.domain.member.service;
 
 import com.easter.member.domain.member.entity.Member;
-import com.easter.member.domain.member.model.dto.LoginResponseDto;
-import com.easter.member.domain.member.model.dto.RegisterMemberRequestDto;
-import com.easter.member.domain.member.model.dto.RegisterMemberResponseDto;
+import com.easter.member.domain.member.model.dto.*;
 import com.easter.member.domain.member.repository.MemberRepository;
 import com.easter.member.global.exception.BusinessException;
 import com.easter.member.global.security.jwt.TokenProvider;
@@ -71,7 +69,7 @@ public class MemberServiceImpl implements MemberService {
                     .role(Role.REGISTERED)
                     .build();
             String accessToken = tokenProvider.generateAccessToken(passport);
-            tokenProvider.generateRefreshToken(passport);
+            String refreshToken = tokenProvider.generateRefreshToken(passport);
             responseDto = LoginResponseDto.builder()
                     .registered(true)
                     .id(memberInfo.getUuid())
@@ -79,6 +77,7 @@ public class MemberServiceImpl implements MemberService {
                     .email(memberInfo.getEmail())
                     .imageUrl(memberInfo.getImageUrl())
                     .accessToken(accessToken)
+                    .refreshToken(refreshToken)
                     .build();
         } else {
             // 가입되지 않은 유저라면, 최소한의 값만 삽입
@@ -91,7 +90,7 @@ public class MemberServiceImpl implements MemberService {
                     .role(Role.UNREGISTERED)
                     .build();
             String accessToken = tokenProvider.generateAccessToken(passport);
-            tokenProvider.generateRefreshToken(passport);
+            String refreshToken = tokenProvider.generateRefreshToken(passport);
             responseDto = LoginResponseDto.builder()
                     .registered(true)
                     .id(null)
@@ -99,6 +98,7 @@ public class MemberServiceImpl implements MemberService {
                     .email(passport.getEmail())
                     .imageUrl(passport.getImageUrl())
                     .accessToken(accessToken)
+                    .refreshToken(refreshToken)
                     .build();
         }
         return responseDto;
@@ -150,6 +150,12 @@ public class MemberServiceImpl implements MemberService {
                 .imageUrl(member.getImageUrl())
                 .accessToken(token)
                 .build();
+    }
+
+    @Override
+    public ReissueTokenResponseDto reissueToken(ReissueTokenRequestDto dto) {
+        String newAccessToken = tokenProvider.reissueToken(dto.getRefreshToken());
+        return ReissueTokenResponseDto.builder().accessToken(newAccessToken).build();
     }
 
     @Override

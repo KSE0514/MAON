@@ -1,22 +1,24 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
 import color from "../../styles/colors";
 import backImg from "./../../assets/images/Login_Back_cut2.jpg";
-import {
-  Container,
-  Logo,
-  Wrap,
-} from "./LoginScreenStyles";
-import { View, Dimensions, Image } from "react-native";
+import { Container, Logo, Wrap } from "./LoginScreenStyles";
+import { StyleSheet, View, Text, SafeAreaView, Image } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
-import * as Linking from 'expo-linking';
-import * as AuthSession from 'expo-auth-session';
+import { Dimensions } from "react-native";
+import * as Linking from "expo-linking";
+import * as AuthSession from "expo-auth-session";
 import useUserStore from "../../store/useUserStore";
 
 import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
 
-const CLIENT_ID = '512721321300-u08i7mqrguoh6oore1gkihr54ukigqh0.apps.googleusercontent.com';
+// Google OAuth 클라이언트 ID (Google Cloud Console에서 발급받은 ID로 대체하세요)
+const CLIENT_ID = "512721321300-u08i7mqrguoh6oore1gkihr54ukigqh0.apps.googleusercontent.com";
+
+// client-id: 512721321300-u08i7mqrguoh6oore1gkihr54ukigqh0.apps.googleusercontent.com
+// client-secret: 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
 
 const LoginScreen = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
@@ -76,7 +78,7 @@ const LoginScreen = ({ navigation }) => {
 
   const signInWithGoogle = async () => {
     const redirectUri = AuthSession.makeRedirectUri({
-      scheme: 'maon', // 앱의 커스텀 스킴 설정
+      scheme: "maon", // 위에서 설정한 스킴 이름과 동일해야 합니다.
     });
   
     // 인증 URL 생성
@@ -97,7 +99,7 @@ const LoginScreen = ({ navigation }) => {
       // 서버에 authorizationCode를 보내어 토큰을 교환합니다
       sendAuthorizationCodeToServer(authorizationCode);
     } else {
-      console.log('Google login was canceled or failed.');
+      console.log("Google login was canceled or failed.");
     }
   };
 
@@ -132,13 +134,13 @@ const LoginScreen = ({ navigation }) => {
     <Container>
       <View
         style={{
-          width: '100%',
+          width: "100%",
           height: screenHeight,
           zIndex: 2,
           position: "absolute",
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          backgroundColor: "rgba(0, 0, 0, 0.4)",
         }}
-      />
+      ></View>
       <Image
         source={backImg}
         style={{
@@ -148,10 +150,16 @@ const LoginScreen = ({ navigation }) => {
       />
       <Wrap>
         <Logo>MA:ON</Logo>
-        <RoundBtn text={"Google로 로그인"} onPress={signInWithGoogle} />
+        <RoundBtn text={"Google로 로그인"} onPress={checkUser} />
       </Wrap>
     </Container>
   );
 };
+
+// const styles = StyleSheet.create({
+//   logo: {
+
+//   }
+// })
 
 export default LoginScreen;

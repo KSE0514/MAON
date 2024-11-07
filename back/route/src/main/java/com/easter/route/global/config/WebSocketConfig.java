@@ -1,24 +1,106 @@
 package com.easter.route.global.config;
 
+import java.util.Map;
+
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
+import org.springframework.web.socket.server.HandshakeInterceptor;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableWebSocketMessageBroker
+@Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-	//클라이언트가 데이터를 서버로 보낼 때: /app 접두사 사용
-	//클라이언트가 서버의 데이터를 받을 때: /topic 접두사 사용
+
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.setApplicationDestinationPrefixes("/app");
-		config.enableSimpleBroker("/topic");
+		// 서버에서 클라이언트가 전송하는 메시지 받을 때
+		config.setApplicationDestinationPrefixes("/pub");
+		// 구독하고 있는 클라이언트한테 메시지 전달함 (@SendTo("/sub")
+		config.enableSimpleBroker("/sub");
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws/").setAllowedOriginPatterns("*");
+		registry.addEndpoint("/ws/location")
+			.setAllowedOrigins("http:://k11c207.p.ssafy.io","https:://k11c207.p.ssafy.io")
+			.addInterceptors(new HandshakeInterceptor() {
+				@Override
+				public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
+					WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+					log.debug("WebSocket Handshake 시작 - URI: {}, Headers: {}",
+						request.getURI(), request.getHeaders());
+					return true;
+				}
+
+				@Override
+				public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
+					WebSocketHandler wsHandler, Exception exception) {
+					if (exception != null) {
+						log.error("Handshake 실패:", exception);
+					} else {
+						log.debug("Handshake 성공");
+					}
+				}
+			})
+			.withSockJS()  // SockJS 지원 추가
+			.setDisconnectDelay(30 * 1000)  // 연결 종료 대기 시간
+			.setHeartbeatTime(25 * 1000);   // SockJS heartbeat 간격
+	}
+
+	@Override
+	public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+		registration
+			.setMessageSizeLimit(128 * 1024)     // 메시지 크기 제한
+			.setSendBufferSizeLimit(512 * 1024)  // 버퍼 크기
+			.setSendTimeLimit(20 * 1000)         // 전송 타임아웃
+			.setTimeToFirstMessage(30 * 1000);   // 첫 메시지 대기 시간
+	}
+
+	@Override
+	public void configureClientInboundChannel(ChannelRegistration registration) {
+		registration.interceptors(new ChannelInterceptor() {
+			@Override
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
+				StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+				log.debug("Inbound Channel - Command: {}, SessionId: {}",
+					accessor.getCommand(), accessor.getSessionId());
+
+				if (accessor.getCommand() == StompCommand.CONNECT) {
+					log.debug("STOMP CONNECT - Headers: {}", accessor.toNativeHeaderMap());
+				} else if (accessor.getCommand() == StompCommand.DISCONNECT) {
+					log.debug("STOMP DISCONNECT - SessionId: {}", accessor.getSessionId());
+				}
+
+				return message;
+			}
+		});
+	}
+
+	@Override
+	public void configureClientOutboundChannel(ChannelRegistration registration) {
+		registration.interceptors(new ChannelInterceptor() {
+			@Override
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
+				StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+				log.debug("Outbound Channel - Command: {}, SessionId: {}",
+					accessor.getCommand(), accessor.getSessionId());
+				return message;
+			}
+		});
 	}
 }

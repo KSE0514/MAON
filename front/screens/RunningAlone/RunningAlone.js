@@ -15,7 +15,7 @@ import {
   Top,
   Wrapper,
 } from "./RunningAloneStyle";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Map from "../../components/Map/Map";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 import Timer from "../../components/Timer/Timer";
@@ -25,8 +25,8 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
-// import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { Client, Stomp } from "@stomp/stompjs";
 import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
 
 const RunningAlone = ({ navigation, route }) => {
@@ -78,21 +78,24 @@ const RunningAlone = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  useEffect(() => {
-    const locationDto = {
-      latitude: 37.5665,
-      longitude: 126.978,
-      memberId: "adfasdf",
-      heartRate: 12345,
-      pace: "pace",
-      timestamp: new Date().getTime(),
-    };
+  const locationDto = {
+    latitude: 37.5665,
+    longitude: 126.978,
+    memberId: "adfasdf",
+    heartRate: 12345,
+    pace: "pace",
+    timestamp: new Date().getTime(),
+  };
 
+  useEffect(() => {
     // SockJS를 통해 STOMP 클라이언트 생성
-    // const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
+    //const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
     const stompClient = new Client({
-      webSocketFactory: () =>
-        new WebSocket("https://k11c207.p.ssafy.io/maon/ws"), // wss://로 수정
+      connectionHeaders: [
+        { Authorization: "Bearer xyz)" },
+        { "heart-beat": "0,10000" },
+      ],
+      brokerURL: "wss://k11c207.p.ssafy.io/ws/location",
       debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
     });
 
@@ -100,7 +103,7 @@ const RunningAlone = ({ navigation, route }) => {
       console.log("Connected to STOMP WebSocket");
       alert("wow connected!");
       stompClient.publish({
-        destination: `/app/running/${roomId}`, // 정확한 경로로 설정
+        destination: `/pub/running/${roomId}`, // 정확한 경로로 설정
         body: JSON.stringify(locationDto),
       });
     };
@@ -179,7 +182,8 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}>
+            }}
+          >
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}

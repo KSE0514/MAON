@@ -101,6 +101,22 @@ const ChallengeScreen = ({ navigation }) => {
             </FooterIconArea>
           </FooterArea>
 
+          <Svg width="234" height="415" viewBox="0 0 234 415" fill="none">
+            <Path d="M-120 0.5L233.5 197.5V415H-120V0.5Z" fill="url(#paint0_linear_2006_176)" />
+            <Defs>
+              <LinearGradient
+                id="paint0_linear_2006_176"
+                x1="151.5"
+                y1="245.5"
+                x2="64"
+                y2="142.5"
+                gradientUnits="userSpaceOnUse"
+              >
+                <Stop stopColor="#FA9987" />
+                <Stop offset="1" stopColor="#FA7514" />
+              </LinearGradient>
+            </Defs>
+          </Svg>
 
           {/* 유령 */}
           <WhitePathView
