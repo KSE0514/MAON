@@ -1,17 +1,30 @@
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  Button,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { SafeAreaView, View, Text, ScrollView, Image } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import { useEffect, useState } from "react";
-import { Bottom, Top, Wrapper } from "./RouteDetailStyle";
+import {
+  Bottom,
+  Top,
+  Wrapper,
+  Info,
+  Row,
+  Rank,
+  RunBtn,
+  styles,
+  RankTitle,
+  RankList,
+  UserInfo,
+} from "./RouteDetailStyle";
 import BookmarkBtn from "../../components/Button/BookmarkBtn/BookmarkBtn";
 import { BookmarkBtnArea } from "../MarathonInfoDetail/MarathonInfoDetailScreenStyles";
+import { getPracticeRoomIdWithRoute } from "../../utils/getRoomId";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faCalendarDays,
+  faRankingStar,
+  faRoute,
+} from "@fortawesome/pro-duotone-svg-icons";
+import color from "../../styles/colors";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
 // /////////////////// 테스트용
 const testMyInfo = {
@@ -26,6 +39,29 @@ const testMarathonInfo = {
   date: "2024-11-18",
   course: ["5km"],
   host: "무안군체육회, 전국 마라톤 협회",
+};
+
+const users = [
+  // {
+  //   username: "이예빈",
+  //   profile: "testProfile.jpg",
+  //   time: "01:12:14",
+  // },
+  // {
+  //   username: "정유진",
+  //   profile: "testProfile1.jpg",
+  //   time: "01:15:35",
+  // },
+  // {
+  //   username: "김성은",
+  //   profile: "testProfile2.jpg",
+  //   time: "01:21:23",
+  // },
+];
+const images = {
+  "testProfile.jpg": require("../../assets/images/testProfile.jpg"),
+  "testProfile1.jpg": require("../../assets/images/testProfile1.jpg"),
+  "testProfile2.jpg": require("../../assets/images/testProfile2.jpg"),
 };
 
 const RouteDetail = ({ navigation, routeId }) => {
@@ -101,6 +137,9 @@ const RouteDetail = ({ navigation, routeId }) => {
       <ScrollView>
         <Wrapper>
           <Top>
+            <Image
+              source={require("../../assets/images/largeRoute.png")} // 로컬 이미지 경로
+            />
             <BookmarkBtnArea>
               <BookmarkBtn
                 text={"경로 북마크"}
@@ -109,21 +148,122 @@ const RouteDetail = ({ navigation, routeId }) => {
               />
             </BookmarkBtnArea>
             <View></View>
-            <TouchableOpacity>
-              <Text>달리기</Text>
-            </TouchableOpacity>
           </Top>
           <Bottom>
-            <Text></Text>
-            <Row>
-              <Text>등록날찌:</Text>
-            </Row>
-            <Row>
-              <Text>등록인:</Text>
-            </Row>
-            <Row>
-              <Text>코스길이:</Text>
-            </Row>
+            <Info>
+              <Text style={[styles.boldFont, { fontSize: 28 }]}>
+                2024 국제 국민 마라톤
+              </Text>
+              <Row style={{ marginTop: 24 }}>
+                <FontAwesomeIcon
+                  size={20}
+                  icon={faCalendarDays}
+                  color={color.grape_fruit}
+                  secondaryColor={color.light_mandarin}
+                  swapOpacity={true} // 필요에 따라 두 색상 간의 불투명도 조정
+                />
+                <Text style={[styles.mediumFont, styles.infoText]}>
+                  등록날짜: 2024.11.07
+                </Text>
+              </Row>
+              <Row>
+                <FontAwesomeIcon
+                  size={20}
+                  color={color.grape_fruit}
+                  icon={faPenToSquare}
+                />
+                <Text style={[styles.mediumFont, styles.infoText]}>
+                  등록인: 이예빈
+                </Text>
+              </Row>
+              <Row>
+                <FontAwesomeIcon
+                  size={20}
+                  icon={faRoute}
+                  color={color.light_orange}
+                />
+                <Text style={[styles.mediumFont, styles.infoText]}>
+                  코스길이: 5km
+                </Text>
+              </Row>
+            </Info>
+            <View style={{ alignItems: "flex-end" }}>
+              <RunBtn
+                onPress={async () => {
+                  // const roomId = await getPracticeRoomIdWithRoute();
+                  // navigation.navigate("RunningWithRoute", { roomId: roomId });
+                  navigation.navigate("RunningWithRoute");
+                }}
+              >
+                <Text style={[styles.mediumFont, { color: "white" }]}>
+                  달리기
+                </Text>
+              </RunBtn>
+            </View>
+
+            <Rank>
+              <RankTitle>
+                <FontAwesomeIcon
+                  icon={faRankingStar}
+                  size={35}
+                  color={color.light_orange}
+                />
+                <Text
+                  style={[
+                    styles.boldFont,
+                    { fontSize: 20, marginLeft: 10, color: color.light_orange },
+                  ]}
+                >
+                  랭킹
+                </Text>
+              </RankTitle>
+              <RankList>
+                {users.length > 0 ? (
+                  users.map((user, index) => (
+                    <UserInfo key={index}>
+                      <View
+                        style={{
+                          width: 60,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text style={styles.rankNumber}>{index + 1}</Text>
+                      </View>
+                      <View>
+                        <Image
+                          style={styles.userProflie}
+                          source={images[user.profile]}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          flex: 4,
+                          marginLeft: 20,
+                          alignSelf: "flex-start",
+                        }}
+                      >
+                        <Text
+                          style={[
+                            styles.boldFont,
+                            { fontSize: 18, marginTop: 6, marginBottom: 8 },
+                          ]}
+                        >
+                          {user.username}
+                        </Text>
+                        <Text style={[styles.mediumFont, { fontSize: 16 }]}>
+                          {user.time}
+                        </Text>
+                      </View>
+                    </UserInfo>
+                  ))
+                ) : (
+                  <Text style={[styles.boldFont, { fontSize: 16 }]}>
+                    {`해당 경로에 대한 랭킹이 존재하지않습니다.`}
+                  </Text>
+                )}
+              </RankList>
+            </Rank>
           </Bottom>
         </Wrapper>
       </ScrollView>

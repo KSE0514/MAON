@@ -14,7 +14,7 @@ import {
   StopBtn,
   Top,
   Wrapper,
-} from "./RunningAloneStyle";
+} from "../RunningAlone/RunningAloneStyle";
 import { useEffect, useState } from "react";
 import Map from "../../components/Map/Map";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
@@ -29,8 +29,8 @@ import HeartBeat from "../../components/HeartBeat/HeartBeat";
 import { Client } from "@stomp/stompjs";
 import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
 
-const RunningAlone = ({ navigation, route }) => {
-  const { roomId } = route.params;
+const RunningWithRoute = ({ navigation, route }) => {
+  //   const { roomId } = route.params;
   const fontsLoaded = useFontsLoaded();
   //시작버튼
   const [showStartModal, setShowStartModal] = useState(false);
@@ -66,7 +66,7 @@ const RunningAlone = ({ navigation, route }) => {
   //달린 시간
   const [elapsedTime, setElapsedTime] = useState("00:00:00");
   //달리기 모드
-  const mode = "aloneRun";
+  const mode = "trackingRun";
   //pace
   const [pace, setPace] = useState("");
 
@@ -78,55 +78,58 @@ const RunningAlone = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  useEffect(() => {
-    console.log("서버에 연결할 방 아이디: " + roomId);
-    const locationDto = {
-      latitude: 37.5665,
-      longitude: 126.978,
-      memberId: "adfasdf",
-      heartRate: 12345,
-      pace: "pace",
-      timestamp: new Date().getTime(),
-    };
+  //소켓 연결
+  //   useEffect(() => {
+  //     const locationDto = {
+  //       latitude: 37.5665,
+  //       longitude: 126.978,
+  //       memberId: "adfasdf",
+  //       heartRate: 12345,
+  //       pace: "pace",
+  //       timestamp: new Date().getTime(),
+  //     };
 
-    // SockJS를 통해 STOMP 클라이언트 생성
-    // const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
-    const stompClient = new Client({
-      webSocketFactory: () => new WebSocket("wss://k11c207.p.ssafy.io/maon/ws"),
-      debug: (str) => console.log("STOMP Debug:", str),
-    });
+  //     // SockJS를 통해 STOMP 클라이언트 생성
+  //     // const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
+  //     const stompClient = new Client({
+  //       webSocketFactory: () =>
+  //         new WebSocket("https://k11c207.p.ssafy.io/maon/ws"), // wss://로 수정
+  //       debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
+  //     });
 
-    stompClient.onConnect = () => {
-      console.log("Connected to STOMP WebSocket");
-      alert("wow connected!");
-      stompClient.publish({
-        destination: `/app/running/${roomId}`, // 정확한 경로로 설정
-        body: JSON.stringify(locationDto),
-      });
-    };
+  //     stompClient.onConnect = () => {
+  //       console.log("Connected to STOMP WebSocket");
+  //       alert("wow connected!");
+  //       stompClient.publish({
+  //         destination: `/app/running/${roomId}`, // 정확한 경로로 설정
+  //         body: JSON.stringify(locationDto),
+  //       });
+  //     };
 
-    stompClient.onWebSocketError = (error) => {
-      console.error("WebSocket connection error:", error);
-    };
+  //     stompClient.onWebSocketError = (error) => {
+  //       console.error("WebSocket connection error:", error);
+  //     };
 
-    stompClient.onDisconnect = () => {
-      console.log("Disconnected from WebSocket");
-    };
+  //     stompClient.onDisconnect = () => {
+  //       console.log("Disconnected from WebSocket");
+  //     };
 
-    // 오류 처리
-    stompClient.onStompError = (frame) => {
-      console.error("STOMP error:", frame);
-    };
+  //     // 오류 처리
+  //     stompClient.onStompError = (frame) => {
+  //       console.error("STOMP error:", frame);
+  //     };
 
-    // STOMP 클라이언트 활성화
-    stompClient.activate();
+  //     // STOMP 클라이언트 활성화
+  //     stompClient.activate();
 
-    return () => {
-      stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
-    };
-  }, []);
+  //     return () => {
+  //       stompClient.deactivate(); // 컴포넌트 언마운트 시 연결 해제
+  //     };
+  //   }, []);
 
   // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
+
+  //1초마다 위치 체킹해서 서버로 보내서
   const handleUserLocationChange = (location) => {
     // const locationDto = {
     //   latitude: location.latitude,
@@ -167,6 +170,8 @@ const RunningAlone = ({ navigation, route }) => {
     //   });
     // }
   };
+
+  //루트가져오기
 
   return (
     <View style={{ flex: 1 }}>
@@ -246,4 +251,4 @@ const RunningAlone = ({ navigation, route }) => {
   );
 };
 
-export default RunningAlone;
+export default RunningWithRoute;

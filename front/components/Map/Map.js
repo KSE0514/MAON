@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, Alert, Image } from "react-native";
 import * as Location from "expo-location";
 import MapStyle from "./MapViewStyle.json";
 import color from "../../styles/colors";
-
+import { baseGps } from "../../text_gpx_data";
 export default function Map({
   navigation,
   setShowStartModal,
@@ -20,6 +20,7 @@ export default function Map({
     longitudeDelta: 0.005,
   });
   const [gps, setGps] = useState([]);
+
   const [locationPermissionGranted, setLocationPermissionGranted] =
     useState(false);
   const locationInterval = useRef(null);
@@ -114,41 +115,41 @@ export default function Map({
   /**
    * 1초마다 위치 변경하기
    */
-  const handleUserLocationChange = (location) => {
-    if (runStart) {
-      const newCoordinate = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      };
-      setGps((prevGps) => {
-        if (prevGps.length > 0) {
-          const lastPosition = prevGps[prevGps.length - 1];
-          const distanceIncrement = calculateDistance(
-            lastPosition,
-            newCoordinate
-          );
-          setRunningDistance(
-            (prevDistance) => prevDistance + distanceIncrement
-          );
-        }
-        return [...prevGps, newCoordinate];
-      });
-      onLocationChange(newCoordinate);
+  // const handleUserLocationChange = (location) => {
+  //   if (runStart) {
+  //     const newCoordinate = {
+  //       latitude: location.coords.latitude,
+  //       longitude: location.coords.longitude,
+  //     };
+  //     setGps((prevGps) => {
+  //       if (prevGps.length > 0) {
+  //         const lastPosition = prevGps[prevGps.length - 1];
+  //         const distanceIncrement = calculateDistance(
+  //           lastPosition,
+  //           newCoordinate
+  //         );
+  //         setRunningDistance(
+  //           (prevDistance) => prevDistance + distanceIncrement
+  //         );
+  //       }
+  //       return [...prevGps, newCoordinate];
+  //     });
+  //     onLocationChange(newCoordinate);
 
-      setMarkers((prevMarkers) =>
-        prevMarkers.map((marker) =>
-          marker.id === "current-point"
-            ? {
-                ...marker,
-                latitude: newCoordinate.latitude,
-                longitude: newCoordinate.longitude,
-              }
-            : marker
-        )
-      );
-      setmapRegion(newCoordinate);
-    }
-  };
+  //     setMarkers((prevMarkers) =>
+  //       prevMarkers.map((marker) =>
+  //         marker.id === "current-point"
+  //           ? {
+  //               ...marker,
+  //               latitude: newCoordinate.latitude,
+  //               longitude: newCoordinate.longitude,
+  //             }
+  //           : marker
+  //       )
+  //     );
+  //     setmapRegion(newCoordinate);
+  //   }
+  // };
 
   useEffect(() => {
     const startTracking = async () => {
@@ -250,11 +251,19 @@ export default function Map({
               {/* 반환 위치 */}
             </Marker>
           ))}
-          <Polyline
-            coordinates={gps}
-            strokeColor={color.light_orange}
-            strokeWidth={6}
-          />
+          {mode === "trackingRun" ? (
+            <Polyline
+              coordinates={baseGps}
+              strokeColor={color.light_orange}
+              strokeWidth={6}
+            />
+          ) : (
+            <Polyline
+              coordinates={gps}
+              strokeColor={color.light_orange}
+              strokeWidth={6}
+            />
+          )}
         </MapView>
       </View>
     </View>
