@@ -91,10 +91,6 @@ const RunningAlone = ({ navigation, route }) => {
     // SockJS를 통해 STOMP 클라이언트 생성
     //const socket = new SockJS(`https://k11c207.p.ssafy.io/maon/ws`); // 예: "https://58bf-121-178-98-37.ngrok-free.app/ws"
     const stompClient = new Client({
-      connectionHeaders: [
-        { Authorization: "Bearer xyz)" },
-        { "heart-beat": "0,10000" },
-      ],
       brokerURL: "wss://k11c207.p.ssafy.io/ws/location",
       debug: (str) => console.log("STOMP Debug:", str), // 모든 디버그 메시지 출력
     });
