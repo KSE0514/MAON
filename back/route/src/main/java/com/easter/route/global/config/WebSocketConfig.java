@@ -20,7 +20,6 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
-
 @Configuration
 @EnableWebSocketMessageBroker
 @Slf4j
