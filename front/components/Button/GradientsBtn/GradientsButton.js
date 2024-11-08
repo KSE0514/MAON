@@ -12,8 +12,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faPersonRunning,
   faUserGroup,
-  faRoute,
 } from "@fortawesome/free-solid-svg-icons";
+import { faRoute } from "@fortawesome/pro-duotone-svg-icons";
+
 import { ButtonContainer, ButtonText, GradientBtn } from "./GradientBtnStyle";
 
 const screenWidth = Dimensions.get("window").width;
@@ -100,8 +101,8 @@ const GradientButton = ({
           >
             <FontAwesomeIcon
               icon={faRoute}
-              style={{ color: "#ffffff" }}
-              size={screenWidth * 0.25}
+              size={screenWidth * 0.14}
+              color="#FFF"
             />
           </View>
         ) : null}
