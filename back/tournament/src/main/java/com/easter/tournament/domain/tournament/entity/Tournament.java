@@ -64,11 +64,24 @@ public class Tournament {
     @Column(name = "host")
     private String host;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     @OneToMany(mappedBy = "tournament", fetch = FetchType.LAZY)
     private List<TournamentAssignment> tournamentAssignment;
 
     @OneToMany(mappedBy = "tournament", fetch = FetchType.LAZY)
     private List<Participant> participants;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "area_code_id")
+    private AreaCode areaCode;
 
     @PrePersist
     private void prePersist() {
