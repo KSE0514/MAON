@@ -1,20 +1,10 @@
 package com.easter.route.domain.record.entity.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+
 public class RunningInfo {
-	private String memberId;
-	private String recordId;
-	private String latitude;
-	private String longitude;
-	private int heartRate;
-	private String pace;
-	private String time;
+	List<String> paceList;
+	GeoJsonPoint
 }

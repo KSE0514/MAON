@@ -1,8 +1,7 @@
 package com.easter.route.domain.record.controller;
 
 import com.easter.route.domain.record.entity.dto.RunningResultDto;
-import com.easter.route.domain.record.service.RecordService;
-import com.easter.route.domain.record.entity.dto.RunningInfo;
+import com.easter.route.domain.record.entity.dto.LocationDto;
 import com.easter.route.domain.record.service.RunningInfoConsumer;
 import com.easter.route.domain.record.service.RunningInfoProducer;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +21,9 @@ public class RecordStompController {
 
     @MessageMapping("/running/{recordId}")
     // @SendTo("/sub/running/{recordId}")
-    public void sendLocation(@DestinationVariable String recordId, RunningInfo runningInfo) {
+    public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data: {}", recordId);
-        runningInfoProducer.sendLocation(runningInfo);
+        runningInfoProducer.sendLocation(locationDto);
         // return "Server received Running Info data";
     }
 

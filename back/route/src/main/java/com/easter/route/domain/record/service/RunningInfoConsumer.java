@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.easter.route.domain.record.entity.dto.RunningInfo;
-import com.easter.route.domain.route.service.RouteService;
+import com.easter.route.domain.record.entity.dto.LocationDto;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RunningInfoConsumer {
 
-	private final HashMap<String, List<RunningInfo>> runningInfoMap = new HashMap<>();
+	private final HashMap<String, List<LocationDto>> runningInfoMap = new HashMap<>();
 
 	// Kafka recordId를 key로 메시지가 쌓이고, 그 값은 Map에 저장된다.
 	@KafkaListener(topics = "maon.route.location", groupId = "running.group")
-	public void listenLocation(RunningInfo runningInfo) {
-		log.info("Received location data: {}", runningInfo);
-		String recordId = runningInfo.getRecordId();
-		runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(runningInfo);
+	public void listenLocation(LocationDto locationDto) {
+		log.info("Received location data: {}", locationDto);
+		String recordId = locationDto.getRecordId();
+		runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(locationDto);
 	}
 
-	public List<RunningInfo> getRunningInfo(String recordId) {
+	public List<LocationDto> getRunningInfo(String recordId) {
 		return runningInfoMap.getOrDefault(recordId, new ArrayList<>());
 	}
 

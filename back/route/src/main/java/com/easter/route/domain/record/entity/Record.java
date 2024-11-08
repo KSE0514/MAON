@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.easter.route.domain.record.entity.dto.LocationDto;
 import com.easter.route.domain.record.entity.dto.RunningInfo;
 import com.easter.route.domain.record.entity.enums.RecordType;
 
