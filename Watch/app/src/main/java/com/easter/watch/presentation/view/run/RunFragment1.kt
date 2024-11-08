@@ -39,7 +39,7 @@ class RunFragment1 : Fragment() {
 
         // 애니메이션 로드 및 적용
         val pulseAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.pulse_animation)
-        binding.heartImg.startAnimation(pulseAnimation) // Fragment가 보일 때마다 애니메이션 재적용
+        //binding.heartImg.startAnimation(pulseAnimation) // Fragment가 보일 때마다 애니메이션 재적용
     }
 
     override fun onDestroyView() {

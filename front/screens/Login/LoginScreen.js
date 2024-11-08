@@ -14,9 +14,9 @@ import useUserStore from "../../store/useUserStore";
 
 import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
 
-import * as WebBrowser from "expo-web-browser"
-import * as Google from "expo-auth-session/providers/google"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Google OAuth 클라이언트 ID (Google Cloud Console에서 발급받은 ID로 대체하세요)
 const CLIENT_ID = "512721321300-u08i7mqrguoh6oore1gkihr54ukigqh0.apps.googleusercontent.com";
@@ -42,29 +42,25 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     handleSignInWithGoogle();
-  }, [response])
+  }, [response]);
 
-
-  async function handleSignInWithGoogle () {
+  async function handleSignInWithGoogle() {
     const user = await AsyncStorage.getItem("@user");
     if (!user) {
       if (response?.type === "success") {
         await getUserInfo(response.authentication.accessToken);
       }
     } else {
-      setUserInfo(JSON.parse(user))
+      setUserInfo(JSON.parse(user));
     }
   }
 
   const getUserInfo = async (token) => {
     if (!token) return;
     try {
-      const response = await fetch(
-        "https://www.googleapis.com/userinfo/v2/me",
-        {
-          headers: { Authorization: `Bearer ${token}`},
-        }
-      );
+      const response = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       const user = await response.json();
       await AsyncStorage.setItem("@user", JSON.stringify(user));
@@ -72,9 +68,7 @@ const LoginScreen = ({ navigation }) => {
     } catch (error) {
       // 에러 발생시 할 것
     }
-  }
-
-
+  };
 
   if (!fontsLoaded) {
     return null;
@@ -84,34 +78,33 @@ const LoginScreen = ({ navigation }) => {
     const handleUrl = ({ url }) => {
       const { queryParams } = Linking.parse(url);
       const idToken = queryParams.id_token;
-  
+
       if (idToken) {
-        console.log('Logged in with Google ID Token:', idToken);
+        console.log("Logged in with Google ID Token:", idToken);
         sendIdTokenToServer(idToken);
       }
     };
-  
-    Linking.addEventListener('url', handleUrl); // 기존 addListener 대신 addEventListener 사용
-  
+
+    Linking.addEventListener("url", handleUrl); // 기존 addListener 대신 addEventListener 사용
+
     return () => {
-      Linking.removeEventListener('url', handleUrl); // 기존 remove 대신 removeEventListener 사용
+      Linking.removeEventListener("url", handleUrl); // 기존 remove 대신 removeEventListener 사용
     };
   }, []);
-  
 
   // 서버로 id_token을 전송하는 함수
   const sendIdTokenToServer = async (idToken) => {
     try {
-      const response = await fetch('https://your-server.com/api/auth/google', {
-        method: 'POST',
+      const response = await fetch("https://your-server.com/api/auth/google", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ idToken }),
       });
 
       const serverResponse = await response.json();
-      console.log('Server Response:', serverResponse);
+      console.log("Server Response:", serverResponse);
 
       if (serverResponse.success) {
         // 서버가 인증에 성공하면 사용자 정보 상태 저장
@@ -131,22 +124,23 @@ const LoginScreen = ({ navigation }) => {
     const redirectUri = AuthSession.makeRedirectUri({
       scheme: "maon", // 위에서 설정한 스킴 이름과 동일해야 합니다.
     });
-  
+
     // 인증 URL 생성
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+    const authUrl =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
       `response_type=code&` +
       `client_id=${CLIENT_ID}&` +
       `scope=openid%20email%20profile&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
       `state=abcd1234&` +
       `nonce=abcd1234`;
-  
+
     const result = await AuthSession.startAsync({ authUrl });
-  
-    if (result.type === 'success' && result.params.code) {
+
+    if (result.type === "success" && result.params.code) {
       const authorizationCode = result.params.code;
-      console.log('Authorization Code:', authorizationCode);
-  
+      console.log("Authorization Code:", authorizationCode);
+
       // 서버에 authorizationCode를 보내어 토큰을 교환합니다
       sendAuthorizationCodeToServer(authorizationCode);
     } else {
@@ -156,17 +150,17 @@ const LoginScreen = ({ navigation }) => {
 
   const sendAuthorizationCodeToServer = async (authorizationCode) => {
     try {
-      const response = await fetch('https://your-server.com/api/auth/google', {
-        method: 'POST',
+      const response = await fetch("https://your-server.com/api/auth/google", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ authorizationCode }),
       });
-  
+
       const serverResponse = await response.json();
-      console.log('Server Response:', serverResponse);
-  
+      console.log("Server Response:", serverResponse);
+
       if (serverResponse.success) {
         // 서버가 인증에 성공하면 사용자 정보 상태 저장
         setUser({
@@ -202,7 +196,7 @@ const LoginScreen = ({ navigation }) => {
       <Wrap>
         <Logo>MA:ON</Logo>
         <Text>{JSON.stringify(userInfo)}</Text>
-        <RoundBtn text={"Google로 로그인"} onPress={promptAsync} />
+        <RoundBtn text={"Google로 로그인"} onPress={() => promptAsync()} />
       </Wrap>
     </Container>
   );

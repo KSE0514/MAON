@@ -4,12 +4,12 @@
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\activity_auth.xml"
     },
     {
-        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_circular_background.xml.flat",
-        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\circular_background.xml"
-    },
-    {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_white_background.xml.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\white_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_circular_background.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\circular_background.xml"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
@@ -20,10 +20,6 @@
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\mipmap-xhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_circle_pause_solid.xml.flat",
-        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\circle_pause_solid.xml"
-    },
-    {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_start_button_background.xml.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\start_button_background.xml"
     },
@@ -32,16 +28,16 @@
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\ic_line.png"
     },
     {
-        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\layout_activity_count_down.xml.flat",
-        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\activity_count_down.xml"
-    },
-    {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_ic_heart.png.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\ic_heart.png"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\mipmap-xxhdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\mipmap-xxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/layout_activity_run.xml.flat",
+        "source": "com.easter.watch.app-main-7:/layout/activity_run.xml"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_splash_icon.xml.flat",
@@ -72,10 +68,6 @@
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\fragment_run1.xml"
     },
     {
-        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_circle_stop_solid.xml.flat",
-        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\circle_stop_solid.xml"
-    },
-    {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_circle_stop_solid_light.xml.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\circle_stop_solid_light.xml"
     },
@@ -86,10 +78,6 @@
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\font_gmarketsansttflight.ttf.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\font\\gmarketsansttflight.ttf"
-    },
-    {
-        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_circle_play_solid.xml.flat",
-        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\circle_play_solid.xml"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\anim_pulse_animation.xml.flat",
@@ -124,16 +112,16 @@
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\activity_run.xml"
     },
     {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\layout_fragment_run2.xml.flat",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\fragment_run2.xml"
+    },
+    {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_circle_pause_solid_light.xml.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\circle_pause_solid_light.xml"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\drawable_ic_calory.png.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\drawable\\ic_calory.png"
-    },
-    {
-        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\layout_fragment_run2.xml.flat",
-        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\fragment_run2.xml"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\mipmap-mdpi_ic_launcher.webp.flat",
