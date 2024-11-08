@@ -36,8 +36,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws/location")
-			.setAllowedOrigins("http://k11c207.p.ssafy.io","https://k11c207.p.ssafy.io")
+		registry.addEndpoint("/maon/route/ws/location")
+			.setAllowedOriginPatterns("*")
 			.addInterceptors(new HandshakeInterceptor() {
 				@Override
 				public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
@@ -57,9 +57,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 					}
 				}
 			})
-			.withSockJS()  // SockJS 지원 추가
-			.setDisconnectDelay(30 * 1000)  // 연결 종료 대기 시간
-			.setHeartbeatTime(25 * 1000);   // SockJS heartbeat 간격
+//			.withSockJS()  // SockJS 지원 추가
+//			.setDisconnectDelay(30 * 1000)  // 연결 종료 대기 시간
+//			.setHeartbeatTime(25 * 1000);   // SockJS heartbeat 간격
+		;
 	}
 
 	@Override
