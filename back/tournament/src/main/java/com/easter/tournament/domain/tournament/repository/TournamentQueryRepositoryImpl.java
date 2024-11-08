@@ -19,11 +19,12 @@ public class TournamentQueryRepositoryImpl implements TournamentQueryRepository 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Tournament> findByYearAndMonth(Integer year, Integer month, Integer areaCodeId) {
+    public List<Tournament> findByYearAndMonth(Integer year, Integer month, Integer areaCodeId, boolean closed) {
         QTournament tournament = QTournament.tournament;
         BooleanBuilder builder = new BooleanBuilder();
 
         log.info("year : {}, month : {}, areaCodeId : {}" ,year, month, areaCodeId);
+        log.info("is closed : {}", closed);
 
         // 1. 년도로만 검색
         if (year != 0 && month == 0 && areaCodeId == 0) {
@@ -48,6 +49,10 @@ public class TournamentQueryRepositoryImpl implements TournamentQueryRepository 
         // 5. 장소로만 검색
         else if (year == 0 && month == 0 && areaCodeId != 0) {
             builder.and(tournament.areaCode.id.eq(areaCodeId.longValue()));
+        }
+
+        if(closed) {
+            builder.and(tournament.closed.eq(false));
         }
 
         return jpaQueryFactory
