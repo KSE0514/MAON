@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LocationDto {
+public class RunningInfo {
 	private String memberId;
-	private Double latitude;
-	private Double longitude;
+	private String recordId;
+	private String latitude;
+	private String longitude;
 	private int heartRate;
 	private String pace;
-	private String timestamp;
+	private String time;
 }

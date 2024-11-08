@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 
 import com.easter.route.domain.record.entity.Record;
-import com.easter.route.domain.route.entity.enums.RouteType;
+import com.easter.route.domain.record.entity.enums.RecordType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class RecordDto {
 	private String id;
 	private String raceId;
-	private RouteType routeType;
+	private RecordType recordType;
 	private boolean completed;
 	private String runningTime;
 	private String averagePace;
@@ -31,8 +31,7 @@ public class RecordDto {
 	public static RecordDto of(Record record) {
 		return RecordDto.builder()
 			.id(record.getId())
-			.raceId(record.getRaceId())
-			.routeType(record.getRouteType())
+			.recordType(record.getRecordType())
 			.completed(record.isCompleted())
 			.runningTime(record.getRunningTime())
 			.averagePace(record.getAveragePace())

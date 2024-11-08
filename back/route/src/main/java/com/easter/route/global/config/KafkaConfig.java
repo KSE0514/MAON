@@ -20,7 +20,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-import com.easter.route.domain.record.entity.dto.LocationDto;
+import com.easter.route.domain.record.entity.dto.RunningInfo;
 
 @Configuration
 @EnableKafka
@@ -67,14 +67,14 @@ public class KafkaConfig {
 	}
 
 	@Bean
-	public ConsumerFactory<String, LocationDto> locationConsumerFactory() {
+	public ConsumerFactory<String, RunningInfo> locationConsumerFactory() {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "k11c207.p.ssafy.io:29094,k11c207.p.ssafy.io:39094,k11c207.p.ssafy.io:49094");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.easter.route.domain.record.entity.dto");
-		return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(LocationDto.class));
+		return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(RunningInfo.class));
 	}
 
 	@Bean

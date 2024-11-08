@@ -7,7 +7,7 @@ import com.easter.route.domain.record.entity.dto.RecordDto;
 import com.easter.route.domain.record.entity.dto.UpdateRecordDto;
 import com.easter.route.domain.record.repository.RecordRepository;
 import com.easter.route.domain.route.entity.dto.CreateRunningDto;
-import com.easter.route.domain.route.entity.enums.RouteType;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Sort;
@@ -29,8 +29,6 @@ public class RecordServiceImpl implements RecordService {
     @Transactional
     public Record createRunning(CreateRunningDto createRunningDto) {
         Record record = Record.builder()
-                .raceId(createRunningDto.getRouteId())
-                .routeType(RouteType.valueOf(createRunningDto.getRouteType()))
                 .completed(false)
                 .runningTime("00:00:00")
                 .averagePace("00:00")
