@@ -1,11 +1,15 @@
 package com.easter.tournament.domain.tournament.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import com.easter.tournament.domain.tournament.model.dto.GetMarathonRequestDto;
+import com.easter.tournament.domain.tournament.model.dto.GetMarathonResponseDto;
 
-@Service
-@RequiredArgsConstructor
-@Slf4j
-public class TournamentService {
+import java.util.List;
+import java.util.UUID;
+
+public interface TournamentService {
+    List<GetMarathonResponseDto> getMarathon(GetMarathonRequestDto getMarathonRequestDto);
+
+    GetMarathonResponseDto getMarathonDetail(UUID uuid);
+
+    List<GetMarathonResponseDto> getMarathonByTitle(String title);
 }
