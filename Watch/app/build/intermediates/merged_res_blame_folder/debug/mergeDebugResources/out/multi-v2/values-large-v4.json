@@ -4,7 +4,7 @@
             "outputFile": "com.easter.watch.app-mergeDebugResources-3:/values-large-v4/values-large-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\ae63d3cf9e712f1fdfd79bd831ccce34\\transformed\\appcompat-1.7.0\\res\\values-large-v4\\values-large-v4.xml",
+                    "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\319fc750db4391776fd6173c4fd92efb\\transformed\\appcompat-1.7.0\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\34a03443e98e57b6ca88be8612df7a6b\\transformed\\material-1.12.0\\res\\values-large-v4\\values-large-v4.xml",
+                    "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\c09ac2fc86f95b27fe5a2f4e0d5bef31\\transformed\\material-1.12.0\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

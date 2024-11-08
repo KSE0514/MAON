@@ -56,11 +56,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 						log.debug("Handshake 성공");
 					}
 				}
-			})
-//			.withSockJS()  // SockJS 지원 추가
-//			.setDisconnectDelay(30 * 1000)  // 연결 종료 대기 시간
-//			.setHeartbeatTime(25 * 1000);   // SockJS heartbeat 간격
-		;
+			});
 	}
 
 	@Override
@@ -78,13 +74,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 			@Override
 			public Message<?> preSend(Message<?> message, MessageChannel channel) {
 				StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-				log.debug("Inbound Channel - Command: {}, SessionId: {}",
+				log.info("Inbound Channel - Command: {}, SessionId: {}",
 					accessor.getCommand(), accessor.getSessionId());
-
 				if (accessor.getCommand() == StompCommand.CONNECT) {
-					log.debug("STOMP CONNECT - Headers: {}", accessor.toNativeHeaderMap());
+					log.info("STOMP CONNECT - Headers: {}", accessor.toNativeHeaderMap());
 				} else if (accessor.getCommand() == StompCommand.DISCONNECT) {
-					log.debug("STOMP DISCONNECT - SessionId: {}", accessor.getSessionId());
+					log.info("STOMP DISCONNECT - SessionId: {}", accessor.getSessionId());
 				}
 
 				return message;

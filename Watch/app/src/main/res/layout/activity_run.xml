@@ -1,0 +1,25 @@
+<!-- res/layout/activity_main.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!-- 슬라이드 가능한 ViewPager2 -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- 고정된 TextView -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gmarketsansttflight"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="14:38"
+        android:textSize="13sp"
+        android:textColor="@color/light_beige"
+        android:padding="10dp" />
+
+</RelativeLayout>
