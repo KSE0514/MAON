@@ -20,5 +20,8 @@ public class GetMarathonResponseDto {
     private LocalDateTime receiptEnd;
     private LocalDateTime tournamentDayStart;
     private LocalDateTime tournamentDayEnd;
+    private Double latitude;
+    private Double longitude;
+    private String imageUrl;
     private boolean closed;
 }

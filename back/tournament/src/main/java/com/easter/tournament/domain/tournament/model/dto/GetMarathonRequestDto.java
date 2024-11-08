@@ -12,4 +12,5 @@ public class GetMarathonRequestDto {
     private int year;
     private int month;
     private int area;
+    private boolean closed;
 }
