@@ -97,4 +97,11 @@ dependencies {
     // Coroutines
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+
+    //Google Map
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    implementation ("androidx.wear:wear:1.2.0")
+    implementation ("androidx.appcompat:appcompat:1.4.0")
 }

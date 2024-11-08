@@ -8,6 +8,10 @@ import androidx.databinding.DataBindingComponent;
 import androidx.databinding.ViewDataBinding;
 import com.easter.watch.databinding.ActivityAuthBindingImpl;
 import com.easter.watch.databinding.ActivityRestartBindingImpl;
+import com.easter.watch.databinding.ActivityStartBindingImpl;
+import com.easter.watch.databinding.FragmentRun1BindingImpl;
+import com.easter.watch.databinding.FragmentRun2BindingImpl;
+import com.easter.watch.databinding.FragmentRun3BindingImpl;
 import java.lang.IllegalArgumentException;
 import java.lang.Integer;
 import java.lang.Object;
@@ -23,11 +27,23 @@ public class DataBinderMapperImpl extends DataBinderMapper {
 
   private static final int LAYOUT_ACTIVITYRESTART = 2;
 
-  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(2);
+  private static final int LAYOUT_ACTIVITYSTART = 3;
+
+  private static final int LAYOUT_FRAGMENTRUN1 = 4;
+
+  private static final int LAYOUT_FRAGMENTRUN2 = 5;
+
+  private static final int LAYOUT_FRAGMENTRUN3 = 6;
+
+  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(6);
 
   static {
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.activity_auth, LAYOUT_ACTIVITYAUTH);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.activity_restart, LAYOUT_ACTIVITYRESTART);
+    INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.activity_start, LAYOUT_ACTIVITYSTART);
+    INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.fragment_run1, LAYOUT_FRAGMENTRUN1);
+    INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.fragment_run2, LAYOUT_FRAGMENTRUN2);
+    INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.fragment_run3, LAYOUT_FRAGMENTRUN3);
   }
 
   @Override
@@ -50,6 +66,30 @@ public class DataBinderMapperImpl extends DataBinderMapper {
             return new ActivityRestartBindingImpl(component, view);
           }
           throw new IllegalArgumentException("The tag for activity_restart is invalid. Received: " + tag);
+        }
+        case  LAYOUT_ACTIVITYSTART: {
+          if ("layout/activity_start_0".equals(tag)) {
+            return new ActivityStartBindingImpl(component, view);
+          }
+          throw new IllegalArgumentException("The tag for activity_start is invalid. Received: " + tag);
+        }
+        case  LAYOUT_FRAGMENTRUN1: {
+          if ("layout/fragment_run1_0".equals(tag)) {
+            return new FragmentRun1BindingImpl(component, view);
+          }
+          throw new IllegalArgumentException("The tag for fragment_run1 is invalid. Received: " + tag);
+        }
+        case  LAYOUT_FRAGMENTRUN2: {
+          if ("layout/fragment_run2_0".equals(tag)) {
+            return new FragmentRun2BindingImpl(component, view);
+          }
+          throw new IllegalArgumentException("The tag for fragment_run2 is invalid. Received: " + tag);
+        }
+        case  LAYOUT_FRAGMENTRUN3: {
+          if ("layout/fragment_run3_0".equals(tag)) {
+            return new FragmentRun3BindingImpl(component, view);
+          }
+          throw new IllegalArgumentException("The tag for fragment_run3 is invalid. Received: " + tag);
         }
       }
     }
@@ -104,11 +144,15 @@ public class DataBinderMapperImpl extends DataBinderMapper {
   }
 
   private static class InnerLayoutIdLookup {
-    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(2);
+    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(6);
 
     static {
       sKeys.put("layout/activity_auth_0", com.easter.watch.R.layout.activity_auth);
       sKeys.put("layout/activity_restart_0", com.easter.watch.R.layout.activity_restart);
+      sKeys.put("layout/activity_start_0", com.easter.watch.R.layout.activity_start);
+      sKeys.put("layout/fragment_run1_0", com.easter.watch.R.layout.fragment_run1);
+      sKeys.put("layout/fragment_run2_0", com.easter.watch.R.layout.fragment_run2);
+      sKeys.put("layout/fragment_run3_0", com.easter.watch.R.layout.fragment_run3);
     }
   }
 }

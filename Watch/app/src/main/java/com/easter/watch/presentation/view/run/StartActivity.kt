@@ -1,7 +1,10 @@
 package com.easter.watch.presentation.view.run
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.animation.AnimationUtils
+import android.view.animation.ScaleAnimation
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -26,6 +29,13 @@ class StartActivity : AppCompatActivity() {
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.runStartBtn.setOnClickListener {
+            // 버튼 클릭 시 Activity 전환
+            val intent = Intent(this, RunActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         intent.getStringExtra("deviceToken")?.let { deviceToken ->
             connectWebSocket(deviceToken)
         }
@@ -46,7 +56,7 @@ class StartActivity : AppCompatActivity() {
         }
 
         webSocketManager.connect(
-            "your-websocket-server-url",  // 웹소켓 서버 URL
+            "https://k11c207.p.ssafy.io/maon/",  // 웹소켓 서버 URL
             deviceToken
         )
     }
