@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
-    "@expo/webpack-config": "~19.0.1",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
