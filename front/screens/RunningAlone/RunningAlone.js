@@ -25,8 +25,6 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
-import { Client } from "@stomp/stompjs";
-import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
 
 const RunningAlone = ({ navigation, route }) => {
   const { roomId } = route.params;

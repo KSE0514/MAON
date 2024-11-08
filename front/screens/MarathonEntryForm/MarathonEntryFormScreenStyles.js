@@ -14,12 +14,12 @@ export const Wrapper = styled.SafeAreaView`
 `
 
 export const Container = styled.View`
-  padding-top: ${screenHeight*0.05}px;
-  padding-horizontal: ${screenWidth*0.07}px;
+padding: 0 ${screenWidth*0.07}px;
+padding-top: ${screenHeight*0.05}px;
 `
 
 export const TitleArea = styled.View`
-  padding-vertical: 22px;
+  padding: 22px 0;
 `
 
 export const TitleText = styled.Text`

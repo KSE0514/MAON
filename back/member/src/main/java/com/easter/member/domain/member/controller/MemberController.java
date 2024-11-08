@@ -1,8 +1,7 @@
 package com.easter.member.domain.member.controller;
 
+import com.easter.member.domain.member.model.dto.*;
 import com.easter.member.domain.service.model.dto.ConfirmMemberResponseDto;
-import com.easter.member.domain.member.model.dto.RegisterMemberRequestDto;
-import com.easter.member.domain.member.model.dto.RegisterMemberResponseDto;
 import com.easter.member.domain.member.service.MemberService;
 import com.easter.member.global.response.ResultResponse;
 import com.easter.member.global.security.userinfo.PassportDto;
@@ -34,6 +33,14 @@ public class MemberController {
     
     /* 테스트 메서드 종료  */
 
+    @GetMapping("/login")
+    public ResponseEntity<ResultResponse> login(@RequestParam("token") String token) {
+        log.info("login via id_token");
+        LoginResponseDto responseDto = memberService.login(token);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "로그인 처리를 완료했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
     @PostMapping("/info")
     public ResponseEntity<ResultResponse> register(@RequestAttribute("passport") PassportDto passport, @RequestBody RegisterMemberRequestDto requestDto) {
         log.info("register new member info");
@@ -45,7 +52,15 @@ public class MemberController {
     @PatchMapping("/info")
     public ResponseEntity<ResultResponse> modify(@RequestAttribute("passport") PassportDto passport, @RequestBody Object o) {
         log.info("modify member info");
-        return null;
+        return null; // todo : 회원정보 수정 제작
+    }
+    
+    @PostMapping("/reissue")
+    public ResponseEntity<ResultResponse> reissue(@RequestBody ReissueTokenRequestDto requestDto) {
+        log.info("reissue member info");
+        ReissueTokenResponseDto responseDto = memberService.reissueToken(requestDto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "액세스 토큰을 재발급했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     @GetMapping("/logout")

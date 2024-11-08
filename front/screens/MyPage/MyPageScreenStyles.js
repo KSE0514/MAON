@@ -17,8 +17,7 @@ export const BackBtn = styled.TouchableOpacity`
   align-items: center;
   justify-content: flex-start;
   gap: 5px;
-  padding-vertical: 10px;
-  padding-horizontal: 10px;
+  padding: 10px;
 `
 
 export const EditBtn = styled.TouchableOpacity`
@@ -26,8 +25,7 @@ export const EditBtn = styled.TouchableOpacity`
   align-items: center;
   justify-content: flex-end;
   gap: 5px;
-  padding-vertical: 10px;
-  padding-horizontal: 10px;
+  padding: 10px;
 `
 export const EditBtnText = styled.Text`
   font-size: 15px;
@@ -37,7 +35,7 @@ export const EditBtnText = styled.Text`
 
 export const Top = styled.View`
   align-items: center;
-  padding-vertical: 20px;
+  padding: 20px 0;
 `
 
 export const ProfileImg = styled.View`
@@ -55,7 +53,7 @@ export const TopInfoContainer = styled.View`
 export const NickNameText = styled.Text`
   font-family: ${fonts.gMarketBold};
   color: ${colors.black};
-  font-size: 34%;
+  font-size: 34px;
 `
 
 export const BodyInfoEditView = styled.View`
@@ -68,26 +66,25 @@ export const BodyInfoEditView = styled.View`
 export const BodyInfoEditTextInput = styled.TextInput`
   border: 1px solid rgba(188, 188, 188, 0.56);
   aspect-ratio: 3;
-  borderRadius: 10px;
+  border-radius: 10px;
   font-family: ${fonts.gMarketMedium};
-  font-size: 14%;
+  font-size: 14px;
   text-align: center;
   width: 100px;
-  padding-horizontal: 10px;
+  padding: 0 10px;
 `
 
 export const BodyinfoText = styled.Text`
   font-family: ${fonts.gMarketMedium};
   color: ${colors.black};
-  font-size: 14%;
+  font-size: 14px;
   margin-top: 5px;
   line-height: 22px;
-  padding-vertical: 2px;
+  padding: 2px 0;
 `
 
 export const Content = styled.View`
-  padding-horizontal: 10%;
-  padding-vertical: 5%;
+  padding: 5% 10% 5%;
   gap: 10%;
 `
 

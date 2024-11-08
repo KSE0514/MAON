@@ -71,6 +71,7 @@ export default function App() {
           <Stack.Screen name="MyPage" component={MyPageScreen} />
           <Stack.Screen name="Notification" component={NotificationScreen} />
           <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
+          <Stack.Screen name="Challenge" component={ChallengeScreen} />
           <Stack.Screen
             name="MarathonEntryForm"
             component={MarathonEntryFormScreen}
@@ -107,7 +108,7 @@ const MainTabs = ({ route }) => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="MarathonInfo" component={MarathonInfoScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />
-      <Tab.Screen name="Challenge" component={ChallengeScreen} />
+      {/* <Tab.Screen name="Challenge" component={ChallengeScreen} /> */}
       {/* <Tab.Screen name="FriendList" component={CreateTeamScreen} /> */}
     </Tab.Navigator>
   );
