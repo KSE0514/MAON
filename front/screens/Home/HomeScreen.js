@@ -1,12 +1,4 @@
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  Button,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, View, Text, Dimensions, Image } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import {
   AloneRunBtn,
@@ -21,6 +13,9 @@ import HeaderNavigation from "../../components/HeaderNavigation/HeaderNavigation
 import fonts from "../../styles/fonts";
 import GradientButton from "../../components/Button/GradientsBtn/GradientsButton";
 import CustomCarousel from "../../components/CustomCarousel/CustomCarousel";
+import color from "../../styles/colors";
+
+const { width } = Dimensions.get("window");
 const HomeScreen = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
 
@@ -64,14 +59,14 @@ const HomeScreen = ({ navigation }) => {
       </ButtonList>
       <MaraThonInfoArea>
         <View>
-          <View></View>
-          <View>
-            <Text style={styles.font}>참여예정인 마라톤</Text>
-          </View>
+          <Image source={require("../../assets/images/homeLine.png")} />
+          <Text style={[styles.font, styles.previewTitle]}>다가오는 일정</Text>
         </View>
-        <CarouselView>
-          <CustomCarousel />
-        </CarouselView>
+        <View style={styles.shadowContainer}>
+          <CarouselView>
+            <CustomCarousel />
+          </CarouselView>
+        </View>
       </MaraThonInfoArea>
     </Wrapper>
   );
@@ -82,12 +77,14 @@ const styles = StyleSheet.create({
   },
   shadowContainer: {
     flex: 1,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4.65,
-    elevation: 5, // Android 전용
-    borderRadius: 20,
+    marginVertical: 10,
+  },
+  previewTitle: {
+    fontSize: 18,
+    color: "white",
+    position: "absolute",
+    top: 18,
+    left: width * 0.05,
   },
 });
 export default HomeScreen;

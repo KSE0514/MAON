@@ -115,41 +115,41 @@ export default function Map({
   /**
    * 1초마다 위치 변경하기
    */
-  // const handleUserLocationChange = (location) => {
-  //   if (runStart) {
-  //     const newCoordinate = {
-  //       latitude: location.coords.latitude,
-  //       longitude: location.coords.longitude,
-  //     };
-  //     setGps((prevGps) => {
-  //       if (prevGps.length > 0) {
-  //         const lastPosition = prevGps[prevGps.length - 1];
-  //         const distanceIncrement = calculateDistance(
-  //           lastPosition,
-  //           newCoordinate
-  //         );
-  //         setRunningDistance(
-  //           (prevDistance) => prevDistance + distanceIncrement
-  //         );
-  //       }
-  //       return [...prevGps, newCoordinate];
-  //     });
-  //     onLocationChange(newCoordinate);
+  const handleUserLocationChange = (location) => {
+    if (runStart) {
+      const newCoordinate = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      setGps((prevGps) => {
+        if (prevGps.length > 0) {
+          const lastPosition = prevGps[prevGps.length - 1];
+          const distanceIncrement = calculateDistance(
+            lastPosition,
+            newCoordinate
+          );
+          setRunningDistance(
+            (prevDistance) => prevDistance + distanceIncrement
+          );
+        }
+        return [...prevGps, newCoordinate];
+      });
+      onLocationChange(newCoordinate);
 
-  //     setMarkers((prevMarkers) =>
-  //       prevMarkers.map((marker) =>
-  //         marker.id === "current-point"
-  //           ? {
-  //               ...marker,
-  //               latitude: newCoordinate.latitude,
-  //               longitude: newCoordinate.longitude,
-  //             }
-  //           : marker
-  //       )
-  //     );
-  //     setmapRegion(newCoordinate);
-  //   }
-  // };
+      setMarkers((prevMarkers) =>
+        prevMarkers.map((marker) =>
+          marker.id === "current-point"
+            ? {
+                ...marker,
+                latitude: newCoordinate.latitude,
+                longitude: newCoordinate.longitude,
+              }
+            : marker
+        )
+      );
+      setmapRegion(newCoordinate);
+    }
+  };
 
   useEffect(() => {
     const startTracking = async () => {

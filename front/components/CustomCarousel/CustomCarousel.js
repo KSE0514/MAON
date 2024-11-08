@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, Image } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
-import { Col, Row, Wrapper, styles } from "./CustomCarouselStyle";
+import { Col, Row, RunBtn, Wrapper, styles } from "./CustomCarouselStyle";
 import color from "../../styles/colors";
 import {
   faLocationDot,
@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
+import fonts from "../../styles/fonts";
 
 const { width } = Dimensions.get("window");
 
@@ -39,9 +40,9 @@ const CustomCarousel = () => {
       width={width}
       data={data}
       renderItem={({ item }) => (
-        <Wrapper>
+        <Wrapper style={styles.wrapper}>
           <Text style={styles.title}>{item.name}</Text>
-          <View>
+          <View style={{ flexDirection: "row", marginTop: 5, flex: 1 }}>
             <Col>
               <Row>
                 <FontAwesomeIcon
@@ -59,7 +60,7 @@ const CustomCarousel = () => {
                   size={20}
                   color={color.grape_fruit}
                 />
-                <Text style={styles.subText}>{item.routeLength}</Text>
+                <Text style={[styles.subText]}>{item.routeLength}</Text>
               </Row>
               <Row>
                 <FontAwesomeIcon
@@ -67,13 +68,41 @@ const CustomCarousel = () => {
                   size={20}
                   color={color.grape_fruit}
                 />
-                <Text style={styles.subText}>{item.place}</Text>
+                <Text
+                  style={[styles.subText, { width: 130 }]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {item.place}
+                </Text>
+              </Row>
+              <Row
+                style={{
+                  flex: 1,
+                  justifyContent: "flex-end",
+                  marginTop: 0,
+                  marginBottom: 0,
+                }}
+              >
+                <RunBtn>
+                  <Text
+                    style={{ color: "white", fontFamily: fonts.gMarketBold }}
+                  >
+                    D-2
+                  </Text>
+                </RunBtn>
               </Row>
             </Col>
-            <Col></Col>
+            <Col style={{ marginRight: 20, marginLeft: 20 }}>
+              <Image
+                style={{ flex: 1 }}
+                source={require("../../assets/images/route.png")}
+              />
+            </Col>
           </View>
         </Wrapper>
       )}
+      style={{ flex: 1 }}
     />
   );
 };
