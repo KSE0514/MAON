@@ -1,8 +1,12 @@
 {
   "expo": {
     "scheme": "maon",
-    "platforms": ["ios", "android"],
-    "name": "front",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "name": "maon",
     "slug": "maon",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,6 +19,7 @@
     },
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.ssafy.maon",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "프로필 사진을 업로드하기 위해 사진 접근 권한이 필요합니다."
       }
@@ -31,14 +36,15 @@
     },
     "extra": {
       "eas": {
-        "projectId": "566b652c-1825-48b7-a6a8-3b2172fe1792"
+        "projectId": "7840d08f-0feb-4f5e-9438-7aa843191468"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/566b652c-1825-48b7-a6a8-3b2172fe1792"
-    }
+      "url": "https://u.expo.dev/7840d08f-0feb-4f5e-9438-7aa843191468"
+    },
+    "owner": "maon"
   }
 }
