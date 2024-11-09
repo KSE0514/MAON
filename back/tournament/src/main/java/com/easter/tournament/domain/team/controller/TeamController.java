@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.transform.Result;
 import java.util.UUID;
 
 @RestController
@@ -56,7 +55,6 @@ public class TeamController {
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀 초대 후보를 조회했습니다.", responseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
-
 
     /**
      * 마라톤 팀 요청

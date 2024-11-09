@@ -2,12 +2,17 @@ package com.easter.tournament.domain.participant.repository;
 
 import com.easter.tournament.domain.participant.entity.Participant;
 import com.easter.tournament.domain.participant.entity.QParticipant;
+import com.easter.tournament.domain.participant.model.ParticipantStatus;
+import com.easter.tournament.domain.tournament.entity.QTournament;
+import com.easter.tournament.domain.tournament.model.dto.MyTournament;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ParticipantQueryRepository {
     private final JPAQueryFactory queryFactory;
-    private final  QParticipant participant = QParticipant.participant;
+    private final QParticipant participant = QParticipant.participant;
 
     public Participant findParticipant(UUID memberId, long tournamentId) {
         return queryFactory.selectFrom(participant).where(
@@ -37,6 +42,19 @@ public class ParticipantQueryRepository {
                         participant.teamId.isNull()
                 )
         ).fetch();
+    }
+
+    public List<MyTournament> findMyTournament(UUID memberId) {
+        QTournament tournament = QTournament.tournament;
+        return queryFactory.select(Projections.constructor(MyTournament.class, tournament.uuid, tournament.title, tournament.tournamentDayStart, tournament.tournamentDayEnd, participant.tournamentCategory, tournament.location, tournament.imageUrl))
+                .from(participant)
+                .join(participant.tournament, tournament)
+                .where(participant.memberId.eq(memberId)
+                        .and(tournament.tournamentDayEnd.after(LocalDateTime.now())
+                                .and(participant.status.ne(ParticipantStatus.CANCEL)))
+                        )
+                .orderBy(tournament.tournamentDayStart.asc())
+                .fetch();
     }
 
 }
