@@ -1,8 +1,11 @@
 package com.easter.route.domain.record.controller;
 
-import com.easter.route.domain.record.service.RecordService;
+import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.record.entity.dto.LocationDto;
-import com.easter.route.domain.record.service.LocationProducer;
+import com.easter.route.domain.record.entity.dto.RecordDto;
+import com.easter.route.domain.record.entity.dto.RunningResultDto;
+import com.easter.route.domain.record.service.RunningInfoConsumer;
+import com.easter.route.domain.record.service.RunningInfoProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -14,27 +17,20 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 @Slf4j
 public class RecordStompController {
-    private final RecordService recordService;
-    private final LocationProducer locationProducer;
-
-    @MessageMapping("/handshake")
-    @SendTo("/sub/handshake")
-    public String handshake() {
-        log.info("Handshake received");
-        return "Handshake successful";
-    }
+    private final RunningInfoProducer runningInfoProducer;
+    private final RunningInfoConsumer runningInfoConsumer;
 
     @MessageMapping("/running/{recordId}")
-    @SendTo("/sub/running/{recordId}")
-    public String sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
+    // @SendTo("/sub/running/{recordId}")
+    public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data: {}", recordId);
-        locationProducer.sendLocation(recordId, locationDto);
-        return "success";
+        runningInfoProducer.sendLocation(locationDto);
     }
 
-    // @MessageMapping("/running/{recordId}/end")
-    // public void endRecord(@DestinationVariable String recordId) {
-    //     log.info("End record: {}", recordId);
-    //     recordService.endRecord(recordId);
-    // }
+    @MessageMapping("/running/{recordId}/end")
+    @SendTo("/sub/running/{recordId}/end")
+    public RunningResultDto finish(@DestinationVariable String recordId) {
+        log.info("End record: {}", recordId);
+        return runningInfoConsumer.finish(recordId);
+    }
 }
