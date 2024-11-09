@@ -3,6 +3,7 @@ package com.easter.tournament.domain.tournament.model.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -25,5 +26,5 @@ public class GetMarathonResponseDto {
     private String imageUrl;
     private boolean closed;
 
-    private CategoryDto category;
+    private List<String> categories;
 }
