@@ -61,12 +61,11 @@ class StartActivity : AppCompatActivity() {
         if (requestCode == SensorPermissionService.PERMISSION_REQUEST_CODE) {
             // 권한이 모두 허용되었는지 확인
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                return
+
             } else {
-                // 권한이 허용되지 않은 경우 사용자에게 안내
+                // 권한이 하나라도 허용되지 않은 경우 사용자에게 안내
                 Toast.makeText(this, "권한이 필요합니다.", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this,StartActivity::class.java))
-                //finish()
             }
         }
     }
