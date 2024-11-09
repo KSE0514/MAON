@@ -1,14 +1,20 @@
 package com.easter.tournament.domain.tournament.service;
 
+import com.easter.tournament.domain.participant.repository.ParticipantQueryRepository;
+import com.easter.tournament.domain.participant.repository.ParticipantRepository;
 import com.easter.tournament.domain.tournament.entity.Tournament;
 import com.easter.tournament.domain.tournament.model.dto.GetMarathonRequestDto;
 import com.easter.tournament.domain.tournament.model.dto.GetMarathonResponseDto;
+import com.easter.tournament.domain.tournament.model.dto.SearchMyTournamentResponseDto;
+import com.easter.tournament.domain.tournament.model.dto.MyTournament;
 import com.easter.tournament.domain.tournament.repository.TournamentQueryRepository;
 import com.easter.tournament.domain.tournament.repository.TournamentRepository;
+import com.easter.tournament.global.security.PassportDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +25,8 @@ public class TournamentServiceImpl implements TournamentService {
 
     private final TournamentRepository tournamentRepository;
     private final TournamentQueryRepository tournamentQueryRepository;
+    private final ParticipantRepository participantRepository;
+    private final ParticipantQueryRepository participantQueryRepository;
 
     @Override
     public List<GetMarathonResponseDto> getMarathon(GetMarathonRequestDto getMarathonRequestDto) {
@@ -105,5 +113,13 @@ public class TournamentServiceImpl implements TournamentService {
         ).toList();
 
         return getMarathonResponseDtos;
+    }
+
+    @Override
+    public SearchMyTournamentResponseDto searchMyTournament(PassportDto passport) {
+        List<MyTournament> tournamentList = participantQueryRepository.findMyTournament(passport.getId());
+        return SearchMyTournamentResponseDto.builder()
+                .tournamentList(tournamentList)
+                .build();
     }
 }

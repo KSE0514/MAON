@@ -3,6 +3,7 @@ package com.easter.tournament.domain.participant.entity;
 import com.easter.tournament.domain.team.entity.Team;
 import com.easter.tournament.domain.tournament.entity.Tournament;
 import com.easter.tournament.domain.participant.model.ParticipantStatus;
+import com.fasterxml.uuid.Generators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -51,11 +52,30 @@ public class Participant {
     private LocalDateTime updateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tournament_id")
+    @JoinColumn(name = "tournament_id", insertable = false, updatable = false)
     private Tournament tournament;
 
+    @NotNull
+    @Column(name = "tournament_id")
+    private Long tournamentId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", insertable = false, updatable = false)
     private Team team;
+
+    @Column(name = "team_id")
+    private Long teamId;
+
+    @PrePersist
+    private void prePersist() {
+        this.uuid = Generators.timeBasedEpochGenerator().generate();
+        this.createTime = LocalDateTime.now();
+        this.updateTime = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        this.updateTime = LocalDateTime.now();
+    }
 
 }

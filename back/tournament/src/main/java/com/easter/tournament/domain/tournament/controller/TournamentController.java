@@ -2,9 +2,11 @@ package com.easter.tournament.domain.tournament.controller;
 
 import com.easter.tournament.domain.tournament.model.dto.GetMarathonRequestDto;
 import com.easter.tournament.domain.tournament.model.dto.GetMarathonResponseDto;
+import com.easter.tournament.domain.tournament.model.dto.SearchMyTournamentResponseDto;
 import com.easter.tournament.domain.tournament.service.TournamentService;
 import com.easter.tournament.domain.tournament.service.TournamentServiceImpl;
 import com.easter.tournament.global.response.ResultResponse;
+import com.easter.tournament.global.security.PassportDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +31,6 @@ public class TournamentController {
      */
     @PostMapping("/getMarathon")
     public ResponseEntity<?> getAllMarathon(@Valid @RequestBody GetMarathonRequestDto getMarathonRequestDto) {
-//        log.info("Get marathon year: {}, month: {}", year, month);
         List<GetMarathonResponseDto> getMarathonResponseDtos = tournamentService.getMarathon(getMarathonRequestDto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "마라톤 정보 조회 성공", getMarathonResponseDtos);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
@@ -59,5 +60,18 @@ public class TournamentController {
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, getMarathonResponseDto.getTitle() + " 조회성공", getMarathonResponseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
+
+    /**
+     * 자신의 마라톤 신청 리스트 조회
+     * @return
+     */
+    @GetMapping("/my")
+    public ResponseEntity<ResultResponse> myTournament(@RequestAttribute("passport") PassportDto passport) {
+        log.info("search my tournament : {}", passport.getEmail());
+        SearchMyTournamentResponseDto responseDto = tournamentService.searchMyTournament(passport);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "참여 마라톤 정보를 조회했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
 
 }
