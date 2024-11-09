@@ -26,3 +26,9 @@ export const FriendList = styled(TouchableOpacity)`
 export const MaraThonInfoArea = styled.View`
   flex: 1;
 `;
+
+export const CarouselView = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;

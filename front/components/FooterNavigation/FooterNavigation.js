@@ -37,8 +37,8 @@ const FooterNavigation = ({ currentRoute }) => {
               ]}
             >
               <Svg
-                width={40}
-                height={40}
+                width={35}
+                height={35}
                 fill={currentRoute === "Home" ? activeColor : color.white}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 576 512"
@@ -70,8 +70,8 @@ const FooterNavigation = ({ currentRoute }) => {
               ]}
             >
               <Svg
-                width={40}
-                height={40}
+                width={35}
+                height={35}
                 fill={currentRoute === "Marathon" ? activeColor : color.white}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
@@ -101,8 +101,8 @@ const FooterNavigation = ({ currentRoute }) => {
               ]}
             >
               <Svg
-                width={40}
-                height={40}
+                width={35}
+                height={35}
                 fill={currentRoute === "Record" ? activeColor : color.white}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
@@ -134,8 +134,8 @@ const FooterNavigation = ({ currentRoute }) => {
               ]}
             >
               <Svg
-                width={40}
-                height={40}
+                width={35}
+                height={35}
                 fill={currentRoute === "Challenge" ? activeColor : color.white}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 576 512"
@@ -160,7 +160,7 @@ const FooterNavigation = ({ currentRoute }) => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    aspectRatio: Platform.OS === "ios" ? 4 : 5,
+    aspectRatio: Platform.OS === "ios" ? 4.3 : 5,
   },
   footerNav: {
     flexDirection: "row",
@@ -188,9 +188,9 @@ const styles = StyleSheet.create({
   },
   label: {
     color: color.white,
-    fontSize: 18,
+    fontSize: 14,
     paddingTop: 3,
-    fontFamily: fonts.gMarketLight,
+    fontFamily: fonts.gMarketMedium,
   },
 });
 

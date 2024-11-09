@@ -12,5 +12,6 @@ import java.util.UUID;
 public class ParticipantRequestDto {
     private UUID memberId;
     private String tournamentCategory;
-    private long tournamentId;
+    private UUID tournamentId;
+    private long teamId;
 }

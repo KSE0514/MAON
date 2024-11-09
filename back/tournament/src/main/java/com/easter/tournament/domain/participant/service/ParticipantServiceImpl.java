@@ -27,7 +27,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Override
     public void marathonJoin(ParticipantRequestDto participantRequestDto) {
 
-        Optional<Tournament> tournament = tournamentRepository.findById(participantRequestDto.getTournamentId());
+        Optional<Tournament> tournament = Optional.ofNullable(tournamentRepository.findByUuid(participantRequestDto.getTournamentId()));
 
         if (tournament.isPresent()) {
 

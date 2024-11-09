@@ -3,6 +3,7 @@ package com.easter.tournament.domain.tournament.service;
 import com.easter.tournament.domain.participant.repository.ParticipantQueryRepository;
 import com.easter.tournament.domain.participant.repository.ParticipantRepository;
 import com.easter.tournament.domain.tournament.entity.Tournament;
+import com.easter.tournament.domain.tournament.model.dto.CategoryDto;
 import com.easter.tournament.domain.tournament.model.dto.GetMarathonRequestDto;
 import com.easter.tournament.domain.tournament.model.dto.GetMarathonResponseDto;
 import com.easter.tournament.domain.tournament.model.dto.SearchMyTournamentResponseDto;
@@ -40,6 +41,16 @@ public class TournamentServiceImpl implements TournamentService {
 
         List<GetMarathonResponseDto> getMarathonResponseDtos = tournaments.stream().map(
                 tournament -> {
+                    List<String> categoryValues = tournament.getTournamentAssignment().stream().map(
+                            tournamentAssignment -> {
+                                return tournamentAssignment.getCategory().getCategoryValue();
+                            }
+                    ).toList();
+
+                    CategoryDto categoryDto = CategoryDto.builder()
+                            .categories(categoryValues)
+                            .build();
+
                     return GetMarathonResponseDto.builder()
                             .title(tournament.getTitle())
                             .host(tournament.getHost())
@@ -54,6 +65,7 @@ public class TournamentServiceImpl implements TournamentService {
                             .latitude(tournament.getLatitude())
                             .imageUrl(tournament.getImageUrl())
                             .closed(tournament.isClosed())
+                            .category(categoryDto)
                             .build();
                 }
         ).toList();
