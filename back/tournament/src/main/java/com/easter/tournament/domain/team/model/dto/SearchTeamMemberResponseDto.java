@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchTeamMemberResponseDto {
-    private List<TeamMemberDto> teamMemberList;
+    private List<MemberDto> teamMemberList;
 }

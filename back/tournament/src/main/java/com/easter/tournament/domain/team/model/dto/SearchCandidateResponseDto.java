@@ -5,15 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
+import java.util.List;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamMemberDto {
-    private UUID id;
-    private String nickname;
-    private String email;
-    private String imageUrl;
+public class SearchCandidateResponseDto {
+    private List<MemberDto> candidateInfoList;
 }

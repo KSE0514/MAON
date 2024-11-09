@@ -1,7 +1,6 @@
 package com.easter.tournament.domain.team.controller;
 
-import com.easter.tournament.domain.team.model.dto.CreateTeamRequestDto;
-import com.easter.tournament.domain.team.model.dto.SearchTeamMemberResponseDto;
+import com.easter.tournament.domain.team.model.dto.*;
 import com.easter.tournament.domain.team.service.TeamService;
 import com.easter.tournament.global.response.ResultResponse;
 import com.easter.tournament.global.security.PassportDto;
@@ -29,8 +28,8 @@ public class TeamController {
     @PostMapping("/create")
     public ResponseEntity<ResultResponse> join(@RequestAttribute("passport") PassportDto passport, @RequestBody CreateTeamRequestDto dto){
         log.info("create team");
-        teamService.createTeam(passport, dto);
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀을 생성했습니다.");
+        CreateTeamResponseDto responseDto = teamService.createTeam(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀을 생성했습니다.", responseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
@@ -47,10 +46,22 @@ public class TeamController {
     }
 
     /**
+     * 마라톤 팀 초대 가능 멤버 조회
+     * @return
+     */
+    @PostMapping("/invite/candidate")
+    public ResponseEntity<ResultResponse> searchCandidate(@RequestAttribute("passport") PassportDto passport, @RequestBody SearchCandidateRequestDto dto) {
+        log.info("search candidate member");
+        SearchCandidateResponseDto responseDto = teamService.searchCandidate(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀 초대 후보를 조회했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+
+    /**
      * 마라톤 팀 요청
      * @return
      */
-    @PostMapping("/teamRequest")
     public ResponseEntity<ResultResponse> teamRequest(){
 
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "");

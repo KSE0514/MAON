@@ -84,8 +84,28 @@ public class TeamServiceImpl implements TeamService {
     public SearchTeamMemberResponseDto searchTeamMember(UUID teamId) {
         Team team = teamRepository.findByUuid(teamId).orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다."));
         List<UUID> memberIdList = participantQueryRepository.findMemberIdByTeamId(team.getId());
+        SearchMemberResponseDto memberResponseDto = getMemberInfo(memberIdList,null);
+        return SearchTeamMemberResponseDto.builder()
+                .teamMemberList(memberResponseDto.getMemberInfoList())
+                .build();
+    }
+
+    @Override
+    public SearchCandidateResponseDto searchCandidate(PassportDto passport, SearchCandidateRequestDto dto) {
+        Tournament tournament = tournamentRepository.findByUuid(dto.getTournamentId());
+        if(tournament == null) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다.");
+        }
+        List<UUID> candidateIdList = participantQueryRepository.findCandidateByTournamentId(tournament.getId());
+        SearchMemberResponseDto memberResponseDto = getMemberInfo(candidateIdList, dto.getKeyword());
+        return SearchCandidateResponseDto.builder()
+                .candidateInfoList(memberResponseDto.getMemberInfoList())
+                .build();
+    }
+
+    private SearchMemberResponseDto getMemberInfo(List<UUID> memberIdList, String nicknameKeyword) {
         ResponseEntity<Map> memberResponse = restClient.post().uri(memberUrl + "/service/search").contentType(MediaType.APPLICATION_JSON)
-                .body(SearchMemberRequestDto.builder().idList(memberIdList).build())
+                .body(SearchMemberRequestDto.builder().idList(memberIdList).nicknameKeyword(nicknameKeyword).build())
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                     throw new BusinessException(HttpStatus.BAD_REQUEST, "멤버 서비스와 통신 실패");
@@ -94,18 +114,6 @@ public class TeamServiceImpl implements TeamService {
                     throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "멤버 서비스와 통신 실패");
                 })
                 .toEntity(Map.class);
-        SearchMemberResponseDto memberResponseDto = objectMapper.convertValue(memberResponse.getBody().get("data"), SearchMemberResponseDto.class);
-        List<TeamMemberDto> responseList = new ArrayList<>();
-        for (MemberDto memberDto : memberResponseDto.getMemberInfoList()) {
-            responseList.add(TeamMemberDto.builder()
-                    .id(memberDto.getId())
-                    .email(memberDto.getEmail())
-                    .imageUrl(memberDto.getImageUrl())
-                    .nickname(memberDto.getNickname())
-                    .build());
-        }
-        return SearchTeamMemberResponseDto.builder()
-                .teamMemberList(responseList)
-                .build();
+        return objectMapper.convertValue(memberResponse.getBody().get("data"), SearchMemberResponseDto.class);
     }
 }

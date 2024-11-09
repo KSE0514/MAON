@@ -12,4 +12,5 @@ import java.util.UUID;
 @NoArgsConstructor
 public class SearchMemberRequestDto {
     private List<UUID> idList;
+    private String nicknameKeyword;
 }
