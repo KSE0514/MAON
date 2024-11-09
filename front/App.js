@@ -24,6 +24,8 @@ import SelectRunRoute from "./screens/SelectRunRoute/SelectRunRoute.js";
 import MarathonInfo from "./screens/MarathonInfo/MarathonInfoScreen.js";
 import RunningAlone from "./screens/RunningAlone/RunningAlone.js";
 import RunResult from "./screens/RunResult/RunResult.js";
+import RouteDetail from "./screens/RouteDetail/RouteDetail.js";
+import RunningWithRoute from "./screens/RunningWithRoute/RunningWithRoute.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -69,8 +71,17 @@ export default function App() {
           <Stack.Screen name="MyPage" component={MyPageScreen} />
           <Stack.Screen name="Notification" component={NotificationScreen} />
           <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
-          <Stack.Screen name="MarathonEntryForm" component={MarathonEntryFormScreen} />
-          <Stack.Screen name="MarathonInfoDetail" component={MarathonInfoDetailScreen} />
+          <Stack.Screen name="Challenge" component={ChallengeScreen} />
+          <Stack.Screen
+            name="MarathonEntryForm"
+            component={MarathonEntryFormScreen}
+          />
+          <Stack.Screen
+            name="MarathonInfoDetail"
+            component={MarathonInfoDetailScreen}
+          />
+          <Stack.Screen name="RouteDetail" component={RouteDetail} />
+          <Stack.Screen name="RunningWithRoute" component={RunningWithRoute} />
           {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
           <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
           <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />
@@ -97,7 +108,7 @@ const MainTabs = ({ route }) => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="MarathonInfo" component={MarathonInfoScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />
-      <Tab.Screen name="Challenge" component={ChallengeScreen} />
+      {/* <Tab.Screen name="Challenge" component={ChallengeScreen} /> */}
       {/* <Tab.Screen name="FriendList" component={CreateTeamScreen} /> */}
     </Tab.Navigator>
   );

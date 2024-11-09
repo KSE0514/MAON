@@ -1,0 +1,36 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.easter.watch.app-mergeDebugResources-3:/values-round-v23/values-round-v23.xml",
+            "map": [
+                {
+                    "source": "C:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\src\\main\\res\\values-round\\strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "17",
+                        "endColumns": "75",
+                        "endOffsets": "88"
+                    },
+                    "to": {
+                        "startLines": "5",
+                        "startColumns": "4",
+                        "startOffsets": "284",
+                        "endColumns": "75",
+                        "endOffsets": "355"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\8cde5c87683c0b63864459ae01eeac36\\transformed\\wear-1.2.0\\res\\values-round-v23\\values-round-v23.xml",
+                    "from": {
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,118,204",
+                        "endColumns": "62,85,79",
+                        "endOffsets": "113,199,279"
+                    }
+                }
+            ]
+        }
+    ]
+}

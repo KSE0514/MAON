@@ -67,7 +67,7 @@ const SignUpScreen = ({navigation}) => {
         >
           {process === 0? 
             <Content
-            showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+            showsVerticalScrollIndicator={true} // 스크롤바 숨기기
             >
               <Title>
                 <TitleContent>MA:ON 이용을 위한</TitleContent>

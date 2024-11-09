@@ -15,7 +15,7 @@ import {
   Top,
   Wrapper,
 } from "./RunningAloneStyle";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Map from "../../components/Map/Map";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 import Timer from "../../components/Timer/Timer";
@@ -25,18 +25,20 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/DonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
-const RunningAlone = ({ navigation }) => {
+
+const RunningAlone = ({ navigation, route }) => {
+  const { roomId } = route.params;
   const fontsLoaded = useFontsLoaded();
-  //시작버튼
+
+  // Modal and State Management
   const [showStartModal, setShowStartModal] = useState(false);
-  //뛰기 시작 / 중단
   const [runStart, setRunStart] = useState(false);
-  //종료 여부 모달
   const [showStopModal, setShowStopModal] = useState(false);
-  //러닝중 판단
   const [running, setRunning] = useState(false);
-  //달린거리
   const [runningDistance, setRunningDistance] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState("00:00:00");
+  const [pace, setPace] = useState("");
+
   const StopModalContent = {
     text: "종료하시겠습니까?",
     subText: "",
@@ -58,12 +60,8 @@ const RunningAlone = ({ navigation }) => {
       },
     ],
   };
-  //달린 시간
-  const [elapsedTime, setElapsedTime] = useState("00:00:00");
-  //달리기 모드
-  const mode = "aloneRun";
-  //pace
-  const [pace, setPace] = useState("");
+
+  const stompClientRef = useRef(null);
 
   const handleTimeUpdate = (time) => {
     setElapsedTime(time); // Timer로부터 업데이트된 시간 받기
@@ -73,13 +71,86 @@ const RunningAlone = ({ navigation }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
+  useEffect(() => {
+    const ws = new WebSocket("wss://k11c207.p.ssafy.io/maon/route/ws/location");
+
+    ws.onopen = () => {
+      console.log("WebSocket 연결 성공!");
+
+      // STOMP CONNECT 프레임 직접 전송
+      const connectFrame =
+        "CONNECT\naccept-version:1.2,1.1,1.0\nhost:k11c207.p.ssafy.io\n\n\0";
+      ws.send(connectFrame);
+    };
+
+    ws.onmessage = (message) => {
+      console.log("서버로부터 메시지 수신:", message.data);
+
+      if (message.data.startsWith("CONNECTED")) {
+        console.log("STOMP 연결 성공!");
+
+        // STOMP SUBSCRIBE 프레임
+        const subscribeFrame = `SUBSCRIBE\nid:sub-0\ndestination:/sub/running/${roomId}\n\n\0`;
+        ws.send(subscribeFrame);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket 연결이 종료되었습니다.");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket 오류:", error);
+    };
+
+    stompClientRef.current = ws;
+
+    return () => {
+      ws.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
+    };
+  }, [roomId]);
+
+  // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
+  const handleUserLocationChange = (location) => {
+    const locationDto = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+      pace, // 최신 페이스
+      timestamp: elapsedTime, // 최신 경과 시간
+      memberId: "dpqls3056",
+      heartRate: 0,
+    };
+    console.log(
+      "latitude: ",
+      locationDto.latitude,
+      " longitude:",
+      locationDto.longitude,
+      " pace:",
+      locationDto.pace,
+      " timestamp:",
+      locationDto.timestamp,
+      " memberId:",
+      locationDto.memberId,
+      " heartRate:",
+      locationDto.heartRate
+    );
+    if (
+      stompClientRef.current &&
+      stompClientRef.current.readyState === WebSocket.OPEN
+    ) {
+      const sendFrame = `SEND\ndestination:/pub/running/${roomId}\n\n${JSON.stringify(
+        locationDto
+      )}\0`;
+      stompClientRef.current.send(sendFrame);
+    }
+  };
+
   return (
-    <View style={{ flex: "1" }}>
+    <View style={{ flex: 1 }}>
       {running && (
         <Top>
           <StopBtn
             onPress={() => {
-              //달리고있을 때 = 멈추기
               if (!showStopModal) {
                 setShowStopModal(true);
                 setRunStart(false);
@@ -106,9 +177,9 @@ const RunningAlone = ({ navigation }) => {
         navigation={navigation}
         runStart={runStart}
         setRunningDistance={setRunningDistance}
-        mode={mode}
+        mode={"aloneRun"}
+        onLocationChange={handleUserLocationChange}
       />
-
       {running && (
         <Bottom>
           <RunInfo>
@@ -118,18 +189,18 @@ const RunningAlone = ({ navigation }) => {
                   (runningDistance / 1000).toFixed(2)
                 )}
                 goalDistance={0}
-                mode={mode}
+                mode={"aloneRun"}
               />
             </RunInfoCol>
             <RunInfoCol style={{ flex: 2, paddingLeft: 21 }}>
               <Pace
-                mode={mode}
+                mode={"aloneRun"}
                 elapsedTime={elapsedTime}
                 currentDistance={(runningDistance / 1000).toFixed(2)}
                 setPace={setPace}
                 pace={pace}
               />
-              <HeartBeat mode={mode} />
+              <HeartBeat mode={"aloneRun"} />
             </RunInfoCol>
           </RunInfo>
         </Bottom>

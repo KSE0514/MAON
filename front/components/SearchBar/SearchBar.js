@@ -3,16 +3,17 @@ import { useState } from "react";
 import Svg, { Path } from 'react-native-svg'
 import color from "../../styles/colors";
 
-const SearchBar = () => {
-  const [searchName, setSearchName] = useState('') // 사용자가 입력할 값을 담을 state변수
+const SearchBar = ({searchName, setSearchName}) => {
+  // const [searchName, setSearchName] = useState('') // 사용자가 입력할 값을 담을 state변수
 
   return(
     <View style={styles.container}>
-      <Text>{searchName}</Text>
+      {/* <Text>{searchName}</Text> */}
       <View style={styles.innerContainer}>
         <View style={styles.innerWrap}>
           {/* 검색창에서 사용자가 입력하는 부분 */}
           <TextInput 
+            style={styles.teatArea}
             value={searchName}
             onChangeText={(text) => setSearchName(text)} // TextInput 안의 내용이 바뀔 때마다 값 변화
             placeholder="닉네임으로 친구를 검색해보세요!" 
@@ -51,9 +52,14 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 23,
     alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  teatArea:{
+    // flex: 8,
+    width: '87%'
   },
   searchSvg: {
-    flex: 1,
+    // flex: 1,
     alignItems: 'flex-end'
   }
 })
