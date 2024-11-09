@@ -13,38 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <ImageView
-            android:layout_width="7dp"
-            android:layout_height="7dp"
-            android:src="@drawable/round_not_selected_page"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.421"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.950" />
-
-        <ImageView
-            android:layout_width="7dp"
-            android:layout_height="7dp"
-            android:src="@drawable/round_not_selected_page"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.962" />
-
-        <ImageView
-            android:layout_width="7dp"
-            android:layout_height="7dp"
-            android:src="@drawable/round_selected_page"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.583"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.950" />
+<!---->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

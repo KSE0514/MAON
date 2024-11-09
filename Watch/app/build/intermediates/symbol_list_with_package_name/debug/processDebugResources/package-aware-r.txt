@@ -1554,6 +1554,7 @@ color error_color_material_light
 color foreground_material_dark
 color foreground_material_light
 color grape_fruit
+color green
 color grey
 color highlighted_text_material_dark
 color highlighted_text_material_light
@@ -3184,11 +3185,10 @@ drawable btn_radio_off_to_on_mtrl_animation
 drawable btn_radio_on_mtrl
 drawable btn_radio_on_to_off_mtrl_animation
 drawable button_background
-drawable circle_pause_solid
 drawable circle_pause_solid_light
-drawable circle_play_solid
+drawable circle_play_green
 drawable circle_play_solid_light
-drawable circle_stop_solid
+drawable circle_stop_red
 drawable circle_stop_solid_light
 drawable circular_background
 drawable circular_vignette_bottom
@@ -3481,6 +3481,7 @@ id circle_center
 id clear_text
 id clip_horizontal
 id clip_vertical
+id clockText
 id clockwise
 id closest
 id collapseActionView
@@ -3578,6 +3579,7 @@ id grouping
 id groups
 id header_title
 id heartImg
+id heartText
 id height
 id hide_ime_id
 id hide_in_inspector_tag
@@ -3726,6 +3728,9 @@ id outline
 id outward
 id overshoot
 id packed
+id page1
+id page2
+id page3
 id parallax
 id parent
 id parentPanel
@@ -3759,6 +3764,7 @@ id round
 id rounded
 id row_index_key
 id runStartBtn
+id runTime
 id runtimeText
 id satellite
 id save_non_transition_alpha
@@ -3848,9 +3854,7 @@ id textSpacerNoTitle
 id textStart
 id textTop
 id textView
-id textView2
 id textView3
-id textView5
 id textView6
 id textView8
 id textView9
@@ -4052,6 +4056,7 @@ layout abc_tooltip
 layout activity_auth
 layout activity_main
 layout activity_restart
+layout activity_result
 layout activity_run
 layout activity_splash
 layout activity_start
@@ -5610,7 +5615,7 @@ styleable LinearLayoutCompat_Layout android_layout_gravity android_layout_width 
 styleable LinearProgressIndicator indeterminateAnimationType indicatorDirectionLinear trackStopIndicatorSize
 styleable ListPopupWindow android_dropDownHorizontalOffset android_dropDownVerticalOffset
 styleable LoadingImageView circleCrop imageAspectRatio imageAspectRatioAdjust
-styleable MapAttrs backgroundColor ambientEnabled cameraBearing cameraMaxZoomPreference cameraMinZoomPreference cameraTargetLat cameraTargetLng cameraTilt cameraZoom latLngBoundsNorthEastLatitude latLngBoundsNorthEastLongitude latLngBoundsSouthWestLatitude latLngBoundsSouthWestLongitude liteMode mapColorScheme mapId mapType uiCompass uiMapToolbar uiRotateGestures uiScrollGestures uiScrollGesturesDuringRotateOrZoom uiTiltGestures uiZoomControls uiZoomGestures useViewLifecycle zOrderOnTop
+styleable MapAttrs ambientEnabled backgroundColor cameraBearing cameraMaxZoomPreference cameraMinZoomPreference cameraTargetLat cameraTargetLng cameraTilt cameraZoom latLngBoundsNorthEastLatitude latLngBoundsNorthEastLongitude latLngBoundsSouthWestLatitude latLngBoundsSouthWestLongitude liteMode mapColorScheme mapId mapType uiCompass uiMapToolbar uiRotateGestures uiScrollGestures uiScrollGesturesDuringRotateOrZoom uiTiltGestures uiZoomControls uiZoomGestures useViewLifecycle zOrderOnTop
 styleable MaterialAlertDialog backgroundInsetBottom backgroundInsetEnd backgroundInsetStart backgroundInsetTop backgroundTint
 styleable MaterialAlertDialogTheme materialAlertDialogBodyTextStyle materialAlertDialogButtonSpacerVisibility materialAlertDialogTheme materialAlertDialogTitleIconStyle materialAlertDialogTitlePanelStyle materialAlertDialogTitleTextStyle
 styleable MaterialAutoCompleteTextView android_inputType android_popupElevation dropDownBackgroundTint simpleItemLayout simpleItemSelectedColor simpleItemSelectedRippleColor simpleItems

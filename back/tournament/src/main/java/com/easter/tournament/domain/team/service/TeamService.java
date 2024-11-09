@@ -1,11 +1,15 @@
 package com.easter.tournament.domain.team.service;
 
+import com.easter.tournament.domain.team.model.dto.*;
+import com.easter.tournament.global.security.PassportDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-@Slf4j
-public class TeamService {
+import java.util.UUID;
+
+public interface TeamService {
+    CreateTeamResponseDto createTeam(PassportDto passport, CreateTeamRequestDto dto);
+    SearchTeamMemberResponseDto searchTeamMember(UUID teamId);
+    SearchCandidateResponseDto searchCandidate(PassportDto passport, SearchCandidateRequestDto dto);
 }
