@@ -29,7 +29,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Override
     public void marathonJoin(ParticipantRequestDto participantRequestDto) {
 
-        Optional<Tournament> tournament = tournamentRepository.findById(participantRequestDto.getTournamentId());
+        Optional<Tournament> tournament = Optional.ofNullable(tournamentRepository.findByUuid(participantRequestDto.getTournamentId()));
         
         //TODO: 팀도 찾아야 할듯 합니다
 
