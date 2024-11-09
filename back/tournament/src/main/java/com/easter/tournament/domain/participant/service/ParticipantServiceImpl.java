@@ -29,6 +29,8 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         Optional<Tournament> tournament = Optional.ofNullable(tournamentRepository.findByUuid(participantRequestDto.getTournamentId()));
 
+        // todo : team id 관련 처리 해야할듯
+        
         if (tournament.isPresent()) {
 
             if(tournament.get().isClosed()) {
