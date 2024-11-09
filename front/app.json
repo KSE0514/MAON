@@ -1,11 +1,7 @@
 {
   "expo": {
     "scheme": "maon",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "name": "maon",
     "slug": "maon",
     "version": "1.0.0",
