@@ -13,5 +13,4 @@ public class ParticipantRequestDto {
     private UUID memberId;
     private String tournamentCategory;
     private long tournamentId;
-    private long teamId;
 }

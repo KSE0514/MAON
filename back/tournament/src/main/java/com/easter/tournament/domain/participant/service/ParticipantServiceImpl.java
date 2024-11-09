@@ -30,8 +30,6 @@ public class ParticipantServiceImpl implements ParticipantService {
     public void marathonJoin(ParticipantRequestDto participantRequestDto) {
 
         Optional<Tournament> tournament = tournamentRepository.findById(participantRequestDto.getTournamentId());
-        
-        //TODO: 팀도 찾아야 할듯 합니다
 
         if (tournament.isPresent()) {
 
@@ -41,20 +39,16 @@ public class ParticipantServiceImpl implements ParticipantService {
 
             Optional<Participant> byMemberIdAndTournament = participantRepository.findByMemberIdAndTournament(participantRequestDto.getMemberId(), participantRequestDto.getTournamentId());
             if (byMemberIdAndTournament.isPresent()) {
-                throw new BusinessException(HttpStatus.CONFLICT, "이미 참가 한 사람입니다.");
+                throw new BusinessException(HttpStatus.CONFLICT, "이미 참가한 사람입니다.");
             }
 
             Participant participant = Participant.builder()
-                    .createTime(LocalDateTime.now())
-                    .updateTime(LocalDateTime.now())
-                    .tournament(tournament.get())
-                    .uuid(UUID.randomUUID())
-                    //.team()
+                    .tournamentId(tournament.get().getId())
                     .status(ParticipantStatus.DONE)
                     .tournamentCategory(participantRequestDto.getTournamentCategory())
                     .memberId(participantRequestDto.getMemberId())
                     .build();
-            
+
             participantRepository.save(participant);
 
         } else {
