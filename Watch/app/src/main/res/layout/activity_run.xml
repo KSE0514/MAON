@@ -15,8 +15,6 @@
             android:layout_height="match_parent" />
 
 
-
-
         <!-- 고정된 TextView -->
         <TextView
             android:id="@+id/clockText"
@@ -35,15 +33,18 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/runtimeText"
+                android:id="@+id/runTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gmarketsansttfbold"
                 android:letterSpacing="0.1"
-                android:text="05:34:55"
+                android:text="05:34:58"
                 android:textColor="@color/light_orange"
                 android:textSize="25dp"
                 android:textStyle="italic"
+                android:clipToPadding="false"
+                android:paddingRight="25dp"
+                android:paddingLeft="25dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.509"
@@ -52,7 +53,7 @@
                 app:layout_constraintVertical_bias="0.298" />
 
             <TextView
-                android:id="@+id/runTime"
+                android:id="@+id/runtimeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gmarketsansttfmedium"

@@ -15,4 +15,5 @@
     <color name="beige">#FFE4C8</color> <!-- 진한 베이지 (모달 버튼용) -->
     <color name="grey">#B1B1B1</color>
     <color name="red">#FF0000</color>
+    <color name="green">#81c147</color>
 </resources>

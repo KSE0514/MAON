@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingComponent;
 import androidx.databinding.ViewDataBinding;
 import com.easter.watch.databinding.ActivityAuthBindingImpl;
 import com.easter.watch.databinding.ActivityRestartBindingImpl;
+import com.easter.watch.databinding.ActivityResultBindingImpl;
 import com.easter.watch.databinding.ActivityRunBindingImpl;
 import com.easter.watch.databinding.ActivityStartBindingImpl;
 import com.easter.watch.databinding.FragmentRun1BindingImpl;
@@ -28,21 +29,24 @@ public class DataBinderMapperImpl extends DataBinderMapper {
 
   private static final int LAYOUT_ACTIVITYRESTART = 2;
 
-  private static final int LAYOUT_ACTIVITYRUN = 3;
+  private static final int LAYOUT_ACTIVITYRESULT = 3;
 
-  private static final int LAYOUT_ACTIVITYSTART = 4;
+  private static final int LAYOUT_ACTIVITYRUN = 4;
 
-  private static final int LAYOUT_FRAGMENTRUN1 = 5;
+  private static final int LAYOUT_ACTIVITYSTART = 5;
 
-  private static final int LAYOUT_FRAGMENTRUN2 = 6;
+  private static final int LAYOUT_FRAGMENTRUN1 = 6;
 
-  private static final int LAYOUT_FRAGMENTRUN3 = 7;
+  private static final int LAYOUT_FRAGMENTRUN2 = 7;
 
-  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(7);
+  private static final int LAYOUT_FRAGMENTRUN3 = 8;
+
+  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(8);
 
   static {
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.activity_auth, LAYOUT_ACTIVITYAUTH);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.activity_restart, LAYOUT_ACTIVITYRESTART);
+    INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.activity_result, LAYOUT_ACTIVITYRESULT);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.activity_run, LAYOUT_ACTIVITYRUN);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.activity_start, LAYOUT_ACTIVITYSTART);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.easter.watch.R.layout.fragment_run1, LAYOUT_FRAGMENTRUN1);
@@ -70,6 +74,12 @@ public class DataBinderMapperImpl extends DataBinderMapper {
             return new ActivityRestartBindingImpl(component, view);
           }
           throw new IllegalArgumentException("The tag for activity_restart is invalid. Received: " + tag);
+        }
+        case  LAYOUT_ACTIVITYRESULT: {
+          if ("layout/activity_result_0".equals(tag)) {
+            return new ActivityResultBindingImpl(component, view);
+          }
+          throw new IllegalArgumentException("The tag for activity_result is invalid. Received: " + tag);
         }
         case  LAYOUT_ACTIVITYRUN: {
           if ("layout/activity_run_0".equals(tag)) {
@@ -154,11 +164,12 @@ public class DataBinderMapperImpl extends DataBinderMapper {
   }
 
   private static class InnerLayoutIdLookup {
-    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(7);
+    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(8);
 
     static {
       sKeys.put("layout/activity_auth_0", com.easter.watch.R.layout.activity_auth);
       sKeys.put("layout/activity_restart_0", com.easter.watch.R.layout.activity_restart);
+      sKeys.put("layout/activity_result_0", com.easter.watch.R.layout.activity_result);
       sKeys.put("layout/activity_run_0", com.easter.watch.R.layout.activity_run);
       sKeys.put("layout/activity_start_0", com.easter.watch.R.layout.activity_start);
       sKeys.put("layout/fragment_run1_0", com.easter.watch.R.layout.fragment_run1);

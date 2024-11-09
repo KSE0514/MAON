@@ -5,6 +5,7 @@ color beige
 color black
 color dark_mandarin
 color grape_fruit
+color green
 color grey
 color light_beige
 color light_grape_fruit
@@ -17,7 +18,9 @@ color red
 color white
 drawable button_background
 drawable circle_pause_solid_light
+drawable circle_play_green
 drawable circle_play_solid_light
+drawable circle_stop_red
 drawable circle_stop_solid_light
 drawable circular_background
 drawable ic_calory
@@ -59,6 +62,7 @@ id viewPager
 layout activity_auth
 layout activity_main
 layout activity_restart
+layout activity_result
 layout activity_run
 layout activity_splash
 layout activity_start

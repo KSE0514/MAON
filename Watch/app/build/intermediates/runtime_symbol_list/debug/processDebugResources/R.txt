@@ -1553,6 +1553,7 @@ int color error_color_material_light 0x7f06006d
 int color foreground_material_dark 0x7f06006e
 int color foreground_material_light 0x7f06006f
 int color grape_fruit 0x7f060070
+int color green 0x7f060327
 int color grey 0x7f060071
 int color highlighted_text_material_dark 0x7f060072
 int color highlighted_text_material_light 0x7f060073
@@ -3184,7 +3185,9 @@ int drawable btn_radio_on_mtrl 0x7f08007f
 int drawable btn_radio_on_to_off_mtrl_animation 0x7f080080
 int drawable button_background 0x7f080081
 int drawable circle_pause_solid_light 0x7f080082
+int drawable circle_play_green 0x7f080120
 int drawable circle_play_solid_light 0x7f080083
+int drawable circle_stop_red 0x7f080121
 int drawable circle_stop_solid_light 0x7f080084
 int drawable circular_background 0x7f080085
 int drawable circular_vignette_bottom 0x7f080086
@@ -4052,6 +4055,7 @@ int layout abc_tooltip 0x7f0e001b
 int layout activity_auth 0x7f0e001c
 int layout activity_main 0x7f0e001d
 int layout activity_restart 0x7f0e001e
+int layout activity_result 0x7f0e0085
 int layout activity_run 0x7f0e001f
 int layout activity_splash 0x7f0e0020
 int layout activity_start 0x7f0e0021

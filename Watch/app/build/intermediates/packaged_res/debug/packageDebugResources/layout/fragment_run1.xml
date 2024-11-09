@@ -9,46 +9,13 @@
         android:background="@color/real_black"
         tools:context=".presentation.view.run.RunFragment1" android:tag="layout/fragment_run1_0" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
 
-<!--            <TextView-->
-<!--                android:id="@+id/runtimeText"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:fontFamily="@font/gmarketsansttfbold"-->
-<!--                android:letterSpacing="0.1"-->
-<!--                android:text="05:34:55"-->
-<!--                android:textColor="@color/light_orange"-->
-<!--                android:textSize="25dp"-->
-<!--                android:textStyle="italic"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.509"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintVertical_bias="0.298" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/textView2"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:fontFamily="@font/gmarketsansttfmedium"-->
-<!--                android:text="시간"-->
-<!--                android:layout_marginBottom="5dp"-->
-<!--                android:textColor="@color/white"-->
-<!--                android:textSize="12sp"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.502"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintVertical_bias="0.186" />-->
-
 
         <ImageView
             android:id="@+id/stopBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/white_background"
-            android:src="@drawable/circle_stop_solid_light"
+            android:src="@drawable/circle_stop_red"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.76"
@@ -61,7 +28,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/white_background"
-            android:src="@drawable/circle_play_solid_light"
+            android:src="@drawable/circle_play_green"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

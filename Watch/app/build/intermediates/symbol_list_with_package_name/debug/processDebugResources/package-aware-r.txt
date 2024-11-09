@@ -1554,6 +1554,7 @@ color error_color_material_light
 color foreground_material_dark
 color foreground_material_light
 color grape_fruit
+color green
 color grey
 color highlighted_text_material_dark
 color highlighted_text_material_light
@@ -3185,7 +3186,9 @@ drawable btn_radio_on_mtrl
 drawable btn_radio_on_to_off_mtrl_animation
 drawable button_background
 drawable circle_pause_solid_light
+drawable circle_play_green
 drawable circle_play_solid_light
+drawable circle_stop_red
 drawable circle_stop_solid_light
 drawable circular_background
 drawable circular_vignette_bottom
@@ -4053,6 +4056,7 @@ layout abc_tooltip
 layout activity_auth
 layout activity_main
 layout activity_restart
+layout activity_result
 layout activity_run
 layout activity_splash
 layout activity_start
