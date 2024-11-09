@@ -34,11 +34,15 @@ class StartActivity : AppCompatActivity() {
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // SensorPermissionService 초기화
+        permissionService = SensorPermissionService()
+        // 권한 확인 및 요청
+        permissionService.checkAndRequestPermissions(this)
+
         binding.runStartBtn.setOnClickListener {
-            // SensorPermissionService 초기화
-            permissionService = SensorPermissionService()
-            // 권한 확인 및 요청
-            permissionService.checkAndRequestPermissions(this)
+            val intent = Intent(this,RunActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
         intent.getStringExtra("deviceToken")?.let { deviceToken ->
@@ -57,14 +61,12 @@ class StartActivity : AppCompatActivity() {
         if (requestCode == SensorPermissionService.PERMISSION_REQUEST_CODE) {
             // 권한이 모두 허용되었는지 확인
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                // 모든 권한이 허용되었을 때 RunActivity로 이동
-                val intent = Intent(this, RunActivity::class.java)
-                startActivity(intent)
-                finish()
+                return
             } else {
                 // 권한이 허용되지 않은 경우 사용자에게 안내
-                //Toast.makeText(this, "권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-                finish()
+                Toast.makeText(this, "권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this,StartActivity::class.java))
+                //finish()
             }
         }
     }
