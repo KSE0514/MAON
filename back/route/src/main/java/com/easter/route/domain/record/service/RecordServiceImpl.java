@@ -31,7 +31,7 @@ public class RecordServiceImpl implements RecordService {
         Record record = Record.builder()
                 .completed(false)
                 .runningTime("00:00:00")
-                .averagePace("00:00")
+                .averagePace("00'00\"")
                 .routeId(createRunningDto.getRouteId())
                 .build();
         return recordRepository.save(record);
@@ -40,9 +40,9 @@ public class RecordServiceImpl implements RecordService {
     @Override
     @Transactional
     public void updateRecord(UpdateRecordDto updateRecordDto) {
-        // Record record = recordRepository.findById(updateRecordDto.getRecordId())
-        //         .orElseThrow(() -> new IllegalArgumentException("해당 Record가 존재하지 않습니다."));
-        // record.updateRecord(updateRecordDto);
+        Record record = recordRepository.findById(updateRecordDto.getRecordId())
+                .orElseThrow(() -> new IllegalArgumentException("Record not found"));
+        record.updateRecord(updateRecordDto);
     }
 
     @Override

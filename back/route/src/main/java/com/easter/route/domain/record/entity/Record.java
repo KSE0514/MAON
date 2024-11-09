@@ -1,13 +1,13 @@
 package com.easter.route.domain.record.entity;
 
+import com.easter.route.domain.record.entity.dto.LocationDto;
+import com.easter.route.domain.record.entity.dto.UpdateRecordDto;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import com.easter.route.domain.record.entity.dto.LocationDto;
-import com.easter.route.domain.record.entity.dto.RunningInfo;
 import com.easter.route.domain.record.entity.enums.RecordType;
 
 import lombok.AllArgsConstructor;
@@ -34,7 +34,10 @@ public class Record {
 	private boolean completed;
 
 	@Field("running_info")
-	private List<RunningInfo> runningInfo;
+	private List<LocationDto> runningInfo;
+
+	@Field("pace_list")
+	private List<String> paceList;
 
 	@Field("recorded_track")
 	private GeoJsonLineString recordedTrack;
@@ -45,12 +48,27 @@ public class Record {
 	@Field("average_pace")
 	private String averagePace;
 
-	@Field("heart_rate")
-	private int heartRate;
+	@Field("average_heart_rate")
+	private int averageHeartRate;
+
+	@Field("distance")
+	private double distance;
 
 	@Field("record_type")
 	private RecordType recordType;
 
 	@CreatedDate
 	private LocalDateTime createdAt;
+
+	public void updateRecord(UpdateRecordDto updateRecordDto) {
+		this.id = updateRecordDto.getRecordId();
+		this.runningInfo = updateRecordDto.getRunningInfo();
+		this.paceList = updateRecordDto.getPaceList();
+		this.averageHeartRate = updateRecordDto.getAverageHeartRate();
+		this.distance = updateRecordDto.getDistance();
+		this.recordedTrack = updateRecordDto.getRecordedTrack();
+		this.runningTime = updateRecordDto.getRunningTime();
+		this.averagePace = updateRecordDto.getAveragePace();
+		this.completed = updateRecordDto.getCompleted();
+	}
 }

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +16,12 @@ public class LocationDto {
 	private String recordId;
 	private String latitude;
 	private String longitude;
+	private double runningDistance;
 	private int heartRate;
 	private String pace;
 	private String time;
+
+	public Point getPoint() {
+		return new Point(Double.parseDouble(longitude), Double.parseDouble(latitude));
+	}
 }
