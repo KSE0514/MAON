@@ -24,4 +24,6 @@ public class GetMarathonResponseDto {
     private Double longitude;
     private String imageUrl;
     private boolean closed;
+
+    private CategoryDto category;
 }
