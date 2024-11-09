@@ -4,7 +4,7 @@
             "outputFile": "com.easter.watch.app-mergeDebugResources-3:/values-v29/values-v29.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\c3d1557bfc72ce6361ec910c76faf4f6\\transformed\\core-splashscreen-1.0.1\\res\\values-v29\\values-v29.xml",
+                    "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\0d0d85368148fba8bb498366737997ef\\transformed\\core-splashscreen-1.0.1\\res\\values-v29\\values-v29.xml",
                     "from": {
                         "startLines": "2,7",
                         "startColumns": "4,4",

@@ -1,11 +1,8 @@
 package com.easter.tournament.domain.participant.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import com.easter.tournament.domain.participant.model.dto.ParticipantRequestDto;
+import jakarta.validation.Valid;
 
-@Service
-@RequiredArgsConstructor
-@Slf4j
-public class ParticipantService {
+public interface ParticipantService {
+    void marathonJoin(ParticipantRequestDto participantRequestDto);
 }

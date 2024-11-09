@@ -23,7 +23,6 @@ const SelectRunType = ({ navigation }) => {
   const buttons = [
     {
       onPress: async () => {
-        const roomid = await getPracticeRoomIdWithRoute();
         navigation.navigate("SelectRunRoute", {
           mode: "selectedRoute",
           searchType: "run",
