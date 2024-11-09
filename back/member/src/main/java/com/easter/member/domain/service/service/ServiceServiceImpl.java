@@ -1,8 +1,12 @@
 package com.easter.member.domain.service.service;
 
 import com.easter.member.domain.member.entity.Member;
+import com.easter.member.domain.member.repository.MemberQueryRepository;
 import com.easter.member.domain.member.repository.MemberRepository;
 import com.easter.member.domain.service.model.dto.ConfirmMemberResponseDto;
+import com.easter.member.domain.service.model.dto.MemberDto;
+import com.easter.member.domain.service.model.dto.SearchMemberRequestDto;
+import com.easter.member.domain.service.model.dto.SearchMemberResponseDto;
 import com.easter.member.global.security.jwt.TokenProvider;
 import com.easter.member.global.security.userinfo.PassportDto;
 import com.easter.member.global.security.userinfo.TokenType;
@@ -11,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,8 +24,8 @@ import java.util.Optional;
 public class ServiceServiceImpl implements ServiceService{
 
     private final MemberRepository memberRepository;
+    private final MemberQueryRepository memberQueryRepository;
     private final TokenProvider tokenProvider;
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public ConfirmMemberResponseDto confirmMember(String email, String token) {
@@ -56,6 +61,14 @@ public class ServiceServiceImpl implements ServiceService{
                 .registered(optionalMember.isPresent())
                 .valid(true)
                 .passport(passport)
+                .build();
+    }
+
+    @Override
+    public SearchMemberResponseDto searchMember(SearchMemberRequestDto dto) {
+        List<MemberDto> memberInfoList = memberQueryRepository.findMemberInfoByUuid(dto.getIdList(), dto.getNicknameKeyword());
+        return SearchMemberResponseDto.builder()
+                .memberInfoList(memberInfoList)
                 .build();
     }
 }
