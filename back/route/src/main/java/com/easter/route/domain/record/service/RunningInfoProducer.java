@@ -11,14 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class LocationProducer {
+public class RunningInfoProducer {
 	private final KafkaTemplate<String, LocationDto> kafkaTemplate;
 
-    public void sendLocation(String recordId, LocationDto locationDto) {
-		String key = recordId;
+    public void sendLocation(LocationDto locationDto) {
         String topic = "maon.route.location";
-        log.info("Sending location data to topic: {}, key: {}, data: {}", topic, key, locationDto);
-		this.kafkaTemplate.send(topic, key, locationDto);
+        log.info("Sending location data to topic: {}, key: {}, data: {}", topic, locationDto.getRecordId(), locationDto);
+		this.kafkaTemplate.send(topic, locationDto.getRecordId(), locationDto);
 	}
 
 
