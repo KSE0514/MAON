@@ -26,8 +26,9 @@ public class TournamentServiceImpl implements TournamentService {
         Integer year = getMarathonRequestDto.getYear();
         Integer month = getMarathonRequestDto.getMonth();
         Integer area = getMarathonRequestDto.getArea();
+        boolean closed = getMarathonRequestDto.isClosed();
 
-        List<Tournament> tournaments = tournamentQueryRepository.findByYearAndMonth(year, month, area);
+        List<Tournament> tournaments = tournamentQueryRepository.findByYearAndMonth(year, month, area, closed);
 
         List<GetMarathonResponseDto> getMarathonResponseDtos = tournaments.stream().map(
                 tournament -> {
@@ -41,6 +42,9 @@ public class TournamentServiceImpl implements TournamentService {
                             .receiptEnd(tournament.getReceiptEnd())
                             .tournamentDayStart(tournament.getTournamentDayStart())
                             .tournamentDayEnd(tournament.getTournamentDayEnd())
+                            .longitude(tournament.getLongitude())
+                            .latitude(tournament.getLatitude())
+                            .imageUrl(tournament.getImageUrl())
                             .closed(tournament.isClosed())
                             .build();
                 }

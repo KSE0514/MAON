@@ -31,6 +31,10 @@ public class Participant {
     private UUID uuid;
 
     @NotNull
+    @Column(name = "member_id", columnDefinition = "binary(16)")
+    private UUID memberId;
+
+    @NotNull
     @Column(name = "status")
     private ParticipantStatus status;
 
