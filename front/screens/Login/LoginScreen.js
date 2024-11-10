@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, View, Image, Button } from "react-native";
+import { Dimensions, View, Image, Button, Platform } from "react-native";
 import { Container, Logo, Wrap } from "./LoginScreenStyles";
 import backImg from "./../../assets/images/Login_Back_cut2.jpg";
 import * as GoogleSignIn from "expo-google-sign-in";
 import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
 import useUserStore from "../../store/useUserStore";
 import * as WebBrowser from "expo-web-browser";
+import Constants from "expo-constants";
 
 // 초기화
 WebBrowser.maybeCompleteAuthSession();
@@ -22,8 +23,8 @@ const LoginScreen = ({ navigation }) => {
         signInType: GoogleSignIn.TYPES.DEFAULT,
         clientId:
           Platform.OS === "android"
-            ? "517964408407-lfjf2i7sd8p1q7rsmq3uv33l66hd9n5v.apps.googleusercontent.com"  // .env에서 환경 변수를 가져오는 방식으로 교체 가능
-            : "517964408407-1gvbjjp2hg9qjfrc1mmhv37s91507e3q.apps.googleusercontent.com",
+            ? Constants.manifest.extra.androidClientId
+            : Constants.manifest.extra.iosClientId,
         scopes: [
           GoogleSignIn.SCOPES.OPEN_ID,
           GoogleSignIn.SCOPES.EMAIL,
