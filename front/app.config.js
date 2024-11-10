@@ -13,6 +13,9 @@ export default {
     extra: {
       androidClientId: process.env.ANDROID_CLIENT_ID,
       iosClientId: process.env.IOS_CLIENT_ID,
+      eas: {
+        projectId: "7840d08f-0feb-4f5e-9438-7aa843191468"
+      }
     },
   },
 };
