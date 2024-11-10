@@ -74,18 +74,22 @@ const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
   return (
     <Wrapper style={styles.shadow}>
       <Top>
-        <OptionTitle>거리선택 {distance}km</OptionTitle>
-        <Slider
-          style={styles.slider}
-          minimumValue={1}
-          maximumValue={43}
-          step={1} // 1씩 증가/감소
-          value={distance} // 현재 슬라이더 값
-          onValueChange={(newValue) => setDistance(newValue)} // 값이 변경될 때 호출
-          minimumTrackTintColor={color.light_orange} // 선택된 트랙 색상
-          maximumTrackTintColor="#E0E0E0" // 선택되지 않은 트랙 색상
-          thumbTintColor="transparent" // thumb 색상 투명으로 설정
-        />
+        <OptionTitle style={{ marginBottom: searchType === "run" ? 0 : 10 }}>
+          {searchType == "run" ? `거리선택 ${distance}km` : "상세검색"}
+        </OptionTitle>
+        {searchType == "run" && (
+          <Slider
+            style={styles.slider}
+            minimumValue={1}
+            maximumValue={43}
+            step={1} // 1씩 증가/감소
+            value={distance} // 현재 슬라이더 값
+            onValueChange={(newValue) => setDistance(newValue)} // 값이 변경될 때 호출
+            minimumTrackTintColor={color.light_orange} // 선택된 트랙 색상
+            maximumTrackTintColor="#E0E0E0" // 선택되지 않은 트랙 색상
+            thumbTintColor="transparent" // thumb 색상 투명으로 설정
+          />
+        )}
       </Top>
       {searchType == "run" && (
         <>
@@ -108,13 +112,11 @@ const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
               colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.gradient}
-            >
+              style={styles.gradient}>
               <SearchButton
                 onPress={() => {
-                  alert("검색버튼 눌림");
-                }}
-              >
+                  onPress();
+                }}>
                 <Text style={styles.buttonText}>검색</Text>
               </SearchButton>
             </LinearGradient>
@@ -169,13 +171,11 @@ const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
               colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={[styles.gradient]}
-            >
+              style={[styles.gradient]}>
               <SearchButton
                 onPress={() => {
                   alert("검색버튼 눌림");
-                }}
-              >
+                }}>
                 <Text style={styles.buttonText}>검색</Text>
               </SearchButton>
             </LinearGradient>

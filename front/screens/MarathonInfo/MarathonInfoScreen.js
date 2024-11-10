@@ -7,24 +7,38 @@ import {
   Top,
   Wrapper,
 } from "../SelectRunRoute/SelectRunRouteStyle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MarathonInfoPreview from "../../components/MaraThonInfoPreview/MaraThonInfoPreview";
+import { apiClient } from "../../customAxios";
 const MarathonInfo = ({ navigation, route }) => {
   const fontsLoaded = useFontsLoaded();
   const { mode } = route.params;
-  const [infos, setInfos] = useState([
-    {
-      address: "전남, 무안군",
-      name: "2024 무안 해안 노을길 마라톤",
-      price: "무료",
-      eventDate: "2024.11.03",
-      routeLength: ["Full", "Half", "10km", "5km"],
-      id: "123",
-    },
-  ]);
+  const [infos, setInfos] = useState([]);
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
+  useEffect(() => {
+    const getMarathonInfo = async () => {
+      console.log("get Data!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      try {
+        const response = await apiClient.post(
+          `/tournament/tournament/getMarathon`,
+          {
+            year: new Date().getFullYear(),
+            month: 0,
+            area: 0,
+            closed: true,
+          }
+        );
+        console.log(response.data.data);
+        setInfos(response.data.data || []); // 데이터가 없을 때 빈 배열로 설정
+      } catch (e) {
+        console.log("get marathoninfo error:", e);
+      }
+    };
+    getMarathonInfo();
+  }, []);
+
   return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
       <ScrollView>
@@ -39,8 +53,13 @@ const MarathonInfo = ({ navigation, route }) => {
           </Top>
           <Bottom>
             <List>
-              {infos.map((info) => (
-                <MarathonInfoPreview data={info} mode="searchInfo" />
+              {infos?.map((info) => (
+                <MarathonInfoPreview
+                  key={info.uuid}
+                  data={info}
+                  mode="searchInfo"
+                  navigation={navigation}
+                />
               ))}
             </List>
           </Bottom>
