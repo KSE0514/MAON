@@ -33,7 +33,13 @@ const MaraThonInfoPreview = ({ navigation, data, mode }) => {
       }}>
       <Col>
         <View>
-          <Image source={require("../../assets/images/route.png")} />
+          {data.imageUrl ? (
+            <Image source={require("../../assets/images/route.png")} />
+          ) : (
+            <>
+              <Text>map</Text>
+            </>
+          )}
           <View style={status.status}>
             {!data.closed ? (
               <Text style={status.ing}>접수중</Text>
