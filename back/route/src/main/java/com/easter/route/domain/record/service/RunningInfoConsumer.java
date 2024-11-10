@@ -47,7 +47,7 @@ public class RunningInfoConsumer {
 	// 3. 심박수 계산 시 Race Condition
 	// 4. Map 초기화와 동시에 접근할 때
 	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
-	@KafkaListener(topics = "maon.route.location", groupId = "running.group", containerFactory = "locationDtoKafkaListenerContainerFactory")
+	@KafkaListener(topics = "maon.route.location", groupId = "running.group", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
 			log.info("Received location data: {}", locationDto);
