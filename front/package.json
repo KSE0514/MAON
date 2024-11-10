@@ -24,7 +24,7 @@
     "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
-    "expo": "^51.0.0",
+    "expo": "^51.0.38",
     "expo-auth-session": "~5.5.2",
     "expo-cli": "^6.3.12",
     "expo-crypto": "~13.0.2",
