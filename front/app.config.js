@@ -17,8 +17,6 @@ export default {
         projectId: "7840d08f-0feb-4f5e-9438-7aa843191468"
       }
     },
-    runtimeVersion: {
-      policy: "sdkVersion"
-    },
+    runtimeVersion: "1.0.0"
   },
 };
