@@ -18,14 +18,14 @@ import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithCredential,
-  onAuthStateChanged,
-} from 'firebase/auth';
+// import {
+//   getAuth,
+//   GoogleAuthProvider,
+//   signInWithCredential,
+//   onAuthStateChanged,
+// } from 'firebase/auth';
 
-import { auth } from "../../firebaseConfig"; // firebaseConfig에서 초기화된 auth 가져오기
+// import { auth } from "../../firebaseConfig"; // firebaseConfig에서 초기화된 auth 가져오기
 
 
 
@@ -207,50 +207,78 @@ const LoginScreen = ({ navigation }) => {
   //   }
   // };
 
-  const [userInfo, setUserInfo] = useState(null);
+  // const [userInfo, setUserInfo] = useState(null);
+
+  // const [request, response, promptAsync] = Google.useAuthRequest({
+  //   clientId: '1067746671857-lqqe1t0vrelohj3lhpe479n4p7adnr7o.apps.googleusercontent.com',  // 여기서 Google OAuth 클라이언트 ID를 넣으세요
+  //   redirectUri: `https://auth.expo.io/@maon/maon`,
+  //   usePKCE: false
+  // });
+
+  // useEffect(() => {
+  //   if (response?.type === "success") {
+  //     const { id_token } = response.params;
+  //     const credential = GoogleAuthProvider.credential(id_token);
+      
+  //     console.log("Firebase에 로그인 시도 중...");
+
+  //     signInWithCredential(auth, credential)
+  //       .then(async (userCredential) => {
+  //         const user = userCredential.user;
+  //         setUserInfo(user);
+  //         await AsyncStorage.setItem("@user", JSON.stringify(user));
+  //         console.log("Firebase 로그인 성공:", user);
+  //       })
+  //       .catch(error => {
+  //         console.log("Firebase 로그인 오류:", error);
+  //       });
+  //   } else {
+  //     console.log("Google OAuth 인증 실패:", response?.type);
+  //   }
+  // }, [response]);
+
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       setUserInfo(user);
+  //     }
+  //   });
+  //   return unsubscribe;
+  // }, []);
+
+  // const handleLogout = async () => {
+  //   await AsyncStorage.removeItem("@user");
+  //   setUserInfo(null);
+  //   console.log("User logged out");
+  // };
+
+
+
+
+  const [accessToken, setAccessToken] = useState()
+  const [userInfo, setUserInfo] = useState()
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '1067746671857-lqqe1t0vrelohj3lhpe479n4p7adnr7o.apps.googleusercontent.com',  // 여기서 Google OAuth 클라이언트 ID를 넣으세요
-    redirectUri: `https://auth.expo.io/@maon/maon`,
-    usePKCE: false
-  });
+    androidClientId: '517964408407-lfjf2i7sd8p1q7rsmq3uv33l66hd9n5v.apps.googleusercontent.com',
+    iosClientId: '517964408407-1gvbjjp2hg9qjfrc1mmhv37s91507e3q.apps.googleusercontent.com',
+    expoClientId: '517964408407-o44n8rq8fvc58bbj6jmhfu8k2hlu6ss5.apps.googleusercontent.com'
+  })
 
   useEffect(() => {
     if (response?.type === "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      
-      console.log("Firebase에 로그인 시도 중...");
-
-      signInWithCredential(auth, credential)
-        .then(async (userCredential) => {
-          const user = userCredential.user;
-          setUserInfo(user);
-          await AsyncStorage.setItem("@user", JSON.stringify(user));
-          console.log("Firebase 로그인 성공:", user);
-        })
-        .catch(error => {
-          console.log("Firebase 로그인 오류:", error);
-        });
-    } else {
-      console.log("Google OAuth 인증 실패:", response?.type);
+      setAccessToken(response.authentication.accessToken);
     }
-  }, [response]);
+  }, [response])
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserInfo(user);
-      }
-    });
-    return unsubscribe;
-  }, []);
+  async function getUserData() {
+    let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+      headers: {Authorization: `Bearer ${accessToken}`}
+    })
 
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem("@user");
-    setUserInfo(null);
-    console.log("User logged out");
-  };
+    userInfoResponse.json().then(data => {
+      setUserInfo(data);
+    })
+  }
 
   return (
     <Container>
@@ -272,9 +300,9 @@ const LoginScreen = ({ navigation }) => {
       />
       <Wrap>
         <Logo>MA:ON</Logo>
-        <Text style={{color: color.white}}>{JSON.stringify(userInfo, null, 2)}</Text>
-        <RoundBtn text={"Google로 로그인"} onPress={() => promptAsync({ useProxy: true })} />
-        <Button title="logout" onPress={() => handleLogout()} />
+        {/* <Text style={{color: color.white}}>{JSON.stringify(userInfo, null, 2)}</Text> */}
+        <RoundBtn text={"Google로 로그인"} onPress={accessToken? getUserData : () => {promptAsync({useProxy: false, showInRevents: true})}} />
+        {/* <Button title="logout" onPress={() => handleLogout()} /> */}
       </Wrap>
     </Container>
   );
