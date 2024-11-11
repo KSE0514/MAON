@@ -1,7 +1,5 @@
 package com.easter.tournament.domain.team.entity;
 
-import com.easter.tournament.domain.participant.entity.Participant;
-import com.easter.tournament.domain.tournament.entity.Tournament;
 import com.fasterxml.uuid.Generators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -19,8 +17,7 @@ import java.util.UUID;
 @Table(name = "team")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Team {
-
+public class TeamInvitation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -30,22 +27,34 @@ public class Team {
     @Column(name = "uuid", columnDefinition = "binary(16)", unique = true)
     private UUID uuid;
 
-    @NotNull
-    @Column(name = "name")
-    private String name;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tournament_id", insertable = false, updatable = false)
-    private Tournament tournament;
+    @JoinColumn(name = "team_id", updatable = false, insertable = false)
+    private Team team;
 
-    @Column(name = "tournament_id")
-    private long tournamentId;
+    @Column(name = "team_id")
+    private Long teamId;
 
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-    private List<Participant> participants;
+    @NotNull
+    @Column(name = "inviter_id", columnDefinition = "binary(16)")
+    private UUID inviterId;
+
+    @Column(name = "inviter_image", length = 200)
+    private String inviterImage;
+
+    @NotNull
+    @Column(name = "invitee_id", columnDefinition = "binary(16)")
+    private UUID inviteeId;
+
+    @Column(name = "valid")
+    private boolean valid;
+
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
 
     @PrePersist
     private void prePersist() {
         this.uuid = Generators.timeBasedEpochGenerator().generate();
+        this.createTime = LocalDateTime.now();
     }
+
 }
