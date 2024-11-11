@@ -1,6 +1,7 @@
 package com.easter.watch.presentation.view.run
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -53,21 +54,27 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private lateinit var heartSensor: Sensor
     private val viewModel: RunViewModel by viewModels()
+    private var isInitialized = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRunBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        showClock() //실시간 시계
+        if (!isInitialized) {
+            binding = ActivityRunBinding.inflate(layoutInflater)
+            setContentView(binding.root)
 
-        checkPermissions()
-        setupSensors()
-        setupViewPager()
-        setupObservers()
-        viewModel.startTimer()
+            showClock()
+            checkPermissions()
+            setupSensors()
+            setupViewPager()
+            setupObservers()
+            viewModel.startTimer()
+            viewModel.startTracking()
 
+            isInitialized = true
+        }
     }
+
 
     private fun checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

@@ -47,18 +47,21 @@ class RunFragment1 : Fragment() {
 
         binding.stopBtn.setOnClickListener {
             viewModel.stopTimer()
+            viewModel.stopTracking()
             val intent = Intent(requireContext(), ResultActivity::class.java)
             startActivity(intent)
         }
 
         binding.pauseBtn.setOnClickListener {
             viewModel.pauseTimer()
+            viewModel.stopTracking()
             binding.playBtn.isGone = false
             binding.pauseBtn.isGone = true
         }
 
         binding.playBtn.setOnClickListener {
             viewModel.startTimer()
+            viewModel.startTracking()
             binding.playBtn.isGone = true
             binding.pauseBtn.isGone = false
         }

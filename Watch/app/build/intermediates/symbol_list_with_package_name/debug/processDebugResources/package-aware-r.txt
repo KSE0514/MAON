@@ -3625,7 +3625,7 @@ id listMode
 id list_item
 id m3_side_sheet
 id main
-id mapView
+id map
 id marquee
 id masked
 id match_constraint

@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.easter.watch.R
 import com.easter.watch.databinding.FragmentRun3Binding
@@ -36,43 +37,34 @@ import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 
 class RunFragment3 : Fragment(), OnMapReadyCallback {
+    private var _binding: FragmentRun3Binding? = null
+    private val binding get() = _binding!!
 
+    private val viewModel: RunViewModel by activityViewModels()
     private var mMap: GoogleMap? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var runViewModel: RunViewModel
     private val LOCATION_PERMISSION_REQUEST = 1
 
     // 경로 추적 관련 변수
     private val locationList = mutableListOf<LatLng>()
     private var polyline: Polyline? = null
 
+    // Location Service 관련 Intent
+    private val serviceIntent by lazy {
+        Intent(requireContext(), LocationTrackingService::class.java)
+    }
+
+    // Location Updates Receiver
     private val locationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == LocationTrackingService.ACTION_UPDATE_LOCATION) {
                 val latitude = intent.getDoubleExtra("latitude", 0.0)
                 val longitude = intent.getDoubleExtra("longitude", 0.0)
                 val currentLatLng = LatLng(latitude, longitude)
+
+                // 위치 업데이트 및 경로 추가
                 updateMapLocation(currentLatLng)
-            }
-        }
-    }
-
-    // 위치 업데이트 요청 설정
-    private val locationRequest = LocationRequest.create().apply {
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        interval = 1000
-        fastestInterval = 500
-    }
-
-    // 위치 콜백
-    private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            for (location in locationResult.locations) {
-                val currentLatLng = LatLng(location.latitude, location.longitude)
-                updateMapLocation(currentLatLng)
-
-                // 트래킹 중일 때만 경로 추가
-                if (runViewModel.isTracking.value == true) {
+                if (viewModel.isTracking.value == true) {
                     locationList.add(currentLatLng)
                     updatePolyline()
                 }
@@ -81,36 +73,39 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_run3, container, false)
+    ): View {
+        _binding = FragmentRun3Binding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        // ViewModel 초기화
-        runViewModel = ViewModelProvider(requireActivity()).get(RunViewModel::class.java)
-
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment?
+        // 지도 초기화
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
+        setupObservers()
+
+        // 위치 권한 확인
         checkLocationPermission()
 
-        // 위치 업데이트 수신을 위한 브로드캐스트 리시버 등록
+        // BroadcastReceiver 등록
         requireActivity().registerReceiver(
             locationReceiver,
             IntentFilter(LocationTrackingService.ACTION_UPDATE_LOCATION),
             Context.RECEIVER_NOT_EXPORTED
         )
-
-        // 트래킹 상태를 관찰하여 시작 또는 중지
-        observeTrackingState()
-
-        return view
     }
 
-    private fun observeTrackingState() {
-        runViewModel.isTracking.observe(viewLifecycleOwner) { isTracking ->
+    private fun setupObservers() {
+        // ViewModel의 tracking 상태 관찰
+        viewModel.isTracking.observe(viewLifecycleOwner) { isTracking ->
             if (isTracking) {
                 startTracking()
             } else {
@@ -119,27 +114,24 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
         }
     }
 
-
     private fun startTracking() {
+        // 경로 초기화
         locationList.clear()
         polyline?.remove()
 
-        val intent = Intent(requireContext(), LocationTrackingService::class.java).apply {
-            action = LocationTrackingService.ACTION_START_TRACKING
-        }
+        // Foreground 서비스 시작
+        serviceIntent.action = LocationTrackingService.ACTION_START_TRACKING
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            requireActivity().startForegroundService(intent)
+            requireContext().startForegroundService(serviceIntent)
         } else {
-            requireActivity().startService(intent)
+            requireContext().startService(serviceIntent)
         }
     }
 
     private fun stopTracking() {
-
-        val intent = Intent(requireContext(), LocationTrackingService::class.java).apply {
-            action = LocationTrackingService.ACTION_STOP_TRACKING
-        }
-        requireActivity().startService(intent)
+        // 서비스 중지
+        serviceIntent.action = LocationTrackingService.ACTION_STOP_TRACKING
+        requireContext().startService(serviceIntent)
     }
 
     private fun updatePolyline() {
@@ -150,6 +142,26 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
                 .color(ContextCompat.getColor(requireContext(), R.color.red))
                 .width(7f)
         )
+    }
+
+    private fun updateMapLocation(currentLatLng: LatLng) {
+        mMap?.let { map ->
+            // 현재 위치 마커 업데이트
+//            map.clear()
+//            map.addMarker(
+//                MarkerOptions()
+//                    .position(currentLatLng)
+//                    .title("현재 위치")
+//            )
+
+            // 트래킹 중이면 경로 다시 그리기
+            if (viewModel.isTracking.value == true) {
+                updatePolyline()
+            }
+
+            // 카메라 이동
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 18f))
+        }
     }
 
     private fun checkLocationPermission() {
@@ -163,48 +175,11 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
                 LOCATION_PERMISSION_REQUEST
             )
         } else {
-            startLocationUpdates()
+            enableMyLocation()
         }
     }
 
-    private fun startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
-            )
-        }
-    }
-
-    private fun stopLocationUpdates() {
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-    }
-
-    private fun updateMapLocation(currentLatLng: LatLng) {
-        mMap?.let { map ->
-            val markerOptions = MarkerOptions()
-                .position(currentLatLng)
-                .title("현재 위치")
-
-            map.clear()
-            map.addMarker(markerOptions)
-
-            if (runViewModel.isTracking.value == true) {
-                updatePolyline()
-            }
-
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 18f))
-        }
-    }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
+    private fun enableMyLocation() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -215,33 +190,33 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
         }
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        enableMyLocation()
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             LOCATION_PERMISSION_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startLocationUpdates()
+                if (grantResults.isNotEmpty() &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    enableMyLocation()
                 }
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        startLocationUpdates()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        stopLocationUpdates()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        requireActivity().unregisterReceiver(locationReceiver)
+        try {
+            requireActivity().unregisterReceiver(locationReceiver)
+        } catch (e: IllegalArgumentException) {
+            // Receiver가 이미 해제되었을 경우 예외 처리
+        }
+        _binding = null
     }
 }

@@ -42,7 +42,7 @@ id heartImg
 id heartText
 id imageView
 id main
-id mapView
+id map
 id memberName
 id paceText
 id page1

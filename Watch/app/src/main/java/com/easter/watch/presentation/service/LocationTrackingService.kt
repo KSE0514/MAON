@@ -10,6 +10,7 @@ import android.os.Looper
 import androidx.core.app.NotificationCompat
 import com.easter.watch.R
 import com.easter.watch.presentation.view.run.RunActivity
+import com.easter.watch.presentation.view.run.RunFragment2
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -31,7 +32,7 @@ class LocationTrackingService : Service() {
     }
 
     private val locationRequest = LocationRequest.create().apply {
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY //HIGH 보다 BALANCED
         interval = 1000
         fastestInterval = 500
     }
@@ -95,11 +96,17 @@ class LocationTrackingService : Service() {
 
     private fun startForegroundService() {
 
-        val notificationIntent = Intent(this, RunActivity::class.java)
+        val notificationIntent = Intent(this, RunActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+        }
 
         val pendingIntent = PendingIntent.getActivity(
-            this, 0, notificationIntent,
-            PendingIntent.FLAG_IMMUTABLE
+            this,
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)

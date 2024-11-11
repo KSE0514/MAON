@@ -34,6 +34,7 @@
             android:allowEmbedded="true"
             android:exported="true"
             android:taskAffinity=""
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".presentation.MainActivity"
@@ -92,6 +93,12 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".presentation.service.LocationTrackingService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
 
         <service
             android:name=".presentation.service.RunService"
