@@ -119,7 +119,6 @@ const RunningAlone = ({ navigation, route }) => {
         // 종료 메시지 응답 경로를 구독
         const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${roomId}/end\n\n\0`;
         kafkaWs.send(subscribeFrame);
-        console.log("@@@@@@@@@@@@@@");
       } else if (message.data.status.includes("end")) {
         console.log("종료 응답 수신:", message.data);
       }

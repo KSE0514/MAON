@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   StyleSheet,
 } from "react-native";
-export const Wrapper = styled.View`
+export const Wrapper = styled.TouchableOpacity`
   padding: 20px 20px;
   flex: 1;
   width: 90%;
