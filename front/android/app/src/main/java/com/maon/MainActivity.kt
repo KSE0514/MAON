@@ -1,4 +1,4 @@
-package com.ssafy.maon
+package com.maon
 
 import android.os.Build
 import android.os.Bundle
