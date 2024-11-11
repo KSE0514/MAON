@@ -44,6 +44,8 @@ public class TeamController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /* 팀 초대 관련 */
+
     /**
      * 자신에게 온 팀 초대 확인
      * @return
@@ -82,12 +84,14 @@ public class TeamController {
     }
 
     /**
-     * 팀 요청 수락
+     * 마라톤 팀 초대 요청 처리
      * @return
      */
-    @PostMapping("/teamResponse")
-    public ResponseEntity<ResultResponse> teamResponse(){
-
-        return null;
+    @PostMapping("/invite/confirm")
+    public ResponseEntity<ResultResponse> confirmInvite(@RequestAttribute("passport") PassportDto passport, @RequestBody ConfirmInvitationRequestDto dto) {
+        log.info("confirm invite : {} - {}", dto.getInvitationId(), dto.isAccept());
+        teamService.confirmInvitation(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "초대 요청을 처리했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 }

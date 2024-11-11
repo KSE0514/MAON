@@ -28,6 +28,16 @@ public class TeamInvitationQueryRepository {
 //        ).leftJoin(teamInvitation.team, team).fetchJoin().fetch();
 //    }
 
+    public TeamInvitation findByUuid(UUID uuid) {
+        QTeam team = QTeam.team;
+        return queryFactory.selectFrom(teamInvitation)
+                .leftJoin(teamInvitation.team, team).fetchJoin()
+                .where(teamInvitation.uuid.eq(uuid).and(
+                        teamInvitation.teamId.eq(team.id)
+                ))
+                .fetchOne();
+    }
+
     public List<SimpleInvitationDto> findInvitationRequest(UUID memberId) {
         QTeam team = QTeam.team;
         QTournament tournament = QTournament.tournament;

@@ -167,6 +167,29 @@ public class TeamServiceImpl implements TeamService {
         teamInvitationRepository.save(teamInvitation);
     }
 
+    @Override
+    @Transactional
+    public void confirmInvitation(PassportDto passport, ConfirmInvitationRequestDto dto) {
+       TeamInvitation invitation = teamInvitationQueryRepository.findByUuid(dto.getInvitationId());
+       if(invitation == null) {
+           throw new BusinessException(HttpStatus.BAD_REQUEST, "초대 정보를 확인해주세요.");
+       }
+       if(!invitation.getInviteeId().equals(passport.getId()) || !invitation.isValid()) {
+           log.error("invalid invitation");
+           throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
+       }
+       // 공통적으로는 invalid로 만들어줘야 함
+       invitation = invitation.toBuilder().valid(false).build();
+       teamInvitationRepository.save(invitation);
+       if(dto.isAccept()) {
+           // 수락했다면 팀 정보를 추가
+           log.info("accepted");
+           Participant participant = participantQueryRepository.findParticipant(passport.getId(), invitation.getTeam().getTournamentId());
+           participant = participant.toBuilder().teamId(invitation.getTeam().getId()).build();
+           participantRepository.save(participant);
+       }
+    }
+
     private SearchMemberResponseDto getMemberInfo(List<UUID> memberIdList, String nicknameKeyword) {
         if(memberIdList == null || memberIdList.size() == 0) {
             return SearchMemberResponseDto.builder().memberInfoList(new ArrayList<>()).build();
