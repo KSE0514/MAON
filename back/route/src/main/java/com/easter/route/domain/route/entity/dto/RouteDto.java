@@ -18,11 +18,9 @@ public class RouteDto {
     private String writerName;
     private String routeName;
     private String routeType;
-    private String raceId;
     private String startPoint;
     private Double distance;
     private GeoJsonLineString track;
-    private HashMap<SpecialPointType, GeoJsonMultiPoint> specialPoint;
     private String routeImageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -33,12 +31,9 @@ public class RouteDto {
                 .writerId(route.getWriterId())
                 .writerName(route.getWriterName())
                 .routeName(route.getRouteName())
-                .routeType(route.getRouteType().name())
-                .raceId(route.getRaceId())
                 .startPoint(route.getStartPoint())
                 .distance(route.getDistance())
                 .track(route.getTrack())
-                .specialPoint(route.getSpecialPoint())
                 .routeImageUrl(route.getRouteImageUrl())
                 .createdAt(route.getCreatedAt())
                 .updatedAt(route.getUpdatedAt())

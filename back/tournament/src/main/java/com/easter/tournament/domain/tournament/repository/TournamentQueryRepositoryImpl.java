@@ -1,6 +1,8 @@
 package com.easter.tournament.domain.tournament.repository;
 
 import com.easter.tournament.domain.tournament.entity.QTournament;
+import com.easter.tournament.domain.tournament.entity.QTournamentAssignment;
+import com.easter.tournament.domain.tournament.entity.QTournamentCategory;
 import com.easter.tournament.domain.tournament.entity.Tournament;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,6 +23,9 @@ public class TournamentQueryRepositoryImpl implements TournamentQueryRepository 
     @Override
     public List<Tournament> findByYearAndMonth(Integer year, Integer month, Integer areaCodeId, boolean closed) {
         QTournament tournament = QTournament.tournament;
+        QTournamentAssignment tournamentAssignment = QTournamentAssignment.tournamentAssignment;
+        QTournamentCategory tournamentCategory = QTournamentCategory.tournamentCategory;
+
         BooleanBuilder builder = new BooleanBuilder();
 
         log.info("year : {}, month : {}, areaCodeId : {}" ,year, month, areaCodeId);
@@ -38,7 +43,7 @@ public class TournamentQueryRepositoryImpl implements TournamentQueryRepository 
         // 3. 년도, 장소 검색
         else if (year != 0 && month == 0 && areaCodeId != 0) {
             builder.and(year(tournament.tournamentDayStart).eq(year))
-                    .and(tournament.areaCode.id.eq(areaCodeId.longValue())); // areaCodeId를 Long으로 변환하여 비교
+                    .and(tournament.areaCode.id.eq(areaCodeId.longValue()));
         }
         // 4. 년도, 월, 장소 검색
         else if (year != 0 && month != 0 && areaCodeId != 0) {
@@ -57,6 +62,9 @@ public class TournamentQueryRepositoryImpl implements TournamentQueryRepository 
 
         return jpaQueryFactory
                 .selectFrom(tournament)
+                .distinct() // 중복 제거
+                .leftJoin(tournament.tournamentAssignment, tournamentAssignment).fetchJoin()
+                .leftJoin(tournamentAssignment.category, tournamentCategory).fetchJoin()
                 .where(builder)
                 .orderBy(tournament.tournamentDayStart.asc())
                 .fetch();

@@ -21,6 +21,16 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <activity
+            android:name=".presentation.view.run.ResultActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <service
+            android:name=".presentation.service.SensorService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
             android:name=".presentation.view.run.CountDownActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />

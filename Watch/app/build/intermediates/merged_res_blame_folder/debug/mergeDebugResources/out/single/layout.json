@@ -12,6 +12,14 @@
         "source": "com.easter.watch.app-main-7:/layout/activity_auth.xml"
     },
     {
+        "merged": "com.easter.watch.app-mergeDebugResources-4:/layout/activity_run.xml",
+        "source": "com.easter.watch.app-main-7:/layout/activity_run.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-mergeDebugResources-4:/layout/activity_result.xml",
+        "source": "com.easter.watch.app-main-7:/layout/activity_result.xml"
+    },
+    {
         "merged": "com.easter.watch.app-mergeDebugResources-4:/layout/fragment_run1.xml",
         "source": "com.easter.watch.app-main-7:/layout/fragment_run1.xml"
     },

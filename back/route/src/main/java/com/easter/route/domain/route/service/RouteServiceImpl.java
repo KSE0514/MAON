@@ -1,21 +1,16 @@
 package com.easter.route.domain.route.service;
 
 import java.util.List;
-import java.util.UUID;
 
-import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.route.entity.Route;
 import com.easter.route.domain.route.entity.dto.*;
-import com.easter.route.domain.route.entity.enums.RouteType;
 import com.easter.route.domain.route.repository.RouteRepository;
 import com.easter.route.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import static org.springframework.data.mongodb.core.aggregation.MergeOperation.UniqueMergeId.id;
 
 @Service
 @RequiredArgsConstructor
