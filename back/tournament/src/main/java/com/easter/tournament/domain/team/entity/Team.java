@@ -2,6 +2,7 @@ package com.easter.tournament.domain.team.entity;
 
 import com.easter.tournament.domain.participant.entity.Participant;
 import com.easter.tournament.domain.tournament.entity.Tournament;
+import com.fasterxml.uuid.Generators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,8 +35,14 @@ public class Team {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tournament_id")
     private Tournament tournament;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<Participant> participants;
+
+    @PrePersist
+    private void prePersist() {
+        this.uuid = Generators.timeBasedEpochGenerator().generate();
+    }
 }

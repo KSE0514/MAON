@@ -15,4 +15,9 @@ public interface TournamentRepository extends JpaRepository<Tournament, Long> {
 
     @Query("select t from Tournament t where t.title like %:title%")
     List<Tournament> findByTitleLike(@Param("title") String title);
+
+    @Query("SELECT DISTINCT t FROM Tournament t " +
+            "LEFT JOIN FETCH t.tournamentAssignment ta " +
+            "LEFT JOIN FETCH ta.category tc")
+    List<Tournament> findAllWithDetails();
 }

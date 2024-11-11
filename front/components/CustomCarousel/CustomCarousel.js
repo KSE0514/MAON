@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Dimensions, Image } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { Col, Row, RunBtn, Wrapper, styles } from "./CustomCarouselStyle";
@@ -35,6 +35,8 @@ const data = [
 ];
 
 const CustomCarousel = () => {
+  const [myMarathonList, setMyMarathoneList] = useState();
+  useEffect(() => {});
   return (
     <Carousel
       width={width}

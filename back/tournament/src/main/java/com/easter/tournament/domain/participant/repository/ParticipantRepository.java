@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
-    @Query("select p from Participant p where p.memberId = :memberId and p.tournament.id = :tournamentId")
-    Optional<Participant> findByMemberIdAndTournament(@Param("memberId") UUID memberId, @Param("tournamentId") long tournamentId);
+    @Query("select p from Participant p where p.memberId = :memberId and p.tournament.uuid = :tournamentId")
+    Optional<Participant> findByMemberIdAndTournament(@Param("memberId") UUID memberId, @Param("tournamentId") UUID tournamentId);
 }
