@@ -24,6 +24,7 @@ public class RecordStompController {
     // @SendTo("/sub/running/{recordId}")
     public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data: {}", recordId);
+        log.info("Received location data: {}", locationDto);
         runningInfoProducer.sendLocation(locationDto);
     }
 
