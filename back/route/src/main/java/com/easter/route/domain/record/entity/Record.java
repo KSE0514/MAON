@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-@Document(collection = "record")
+@Document(collection = "records")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -43,7 +43,7 @@ public class Record {
 	private List<String> paceList = Collections.emptyList();;
 
 	@Field("recorded_track")
-	private GeoJsonLineString recordedTrack = new GeoJsonLineString(Collections.emptyList());
+	private GeoJsonLineString recordedTrack;
 
 	@Field("running_time")
 	private String runningTime;
