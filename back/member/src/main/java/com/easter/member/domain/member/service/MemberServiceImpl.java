@@ -10,6 +10,7 @@ import com.easter.member.global.security.userinfo.Role;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -39,10 +40,9 @@ public class MemberServiceImpl implements MemberService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public LoginResponseDto login(String token) {
+    public LoginResponseDto login(LoginRequestDto dto) {
         // token을 통해 google 서버에 질의를 시도
-        ResponseEntity<Map> loginResult = restClient.get().uri(uriBuilder -> uriBuilder.path(googleOauthUrl)
-                .queryParam("id_token", token).build())
+        ResponseEntity<Map> loginResult = restClient.get().uri(googleOauthUrl+"?id_token="+dto.getToken())
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                     Map<String, String> bodyMap = objectMapper.readValue(response.getBody(), Map.class);
@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
                     .name((String) responseMap.get("name"))
                     .nickname("")
                     .email(email)
-                    .imageUrl((String)responseMap.get("picture"))
+                    .imageUrl((String) responseMap.get("picture"))
                     .role(Role.UNREGISTERED)
                     .build();
             String accessToken = tokenProvider.generateAccessToken(passport);
