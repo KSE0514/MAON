@@ -46,7 +46,8 @@ public class ParticipantQueryRepository {
 
     public List<MyTournament> findMyTournament(UUID memberId) {
         QTournament tournament = QTournament.tournament;
-        return queryFactory.select(Projections.constructor(MyTournament.class, tournament.uuid, tournament.title, tournament.tournamentDayStart, tournament.tournamentDayEnd, participant.tournamentCategory, tournament.location, tournament.imageUrl))
+        return queryFactory.select(Projections.constructor(MyTournament.class,
+                        tournament.uuid, tournament.title, tournament.tournamentDayStart, tournament.tournamentDayEnd, participant.tournamentCategory, tournament.location, tournament.longitude, tournament.latitude, tournament.imageUrl))
                 .from(participant)
                 .join(participant.tournament, tournament)
                 .where(participant.memberId.eq(memberId)
