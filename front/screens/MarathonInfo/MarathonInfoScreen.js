@@ -7,24 +7,42 @@ import {
   Top,
   Wrapper,
 } from "../SelectRunRoute/SelectRunRouteStyle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MarathonInfoPreview from "../../components/MaraThonInfoPreview/MaraThonInfoPreview";
+import { apiClient } from "../../customAxios";
 const MarathonInfo = ({ navigation, route }) => {
   const fontsLoaded = useFontsLoaded();
   const { mode } = route.params;
-  const [infos, setInfos] = useState([
-    {
-      address: "전남, 무안군",
-      name: "2024 무안 해안 노을길 마라톤",
-      price: "무료",
-      eventDate: "2024.11.03",
-      routeLength: ["Full", "Half", "10km", "5km"],
-      id: "123",
-    },
-  ]);
+  const [infos, setInfos] = useState([]);
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
+  const getMarathonInfo = async (
+    year = new Date().getFullYear(),
+    month = 0,
+    area = 0,
+    closed = true
+  ) => {
+    console.log("get Data!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    try {
+      const response = await apiClient.post(
+        `/tournament/tournament/getMarathon`,
+        {
+          year: year,
+          month: month,
+          area: area,
+          closed: closed,
+        }
+      );
+      setInfos(response.data.data || []); // 데이터가 없을 때 빈 배열로 설정
+    } catch (e) {
+      console.log("get marathoninfo error:", e);
+    }
+  };
+  useEffect(() => {
+    getMarathonInfo();
+  }, []);
+
   return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
       <ScrollView>
@@ -32,16 +50,28 @@ const MarathonInfo = ({ navigation, route }) => {
           <Top>
             <MarathonInfoSearchBar
               searchType={"searchInfo"}
-              onPress={() => {
-                alert("hello");
+              searchFunc={(year, month, area, closed) => {
+                alert(
+                  `년도: ${year}, 월: ${month}, 지역: ${area}, 접수 상태: ${closed}`
+                );
+                getMarathonInfo(year, month, area, closed);
               }}
             />
           </Top>
           <Bottom>
             <List>
-              {infos.map((info) => (
-                <MarathonInfoPreview data={info} mode="searchInfo" />
-              ))}
+              {infos.length === 0 ? (
+                <Text>검색 조건에 맞는 마라톤이 존재하지 않아요</Text>
+              ) : (
+                infos.map((info) => (
+                  <MarathonInfoPreview
+                    key={info.uuid}
+                    data={info}
+                    mode="searchInfo"
+                    navigation={navigation}
+                  />
+                ))
+              )}
             </List>
           </Bottom>
         </Wrapper>
