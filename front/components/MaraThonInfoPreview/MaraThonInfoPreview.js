@@ -48,13 +48,14 @@ const MaraThonInfoPreview = ({ navigation, data, mode }) => {
                   alignSelf: "stretch",
                   borderRadius: 20,
                 }}
-                scrollEnabled={false}
+                scrollEnabled={false} // 지도 이동 비활성화
+                zoomEnabled={false} // 줌인, 줌아웃 비활성화
                 showsUserLocation={false}
                 initialRegion={{
                   latitude: data.latitude,
                   longitude: data.longitude,
-                  latitudeDelta: 0.01, // 줌 레벨 설정 (작을수록 줌 인)
-                  longitudeDelta: 0.01,
+                  latitudeDelta: 0.005, // 줌 레벨 설정 (작을수록 줌 인)
+                  longitudeDelta: 0.005,
                 }}
               >
                 <Marker

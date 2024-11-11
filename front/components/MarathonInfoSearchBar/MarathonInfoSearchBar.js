@@ -95,7 +95,7 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
   return (
     <Wrapper style={styles.shadow}>
       <Top>
-        <OptionTitle style={{ marginBottom: searchType === "run" ? 0 : 10 }}>
+        <OptionTitle style={[{ marginBottom: searchType === "run" ? 0 : 10 }]}>
           {searchType == "run" ? `거리선택 ${distance}km` : "상세검색"}
         </OptionTitle>
         {searchType == "run" && (

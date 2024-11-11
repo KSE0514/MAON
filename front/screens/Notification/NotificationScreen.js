@@ -20,8 +20,11 @@ import TeamRoundBtn from "../../components/Button/TeamRoundBtn/TeamRoundBtn";
 import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
 import colors from "../../styles/colors";
 
-import testImg from "./../../assets/images/testProfile1.jpg"
-import testImg2 from "./../../assets/images/testProfile.jpg"
+// import testImg from "./../../assets/images/testProfile1.jpg"
+// import testImg2 from "./../../assets/images/testProfile.jpg"
+
+const testImg = require("./../../assets/images/testProfile1.jpg")
+const testImg2 = require("./../../assets/images/testProfile.jpg")
 
 const testMyInfo = {
   marathonList: {

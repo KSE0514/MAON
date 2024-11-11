@@ -36,7 +36,14 @@ export const ProfileChangeIcon = styled.View`
   align-items: center;
   margin-top: 30%;
   margin-bottom: 30px;
+`
 
+export const ProfileView = styled.View`
+  width: 60%;
+  aspect-ratio: 1;
+  border: 3px solid ${colors.grape_fruit};
+  border-radius: 35px;
+  overflow: hidden;
 `
 
 export const PlusIcon = styled.View`
