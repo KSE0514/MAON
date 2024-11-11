@@ -35,6 +35,10 @@ class RunViewModel : ViewModel() {
     private val _isRunning = MutableLiveData(false)
     val isRunning: LiveData<Boolean> = _isRunning
 
+    // 트래킹 상태
+    private val _isTracking = MutableLiveData(false)
+    val isTracking: LiveData<Boolean> = _isTracking
+
     // 타이머 시작
     fun startTimer() {
         if (timerJob == null) {
@@ -49,6 +53,18 @@ class RunViewModel : ViewModel() {
             }
         }
     }
+
+
+    // 트래킹 시작
+    fun startTracking() {
+        _isTracking.value = true
+    }
+
+    // 트래킹 중지
+    fun stopTracking() {
+        _isTracking.value = false
+    }
+
 
     // 타이머 일시정지
     fun pauseTimer() {

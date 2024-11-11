@@ -15,6 +15,7 @@ import com.easter.watch.R
 import com.easter.watch.databinding.ActivityAuthBinding
 import com.easter.watch.databinding.FragmentRun1Binding
 import com.easter.watch.databinding.FragmentRun2Binding
+import com.easter.watch.presentation.service.RunService
 
 class RunFragment1 : Fragment() {
     private var _binding: FragmentRun1Binding? = null
@@ -38,11 +39,11 @@ class RunFragment1 : Fragment() {
         binding.stopBtn.isGone = false
 
         setupButtons()
+        setButtons()
         setupObservers()
     }
 
-    private fun setupButtons() {
-
+    private fun setButtons() {
 
         binding.stopBtn.setOnClickListener {
             viewModel.stopTimer()
@@ -60,6 +61,28 @@ class RunFragment1 : Fragment() {
             viewModel.startTimer()
             binding.playBtn.isGone = true
             binding.pauseBtn.isGone = false
+        }
+    }
+
+    private fun setupButtons() {
+        binding.stopBtn.setOnClickListener {
+            requireContext().startService(Intent(requireContext(), RunService::class.java).apply {
+                action = RunService.ACTION_STOP
+            })
+            val intent = Intent(requireContext(), ResultActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.pauseBtn.setOnClickListener {
+            requireContext().startService(Intent(requireContext(), RunService::class.java).apply {
+                action = RunService.ACTION_PAUSE
+            })
+        }
+
+        binding.playBtn.setOnClickListener {
+            requireContext().startService(Intent(requireContext(), RunService::class.java).apply {
+                action = RunService.ACTION_START
+            })
         }
     }
 

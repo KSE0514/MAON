@@ -7,6 +7,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -59,11 +60,22 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         setContentView(binding.root)
 
         showClock() //실시간 시계
+
+        checkPermissions()
         setupSensors()
         setupViewPager()
         setupObservers()
         viewModel.startTimer()
 
+    }
+
+    private fun checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
+            }
+        }
     }
 
     private fun setupViewPager(){
@@ -172,14 +184,14 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
             binding.heartText.text = heartRate.toString()
         }
 
-        viewModel.isRunning.observe(this) { isRunning ->
-            val pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse_animation)
-            if (isRunning) {
-                binding.heartImg.startAnimation(pulseAnimation)
-            } else {
-                binding.heartImg.clearAnimation()
-            }
-        }
+//        viewModel.isRunning.observe(this) { isRunning ->
+//            val pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse_animation)
+//            if (isRunning) {
+//                binding.heartImg.startAnimation(pulseAnimation)
+//            } else {
+//                binding.heartImg.clearAnimation()
+//            }
+//        }
 
         viewModel.timerText.observe(this) { time ->
             binding.runTime.text = time
