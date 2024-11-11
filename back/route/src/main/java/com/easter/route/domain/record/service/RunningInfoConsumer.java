@@ -2,7 +2,6 @@ package com.easter.route.domain.record.service;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,8 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,7 +48,7 @@ public class RunningInfoConsumer {
 	@KafkaListener(topics = "maon.route.location", groupId = "running.group", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
-			log.info("Received location data: {}", locationDto);
+			log.error("Received location data in listener: {}", locationDto);
 			String recordId = locationDto.getRecordId();
 			runningInfoMap.computeIfAbsent(recordId, k -> new CopyOnWriteArrayList<>()).add(locationDto);
 			acknowledgment.acknowledge();
@@ -95,7 +92,6 @@ public class RunningInfoConsumer {
 		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 	}
 
-	@Transactional
 	public RunningResultDto finish(String recordId) {
 		Record record = recordRepository.findById(recordId)
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));

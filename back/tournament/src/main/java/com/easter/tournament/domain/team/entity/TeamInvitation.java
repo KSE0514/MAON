@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Builder(toBuilder = true)
-@Table(name = "team")
+@Table(name = "team_invitation")
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamInvitation {
@@ -37,6 +37,10 @@ public class TeamInvitation {
     @NotNull
     @Column(name = "inviter_id", columnDefinition = "binary(16)")
     private UUID inviterId;
+
+    @NotNull
+    @Column(name = "inviter_nickname", length = 30)
+    private String inviterNickname;
 
     @Column(name = "inviter_image", length = 200)
     private String inviterImage;

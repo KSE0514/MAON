@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -24,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
+@ToString
 public class Record {
 	@Id
 	private String id;
@@ -41,7 +43,7 @@ public class Record {
 	private List<String> paceList = Collections.emptyList();;
 
 	@Field("recorded_track")
-	private GeoJsonLineString recordedTrack;
+	private GeoJsonLineString recordedTrack = new GeoJsonLineString(Collections.emptyList());
 
 	@Field("running_time")
 	private String runningTime;

@@ -19,5 +19,7 @@ public class MyTournament {
     private LocalDateTime tournamentDayEnd;
     private String tournamentCategory;
     private String location;
+    private double longitude;
+    private double latitude;
     private String imageUrl;
 }
