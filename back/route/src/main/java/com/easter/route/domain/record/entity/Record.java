@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Document(collection = "record")
@@ -34,10 +35,10 @@ public class Record {
 	private boolean completed;
 
 	@Field("running_info")
-	private List<LocationDto> runningInfo;
+	private List<LocationDto> runningInfo = Collections.emptyList();;
 
 	@Field("pace_list")
-	private List<String> paceList;
+	private List<String> paceList = Collections.emptyList();;
 
 	@Field("recorded_track")
 	private GeoJsonLineString recordedTrack;

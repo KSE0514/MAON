@@ -32,6 +32,8 @@ public class RecordStompController {
     @SendTo("/sub/running/{recordId}/end")
     public RunningResultDto finish(@DestinationVariable String recordId) {
         log.info("End record: {}", recordId);
-        return runningInfoConsumer.finish(recordId);
+        RunningResultDto result = runningInfoConsumer.finish(recordId);
+        log.info("Result: {}", result);
+        return result;
     }
 }
