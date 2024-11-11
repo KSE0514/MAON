@@ -43,7 +43,7 @@ public class Record {
 	private List<String> paceList = Collections.emptyList();;
 
 	@Field("recorded_track")
-	private GeoJsonLineString recordedTrack;
+	private GeoJsonLineString recordedTrack = new GeoJsonLineString(Collections.emptyList());
 
 	@Field("running_time")
 	private String runningTime;
