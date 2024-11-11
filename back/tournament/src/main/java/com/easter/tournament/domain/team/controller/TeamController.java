@@ -45,6 +45,19 @@ public class TeamController {
     }
 
     /**
+     * 자신에게 온 팀 초대 확인
+     * @return
+     */
+    @GetMapping("/invite/list")
+    public ResponseEntity<ResultResponse> checkInvite(@RequestAttribute("passport") PassportDto passport) {
+        log.info("check team invite");
+        CheckInvitationResponseDto responseDto = teamService.checkInvitation(passport);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "초대 리스트를 조회했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+
+    /**
      * 마라톤 팀 초대 가능 멤버 조회
      * @return
      */

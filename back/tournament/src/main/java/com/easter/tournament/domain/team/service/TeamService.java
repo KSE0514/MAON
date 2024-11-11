@@ -12,5 +12,6 @@ public interface TeamService {
     CreateTeamResponseDto createTeam(PassportDto passport, CreateTeamRequestDto dto);
     SearchTeamMemberResponseDto searchTeamMember(UUID teamId);
     SearchCandidateResponseDto searchCandidate(PassportDto passport, SearchCandidateRequestDto dto);
+    CheckInvitationResponseDto checkInvitation(PassportDto passport);
     void inviteTeam(PassportDto passport, InviteTeamRequestDto dto);
 }

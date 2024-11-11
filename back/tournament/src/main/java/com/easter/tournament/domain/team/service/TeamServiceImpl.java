@@ -132,6 +132,12 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public CheckInvitationResponseDto checkInvitation(PassportDto passport) {
+        List<SimpleInvitationDto> resultList = teamInvitationQueryRepository.findInvitationRequest(passport.getId());
+        return CheckInvitationResponseDto.builder().invitationList(resultList).build();
+    }
+
+    @Override
     public void inviteTeam(PassportDto passport, InviteTeamRequestDto dto) {
         Team team = teamRepository.findByUuid(dto.getTeamId())
                 .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다."));
@@ -151,8 +157,9 @@ public class TeamServiceImpl implements TeamService {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "이미 초대 신청을 보냈습니다.");
         }
         TeamInvitation teamInvitation = TeamInvitation.builder()
-                .team(team)
+                .teamId(team.getId())
                 .inviterId(passport.getId())
+                .inviterNickname(passport.getNickname())
                 .inviterImage(passport.getImageUrl())
                 .inviteeId(dto.getInviteeId())
                 .valid(true)
