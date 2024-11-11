@@ -149,6 +149,6 @@ public class RunningInfoConsumer {
 		Record updatedRecord = recordRepository.findById(recordId)
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
 
-		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord));
+		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord), "end");
 	}
 }
