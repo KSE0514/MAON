@@ -39,6 +39,18 @@ const RunningAlone = ({ navigation, route }) => {
   const [pace, setPace] = useState("00'00''"); // 페이스
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
 
+  const [resultData, setResultData] = useState({
+    id: "",
+    routeId: "",
+    paceList: "",
+    recordedTrack: "",
+    runningTime: "",
+    averagePace: "",
+    averageHeartRate: "",
+    distance: "",
+    createdAt: "",
+  });
+
   const StopModalContent = {
     text: "종료하시겠습니까?",
     subText: "",
@@ -76,7 +88,7 @@ const RunningAlone = ({ navigation, route }) => {
           };
 
           sendEndSession(roomId); // 종료 요청 전송
-          navigation.navigate("RunResult"); // 종료 후 다른 화면으로 이동
+          navigation.navigate("RunResult", { resultData: resultData }); // 종료 후 다른 화면으로 이동
         },
       },
     ],
