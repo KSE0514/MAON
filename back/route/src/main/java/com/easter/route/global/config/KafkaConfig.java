@@ -17,6 +17,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
@@ -26,6 +28,8 @@ import com.easter.route.domain.record.entity.dto.LocationDto;
 @EnableKafka
 public class KafkaConfig {
 
+	// Kafka message는 Exactly Once로 전달한다. 이는
+	// 이를 위해 INDENPOTENCE,
 	@Bean
 	public Map<String, Object> producerConfigs() {
 		Map<String, Object> props = new HashMap<>();
@@ -37,12 +41,18 @@ public class KafkaConfig {
 		props.put(ProducerConfig.BATCH_SIZE_CONFIG, 32768);
 		props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
 		props.put(ProducerConfig.LINGER_MS_CONFIG, 10);
+		// 재시도 설정
+		props.put(ProducerConfig.RETRIES_CONFIG, 3); // 최대 재시도 횟수 설정
+		props.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, 1000); // 재시도 간격 (밀리초)
 		return props;
 	}
 
 	@Bean
 	public <K, V>ProducerFactory<K, V> producerFactory() {
-		return new DefaultKafkaProducerFactory<>(producerConfigs());
+		DefaultKafkaProducerFactory<K, V> factory = new DefaultKafkaProducerFactory<>(producerConfigs());
+		// Exactly once delivery (최종 전송 보장을 위한 랜덤 transactional Id 생성)
+		// factory.setTransactionIdPrefix("tx");
+		return factory;
 	}
 
 	@Bean
@@ -56,6 +66,7 @@ public class KafkaConfig {
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "k11c207.p.ssafy.io:29094,k11c207.p.ssafy.io:39094,k11c207.p.ssafy.io:49094");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.easter.route.domain.record.entity.dto");
 		return props;
@@ -70,11 +81,22 @@ public class KafkaConfig {
 	public ConsumerFactory<String, LocationDto> locationConsumerFactory() {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "k11c207.p.ssafy.io:29094,k11c207.p.ssafy.io:39094,k11c207.p.ssafy.io:49094");
-		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		// ErrorHandlingDeserializer 설정 추가
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+		props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
+		props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
+		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-		props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.easter.route.domain.record.entity.dto");
-		return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(LocationDto.class));
+
+		JsonDeserializer<LocationDto> deserializer = new JsonDeserializer<>(LocationDto.class);
+		deserializer.addTrustedPackages("*");  // 원래 패키지 경로 유지
+
+		return new DefaultKafkaConsumerFactory<>(
+			props,
+			new ErrorHandlingDeserializer<>(new StringDeserializer()),
+			new ErrorHandlingDeserializer<>(deserializer)
+		);
 	}
 
 	@Bean
@@ -82,6 +104,14 @@ public class KafkaConfig {
 		ConcurrentKafkaListenerContainerFactory<K, V> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory());
 		factory.getContainerProperties().setPollTimeout(3000);
+		return factory;
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, LocationDto> locationKafkaListenerContainerFactory() {
+		ConcurrentKafkaListenerContainerFactory<String, LocationDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+		factory.setConsumerFactory(locationConsumerFactory());
+		factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
 		return factory;
 	}
 }
