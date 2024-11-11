@@ -84,8 +84,10 @@ public class KafkaConfig {
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-		props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.easter.route.domain.record.entity.dto");
-		return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(LocationDto.class));
+
+		JsonDeserializer<LocationDto> deserializer = new JsonDeserializer<>(LocationDto.class);
+		deserializer.addTrustedPackages("com.easter.route.domain.record.entity.dto");
+		return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
 	}
 
 	@Bean
