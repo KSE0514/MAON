@@ -31,12 +31,12 @@ public class RecordController {
     @PostMapping("/running/createRunning")
     public ResponseEntity<ResultResponse> createRunning(@RequestBody CreateRunningDto createRunningDto) {
         Record record = recordService.createRunning(createRunningDto);
-        log.error("Record created: {}", record);
-        log.error("CreateRunningDto created: {}", createRunningDto);
-        log.error("Record created: {}", record);
-        log.error("CreateRunningDto created: {}", createRunningDto);
-        log.error("Record created: {}", record);
-        log.error("CreateRunningDto created: {}", createRunningDto);
+        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Record created: {}", record);
+        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@CreateRunningDto created: {}", createRunningDto);
+        log.error("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Record created: {}", record);
+        log.error("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@CreateRunningDto created: {}", createRunningDto);
+        log.trace("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Record created: {}", record);
+        log.trace("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@CreateRunningDto created: {}", createRunningDto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "Record를 생성했습니다.", record.getId());
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }

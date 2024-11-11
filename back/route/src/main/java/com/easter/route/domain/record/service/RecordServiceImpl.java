@@ -34,7 +34,7 @@ public class RecordServiceImpl implements RecordService {
 			.routeId(createRunningDto.getRouteId())
 			.build();
 		log.error("레코드 @@@@@@@@@@@@@@@@@: {}", record);
-		return recordRepository.save(record);
+		return mongoTemplate.save(record);
 	}
 
 	@Override

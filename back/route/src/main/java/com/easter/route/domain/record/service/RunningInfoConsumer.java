@@ -48,7 +48,7 @@ public class RunningInfoConsumer {
 	@KafkaListener(topics = "maon.route.location", groupId = "running.group", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
-			log.info("Received location data: {}", locationDto);
+			log.error("Received location data in listener: {}", locationDto);
 			String recordId = locationDto.getRecordId();
 			runningInfoMap.computeIfAbsent(recordId, k -> new CopyOnWriteArrayList<>()).add(locationDto);
 			acknowledgment.acknowledge();
