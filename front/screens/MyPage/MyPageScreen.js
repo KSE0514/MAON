@@ -24,7 +24,9 @@ import colors from "../../styles/colors"
 import InputBox from "../../components/InputBox/InputBox"
 import SquareBtn from "../../components/Button/SquareBtn/SquareBtn"
 
-import testImg from './../../assets/images/testProfile.jpg'
+// import testImg from './../../assets/images/testProfile.jpg'
+
+const testImg = require('./../../assets/images/testProfile.jpg');
 
 const testUser = {
   userName: '김성은',
