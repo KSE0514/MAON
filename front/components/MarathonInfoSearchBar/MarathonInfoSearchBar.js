@@ -26,13 +26,13 @@ import color from "../../styles/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import RadioButton from "../RadioButton/RadioButton";
 
-const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
+const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
   const fontsLoaded = useFontsLoaded();
   const [routeType, setRouteType] = useState("");
   const [routeName, setRouteName] = useState("");
-  const [year, setYear] = useState("전체년도");
-  const [month, setMonth] = useState("전체월");
-  const [region, setRegion] = useState("지역");
+  const [year, setYear] = useState(2024);
+  const [month, setMonth] = useState(0);
+  const [region, setRegion] = useState(10);
   //루트 타입 선택 옵션
   const routeTypeOptions = [
     { label: "북마크한 코스", value: "bookmark" },
@@ -41,31 +41,52 @@ const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
     { label: "일반 코스", value: "general" },
   ];
   //신청 가능 마라톤 선택 옵션
-  const [possible, setPossible] = useState("");
+  const [possible, setPossible] = useState(true);
   const years = [
-    { label: "전체년도", value: "all" },
-    { label: "2024년", value: "2024" },
-    { label: "2025년", value: "2025" },
-    { label: "2026년", value: "2026" },
-    { label: "2027년", value: "2027" },
-    { label: "2028년", value: "2028" },
+    { label: "년도", value: new Date().getFullYear() },
+    { label: "2024년", value: 2024 },
+    { label: "2025년", value: 2025 },
+    { label: "2026년", value: 2026 },
+    { label: "2027년", value: 2027 },
+    { label: "2028년", value: 2028 },
   ];
   const months = [
-    { label: "전체월", value: "all" },
-    { label: "1월", value: "1" },
-    { label: "2월", value: "2" },
-    { label: "3월", value: "3" },
-    { label: "4월", value: "4" },
-    { label: "5월", value: "5" },
-    { label: "6월", value: "6" },
-    { label: "7월", value: "7" },
-    { label: "8월", value: "8" },
-    { label: "9월", value: "9" },
-    { label: "10월", value: "10" },
-    { label: "11월", value: "11" },
-    { label: "12월", value: "12" },
+    { label: "월", value: 0 },
+    { label: "1월", value: 1 },
+    { label: "2월", value: 2 },
+    { label: "3월", value: 3 },
+    { label: "4월", value: 4 },
+    { label: "5월", value: 5 },
+    { label: "6월", value: 6 },
+    { label: "7월", value: 7 },
+    { label: "8월", value: 8 },
+    { label: "9월", value: 9 },
+    { label: "10월", value: 10 },
+    { label: "11월", value: 11 },
+    { label: "12월", value: 12 },
   ];
-  const regions = [{ label: "지역", value: "all" }];
+  const regions = [
+    { label: "지역", value: 0 },
+    { label: "강원도", value: 1 },
+    { label: "경기도", value: 2 },
+    { label: "경상남도", value: 3 },
+    { label: "경상북도", value: 4 },
+    { label: "광주광역시", value: 5 },
+    { label: "서울특별시", value: 6 },
+    { label: "세종특별자치시", value: 7 },
+    { label: "울산광역시", value: 8 },
+    { label: "인천광역시", value: 9 },
+    { label: "전라남도", value: 11 },
+    { label: "전라북도", value: 12 },
+    { label: "제주특별자치도", value: 13 },
+    { label: "충청남도", value: 14 },
+    { label: "충청북도", value: 15 },
+    { label: "대구광역시", value: 16 },
+    { label: "부산광역시", value: 17 },
+    { label: "대전광역시", value: 18 },
+    { label: "해외", value: 20 },
+  ];
+
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
@@ -112,11 +133,13 @@ const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
               colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.gradient}>
+              style={styles.gradient}
+            >
               <SearchButton
                 onPress={() => {
                   onPress();
-                }}>
+                }}
+              >
                 <Text style={styles.buttonText}>검색</Text>
               </SearchButton>
             </LinearGradient>
@@ -171,11 +194,13 @@ const MarathonInfoSearchBar = ({ mode, onPress, searchType }) => {
               colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={[styles.gradient]}>
+              style={[styles.gradient]}
+            >
               <SearchButton
                 onPress={() => {
-                  alert("검색버튼 눌림");
-                }}>
+                  searchFunc(year, month, region, possible);
+                }}
+              >
                 <Text style={styles.buttonText}>검색</Text>
               </SearchButton>
             </LinearGradient>

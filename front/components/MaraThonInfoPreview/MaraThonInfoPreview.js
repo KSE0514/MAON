@@ -16,6 +16,8 @@ import color from "../../styles/colors";
 import fonts from "../../styles/fonts";
 import { status } from "./MaraThonInfoPreviewStyle";
 import moment from "moment";
+import MapView, { Marker } from "react-native-maps";
+import MapStyle from "../../components/Map/MapStyle";
 const MaraThonInfoPreview = ({ navigation, data, mode }) => {
   const fontsLoaded = useFontsLoaded();
 
@@ -30,15 +32,45 @@ const MaraThonInfoPreview = ({ navigation, data, mode }) => {
     <Wrapper
       onPress={() => {
         navigateDetailPage();
-      }}>
+      }}
+    >
       <Col>
-        <View>
+        <View style={{ flex: 1 }}>
           {data.imageUrl ? (
             <Image source={require("../../assets/images/route.png")} />
           ) : (
-            <>
-              <Text>map</Text>
-            </>
+            <View style={{ flex: 1 }}>
+              <MapView
+                provider={MapView.PROVIDER_GOOGLE}
+                customMapStyle={MapStyle}
+                style={{
+                  flex: 1,
+                  alignSelf: "stretch",
+                  borderRadius: 20,
+                }}
+                scrollEnabled={false}
+                showsUserLocation={false}
+                initialRegion={{
+                  latitude: data.latitude,
+                  longitude: data.longitude,
+                  latitudeDelta: 0.01, // 줌 레벨 설정 (작을수록 줌 인)
+                  longitudeDelta: 0.01,
+                }}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faLocationDot}
+                    size={34}
+                    color={color.light_orange}
+                  />
+                </Marker>
+              </MapView>
+            </View>
           )}
           <View style={status.status}>
             {!data.closed ? (
@@ -63,11 +95,14 @@ const MaraThonInfoPreview = ({ navigation, data, mode }) => {
           <Text
             numberOfLines={1}
             ellipsizeMode="tail"
-            style={[styles.LargeText]}>
+            style={[styles.LargeText]}
+          >
             {data.title}
           </Text>
         </Row>
-        <Row>{/* <Text style={[styles.LargeText]}>{data.price}</Text> */}</Row>
+        <Row>
+          <Text style={[styles.LargeText]}>무료</Text>
+        </Row>
         <Row>
           <FontAwesomeIcon
             icon={faCalendarDays}
@@ -102,13 +137,15 @@ const MaraThonInfoPreview = ({ navigation, data, mode }) => {
                         ? color.mandarin
                         : color.light_mandarin,
                   },
-                ]}>
+                ]}
+              >
                 <Text
                   style={{
                     textAlign: "center",
                     color: "white",
                     fontFamily: fonts.gMarketBold,
-                  }}>
+                  }}
+                >
                   {length.startsWith("10") ? "10" : length.charAt(0)}
                 </Text>
               </View>

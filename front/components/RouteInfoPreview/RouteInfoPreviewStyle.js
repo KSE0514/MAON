@@ -14,7 +14,9 @@ export const Wrapper = styled.TouchableOpacity`
   flex-direction: row;
   margin-bottom: 27px;
 `;
-export const Col = styled.View``;
+export const Col = styled.View`
+  flex: 1;
+`;
 export const Row = styled.View`
   flex-direction: row;
   width: 100%;
