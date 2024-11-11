@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -24,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
+@ToString
 public class Record {
 	@Id
 	private String id;
