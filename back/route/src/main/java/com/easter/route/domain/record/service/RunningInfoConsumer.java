@@ -2,6 +2,7 @@ package com.easter.route.domain.record.service;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +40,7 @@ public class RunningInfoConsumer {
 	private final RecordService recordService;
 	private final RecordRepository recordRepository;
 	private final RouteRepository routeRepository;
-
+	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
 
 	// Kafka recordId를 key로 메시지가 쌓이고, 그 값은 Map에 저장된다.
 	// 발생할 수 있는 동시성 이슈들
@@ -46,8 +48,7 @@ public class RunningInfoConsumer {
 	// 2. 위치 정보 리스트에서 동시에 여러 데이터가 추가 되는 경우
 	// 3. 심박수 계산 시 Race Condition
 	// 4. Map 초기화와 동시에 접근할 때
-	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
-	@KafkaListener(topics = "maon.route.location", groupId = "running.group", containerFactory = "locationDtoKafkaListenerContainerFactory")
+	@KafkaListener(topics = "maon.route.location", groupId = "running.group", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
 			log.info("Received location data: {}", locationDto);
@@ -94,6 +95,7 @@ public class RunningInfoConsumer {
 		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 	}
 
+	@Transactional
 	public RunningResultDto finish(String recordId) {
 		Record record = recordRepository.findById(recordId)
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
@@ -147,6 +149,6 @@ public class RunningInfoConsumer {
 		Record updatedRecord = recordRepository.findById(recordId)
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
 
-		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord));
+		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord), "end");
 	}
 }

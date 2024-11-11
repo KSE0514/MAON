@@ -57,12 +57,14 @@ public class TeamController {
     }
 
     /**
-     * 마라톤 팀 요청
+     * 마라톤 팀 초대 신청 전송
      * @return
      */
-    public ResponseEntity<ResultResponse> teamRequest(){
-
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "");
+    @PostMapping("/invite")
+    public ResponseEntity<ResultResponse> inviteTeam(@RequestAttribute("passport") PassportDto passport, @RequestBody InviteTeamRequestDto dto) {
+        log.info("invite team member");
+        teamService.inviteTeam(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀 멤버를 초대했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 

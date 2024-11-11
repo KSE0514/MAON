@@ -6,9 +6,10 @@ import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.record.entity.dto.RecordDto;
 import com.easter.route.domain.record.entity.dto.UpdateRecordDto;
 import com.easter.route.domain.record.repository.RecordRepository;
-import com.easter.route.domain.route.entity.dto.CreateRunningDto;
+import com.easter.route.domain.record.entity.dto.CreateRunningDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class RecordServiceImpl implements RecordService {
 
     private final MongoTemplate mongoTemplate;
@@ -34,6 +36,7 @@ public class RecordServiceImpl implements RecordService {
                 .averagePace("00'00\"")
                 .routeId(createRunningDto.getRouteId())
                 .build();
+        log.info("Record created: {}", record);
         return recordRepository.save(record);
     }
 

@@ -24,6 +24,7 @@ public class RecordStompController {
     // @SendTo("/sub/running/{recordId}")
     public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data: {}", recordId);
+        log.info("Received location data: {}", locationDto);
         runningInfoProducer.sendLocation(locationDto);
     }
 
@@ -31,6 +32,8 @@ public class RecordStompController {
     @SendTo("/sub/running/{recordId}/end")
     public RunningResultDto finish(@DestinationVariable String recordId) {
         log.info("End record: {}", recordId);
-        return runningInfoConsumer.finish(recordId);
+        RunningResultDto result = runningInfoConsumer.finish(recordId);
+        log.info("Result: {}", result);
+        return result;
     }
 }
