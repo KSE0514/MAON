@@ -27,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -91,10 +88,32 @@ public class TeamServiceImpl implements TeamService {
     public SearchTeamMemberResponseDto searchTeamMember(UUID teamId) {
         Team team = teamRepository.findByUuid(teamId).orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다."));
         List<UUID> memberIdList = participantQueryRepository.findMemberIdByTeamId(team.getId());
+        // 이후 뒷쪽에 수락대기중인 멤버의 id를 삽입
+        List<UUID> waitingIdList = teamInvitationQueryRepository.findWaitingMemberId(team.getId());
+        memberIdList.addAll(waitingIdList);
+        Set<UUID> waitingSet = new HashSet<>(waitingIdList);
         SearchMemberResponseDto memberResponseDto = getMemberInfo(memberIdList,null);
-        return SearchTeamMemberResponseDto.builder()
-                .teamMemberList(memberResponseDto.getMemberInfoList())
-                .build();
+        List<TeamMemberDto> resultList = new ArrayList<>();
+        for(MemberDto member : memberResponseDto.getMemberInfoList()) {
+            boolean confirmed;
+            if(waitingSet.contains(member.getId())) {
+                // 대기중 멤버라면 false
+                confirmed = false;
+            } else {
+                confirmed = true;
+            }
+            resultList.add(
+                    TeamMemberDto.builder()
+                            .id(member.getId())
+                            .name(member.getName())
+                            .nickname(member.getNickname())
+                            .email(member.getEmail())
+                            .imageUrl(member.getImageUrl())
+                            .confirmed(confirmed)
+                            .build()
+            );
+        }
+        return SearchTeamMemberResponseDto.builder().teamMemberList(resultList).build();
     }
 
     @Override
