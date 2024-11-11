@@ -48,7 +48,7 @@ const LoginScreen = ({ navigation }) => {
   // };
   const login = async (accessToken) => {
     try {
-      const response = await apiClient.get(
+      const response = await apiClient.post(
         `/member/member/login`,
         // requestBody,
         {
