@@ -34,7 +34,6 @@ const MarathonInfo = ({ navigation, route }) => {
           closed: closed,
         }
       );
-      console.log(response.data);
       setInfos(response.data.data || []); // 데이터가 없을 때 빈 배열로 설정
     } catch (e) {
       console.log("get marathoninfo error:", e);

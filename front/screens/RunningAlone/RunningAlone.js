@@ -71,86 +71,94 @@ const RunningAlone = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  // useEffect(() => {
-  //   const kafkaWs = new WebSocket(
-  //     "wss://k11c207.p.ssafy.io/maon/route/ws/location"
-  //   );
+  useEffect(() => {
+    const kafkaWs = new WebSocket(
+      "wss://k11c207.p.ssafy.io/maon/route/ws/location"
+    );
 
-  //   kafkaWs.onopen = () => {
-  //     console.log("WebSocket 연결 성공!");
+    kafkaWs.onopen = () => {
+      console.log("WebSocket 연결 성공!");
 
-  //     // STOMP CONNECT 프레임 직접 전송
-  //     const connectFrame =
-  //       "CONNECT\naccept-version:1.2,1.1,1.0\nhost:k11c207.p.ssafy.io\n\n\0";
-  //     kafkaWs.send(connectFrame);
-  //   };
+      // STOMP CONNECT 프레임 직접 전송
+      const connectFrame =
+        "CONNECT\naccept-version:1.2,1.1,1.0\nhost:k11c207.p.ssafy.io\n\n\0";
+      kafkaWs.send(connectFrame);
+    };
 
-  //   kafkaWs.onmessage = (message) => {
-  //     console.log("서버로부터 메시지 수신:", message.data);
+    kafkaWs.onmessage = (message) => {
+      console.log("서버로부터 메시지 수신:", message.data);
 
-  //     if (message.data.startsWith("CONNECTED")) {
-  //       console.log("STOMP 연결 성공!");
+      if (message.data.startsWith("CONNECTED")) {
+        console.log("STOMP 연결 성공!");
 
-  //       // STOMP SUBSCRIBE 프레임
-  //       const subscribeFrame = `SUBSCRIBE\nid:sub-0\ndestination:/sub/running/${roomId}\n\n\0`;
-  //       kafkaWs.send(subscribeFrame);
-  //     }
-  //   };
+        // STOMP SUBSCRIBE 프레임
+        const subscribeFrame = `SUBSCRIBE\nid:sub-0\ndestination:/sub/running/${roomId}\n\n\0`;
+        kafkaWs.send(subscribeFrame);
+      }
+    };
 
-  //   kafkaWs.onclose = () => {
-  //     console.log("WebSocket 연결이 종료되었습니다.");
-  //   };
+    kafkaWs.onclose = () => {
+      console.log("WebSocket 연결이 종료되었습니다.");
+    };
 
-  //   kafkaWs.onerror = (error) => {
-  //     console.error("WebSocket 오류:", error);
-  //   };
+    kafkaWs.onerror = (error) => {
+      console.error("WebSocket 오류:", error);
+    };
 
-  //   kafkaStompClientRef.current = kafkaWs;
+    kafkaStompClientRef.current = kafkaWs;
 
-  //   // 워치에 연결된 경우 워치와의 웹소켓 열고 connectedWatch = true로 변경
-  //   // 열린 웹 소켓으로 1초마다 값이 넘어오기에 이를 백엔드로 넘겨주면 됨.
+    // 워치에 연결된 경우 워치와의 웹소켓 열고 connectedWatch = true로 변경
+    // 열린 웹 소켓으로 1초마다 값이 넘어오기에 이를 백엔드로 넘겨주면 됨.
 
-  //   return () => {
-  //     kafkaWs.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
-  //   };
-  // }, [roomId]);
+    return () => {
+      kafkaWs.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
+    };
+  }, [roomId]);
 
   // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
   const handleUserLocationChange = (location) => {
     if (!connectedWatch) {
       const locationDto = {
-        memberId: "dpqls3056",
-        recordId: String,
+        recordId: roomId,
+        time: "00:00:01",
+        memberId: "대현",
         latitude: location.latitude,
         longitude: location.longitude,
         heartRate: 0,
-        time: elapsedTime,
         pace, // 최신 페이스
         runningDistance: runningDistance,
       };
       console.log(
+        " memberId:",
+        locationDto.memberId,
+        "recordId: ",
+        roomId,
         "latitude: ",
         locationDto.latitude,
         " longitude:",
         locationDto.longitude,
+        " heartRate:",
+        locationDto.heartRate,
         " pace:",
         locationDto.pace,
-        " timestamp:",
-        locationDto.timestamp,
-        " memberId:",
-        locationDto.memberId,
-        " heartRate:",
-        locationDto.heartRate
+        " time: ",
+        locationDto.time,
+        " runningDistance: ",
+        locationDto.runningDistance
       );
-      // if (
-      //   kafkaStompClientRef.current &&
-      //   kafkaStompClientRef.current.readyState === WebSocket.OPEN
-      // ) {
-      //   const sendFrame = `SEND\ndestination:/pub/running/${roomId}\n\n${JSON.stringify(
-      //     locationDto
-      //   )}\0`;
-      //   kafkaStompClientRef.current.send(sendFrame);
-      // }
+      if (
+        kafkaStompClientRef.current &&
+        kafkaStompClientRef.current.readyState === WebSocket.OPEN
+      ) {
+        // STOMP 프레임을 구성하여 데이터 전송
+        const sendFrame =
+          `SEND\n` +
+          `destination:/pub/running/${roomId}\n` +
+          `content-type:application/json\n\n` +
+          `${JSON.stringify(locationDto)}\0`;
+
+        kafkaStompClientRef.current.send(sendFrame);
+      }
     }
   };
 
@@ -164,7 +172,8 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}>
+            }}
+          >
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}
