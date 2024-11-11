@@ -5,37 +5,46 @@ import { Col, Row, RunBtn, Wrapper, styles } from "./CustomCarouselStyle";
 import color from "../../styles/colors";
 import {
   faLocationDot,
+  faMapLocationDot,
   faPersonRunning,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
 import fonts from "../../styles/fonts";
 import { apiClient } from "../../customAxios";
+import MapView, { Marker } from "react-native-maps";
+import MapStyle from "../../components/Map/MapStyle";
 
 const { width } = Dimensions.get("window");
 
 const data = [
-  {
-    title: "2024 국제 국민 마라톤",
-    tournamentDayStart: "2024-11-11T14:30:45",
-    tournamentCategory: "5km",
-    locatoin: "여의도 공원 문화의 마당",
-  },
-  {
-    title: "무안 마라톤",
-    tournamentDayStart: "2024-11-13T14:30:45",
-    tournamentCategory: "10km",
-    locatoin: "무안 어딘가에서",
-  },
-  {
-    title: "인천 무슨 무슨 마라톤",
-    tournamentDayStart: "2024-11-15T14:30:45",
-    tournamentCategory: "10km",
-    locatoin: "인천 무슨무슨구 무슨무슨 곳에서",
-  },
+  // {
+  //   title: "2024 국제 국민 마라톤",
+  //   tournamentDayStart: "2024-11-11T14:30:45",
+  //   tournamentCategory: "5km",
+  //   locatoin: "여의도 공원 문화의 마당",
+  //   longitude: 126.821194,
+  //   latitude: 35.220606,
+  // },
+  // {
+  //   title: "무안 마라톤",
+  //   tournamentDayStart: "2024-11-13T14:30:45",
+  //   tournamentCategory: "10km",
+  //   locatoin: "무안 어딘가에서",
+  //   longitude: 126.821194,
+  //   latitude: 35.220606,
+  // },
+  // {
+  //   title: "인천 무슨 무슨 마라톤",
+  //   tournamentDayStart: "2024-11-15T14:30:45",
+  //   tournamentCategory: "10km",
+  //   locatoin: "인천 무슨무슨구 무슨무슨 곳에서",
+  //   longitude: 126.821194,
+  //   latitude: 35.220606,
+  // },
 ];
 
-const CustomCarousel = () => {
+const CustomCarousel = ({ navigation }) => {
   const [myMarathonList, setMyMarathoneList] = useState();
   useEffect(() => {
     const getMyMarathonList = async () => {
@@ -43,6 +52,7 @@ const CustomCarousel = () => {
       try {
         const response = await apiClient.get(`/tournament/participant/my`);
         console.log(response.data);
+        setMyMarathoneList(response.data);
       } catch (e) {
         console.log(e);
       }
@@ -88,12 +98,17 @@ const CustomCarousel = () => {
     return daysLeft > 0 ? `D-${daysLeft}` : "D-Day";
   }
 
-  return (
+  return data.length > 0 ? (
     <Carousel
       width={width}
       data={data}
       renderItem={({ item }) => (
-        <Wrapper style={styles.wrapper}>
+        <Wrapper
+          style={styles.wrapper}
+          onPress={() => {
+            navigation.navigate("MarathonInfoDetail", { uuid: item.uuid });
+          }}
+        >
           <Text style={styles.title}>{item.title}</Text>
           <View style={{ flexDirection: "row", marginTop: 5, flex: 1 }}>
             <Col>
@@ -103,7 +118,7 @@ const CustomCarousel = () => {
                   icon={faCalendarDays}
                   color={color.grape_fruit}
                   secondaryColor={color.light_mandarin}
-                  swapOpacity={true} // 필요에 따라 두 색상 간의 불투명도 조정
+                  swapOpacity={true}
                 />
                 <Text style={styles.subText}>
                   {formatDate(item.tournamentDayStart)}
@@ -148,17 +163,54 @@ const CustomCarousel = () => {
                 </RunBtn>
               </Row>
             </Col>
-            <Col style={{ marginRight: 20, marginLeft: 20 }}>
-              <Image
-                style={{ flex: 1 }}
-                source={require("../../assets/images/route.png")}
-              />
+            <Col style={{ marginLeft: 20 }}>
+              <MapView
+                provider={MapView.PROVIDER_GOOGLE}
+                customMapStyle={MapStyle}
+                style={{
+                  flex: 1,
+                  alignSelf: "stretch",
+                  borderRadius: 20,
+                }}
+                scrollEnabled={false}
+                zoomEnabled={false}
+                showsUserLocation={false}
+                initialRegion={{
+                  latitude: item.latitude,
+                  longitude: item.longitude,
+                  latitudeDelta: 0.003,
+                  longitudeDelta: 0.003,
+                }}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: item.latitude,
+                    longitude: item.longitude,
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faLocationDot}
+                    size={34}
+                    color={color.light_orange}
+                  />
+                </Marker>
+              </MapView>
             </Col>
           </View>
         </Wrapper>
       )}
       style={{ flex: 1 }}
     />
+  ) : (
+    <Text
+      style={{
+        fontFamily: fonts.gMarketBold,
+        fontSize: 16,
+        color: color.black,
+      }}
+    >
+      참가한 마라톤이 존재하지 않아요.
+    </Text>
   );
 };
 

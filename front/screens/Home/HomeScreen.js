@@ -64,7 +64,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
         <View style={styles.shadowContainer}>
           <CarouselView>
-            <CustomCarousel />
+            <CustomCarousel navigation={navigation} />
           </CarouselView>
         </View>
       </MaraThonInfoArea>

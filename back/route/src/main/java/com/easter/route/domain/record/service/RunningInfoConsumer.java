@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,6 +95,7 @@ public class RunningInfoConsumer {
 		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 	}
 
+	@Transactional
 	public RunningResultDto finish(String recordId) {
 		Record record = recordRepository.findById(recordId)
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
@@ -147,6 +149,6 @@ public class RunningInfoConsumer {
 		Record updatedRecord = recordRepository.findById(recordId)
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
 
-		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord));
+		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord), "end");
 	}
 }
