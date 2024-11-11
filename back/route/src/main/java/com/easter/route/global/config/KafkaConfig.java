@@ -18,6 +18,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
@@ -50,7 +51,7 @@ public class KafkaConfig {
 	public <K, V>ProducerFactory<K, V> producerFactory() {
 		DefaultKafkaProducerFactory<K, V> factory = new DefaultKafkaProducerFactory<>(producerConfigs());
 		// Exactly once delivery (최종 전송 보장을 위한 랜덤 transactional Id 생성)
-		factory.setTransactionIdPrefix("tx");
+		// factory.setTransactionIdPrefix("tx");
 		return factory;
 	}
 
@@ -80,14 +81,22 @@ public class KafkaConfig {
 	public ConsumerFactory<String, LocationDto> locationConsumerFactory() {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "k11c207.p.ssafy.io:29094,k11c207.p.ssafy.io:39094,k11c207.p.ssafy.io:49094");
-		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+		// ErrorHandlingDeserializer 설정 추가
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+		props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
+		props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
 		JsonDeserializer<LocationDto> deserializer = new JsonDeserializer<>(LocationDto.class);
-		deserializer.addTrustedPackages("com.easter.route.domain.record.entity.dto");
-		return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
+		deserializer.addTrustedPackages("*");  // 원래 패키지 경로 유지
+
+		return new DefaultKafkaConsumerFactory<>(
+			props,
+			new ErrorHandlingDeserializer<>(new StringDeserializer()),
+			new ErrorHandlingDeserializer<>(deserializer)
+		);
 	}
 
 	@Bean

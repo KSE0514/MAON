@@ -2,6 +2,7 @@ package com.easter.route.domain.record.service;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +39,7 @@ public class RunningInfoConsumer {
 	private final RecordService recordService;
 	private final RecordRepository recordRepository;
 	private final RouteRepository routeRepository;
-
+	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
 
 	// Kafka recordId를 key로 메시지가 쌓이고, 그 값은 Map에 저장된다.
 	// 발생할 수 있는 동시성 이슈들
@@ -46,7 +47,6 @@ public class RunningInfoConsumer {
 	// 2. 위치 정보 리스트에서 동시에 여러 데이터가 추가 되는 경우
 	// 3. 심박수 계산 시 Race Condition
 	// 4. Map 초기화와 동시에 접근할 때
-	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
 	@KafkaListener(topics = "maon.route.location", groupId = "running.group", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
