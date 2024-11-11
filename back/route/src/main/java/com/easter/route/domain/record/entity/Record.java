@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-@Document(collection = "record")
+@Document(collection = "records")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

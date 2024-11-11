@@ -33,7 +33,7 @@ public class RecordServiceImpl implements RecordService {
 			.averagePace("00'00\"")
 			.routeId(createRunningDto.getRouteId())
 			.build();
-		log.error("레코드 @@@@@@@@@@@@@@@@@: {}", record);
+		log.error("레코드: {}", record);
 		return mongoTemplate.save(record);
 	}
 
