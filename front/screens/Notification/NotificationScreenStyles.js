@@ -38,14 +38,8 @@ export const RequestBox = styled.View`
   border-bottom-color: #e5e5e5;
   flex-direction: row;
   gap: 10px;
-<<<<<<< HEAD
   padding: 10px 15px;  
 `
-=======
-  /* padding-vertical: 15px;
-  padding-horizontal: 10px; */
-`;
->>>>>>> dev
 
 export const UserImgView = styled.View`
   flex: 1.2;
