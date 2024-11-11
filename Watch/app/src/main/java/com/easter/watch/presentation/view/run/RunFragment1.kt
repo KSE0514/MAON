@@ -10,52 +10,63 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
+import androidx.fragment.app.activityViewModels
 import com.easter.watch.R
 import com.easter.watch.databinding.ActivityAuthBinding
 import com.easter.watch.databinding.FragmentRun1Binding
 import com.easter.watch.databinding.FragmentRun2Binding
 
 class RunFragment1 : Fragment() {
-
     private var _binding: FragmentRun1Binding? = null
     private val binding get() = _binding!!
+    private val viewModel: RunViewModel by activityViewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // DataBinding 초기화
+    ): View {
         _binding = FragmentRun1Binding.inflate(inflater, container, false)
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.stopBtn.setOnClickListener{
-            //Toast.makeText(requireContext(), "기록 완료", Toast.LENGTH_SHORT).show()
-            val intent = Intent(requireContext(),ResultActivity::class.java)
-            startActivity(intent)
+        binding.pauseBtn.isGone = false
+        binding.stopBtn.isGone = false
 
+        setupButtons()
+        setupObservers()
+    }
+
+    private fun setupButtons() {
+
+
+        binding.stopBtn.setOnClickListener {
+            viewModel.stopTimer()
+            val intent = Intent(requireContext(), ResultActivity::class.java)
+            startActivity(intent)
         }
 
         binding.pauseBtn.setOnClickListener {
-            Toast.makeText(requireContext(), "기록 중지", Toast.LENGTH_SHORT).show()
+            viewModel.pauseTimer()
             binding.playBtn.isGone = false
             binding.pauseBtn.isGone = true
-
-
         }
 
         binding.playBtn.setOnClickListener {
-            Toast.makeText(requireContext(), "기록 재시작", Toast.LENGTH_SHORT).show()
+            viewModel.startTimer()
             binding.playBtn.isGone = true
             binding.pauseBtn.isGone = false
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null // 메모리 누수 방지를 위해 바인딩 해제
+    private fun setupObservers() {
+        viewModel.isRunning.observe(viewLifecycleOwner) { isRunning ->
+            binding.playBtn.isGone = isRunning
+            binding.pauseBtn.isGone = !isRunning
+        }
     }
 }

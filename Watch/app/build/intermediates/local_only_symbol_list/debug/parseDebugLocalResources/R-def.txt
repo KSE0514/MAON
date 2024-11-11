@@ -37,12 +37,14 @@ font gmarketsansttflight
 font gmarketsansttfmedium
 id authCodeText
 id clockText
+id distanceText
 id heartImg
 id heartText
 id imageView
 id main
 id mapView
 id memberName
+id paceText
 id page1
 id page2
 id page3
@@ -55,8 +57,6 @@ id runtimeText
 id stopBtn
 id textView
 id textView3
-id textView6
-id textView8
 id textView9
 id viewPager
 layout activity_auth

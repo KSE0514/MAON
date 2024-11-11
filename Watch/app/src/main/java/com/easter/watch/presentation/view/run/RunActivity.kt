@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -48,32 +49,24 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
     private var timerTask : Timer? = null
 
     private lateinit var binding : ActivityRunBinding
-
     private lateinit var sensorManager: SensorManager
     private lateinit var heartSensor: Sensor
-    private lateinit var permissionService: SensorPermissionService
+    private val viewModel: RunViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRunBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 위치 권한 체크 및 요청
-        //checkLocationPermissions()
         showClock() //실시간 시계
-        startTimer() //타이머 시작
+        setupSensors()
+        setupViewPager()
+        setupObservers()
+        viewModel.startTimer()
 
-        //service에서 권한 확인
-        //permissionService = SensorPermissionService()
-        //permissionService.checkAndRequestPermissions(this)
+    }
 
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        heartSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)!!
-
-        // 심박수 센서 등록
-        sensorManager.registerListener(this, heartSensor, SensorManager.SENSOR_DELAY_NORMAL)
-
-
+    private fun setupViewPager(){
         // ViewPager2와 어댑터 설정
         val viewPager: ViewPager2 = findViewById(R.id.viewPager)
 
@@ -129,40 +122,33 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         })
     }
 
+
+    private fun setupSensors() {
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        heartSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)!!
+        sensorManager.registerListener(this, heartSensor, SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
     //1초단위
+//    override fun onSensorChanged(event: SensorEvent?) {
+//        if(event!!.sensor.type == Sensor.TYPE_HEART_RATE){
+//            val i = event.values[0].toInt()
+//            binding.heartText.text = i.toString()
+//        }
+//    }
+
+
     override fun onSensorChanged(event: SensorEvent?) {
-        if(event!!.sensor.type == Sensor.TYPE_HEART_RATE){
-            val i = event.values[0].toInt()
-            //Log.d("hearBeat", i.toString())
-            binding.heartText.text = i.toString()
+        if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
+            viewModel.updateHeartRate(event.values[0].toInt())
         }
     }
+
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
 
     }
 
-
-    private fun checkLocationPermissions() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-        }
-    }
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-    }
 
     fun showClock(){
         // 대한민국 시간대로 설정
@@ -181,57 +167,53 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
 
     }
 
-    fun startTimer(){
-        timerTask = timer(period = 1000){
-            time++
+    private fun setupObservers() {
+        viewModel.heartRate.observe(this) { heartRate ->
+            binding.heartText.text = heartRate.toString()
+        }
 
-            val hour = (time / 3600).toString().padStart(2, '0')
-            val min = ((time % 3600) / 60).toString().padStart(2, '0')
-            val sec = (time % 60).toString().padStart(2, '0')
-
-            runOnUiThread{
-                if(hour.contains("00")){
-                    binding.runTime.text = " ${min}:${sec} "
-                }else{
-                    binding.runTime.text = " ${hour}:${min}:${sec} "
-                }
-
+        viewModel.isRunning.observe(this) { isRunning ->
+            val pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse_animation)
+            if (isRunning) {
+                binding.heartImg.startAnimation(pulseAnimation)
+            } else {
+                binding.heartImg.clearAnimation()
             }
+        }
+
+        viewModel.timerText.observe(this) { time ->
+            binding.runTime.text = time
         }
     }
 
-    fun pauseTimer(){
-        timerTask?.cancel()
-    }
+//    fun startTimer(){
+//        timerTask = timer(period = 1000){
+//            time++
+//
+//            val hour = (time / 3600).toString().padStart(2, '0')
+//            val min = ((time % 3600) / 60).toString().padStart(2, '0')
+//            val sec = (time % 60).toString().padStart(2, '0')
+//
+//            runOnUiThread{
+//                if(hour.contains("00")){
+//                    binding.runTime.text = " ${min}:${sec} "
+//                }else{
+//                    binding.runTime.text = " ${hour}:${min}:${sec} "
+//                }
+//
+//            }
+//        }
+//    }
+//
+//    fun pauseTimer(){
+//        timerTask?.cancel()
+//    }
+//
+//    fun stopTimer(){
+//        timerTask?.cancel()
+//
+//        time = 0
+//        binding.runTime.text = "00:00:00"
+//    }
 
-    fun stopTimer(){
-        timerTask?.cancel()
-
-        time = 0
-        binding.runTime.text = "00:00:00"
-    }
-
-    // 권한 요청 결과 처리
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            LOCATION_PERMISSION_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // 권한이 승인된 경우 맵 관련 초기화 작업
-                } else {
-                    // 권한이 거부된 경우 처리
-                    Toast.makeText(
-                        this,
-                        "위치 권한이 필요합니다",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-    }
 }

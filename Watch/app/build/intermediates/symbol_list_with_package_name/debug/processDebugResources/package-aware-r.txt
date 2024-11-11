@@ -3525,6 +3525,7 @@ id disableIntraAutoTransition
 id disablePostScroll
 id disableScroll
 id disjoint
+id distanceText
 id dragAnticlockwise
 id dragClockwise
 id dragDown
@@ -3727,6 +3728,7 @@ id outer
 id outline
 id outward
 id overshoot
+id paceText
 id packed
 id page1
 id page2
@@ -3855,8 +3857,6 @@ id textStart
 id textTop
 id textView
 id textView3
-id textView6
-id textView8
 id textView9
 id textWatcher
 id text_input_end_icon
