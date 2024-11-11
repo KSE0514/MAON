@@ -37,7 +37,6 @@ public class RecordController {
         log.error("CreateRunningDto created: {}", createRunningDto);
         log.error("Record created: {}", record);
         log.error("CreateRunningDto created: {}", createRunningDto);
-
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "Record를 생성했습니다.", record.getId());
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
