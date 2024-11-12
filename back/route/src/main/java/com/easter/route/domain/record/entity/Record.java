@@ -46,6 +46,9 @@ public class Record {
 	@Field("pace_list")
 	private List<String> paceList = new ArrayList<>();
 
+	@Field("distance_list")
+	private List<Double> distanceList = new ArrayList<>();
+
 	@Field("recorded_track")
 	private GeoJsonLineString recordedTrack;
 
@@ -64,6 +67,9 @@ public class Record {
 	@Field("record_type")
 	private RecordType recordType;
 
+	@Field("start_point")
+	private String startPoint;
+
 	@CreatedDate
 	private LocalDateTime createdAt;
 
@@ -71,11 +77,13 @@ public class Record {
 		this.id = updateRecordDto.getRecordId();
 		this.runningInfo = updateRecordDto.getRunningInfo();
 		this.paceList = updateRecordDto.getPaceList();
+		this.distanceList = updateRecordDto.getDistanceList();
 		this.averageHeartRate = updateRecordDto.getAverageHeartRate();
 		this.distance = updateRecordDto.getDistance();
 		this.recordedTrack = updateRecordDto.getRecordedTrack();
 		this.runningTime = updateRecordDto.getRunningTime();
 		this.averagePace = updateRecordDto.getAveragePace();
+		this.startPoint = updateRecordDto.getStartPoint();
 		this.completed = updateRecordDto.getCompleted();
 	}
 }

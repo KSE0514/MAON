@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import {KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
 import { useState } from "react";
+import useAuthStore from "./../../store/AuthStore"
 import * as ImagePicker from 'expo-image-picker';
 import { useFontsLoaded } from "../../utils/fontContext";
 import { 
@@ -17,7 +18,7 @@ import {
   UserBodyInfo,
   BtnArea,
 } from "./SignUpScreenStyles"
-import { TouchableOpacity, Image } from "react-native";
+import { TouchableOpacity, Image, Text } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import colors from "../../styles/colors";
 
@@ -36,6 +37,7 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const SignUpScreen = ({navigation, route}) => {
+  const { setUser } = useAuthStore()
   const { paramsName, paramsEmail, paramsImg, paramsAccessToken } = route.params;
   const fontsLoaded = useFontsLoaded();
   const [process, setProcess] = useState(0);
@@ -57,6 +59,18 @@ const SignUpScreen = ({navigation, route}) => {
   const [image, setImage] = useState(testImg);
 
 
+  // 유효성 검사용 상태관리
+  const [nameError, setNameError] = useState('');
+  const [addressError, setAddressError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [birthDateError, setBirthDateError] = useState('');
+  const [nicknameError, setNicknameError] = useState('');
+  const [genderError, setGenderError] = useState('');
+  const [heightError, setHeightError] = useState('');
+  const [weightError, setWeightError] = useState('');
+
+
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
@@ -69,13 +83,57 @@ const SignUpScreen = ({navigation, route}) => {
     // console.log('이미지 주소:', paramsImg)
   }, [])
 
+
+  useEffect(()=>{
+    if (process === 2) {
+      nickNameCheck()
+    }
+  }, [nickName])
+
   // 회원가입 완료시 동작
   // const SignUpComplete = () =>  {
   //   console.log("가입 완료")
   //   navigation.navigate('Home')
   // }
 
+  // 사용자 입력값 유효성 검사
+  const validatePhoneNumber = (phone) => {
+    return /^\d{3}-\d{4}-\d{4}$/.test(phone); // 11자리 숫자인지 확인
+  };
+  
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); // 이메일 형식 확인
+  };
+  
+  const validateBirthDate = (date) => {
+    return /^\d{4}\/\d{2}\/\d{2}$/.test(date); // "YYYY/MM/DD" 형식인지 확인
+  };
+  
+  const validateNickname = (nickname) => {
+    return nickname.length > 0 && nickname.length <= 10; // 닉네임이 공백이 아니고 10자 이내인지 확인
+  };
+  
+
+  // 회원가입 최종 완료 버튼
   const SignUpComplete = async () => {
+    // 닉네임 유효성 검사
+    if (!validateNickname(nickName)) {
+      setNicknameError('닉네임은 1~10자 이내로 입력해주세요.');
+      return;
+    }
+
+    // 닉네임 중복 확인 (여기에 중복 확인 API 호출 추가 예정)
+    const isNicknameDuplicate = nickNameCheck(); // 나중에 실제 중복 확인 로직 추가
+    // 예시: const isNicknameDuplicate = await checkNicknameDuplicate(nickName);
+    if (isNicknameDuplicate) {
+      setNicknameError('이미 사용 중인 닉네임입니다.');
+      return;
+    } else {
+      setNicknameError('');
+    }
+
+
+    // 닉네임 유효성 검사 및 중복 확인이 통과된 경우에만 가입 요청 실행
     const formattedDate = dateOfBirth.replaceAll("/", "");
     const formattedPhoneNumber = phoneNumber.replaceAll("-", "");
 
@@ -102,8 +160,17 @@ const SignUpScreen = ({navigation, route}) => {
           },
         }
       );
+      const responseUserInfo = response.data.data
       console.log("가입완료", requestBody)
       // store에 저장하기
+      setUser({
+        id: responseUserInfo.id,
+        name: responseUserInfo.name,
+        email: responseUserInfo.email,
+        accessToken: responseUserInfo.accessToken,
+        refreshToken: responseUserInfo.accessToken,
+        imageUrl: responseUserInfo.imageUrl,
+      })
       navigation.navigate("Home")
 
     } catch (error) {
@@ -133,6 +200,124 @@ const SignUpScreen = ({navigation, route}) => {
   };
 
 
+  const process1Complete = () => {
+    let isValid = true;
+  
+    // 이름 공백 확인
+    if (name.trim() === '') {
+      setNameError('이름을 비워둘 수 없습니다.');
+      isValid = false;
+    } else {
+      setNameError('');
+    }
+
+    // 주소 공백 확인
+    if (address.trim() === '') {
+      setAddressError('주소를 비워둘 수 없습니다.');
+      isValid = false;
+    } else {
+      setAddressError('');
+    }
+
+    // 전화번호 유효성 검사
+    if (!validatePhoneNumber(phoneNumber) || phoneNumber.trim() === '') {
+      setPhoneError('전화번호는 11자리 숫자로 입력해주세요.');
+      isValid = false;
+    } else {
+      setPhoneError('');
+    }
+  
+    // 이메일 유효성 검사
+    if (!validateEmail(email) || email.trim() === '') {
+      setEmailError('올바른 이메일 형식을 입력해주세요.');
+      isValid = false;
+    } else {
+      setEmailError('');
+    }
+  
+    // 생년월일 유효성 검사
+    if (!validateBirthDate(dateOfBirth) || dateOfBirth.trim() === '') {
+      setBirthDateError('생년월일은 YYYY/MM/DD 형식으로 입력해주세요.');
+      isValid = false;
+    } else {
+      setBirthDateError('');
+    }
+
+    // 성별 선택 확인
+    if (!selectedGender || selectedGender.trim() === '') {
+      setGenderError('성별을 선택해주세요.');
+      isValid = false;
+    } else {
+      setGenderError('');
+    }
+  
+    // 모든 값이 유효하면 다음 단계로 진행
+    if (isValid) {
+      setProcess(1);
+    } else {
+      console.log("입력한 정보를 확인해주세요.");
+    }
+  };
+  
+
+  const process2Complete = () => {
+    // 키, 몸무게가 공백일 경우 에러메시지 띄우도록
+    let isValid = true;
+
+    // 키 공백 확인
+    if (heightInfo.trim() === '') {
+      setHeightError('키를 입력해주세요.');
+      isValid = false;
+    } else {
+      setHeightError('');
+    }
+
+    // 몸무게 공백 확인
+    if (weightInfo.trim() === '') {
+      setWeightError('몸무게를 입력해주세요.');
+      isValid = false;
+    } else {
+      setWeightError('');
+    }
+
+    // 모든 값이 유효하면 다음 단계로 진행
+    if (isValid) {
+      setProcess(2);
+    } else {
+      console.log("신체 정보를 확인해주세요.");
+    }
+  }
+
+  const nickNameCheck = async () => {
+    try {
+      const response = await apiClient.post(
+        `/member/member/check`,
+        {
+          nickname: nickName
+        }
+        ,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      );
+      // console.log("닉네임 중복확인 성공!:", response)
+      if (response.status === 200) {
+        // console.log(response.data.data.duplicated)
+        return response.data.data.duplicated
+        // if (response.data.data.duplicated) {
+          
+        // }
+      }
+      // const responseUserInfo = response.data.data
+
+    } catch (error) {
+      console.error("닉네임 중복 확인 에러 발생: ", error);
+    }
+  }
+
   return(
     <Wrapper>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -154,14 +339,20 @@ const SignUpScreen = ({navigation, route}) => {
               </Title>
               <UserInfo>
                 <InputBox label={'이름'} placeholder={'이름을 입력해주세요.'} value={name} setValue={setName} isEditMode={true}/>
+                {nameError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{nameError}</Text> : null}
                 <InputBox label={'전화번호'} placeholder={'010-XXXX-XXXX'} value={phoneNumber} setValue={setPhoneNumber} isEditMode={true}/>
+                {phoneError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{phoneError}</Text> : null}
                 <InputBox label={'이메일'} placeholder={'email@email.com'} value={email} setValue={setEmail} isEditMode={true} />
+                {emailError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{emailError}</Text> : null}
                 <InputBox label={'생년월일'} placeholder={'YYYY/MM/DD'} value={dateOfBirth} setValue={setDateOfBirth} isEditMode={true} />
+                {birthDateError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{birthDateError}</Text> : null}
                 <InputBox label={'주소'} placeholder={'주소를 입력해주세요.'} value={address} setValue={setAddress} isEditMode={true} />
+                {addressError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{addressError}</Text> : null}
                 <InputBox label={'성별'} placeholder={''} value={selectedGender} setValue={setSelectedGender} isEditMode={true} />
+                {genderError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{genderError}</Text> : null}
               </UserInfo>
               <BtnArea>
-                <SquareBtn text={'입력 완료'} onPress={()=>setProcess(1)} />
+                <SquareBtn text={'입력 완료'} onPress={process1Complete} />
               </BtnArea>
             </Content>
           :null}
@@ -174,14 +365,16 @@ const SignUpScreen = ({navigation, route}) => {
               <Main>
                 <UserBodyInfo isRightAligned={true}>
                   <BodyInfo label={'키'} placeholder={'키'} value={heightInfo} setValue={setHeightInfo} />
+                  {heightError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5, paddingTop: 5}}>{heightError}</Text> : null}
                 </UserBodyInfo>
                 <CustomIcon />
                 <UserBodyInfo isRightAligned={false}>
                   <BodyInfo label={'몸무게'} placeholder={'몸무게'} value={weightInfo} setValue={setWeightInfo} />
+                  {weightError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5, paddingTop: 5}}>{weightError}</Text> : null}
                 </UserBodyInfo>
               </Main>
               <BtnArea>
-                <SquareBtn text={'가입하기'} onPress={()=>setProcess(2)} />
+                <SquareBtn text={'가입하기'} onPress={process2Complete} />
               </BtnArea>
             </Content>
           :null}
@@ -215,6 +408,7 @@ const SignUpScreen = ({navigation, route}) => {
                 }
               <BtnArea>
                 <InputBox label={''} placeholder={'닉네임은 이후 변경이 불가합니다.'} value={nickName} setValue={setNickName} isEditMode={true} />
+                {nicknameError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5, paddingTop: 5 }}>{nicknameError}</Text> : null}
               </BtnArea>
               <BtnArea>
                 <SquareBtn text={'등록하기'} onPress={SignUpComplete} />

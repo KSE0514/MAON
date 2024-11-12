@@ -19,8 +19,8 @@ public class RouteController {
 
     @PostMapping("/course/create")
     public ResponseEntity<ResultResponse> createRoute(@RequestBody CreateRouteRequestDto createRouteRequestDto) {
-        CreateRouteResponseDto course = routeService.createRoute(createRouteRequestDto);
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "경로 등록을 완료했습니다.", course);
+        routeService.createRoute(createRouteRequestDto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "경로 등록을 완료했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
