@@ -25,6 +25,7 @@ import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/GoalDonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
+import { locationDtoPrint } from "../../utils/console";
 
 const RunningAlone = ({ navigation, route }) => {
   const { roomId, mode } = route.params;
@@ -44,16 +45,17 @@ const RunningAlone = ({ navigation, route }) => {
   const runningDistanceRef = useRef(runningDistance);
 
   const [resultData, setResultData] = useState({
-    id: "6732b031df66425d90049b80",
+    id: "",
     routeId: "",
     paceList: [],
     recordedTrack: "",
-    runningTime: "00:15:53",
-    averagePace: "12'51\"",
+    runningTime: "",
+    averagePace: "",
     averageHeartRate: 0,
-    distance: 5,
-    createdAt: "2024-11-12T01:32:33.99",
-    routeDistance: 5,
+    distance: 0,
+    createdAt: "",
+    routeDistance: 0,
+    distanceList: [],
   });
 
   const StopModalContent = {
@@ -93,14 +95,19 @@ const RunningAlone = ({ navigation, route }) => {
           };
 
           sendEndSession(roomId); // 종료 요청 전송
-          navigation.navigate("RunResult", {
-            resultData: resultData,
-            mode: mode,
-          }); // 종료 후 다른 화면으로 이동
         },
       },
     ],
   };
+  useEffect(() => {
+    if (resultData.id) {
+      navigation.navigate("RunResult", {
+        resultData: resultData,
+        mode: mode,
+        recordId: roomId,
+      });
+    }
+  }, [resultData]);
 
   const kafkaStompClientRef = useRef(null);
 
@@ -142,7 +149,22 @@ const RunningAlone = ({ navigation, route }) => {
             const parsedData = JSON.parse(jsonString); // JSON 부분만 파싱
 
             if (parsedData.status === "end") {
-              console.log("종료 응답 수신:", parsedData);
+              console.log("종료 응답 수신:", JSON.stringify(parsedData));
+
+              setResultData({
+                id: parsedData.record.id,
+                routeId: parsedData.record.routeId,
+                paceList: parsedData.record.paceList,
+                recordedTrack:
+                  parsedData.record.recordedTrack.coordinates || [],
+                runningTime: parsedData.record.runningTime,
+                averagePace: parsedData.record.averagePace,
+                averageHeartRate: parsedData.record.averageHeartRate,
+                distance: parsedData.record.distance,
+                createdAt: parsedData.record.createdAt,
+                routeDistance: parsedData.routeDistance || 0,
+                distanceList: [],
+              });
             }
           } else {
             console.error("유효한 JSON 형식이 포함되지 않음.");
@@ -188,26 +210,9 @@ const RunningAlone = ({ navigation, route }) => {
         longitude: location.longitude,
         heartRate: 0,
         pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
-        runningDistance: runningDistanceRef.current,
+        runningDistance: runningDistanceRef.current.toFixed(2),
       };
-      console.log(
-        " memberId:",
-        locationDto.memberId,
-        "recordId: ",
-        roomId,
-        "latitude: ",
-        locationDto.latitude,
-        " longitude:",
-        locationDto.longitude,
-        " heartRate:",
-        locationDto.heartRate,
-        " pace:",
-        locationDto.pace,
-        " time: ",
-        locationDto.time,
-        " runningDistance: ",
-        locationDto.runningDistance
-      );
+      locationDtoPrint(locationDto);
       if (
         kafkaStompClientRef.current &&
         kafkaStompClientRef.current.readyState === WebSocket.OPEN
@@ -269,9 +274,7 @@ const RunningAlone = ({ navigation, route }) => {
           <RunInfo>
             <RunInfoCol style={{ flex: 1 }}>
               <GoalDonutChart
-                currentDistance={parseFloat(
-                  (runningDistance / 1000).toFixed(2)
-                )}
+                currentDistance={parseFloat(runningDistance)}
                 goalDistance={0}
                 mode={mode}
               />
@@ -280,7 +283,7 @@ const RunningAlone = ({ navigation, route }) => {
               <Pace
                 mode={mode}
                 elapsedTime={elapsedTime}
-                currentDistance={(runningDistance / 1000).toFixed(2)}
+                currentDistance={runningDistance}
                 setPace={setPace}
                 pace={pace}
               />
