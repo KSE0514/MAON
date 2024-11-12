@@ -1,12 +1,13 @@
 package com.easter.route.domain.record.entity.dto;
 
+import org.springframework.data.geo.Point;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.geo.Point;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Data
 @AllArgsConstructor
