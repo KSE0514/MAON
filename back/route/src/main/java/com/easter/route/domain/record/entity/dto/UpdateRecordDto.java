@@ -12,6 +12,7 @@ public class UpdateRecordDto {
     private String recordId;
     private List<LocationDto> runningInfo;
     private List<String> paceList;
+    private List<Double> distanceList;
     private int averageHeartRate;
     private Double distance;
     private String averagePace;

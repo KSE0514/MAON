@@ -75,9 +75,10 @@ public class RunningInfoConsumer {
 		// 계산
 		List<LocationDto> list = getRunningInfo(recordId);
 		List<String> paceList = getPaceList(recordId);
+		List<Double> distanceList = getDistanceList(recordId);
 		int averageHeartRate = getAverageHeartRate(recordId);
 		GeoJsonLineString recordedTrack = getRecordedTrack(recordId);
-		String runningTime = list.size() > 2 ? timeDifference(list.get(0).getTime(), list.get(list.size()-1).getTime()): "00:00:00";
+		String runningTime = list.size() > 1 ? list.get(list.size()-1).getTime(): "00:00:00";
 		double distance = !list.isEmpty() ? list.get(list.size() - 1).getRunningDistance() : 0;
 		String averagePace = PaceCalculator.calculateAveragePace(paceList);
 
@@ -112,6 +113,7 @@ public class RunningInfoConsumer {
 				.recordId(recordId)
 				.runningInfo(list)
 				.paceList(paceList)
+				.distanceList(distanceList)
 				.averageHeartRate(averageHeartRate)
 				.distance(distance)
 				.averagePace(averagePace)
@@ -139,6 +141,11 @@ public class RunningInfoConsumer {
 	public List<String> getPaceList(String recordId) {
 		List<LocationDto> list = getRunningInfo(recordId);
 		return list.stream().map(LocationDto::getPace).toList();
+	}
+
+	public List<Double> getDistanceList(String recordId) {
+		List<LocationDto> list = getRunningInfo(recordId);
+		return list.stream().map(LocationDto::getRunningDistance).toList();
 	}
 
 	public int getAverageHeartRate(String recordId) {
