@@ -47,11 +47,11 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	@Override
-	public void updateRecord(UpdateRecordDto updateRecordDto) {
+	public Record updateRecord(UpdateRecordDto updateRecordDto) {
 		Record record = recordRepository.findById(updateRecordDto.getRecordId())
 			.orElseThrow(() -> new IllegalArgumentException("Record not found"));
 		record.updateRecord(updateRecordDto);
-		recordRepository.save(record);
+		return recordRepository.save(record);
 	}
 
 	@Override
