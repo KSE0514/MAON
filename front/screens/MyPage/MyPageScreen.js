@@ -5,6 +5,7 @@ import {  KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Sc
 // import {PermissionsAndroid} 'react-native';
 // import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { useState, useEffect } from "react"
+import useAuthStore from "./../../store/AuthStore"
 import {
   Wapper,
   BackBtn,
@@ -41,6 +42,7 @@ const testUser = {
 }
 
 const MyPageScreen = ({navigation}) => {
+  const { user } = useAuthStore()
   const [editMode, setEditMode] = useState(false)
 
   const [dateOfBirth, setDateOfBirth] = useState(''); // 생년월일 상태 관리
@@ -55,7 +57,6 @@ const MyPageScreen = ({navigation}) => {
   const [weightInfo, setWeightInfo] = useState('') // 몸무게 상태관리
 
   const [image, setImage] = useState(testImg);
-  // const [profileImg, setProfileImg] = useState(testImg); // 초기 이미지를 테스트 이미지로 설정
 
   // 전화번호 형식 자동 변환
   const handlePhoneNumberChange = (text) => {
@@ -105,48 +106,6 @@ const handleDateOfBirthChange = (text) => {
     setEditMode(false)
   }
 
-  // const selectProfileImage = async () => {
-  //   // 안드로이드와 ios에 따라 적절한 권한 설정
-  //   const permission =
-  //     Platform.OS === 'android'?
-  //     PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
-  //     : PERMISSIONS.IOS.PHOTO_LIBRARY;
-
-  //   // 권한 확인
-  //   const result = await check(permission);
-
-  //   if (result === RESULTS.GRANTED) {
-  //     // 권한이 허용된 경우 갤러리 열기
-  //     launchImageLibrary({ mediaType: 'photo'}, (response) => {
-  //       if (response.didCancel) {
-  //         console.log('사용자가 이미지를 선택하지 않았습니다.');
-  //       } else if (response.errorMessage) {
-  //         console.error('이미지 선택 오류:', response.errorMessage);
-  //       } else if (response.assets && response.assets.length > 0) {
-  //         const selectedImage = response.assets[0].uri;
-  //         setProfileImg(selectedImage);
-  //       }
-  //     });
-  //   } else {
-  //     // 권한 요청
-  //     const requestResult = await request(permission);
-  //     if (requestResult === RESULTS.GRANTED) {
-  //       // 요청 후 권한이 허용된 경우 갤러리 열기
-  //       launchImageLibrary({mediaType: 'photo'}, (response) => {
-  //         if (response.didCancel) {
-  //           console.log('사용자가 이미지를 선택하지 않았습니다.');
-  //         } else if (response.errorMessage) {
-  //           console.error('이미지 선택 오류:', response.errorMessage);
-  //         } else if (response.assets && response.assets.length > 0) {
-  //           const selectedImage = response.assets[0].uri;
-  //           setProfileImg(selectedImage);
-  //         }
-  //       });
-  //     } else {
-  //       console.log('갤러리 접근 권한이 거부되었습니다.');
-  //     }
-  //   }
-  // };
 
   const selectProfileImage = async () => {
     // 갤러리 접근 권한 요청
