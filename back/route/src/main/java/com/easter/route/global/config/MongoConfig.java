@@ -1,24 +1,49 @@
 package com.easter.route.global.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.MongoDatabaseFactory;
-import org.springframework.data.mongodb.core.convert.DbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+import org.springframework.data.mongodb.core.MongoTemplate;
+
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 @Configuration
-class MongoDBConfig {
-    @Bean
-    public MappingMongoConverter mappingMongoConverter(
-            MongoDatabaseFactory mongoDatabaseFactory,
-            MongoMappingContext mongoMappingContext
-    ) {
-        DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDatabaseFactory);
-        MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext);
-        converter.setTypeMapper(new DefaultMongoTypeMapper(null));
-        return converter;
-    }
+public class MongoConfig {
+
+	@Value("${spring.data.mongodb.username}")
+	private String username;
+
+	@Value("${spring.data.mongodb.password}")
+	private String password;
+
+	@Value("${spring.data.mongodb.host}")
+	private String host;
+
+	@Value("${spring.data.mongodb.port}")
+	private String port;
+
+	@Value("${spring.data.mongodb.database}")
+	private String database;
+
+	@Bean
+	public MongoTemplate mongoTemplate() throws Exception {
+		String connectionString = String.format(
+			"mongodb://%s:%s@%s:%s/%s?authSource=admin",
+			username,
+			password,
+			host,
+			port,
+			database
+		);
+
+		MongoClient mongoClient = MongoClients.create(
+			MongoClientSettings.builder()
+				.applyConnectionString(new ConnectionString(connectionString))
+				.build());
+
+		return new MongoTemplate(mongoClient, database);
+	}
 }

@@ -30,6 +30,9 @@ public class Record {
 	@Id
 	private String id;
 
+	@Field("member_id")
+	private String memberId;
+
 	@Field("route_id")
 	private String routeId;
 
@@ -37,10 +40,10 @@ public class Record {
 	private boolean completed;
 
 	@Field("running_info")
-	private List<LocationDto> runningInfo = Collections.emptyList();;
+	private List<LocationDto> runningInfo = Collections.emptyList();
 
 	@Field("pace_list")
-	private List<String> paceList = Collections.emptyList();;
+	private List<String> paceList = Collections.emptyList();
 
 	@Field("recorded_track")
 	private GeoJsonLineString recordedTrack;

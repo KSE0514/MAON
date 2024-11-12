@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import { useState } from "react";
-const RunResult = ({ navigation }) => {
+const RunResult = ({ navigation, resultData }) => {
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
