@@ -22,7 +22,7 @@ import Timer from "../../components/Timer/Timer";
 import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
-import GoalDonutChart from "../../components/DonutChart/DonutChart";
+import GoalDonutChart from "../../components/DonutChart/GoalDonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
 // import SockJS from "sockjs-client";

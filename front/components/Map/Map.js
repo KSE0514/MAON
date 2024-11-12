@@ -16,8 +16,8 @@ export default function Map({
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
     longitude: 127.0757584,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
+    latitudeDelta: 0.002,
+    longitudeDelta: 0.002,
   });
   const [gps, setGps] = useState([]);
 

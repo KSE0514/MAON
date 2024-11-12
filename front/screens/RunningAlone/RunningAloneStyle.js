@@ -17,7 +17,7 @@ export const StopBtn = styled.TouchableOpacity`
   width: 43px;
   height: 43px;
   background-color: ${colors.light_orange};
-  border-radius: 50%;
+  border-radius: 9999px;
   justify-content: center;
   align-items: center;
 `;

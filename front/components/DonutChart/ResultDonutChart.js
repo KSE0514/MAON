@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, StyleSheet } from "react-native";
 import PieChart from "react-native-pie-chart";
 import fonts from "../../styles/fonts";
 import color from "../../styles/colors";
 
-const GoalDonutChart = ({ goalDistance, currentDistance, mode }) => {
-  const chartSize = 110;
-  const progress =
-    goalDistance == 0 ? 100 : (currentDistance / goalDistance) * 100; // 목표 대비 현재 진행률 계산
+const ResultDonutChart = ({ routeDistance, distance }) => {
+  const chartSize = 184;
+  const progress = (distance / routeDistance) * 100; // 목표 대비 현재 진행률 계산
   const series = [progress, 100 - progress]; // 채운 비율과 남은 비율
   const sliceColor = [color.light_orange, "#D9D9D9"]; // 채워진 부분과 남은 부분 색상
 
@@ -21,20 +20,30 @@ const GoalDonutChart = ({ goalDistance, currentDistance, mode }) => {
         coverFill={"#FFF"}
       />
       <View style={{ position: "absolute", alignItems: "center" }}>
-        {mode == "aloneRun" && (
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            {currentDistance.toFixed(1)}km
-          </Text>
-        )}
-        {mode != "aloneRun" && (
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            {currentDistance.toFixed(1)} / {goalDistance} km
-          </Text>
-        )}
+        <Text style={[styles.percent]}>{progress}%</Text>
+        <View style={[styles.bar]}></View>
+        <Text style={[styles.runningDistance]}>{distance}km</Text>
       </View>
       {/* 예제 버튼으로 거리 증가 */}
     </View>
   );
 };
 
-export default GoalDonutChart;
+const styles = StyleSheet.create({
+  percent: {
+    fontSize: 40,
+    fontFamily: fonts.gMarketBold,
+    color: color.light_orange,
+  },
+  bar: {
+    marginVertical: 10,
+    height: 1,
+    backgroundColor: color.black,
+    width: 100,
+  },
+  runningDistance: {
+    fontSize: 18,
+    fontFamily: fonts.gMarketBold,
+  },
+});
+export default ResultDonutChart;
