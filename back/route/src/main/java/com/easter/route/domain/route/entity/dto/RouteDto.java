@@ -34,9 +34,7 @@ public class RouteDto {
                 .startPoint(route.getStartPoint())
                 .distance(route.getDistance())
                 .track(route.getTrack())
-                .routeImageUrl(route.getRouteImageUrl())
                 .createdAt(route.getCreatedAt())
-                .updatedAt(route.getUpdatedAt())
                 .build();
     }
 }
