@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-102:12
-INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-102:12
-INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-102:12
-INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-102:12
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-110:12
+INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-110:12
+INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-110:12
+INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-110:12
 MERGED from [androidx.databinding:databinding-adapters:8.6.0] C:\Users\SSAFY\.gradle\caches\transforms-4\2bf05f1a8a15f6560f0632b9247f51d2\transformed\databinding-adapters-8.6.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.databinding:databinding-ktx:8.6.0] C:\Users\SSAFY\.gradle\caches\transforms-4\802acd7b7ec2a0240e97b178bde177d6\transformed\databinding-ktx-8.6.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.databinding:databinding-runtime:8.6.0] C:\Users\SSAFY\.gradle\caches\transforms-4\71114bc5d1aec1303a5ca7544b403e9f\transformed\databinding-runtime-8.6.0\AndroidManifest.xml:2:1-7:12
@@ -34,6 +34,7 @@ MERGED from [androidx.compose.ui:ui-android:1.6.6] C:\Users\SSAFY\.gradle\caches
 MERGED from [androidx.compose.ui:ui-test-manifest:1.6.6] C:\Users\SSAFY\.gradle\caches\transforms-4\3c704e1872939a83f1ca3d92805951f3\transformed\ui-test-manifest-1.6.6\AndroidManifest.xml:17:1-28:12
 MERGED from [com.google.android.gms:play-services-maps:19.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\c3e1a32d37b76fff5155658f124158ac\transformed\play-services-maps-19.0.0\AndroidManifest.xml:17:1-44:12
 MERGED from [androidx.wear:wear:1.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\8cde5c87683c0b63864459ae01eeac36\transformed\wear-1.2.0\AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.fragment:fragment-ktx:1.6.2] C:\Users\SSAFY\.gradle\caches\transforms-4\096b749c09721957fa98f362667fce23\transformed\fragment-ktx-1.6.2\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.gms:play-services-wearable:18.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\b22683b31ec7b0a3636ffd26839357b4\transformed\play-services-wearable-18.2.0\AndroidManifest.xml:2:1-8:12
 MERGED from [com.google.android.gms:play-services-location:21.3.0] C:\Users\SSAFY\.gradle\caches\transforms-4\3aa76f4505e1a984bc79883e4dcc6ffe\transformed\play-services-location-21.3.0\AndroidManifest.xml:2:1-8:12
 MERGED from [com.google.firebase:firebase-messaging:24.0.3] C:\Users\SSAFY\.gradle\caches\transforms-4\42f5a73f18611de76bf6190e12146099\transformed\firebase-messaging-24.0.3\AndroidManifest.xml:17:1-66:12
@@ -63,19 +64,20 @@ MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\SSAFY\.gradl
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\9c66048cba73002df0169897ee25c2cf\transformed\viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\SSAFY\.gradle\caches\transforms-4\37726cd38e49db785bc4d0becdb91ce9\transformed\recyclerview-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7c55a0de7464e632b6dfc72f6a5932bc\transformed\swiperefreshlayout-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\75d9e22cedfafe02cbc1ab81f1259140\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.1.0] C:\Users\SSAFY\.gradle\caches\transforms-4\6a74ab7765382b57372f4a79326cd68b\transformed\customview-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.gms:play-services-stats:17.0.2] C:\Users\SSAFY\.gradle\caches\transforms-4\baa19ec4eba153cfbf5baa571c732644\transformed\play-services-stats-17.0.2\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\6bb54917f71bd6064095b15f255f8c2f\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.loader:loader:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\f568cfca29de7c4854da98cfc9cb5756\transformed\loader-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\75d9e22cedfafe02cbc1ab81f1259140\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.customview:customview:1.1.0] C:\Users\SSAFY\.gradle\caches\transforms-4\6a74ab7765382b57372f4a79326cd68b\transformed\customview-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.autofill:autofill:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\871ec1cc21878c0ffe04c36911510ff4\transformed\autofill-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.core:core:1.13.0] C:\Users\SSAFY\.gradle\caches\transforms-4\87548bcbaba2958a51200938454c12bb\transformed\core-1.13.0\AndroidManifest.xml:17:1-30:12
-MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7a861a048992f4482a3106b795b38613\transformed\lifecycle-livedata-core-ktx-2.7.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\d6cb8155fc232e75326d98f0942e6a5e\transformed\lifecycle-livedata-core-2.7.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7a861a048992f4482a3106b795b38613\transformed\lifecycle-livedata-core-ktx-2.7.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\69f3e7d6da92cd4ce16b612e129c1549\transformed\lifecycle-viewmodel-ktx-2.7.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\95ed01ff960094a8713d6ebbbf159a4e\transformed\lifecycle-viewmodel-2.7.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.lifecycle:lifecycle-service:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\70f20edcc3ef4aa1634c20f39b2c07d3\transformed\lifecycle-service-2.7.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\a6a08c2e5ab98bc490d635c09575fa5d\transformed\lifecycle-process-2.7.0\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\2ab541537045911f6a101a07a6db8447\transformed\lifecycle-livedata-ktx-2.7.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\349ba9f4152b9298f8eaff188c77f02d\transformed\lifecycle-livedata-2.7.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\a5ae6bf0ad7f07c87c650d7dbf22ee8b\transformed\lifecycle-runtime-2.7.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7d1c45fafbc634b824ce09c47165c149\transformed\lifecycle-viewmodel-savedstate-2.7.0\AndroidManifest.xml:17:1-22:12
@@ -90,7 +92,7 @@ MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.0] C:\User
 MERGED from [com.google.android.gms:play-services-measurement-sdk-api:22.1.2] C:\Users\SSAFY\.gradle\caches\transforms-4\e135fbd735d9f77c6f08c6a741c31b2d\transformed\play-services-measurement-sdk-api-22.1.2\AndroidManifest.xml:17:1-30:12
 MERGED from [com.google.android.gms:play-services-measurement-base:22.1.2] C:\Users\SSAFY\.gradle\caches\transforms-4\4cf22c61fc710f74038c2b746b1d4117\transformed\play-services-measurement-base-22.1.2\AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7ddaf7bbf8bf65859c815ebd313dcf56\transformed\play-services-basement-18.4.0\AndroidManifest.xml:2:1-9:12
-MERGED from [androidx.fragment:fragment:1.5.4] C:\Users\SSAFY\.gradle\caches\transforms-4\0e5001632754fae5e9306d293faf9b9b\transformed\fragment-1.5.4\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.fragment:fragment:1.6.2] C:\Users\SSAFY\.gradle\caches\transforms-4\41be155963001bcc361df90c690aa0fa\transformed\fragment-1.6.2\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.activity:activity:1.9.3] C:\Users\SSAFY\.gradle\caches\transforms-4\4f3ad5f58bdbcd5079b4ccdf4247f70c\transformed\activity-1.9.3\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.activity:activity-compose:1.9.3] C:\Users\SSAFY\.gradle\caches\transforms-4\17c855f06c983fa57c32b864b5401858\transformed\activity-compose-1.9.3\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.activity:activity-ktx:1.9.3] C:\Users\SSAFY\.gradle\caches\transforms-4\51561e33bfe026f84784d1739ba684b3\transformed\activity-ktx-1.9.3\AndroidManifest.xml:2:1-7:12
@@ -171,8 +173,20 @@ uses-permission#android.permission.FOREGROUND_SERVICE_LOCATION
 ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:11:5-86
 	android:name
 		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:11:22-83
+uses-permission#android.permission.FOREGROUND_SERVICE_HEALTH
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:12:5-83
+	android:name
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:12:22-81
+uses-permission#android.permission.FOREGROUND_SERVICE_DATA_SYNC
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:13:5-86
+	android:name
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:13:22-84
+uses-permission#android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:14:5-93
+	android:name
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:14:22-91
 uses-permission#android.permission.INTERNET
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:13:5-67
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:16:5-67
 MERGED from [com.google.android.gms:play-services-maps:19.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\c3e1a32d37b76fff5155658f124158ac\transformed\play-services-maps-19.0.0\AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-maps:19.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\c3e1a32d37b76fff5155658f124158ac\transformed\play-services-maps-19.0.0\AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.gms:play-services-measurement:22.1.2] C:\Users\SSAFY\.gradle\caches\transforms-4\bd1a433f7b97cafa493a1c8181215905\transformed\play-services-measurement-22.1.2\AndroidManifest.xml:23:5-67
@@ -190,14 +204,14 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk-api:22.1.2] C:
 MERGED from [com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\SSAFY\.gradle\caches\transforms-4\b65e6a3b34ad48b13d0615bbbab3949d\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:25:5-67
 MERGED from [com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\SSAFY\.gradle\caches\transforms-4\b65e6a3b34ad48b13d0615bbbab3949d\transformed\transport-backend-cct-3.1.9\AndroidManifest.xml:25:5-67
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:13:22-64
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:16:22-64
 uses-feature#android.hardware.type.watch
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:15:5-64
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:18:5-64
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:15:19-61
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:18:19-61
 application
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:17:5-100:19
-INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:17:5-100:19
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:20:5-108:19
+INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:20:5-108:19
 MERGED from [com.github.NaikSoftware:StompProtocolAndroid:1.6.6] C:\Users\SSAFY\.gradle\caches\transforms-4\44bfd28947f8bbed6b94b988a4aadf66\transformed\StompProtocolAndroid-1.6.6\AndroidManifest.xml:11:5-20
 MERGED from [com.github.NaikSoftware:StompProtocolAndroid:1.6.6] C:\Users\SSAFY\.gradle\caches\transforms-4\44bfd28947f8bbed6b94b988a4aadf66\transformed\StompProtocolAndroid-1.6.6\AndroidManifest.xml:11:5-20
 MERGED from [com.google.android.material:material:1.12.0] C:\Users\SSAFY\.gradle\caches\transforms-4\c09ac2fc86f95b27fe5a2f4e0d5bef31\transformed\material-1.12.0\AndroidManifest.xml:22:5-20
@@ -275,135 +289,141 @@ MERGED from [com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.13.0] C:\Users\SSAFY\.gradle\caches\transforms-4\87548bcbaba2958a51200938454c12bb\transformed\core-1.13.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:21:9-35
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:25:9-35
 	android:label
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:20:9-41
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:24:9-41
 	android:icon
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:19:9-43
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:23:9-43
 	android:allowBackup
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:18:9-35
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:22:9-35
 	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:22:9-59
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:26:9-59
+	android:name
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:21:9-52
 activity#com.easter.watch.presentation.view.run.ResultActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:23:9-26:66
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:27:9-30:66
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:25:13-37
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:29:13-37
 	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:26:13-63
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:30:13-63
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:24:13-65
-service#com.easter.watch.presentation.service.SensorService
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:28:9-31:39
-	android:enabled
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:30:13-35
-	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:31:13-36
-	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:29:13-63
-activity#com.easter.watch.presentation.view.run.CountDownActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:33:9-36:66
-	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:35:13-37
-	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:36:13-63
-	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:34:13-68
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:28:13-65
 activity#com.easter.watch.presentation.view.run.RunActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:37:9-42:66
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:32:9-38:66
+	android:launchMode
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:37:13-48
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:40:13-36
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:35:13-36
 	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:42:13-63
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:38:13-63
 	android:taskAffinity
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:41:13-36
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:36:13-36
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:38:13-62
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:33:13-62
 	android:allowEmbedded
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:39:13-41
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:34:13-41
 activity#com.easter.watch.presentation.MainActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:43:9-47:66
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:39:9-43:66
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:45:13-37
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:41:13-37
+	android:theme
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:43:13-63
+	android:taskAffinity
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:42:13-36
+	android:name
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:40:13-54
+activity#com.easter.watch.presentation.view.run.StartActivity
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:44:9-53:20
+	android:exported
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:46:13-36
 	android:theme
 		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:47:13-63
-	android:taskAffinity
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:46:13-36
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:44:13-54
-activity#com.easter.watch.presentation.view.run.StartActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:48:9-57:20
-	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:50:13-36
-	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:51:13-63
-	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:49:13-64
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:45:13-64
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:52:13-56:29
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:48:13-52:29
 action#android.intent.action.MAIN
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:53:17-69
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:49:17-69
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:53:25-66
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:49:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:55:17-77
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:51:17-77
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:55:27-74
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:51:27-74
 activity#com.easter.watch.presentation.view.intro.AuthActivity
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:54:9-57:66
+	android:exported
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:56:13-37
+	android:theme
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:57:13-63
+	android:name
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:55:13-65
+activity#com.easter.watch.presentation.view.intro.RestartActivity
 ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:58:9-61:66
 	android:exported
 		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:60:13-37
 	android:theme
 		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:61:13-63
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:59:13-65
-activity#com.easter.watch.presentation.view.intro.RestartActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:62:9-65:66
-	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:64:13-37
-	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:65:13-63
-	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:63:13-68
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:59:13-68
 activity#com.easter.watch.presentation.view.intro.SplashActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:66:9-77:20
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:62:9-73:20
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:68:13-36
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:64:13-36
 	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:69:13-46
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:65:13-46
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:67:13-67
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:63:13-67
 uses-library#com.google.android.wearable
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:79:9-81:39
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:75:9-77:39
 MERGED from [androidx.wear:wear:1.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\8cde5c87683c0b63864459ae01eeac36\transformed\wear-1.2.0\AndroidManifest.xml:25:9-27:40
 MERGED from [androidx.wear:wear:1.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\8cde5c87683c0b63864459ae01eeac36\transformed\wear-1.2.0\AndroidManifest.xml:25:9-27:40
 	android:required
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:81:13-36
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:77:13-36
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:80:13-55
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:76:13-55
 meta-data#com.google.android.wearable.standalone
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:86:9-88:36
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:82:9-84:36
 	android:value
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:88:13-33
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:84:13-33
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:87:13-66
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:83:13-66
 meta-data#com.google.android.geo.API_KEY
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:89:9-91:71
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:85:9-87:71
 	android:value
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:91:13-68
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:87:13-68
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:90:13-58
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:86:13-58
 service#com.easter.watch.presentation.service.WatchMessageService
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:93:9-99:19
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:89:9-95:19
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:95:13-37
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:91:13-37
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:94:13-69
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:90:13-69
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:96:13-98:29
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:92:13-94:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:97:17-78
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:93:17-78
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:97:25-75
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:93:25-75
+service#com.easter.watch.presentation.service.LocationTrackingService
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:97:9-101:56
+	android:enabled
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:99:13-35
+	android:exported
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:100:13-37
+	android:foregroundServiceType
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:101:13-53
+	android:name
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:98:13-73
+service#com.easter.watch.presentation.service.RunService
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:103:9-106:63
+	android:exported
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:105:13-37
+	android:foregroundServiceType
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:106:13-60
+	android:name
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:104:13-60
 uses-sdk
 INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml
@@ -468,6 +488,8 @@ MERGED from [com.google.android.gms:play-services-maps:19.0.0] C:\Users\SSAFY\.g
 MERGED from [com.google.android.gms:play-services-maps:19.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\c3e1a32d37b76fff5155658f124158ac\transformed\play-services-maps-19.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.wear:wear:1.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\8cde5c87683c0b63864459ae01eeac36\transformed\wear-1.2.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.wear:wear:1.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\8cde5c87683c0b63864459ae01eeac36\transformed\wear-1.2.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment-ktx:1.6.2] C:\Users\SSAFY\.gradle\caches\transforms-4\096b749c09721957fa98f362667fce23\transformed\fragment-ktx-1.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment-ktx:1.6.2] C:\Users\SSAFY\.gradle\caches\transforms-4\096b749c09721957fa98f362667fce23\transformed\fragment-ktx-1.6.2\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-wearable:18.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\b22683b31ec7b0a3636ffd26839357b4\transformed\play-services-wearable-18.2.0\AndroidManifest.xml:4:5-44
 MERGED from [com.google.android.gms:play-services-wearable:18.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\b22683b31ec7b0a3636ffd26839357b4\transformed\play-services-wearable-18.2.0\AndroidManifest.xml:4:5-44
 MERGED from [com.google.android.gms:play-services-location:21.3.0] C:\Users\SSAFY\.gradle\caches\transforms-4\3aa76f4505e1a984bc79883e4dcc6ffe\transformed\play-services-location-21.3.0\AndroidManifest.xml:4:5-44
@@ -526,24 +548,24 @@ MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\SSAFY\.gradle\ca
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\SSAFY\.gradle\caches\transforms-4\37726cd38e49db785bc4d0becdb91ce9\transformed\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7c55a0de7464e632b6dfc72f6a5932bc\transformed\swiperefreshlayout-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7c55a0de7464e632b6dfc72f6a5932bc\transformed\swiperefreshlayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\75d9e22cedfafe02cbc1ab81f1259140\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\75d9e22cedfafe02cbc1ab81f1259140\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.1.0] C:\Users\SSAFY\.gradle\caches\transforms-4\6a74ab7765382b57372f4a79326cd68b\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] C:\Users\SSAFY\.gradle\caches\transforms-4\6a74ab7765382b57372f4a79326cd68b\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.gms:play-services-stats:17.0.2] C:\Users\SSAFY\.gradle\caches\transforms-4\baa19ec4eba153cfbf5baa571c732644\transformed\play-services-stats-17.0.2\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-stats:17.0.2] C:\Users\SSAFY\.gradle\caches\transforms-4\baa19ec4eba153cfbf5baa571c732644\transformed\play-services-stats-17.0.2\AndroidManifest.xml:5:5-44
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\6bb54917f71bd6064095b15f255f8c2f\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\6bb54917f71bd6064095b15f255f8c2f\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.loader:loader:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\f568cfca29de7c4854da98cfc9cb5756\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.loader:loader:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\f568cfca29de7c4854da98cfc9cb5756\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\75d9e22cedfafe02cbc1ab81f1259140\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\75d9e22cedfafe02cbc1ab81f1259140\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.customview:customview:1.1.0] C:\Users\SSAFY\.gradle\caches\transforms-4\6a74ab7765382b57372f4a79326cd68b\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.customview:customview:1.1.0] C:\Users\SSAFY\.gradle\caches\transforms-4\6a74ab7765382b57372f4a79326cd68b\transformed\customview-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.autofill:autofill:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\871ec1cc21878c0ffe04c36911510ff4\transformed\autofill-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.autofill:autofill:1.0.0] C:\Users\SSAFY\.gradle\caches\transforms-4\871ec1cc21878c0ffe04c36911510ff4\transformed\autofill-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.core:core:1.13.0] C:\Users\SSAFY\.gradle\caches\transforms-4\87548bcbaba2958a51200938454c12bb\transformed\core-1.13.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.core:core:1.13.0] C:\Users\SSAFY\.gradle\caches\transforms-4\87548bcbaba2958a51200938454c12bb\transformed\core-1.13.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7a861a048992f4482a3106b795b38613\transformed\lifecycle-livedata-core-ktx-2.7.0\AndroidManifest.xml:5:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7a861a048992f4482a3106b795b38613\transformed\lifecycle-livedata-core-ktx-2.7.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\d6cb8155fc232e75326d98f0942e6a5e\transformed\lifecycle-livedata-core-2.7.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\d6cb8155fc232e75326d98f0942e6a5e\transformed\lifecycle-livedata-core-2.7.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7a861a048992f4482a3106b795b38613\transformed\lifecycle-livedata-core-ktx-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7a861a048992f4482a3106b795b38613\transformed\lifecycle-livedata-core-ktx-2.7.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\69f3e7d6da92cd4ce16b612e129c1549\transformed\lifecycle-viewmodel-ktx-2.7.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\69f3e7d6da92cd4ce16b612e129c1549\transformed\lifecycle-viewmodel-ktx-2.7.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\95ed01ff960094a8713d6ebbbf159a4e\transformed\lifecycle-viewmodel-2.7.0\AndroidManifest.xml:20:5-44
@@ -552,6 +574,8 @@ MERGED from [androidx.lifecycle:lifecycle-service:2.7.0] C:\Users\SSAFY\.gradle\
 MERGED from [androidx.lifecycle:lifecycle-service:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\70f20edcc3ef4aa1634c20f39b2c07d3\transformed\lifecycle-service-2.7.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\a6a08c2e5ab98bc490d635c09575fa5d\transformed\lifecycle-process-2.7.0\AndroidManifest.xml:21:5-44
 MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\a6a08c2e5ab98bc490d635c09575fa5d\transformed\lifecycle-process-2.7.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\2ab541537045911f6a101a07a6db8447\transformed\lifecycle-livedata-ktx-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-ktx:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\2ab541537045911f6a101a07a6db8447\transformed\lifecycle-livedata-ktx-2.7.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\349ba9f4152b9298f8eaff188c77f02d\transformed\lifecycle-livedata-2.7.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\349ba9f4152b9298f8eaff188c77f02d\transformed\lifecycle-livedata-2.7.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] C:\Users\SSAFY\.gradle\caches\transforms-4\a5ae6bf0ad7f07c87c650d7dbf22ee8b\transformed\lifecycle-runtime-2.7.0\AndroidManifest.xml:5:5-44
@@ -580,8 +604,8 @@ MERGED from [com.google.android.gms:play-services-measurement-base:22.1.2] C:\Us
 MERGED from [com.google.android.gms:play-services-measurement-base:22.1.2] C:\Users\SSAFY\.gradle\caches\transforms-4\4cf22c61fc710f74038c2b746b1d4117\transformed\play-services-measurement-base-22.1.2\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7ddaf7bbf8bf65859c815ebd313dcf56\transformed\play-services-basement-18.4.0\AndroidManifest.xml:3:5-44
 MERGED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7ddaf7bbf8bf65859c815ebd313dcf56\transformed\play-services-basement-18.4.0\AndroidManifest.xml:3:5-44
-MERGED from [androidx.fragment:fragment:1.5.4] C:\Users\SSAFY\.gradle\caches\transforms-4\0e5001632754fae5e9306d293faf9b9b\transformed\fragment-1.5.4\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.fragment:fragment:1.5.4] C:\Users\SSAFY\.gradle\caches\transforms-4\0e5001632754fae5e9306d293faf9b9b\transformed\fragment-1.5.4\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.6.2] C:\Users\SSAFY\.gradle\caches\transforms-4\41be155963001bcc361df90c690aa0fa\transformed\fragment-1.6.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.6.2] C:\Users\SSAFY\.gradle\caches\transforms-4\41be155963001bcc361df90c690aa0fa\transformed\fragment-1.6.2\AndroidManifest.xml:20:5-44
 MERGED from [androidx.activity:activity:1.9.3] C:\Users\SSAFY\.gradle\caches\transforms-4\4f3ad5f58bdbcd5079b4ccdf4247f70c\transformed\activity-1.9.3\AndroidManifest.xml:20:5-44
 MERGED from [androidx.activity:activity:1.9.3] C:\Users\SSAFY\.gradle\caches\transforms-4\4f3ad5f58bdbcd5079b4ccdf4247f70c\transformed\activity-1.9.3\AndroidManifest.xml:20:5-44
 MERGED from [androidx.activity:activity-compose:1.9.3] C:\Users\SSAFY\.gradle\caches\transforms-4\17c855f06c983fa57c32b864b5401858\transformed\activity-compose-1.9.3\AndroidManifest.xml:5:5-44

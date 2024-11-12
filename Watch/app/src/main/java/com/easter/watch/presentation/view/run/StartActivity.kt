@@ -8,6 +8,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.ScaleAnimation
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -22,7 +23,7 @@ class StartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStartBinding
     private val webSocketManager = WebSocketManager.getInstance()
     private var memberId: String? = null
-
+    private val viewModel: RunViewModel by viewModels()
     private lateinit var permissionService: SensorPermissionService
 
     private val sharedPreferences by lazy {
@@ -41,6 +42,7 @@ class StartActivity : AppCompatActivity() {
 
         binding.runStartBtn.setOnClickListener {
             val intent = Intent(this,RunActivity::class.java)
+
             startActivity(intent)
             finish()
         }
