@@ -21,7 +21,7 @@ const InfoPreviewLoading = ({}) => {
   return (
     <Wrapper>
       <Col>
-        <ImageLoading>{/* Text를 지워도 배경이 표시됨 */}</ImageLoading>
+        <ImageLoading></ImageLoading>
       </Col>
       <Col style={[styles.secondCol]}>
         <Row style={[loadingStyles.smallRow]} />
