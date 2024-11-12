@@ -231,4 +231,23 @@ public class MemberServiceImpl implements MemberService {
                 .duplicated(duplicated)
                 .build();
     }
+
+    @Override
+    public GetMemberInfoResponseDto getMyInfo(PassportDto passport) {
+        Member member = memberRepository.findByEmail(passport.getEmail()).get();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        String birthDate = formatter.format(member.getBirthDate());
+        return GetMemberInfoResponseDto.builder()
+                .nickname(member.getNickname())
+                .height(member.getHeight())
+                .weight(member.getWeight())
+                .name(member.getName())
+                .phoneNumber(member.getPhoneNumber())
+                .email(member.getEmail())
+                .address(member.getAddress())
+                .birthDate(birthDate)
+                .gender(member.getGender())
+                .build();
+    }
 }

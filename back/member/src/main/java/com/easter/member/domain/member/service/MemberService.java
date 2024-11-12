@@ -10,4 +10,5 @@ public interface MemberService {
     void logout(String email);
     UpdateMemberResponseDto updateMember(PassportDto passport, UpdateMemberRequestDto dto);
     CheckRedundancyResponseDto checkRedundancy(CheckRedundancyRequestDto dto);
+    GetMemberInfoResponseDto getMyInfo(PassportDto passport);
 }

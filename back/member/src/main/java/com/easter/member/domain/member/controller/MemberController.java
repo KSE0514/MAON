@@ -49,6 +49,14 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<ResultResponse> getMyInfo(@RequestAttribute("passport") PassportDto passport) {
+        log.info("get my member info");
+        GetMemberInfoResponseDto responseDto = memberService.getMyInfo(passport);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "나의 정보를 조회했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
     @PostMapping("/info")
     public ResponseEntity<ResultResponse> register(@RequestAttribute("passport") PassportDto passport, @RequestBody RegisterMemberRequestDto requestDto) {
         log.info("register new member info");
