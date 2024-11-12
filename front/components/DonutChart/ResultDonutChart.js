@@ -34,12 +34,13 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontFamily: fonts.gMarketBold,
     color: color.light_orange,
+    transform: [{ skewX: "-20deg" }], // x축 기준으로 텍스트를 20도 기울임
   },
   bar: {
     marginVertical: 10,
     height: 1,
     backgroundColor: color.black,
-    width: 100,
+    width: 125,
   },
   runningDistance: {
     fontSize: 18,
