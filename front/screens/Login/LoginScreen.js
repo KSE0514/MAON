@@ -27,13 +27,39 @@ const LoginScreen = ({ navigation }) => {
     // 웹 브라우저에서 로그인 페이지 열기
     const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
     if (result.type === "success" && result.url) {
-      const { token, name, email } = Linking.parse(result.url).queryParams;
-      setUserInfo({ token, name, email });
-      console.log("토큰 확인용: ", token )
+      // const { token, name, email } = Linking.parse(result.url).queryParams;
+      
+      // setUserInfo({ token, name, email });
+      // console.log("토큰 확인용: ", token )
 
-      // 가입한 적이 있는 회원이면 어떻게 처리할지 생각해보기(회원가입 과정 안 거치고 바로 홈으로 넘어가야 함)
-      login(token)
-      navigation.navigate("SignUp", {paramsName: name, paramsEmail: email})
+      // // 가입한 적이 있는 회원이면 어떻게 처리할지 생각해보기(회원가입 과정 안 거치고 바로 홈으로 넘어가야 함)
+      // login(token)
+      const { token } = Linking.parse(result.url).queryParams;
+
+      if (token) {
+        await fetchGoogleUserInfo(token);
+      }
+    }
+  };
+
+  const fetchGoogleUserInfo = async (accessToken) => {
+    try {
+      const response = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const data = await response.json();
+      setUserInfo({
+        token: accessToken,
+        name: data.name,
+        email: data.email,
+        picture: data.picture, // 프로필 이미지 URL
+      });
+
+      login(accessToken);
+    } catch (error) {
+      console.error("구글 사용자 정보 가져오기 실패:", error);
     }
   };
 
@@ -50,19 +76,26 @@ const LoginScreen = ({ navigation }) => {
     try {
       const response = await apiClient.post(
         `/member/member/login`,
-        // requestBody,
         {
-          params: {
-            token: accessToken, // query parameter로 token 추가
-          },
+          token: accessToken, // query parameter로 token 추가
+        },
+        {
           withCredentials: true,
           // headers: {
           //   Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
           // },
         }
       );
-
-      navigation.navigate("SignUp")
+      // console.log(response.status)
+      // console.log("로그인 성공_if문 밖")
+      if (response.status === 200) {
+        console.log(response.data.data)
+        // if (response.data) {
+          
+        // }
+        console.log("로그인 성공, 프로필 이미지 주소:", userInfo.picture)
+        // navigation.navigate("SignUp", {paramsName: userInfo.name, paramsEmail: userInfo.email, paramsImg: userInfo.picture})
+      }
 
     } catch (error) {
       console.error("로그인 에러 발생: ", error);
@@ -97,6 +130,7 @@ const LoginScreen = ({ navigation }) => {
           <View>
             <Text style={{ color: "white" }}>Welcome, {userInfo.name}</Text>
             <Text style={{ color: "white" }}>Email: {userInfo.email}</Text>
+            <Text style={{ color: "white" }}>프로필 이미지 주소: {userInfo.picture}</Text>
             <Text style={{ color: "white" }}>Token: {userInfo.token}</Text>
           </View>
         )}
