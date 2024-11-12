@@ -2,6 +2,7 @@ package com.easter.route.domain.record.service;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +51,7 @@ public class RunningInfoConsumer {
 		try {
 			log.error("Received location data in listener: {}", locationDto);
 			String recordId = locationDto.getRecordId();
-			runningInfoMap.computeIfAbsent(recordId, k -> new CopyOnWriteArrayList<>()).add(locationDto);
+			runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(locationDto);
 			acknowledgment.acknowledge();
 		} catch (Exception e) {
 			log.error("Failed to acknowledge message: {}", locationDto, e);
@@ -109,8 +110,10 @@ public class RunningInfoConsumer {
 
 		boolean isCompleted = false;
 		String startPoint;
+		double routeDistance = distance;
 		Optional<Route> route = routeRepository.findById(record.getRouteId());
 		if (route.isPresent()) {
+			log.info("route_id: {} 를 찾았습니다.", route.get().getId());
 			Route findRoute = route.get();
 			List<Point> coordinates =  findRoute.getTrack().getCoordinates();
 			Point endPoint = coordinates.get(coordinates.size() - 1);
@@ -124,7 +127,9 @@ public class RunningInfoConsumer {
 				isCompleted = true;
 			}
 			startPoint = findRoute.getStartPoint();
+			routeDistance = findRoute.getDistance();
 		} else {
+			log.info("등록된 경로가 없습니다.");
 			startPoint = GoogleGeoCoding.getAddress(Double.parseDouble(list.get(0).getLatitude()), Double.parseDouble(list.get(0).getLongitude()));
 		}
 
@@ -145,6 +150,6 @@ public class RunningInfoConsumer {
 		Record updatedRecord = recordRepository.findById(recordId)
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
 
-		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord), "end");
+		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord), "end", routeDistance);
 	}
 }
