@@ -4,6 +4,7 @@ import com.easter.member.domain.member.entity.Member;
 import com.easter.member.domain.member.model.dto.*;
 import com.easter.member.domain.member.repository.MemberRepository;
 import com.easter.member.global.exception.BusinessException;
+import com.easter.member.global.s3.S3Service;
 import com.easter.member.global.security.jwt.TokenProvider;
 import com.easter.member.global.security.userinfo.PassportDto;
 import com.easter.member.global.security.userinfo.Role;
@@ -21,9 +22,11 @@ import org.springframework.web.client.RestClient;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -34,10 +37,12 @@ public class MemberServiceImpl implements MemberService {
     @Value("${external-url.google-oauth}")
     private String googleOauthUrl;
 
+    private final S3Service s3Service;
     private final MemberRepository MemberRepository;
     private final TokenProvider tokenProvider;
     private final RestClient restClient;
     private final ObjectMapper objectMapper;
+
 
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
@@ -114,6 +119,7 @@ public class MemberServiceImpl implements MemberService {
         Date date;
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
             date = formatter.parse(dto.getBirthDate());
         } catch(ParseException e) {
             log.error("invalid date format : {}", dto.getBirthDate());
@@ -162,5 +168,59 @@ public class MemberServiceImpl implements MemberService {
     public void logout(String email) {
         log.info("logout : {}", email);
         tokenProvider.removeToken(email);
+    }
+
+    @Override
+    @Transactional
+    public UpdateMemberResponseDto updateMember(PassportDto passport, UpdateMemberRequestDto dto) {
+        Member member = memberRepository.findByEmail(passport.getEmail()).get();
+        // [1] 사진 업로드
+        String imageUrl = member.getImageUrl();
+        if(dto.getProfileImage() != null && !dto.getProfileImage().isEmpty()) {
+            imageUrl = s3Service.uploadFile(dto.getProfileImage());
+        }
+        Date date;
+        SimpleDateFormat formatter;
+        try {
+            formatter = new SimpleDateFormat("yyyyMMdd");
+            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            if(dto.getBirthDate() != null) {
+                date = formatter.parse(dto.getBirthDate());
+            } else {
+                date = member.getBirthDate();
+            }
+
+        } catch(ParseException e) {
+            log.error("invalid date format : {}", dto.getBirthDate());
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다.");
+        }
+        member = member.toBuilder()
+                .name(dto.getName() == null ? member.getName() : dto.getName())
+                .phoneNumber(dto.getPhoneNumber() == null ? member.getPhoneNumber() : dto.getPhoneNumber())
+                .birthDate(date)
+                .height(dto.getHeight() == null ? member.getHeight() : dto.getHeight())
+                .weight(dto.getWeight() == null ? member.getWeight() : dto.getWeight())
+                .imageUrl(imageUrl)
+                .build();
+        memberRepository.save(member);
+        // 이후 액세스 토큰 재발급
+        PassportDto newPassport = PassportDto.builder()
+                .id(member.getUuid())
+                .name(member.getName())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .imageUrl(member.getImageUrl())
+                .role(Role.REGISTERED)
+                .build();
+        String newAccessToken = tokenProvider.generateAccessToken(newPassport);
+        return UpdateMemberResponseDto.builder()
+                .name(member.getName())
+                .phoneNumber(member.getPhoneNumber())
+                .birthDate(formatter.format(member.getBirthDate()))
+                .height(member.getHeight())
+                .weight(member.getWeight())
+                .accessToken(newAccessToken)
+                .imageUrl(member.getImageUrl())
+                .build();
     }
 }

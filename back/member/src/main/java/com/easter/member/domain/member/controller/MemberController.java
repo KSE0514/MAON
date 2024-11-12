@@ -49,10 +49,13 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    @PatchMapping("/info")
-    public ResponseEntity<ResultResponse> modify(@RequestAttribute("passport") PassportDto passport, @RequestBody Object o) {
-        log.info("modify member info");
-        return null; // todo : 회원정보 수정 제작
+    @PostMapping("/info/edit")
+    public ResponseEntity<ResultResponse> modify(@RequestAttribute("passport") PassportDto passport, @ModelAttribute UpdateMemberRequestDto dto) {
+        log.info("edit member info");
+        log.info(dto.toString());
+        UpdateMemberResponseDto responseDto = memberService.updateMember(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "회원 정보를 수정했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
     
     @PostMapping("/reissue")
