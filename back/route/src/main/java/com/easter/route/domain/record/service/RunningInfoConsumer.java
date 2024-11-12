@@ -22,23 +22,22 @@ import com.easter.route.global.utils.DistanceCalculator;
 import com.easter.route.global.utils.GoogleGeoCoding;
 import com.easter.route.global.utils.PaceCalculator;
 import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class RunningInfoConsumer {
-
-	private final RecordService recordService;
-	private final RecordRepository recordRepository;
-	private final RouteRepository routeRepository;
-	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
 
 	// Kafka recordId를 key로 메시지가 쌓이고, 그 값은 Map에 저장된다.
 	// 발생할 수 있는 동시성 이슈들
@@ -46,6 +45,13 @@ public class RunningInfoConsumer {
 	// 2. 위치 정보 리스트에서 동시에 여러 데이터가 추가 되는 경우
 	// 3. 심박수 계산 시 Race Condition
 	// 4. Map 초기화와 동시에 접근할 때
+
+	private final RecordService recordService;
+	private final RecordRepository recordRepository;
+	private final RouteRepository routeRepository;
+	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
+	
+	// 카프카 리스너
 	@KafkaListener(topics = "maon.route.location", groupId = "running.group", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
@@ -58,44 +64,11 @@ public class RunningInfoConsumer {
 		}
 	}
 
-	public List<LocationDto> getRunningInfo(String recordId) {
-		return runningInfoMap.getOrDefault(recordId, new CopyOnWriteArrayList<>());
-	}
-
-	public void clearRunningInfo(String recordId) {
-		runningInfoMap.remove(recordId);
-	}
-
-	public List<String> getPaceList(String recordId) {
-		List<LocationDto> list = getRunningInfo(recordId);
-		return list.stream().map(LocationDto::getPace).toList();
-	}
-
-	public int getAverageHeartRate(String recordId) {
-		List<LocationDto> list = getRunningInfo(recordId);
-		return list.stream().mapToInt(LocationDto::getHeartRate).sum() / list.size();
-	}
-
-	public GeoJsonLineString getRecordedTrack(String recordId) {
-		List<LocationDto> list = getRunningInfo(recordId);
-		return new GeoJsonLineString(list.stream().map(LocationDto::getPoint).toList());
-	}
-
-	public String timeDifference(String startTime, String endTime) {
-		LocalTime start = LocalTime.parse(startTime);
-		LocalTime end = LocalTime.parse(endTime);
-
-		Duration duration = Duration.between(start, end);
-		long hours = duration.toHours();
-		long minutes = duration.toMinutesPart();
-		long seconds = duration.toSecondsPart();
-
-		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-	}
-
+	// 러닝 종료시 게산
 	public RunningResultDto finish(String recordId) {
 		Record record = recordRepository.findById(recordId)
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
+		log.info("record: {} 를 찾았습니다.", record.toString());
 		// 시간 순서로 정렬
 		runningInfoMap.get(recordId).sort((a, b) -> a.getTime().compareTo(b.getTime()));
 
@@ -108,10 +81,12 @@ public class RunningInfoConsumer {
 		double distance = !list.isEmpty() ? list.get(list.size() - 1).getRunningDistance() : 0;
 		String averagePace = PaceCalculator.calculateAveragePace(paceList);
 
+
 		boolean isCompleted = false;
 		String startPoint;
 		double routeDistance = distance;
 		Optional<Route> route = routeRepository.findById(record.getRouteId());
+
 		if (route.isPresent()) {
 			log.info("route_id: {} 를 찾았습니다.", route.get().getId());
 			Route findRoute = route.get();
@@ -151,5 +126,40 @@ public class RunningInfoConsumer {
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
 
 		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord), "end", routeDistance);
+	}
+
+	public List<LocationDto> getRunningInfo(String recordId) {
+		return runningInfoMap.getOrDefault(recordId, new ArrayList<>());
+	}
+
+	public void clearRunningInfo(String recordId) {
+		runningInfoMap.remove(recordId);
+	}
+
+	public List<String> getPaceList(String recordId) {
+		List<LocationDto> list = getRunningInfo(recordId);
+		return list.stream().map(LocationDto::getPace).toList();
+	}
+
+	public int getAverageHeartRate(String recordId) {
+		List<LocationDto> list = getRunningInfo(recordId);
+		return list.stream().mapToInt(LocationDto::getHeartRate).sum() / list.size();
+	}
+
+	public GeoJsonLineString getRecordedTrack(String recordId) {
+		List<LocationDto> list = getRunningInfo(recordId);
+		return new GeoJsonLineString(list.stream().map(LocationDto::getPoint).toList());
+	}
+
+	public String timeDifference(String startTime, String endTime) {
+		LocalTime start = LocalTime.parse(startTime);
+		LocalTime end = LocalTime.parse(endTime);
+
+		Duration duration = Duration.between(start, end);
+		long hours = duration.toHours();
+		long minutes = duration.toMinutesPart();
+		long seconds = duration.toSecondsPart();
+
+		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 	}
 }
