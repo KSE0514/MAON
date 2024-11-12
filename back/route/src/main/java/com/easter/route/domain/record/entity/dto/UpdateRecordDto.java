@@ -18,5 +18,6 @@ public class UpdateRecordDto {
     private String averagePace;
     private GeoJsonLineString recordedTrack;
     private String runningTime;
+    private String startPoint;
     private Boolean completed;
 }
