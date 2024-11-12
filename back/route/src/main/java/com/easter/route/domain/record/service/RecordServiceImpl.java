@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.record.entity.dto.CreateRunningDto;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class RecordServiceImpl implements RecordService {
 
 	private final RecordRepository recordRepository;
@@ -45,10 +47,11 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	@Override
-	public void updateRecord(UpdateRecordDto updateRecordDto) {
+	public Record updateRecord(UpdateRecordDto updateRecordDto) {
 		Record record = recordRepository.findById(updateRecordDto.getRecordId())
 			.orElseThrow(() -> new IllegalArgumentException("Record not found"));
 		record.updateRecord(updateRecordDto);
+		return recordRepository.save(record);
 	}
 
 	@Override

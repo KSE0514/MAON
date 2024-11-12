@@ -92,7 +92,7 @@ public class MemberServiceImpl implements MemberService {
             String accessToken = tokenProvider.generateAccessToken(passport);
             String refreshToken = tokenProvider.generateRefreshToken(passport);
             responseDto = LoginResponseDto.builder()
-                    .registered(true)
+                    .registered(false)
                     .id(null)
                     .name(passport.getName())
                     .email(passport.getEmail())
