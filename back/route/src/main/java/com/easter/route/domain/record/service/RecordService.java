@@ -9,6 +9,6 @@ import com.easter.route.domain.record.entity.dto.CreateRunningDto;
 
 public interface RecordService {
     Record createRunning(CreateRunningDto createRunningDto);
-    void updateRecord(UpdateRecordDto updateRecordDto);
+    Record updateRecord(UpdateRecordDto updateRecordDto);
     List<RecordDto> getRecordListByMemberId(String memberId);
 }
