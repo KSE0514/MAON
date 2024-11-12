@@ -123,15 +123,29 @@ const RunningAlone = ({ navigation, route }) => {
 
       if (message.data.startsWith("CONNECTED")) {
         console.log("STOMP 연결 성공!");
-        // console.log("종료 응답 수신:", message.data);
-        // STOMP SUBSCRIBE 프레임
-        // const subscribeFrame = `SUBSCRIBE\nid:sub-0\ndestination:/sub/running/${roomId}\n\n\0`;
-        // kafkaWs.send(subscribeFrame);
-        // 종료 메시지 응답 경로를 구독
         const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${roomId}/end\n\n\0`;
         kafkaWs.send(subscribeFrame);
-      } else if (message.data.status.includes("end")) {
-        console.log("종료 응답 수신:", message.data);
+      } else {
+        try {
+          // JSON 형식만 추출하기
+          const jsonStartIndex = message.data.indexOf("{");
+          const jsonEndIndex = message.data.lastIndexOf("}");
+          if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
+            const jsonString = message.data.substring(
+              jsonStartIndex,
+              jsonEndIndex + 1
+            );
+            const parsedData = JSON.parse(jsonString); // JSON 부분만 파싱
+
+            if (parsedData.status === "end") {
+              console.log("종료 응답 수신:", parsedData);
+            }
+          } else {
+            console.error("유효한 JSON 형식이 포함되지 않음.");
+          }
+        } catch (error) {
+          console.error("메시지 파싱 오류:", error);
+        }
       }
     };
 
@@ -165,7 +179,7 @@ const RunningAlone = ({ navigation, route }) => {
       const locationDto = {
         recordId: roomId,
         time: elapsedTimeRef.current,
-        memberId: "예빈임니다.",
+        memberId: "현석",
         latitude: location.latitude,
         longitude: location.longitude,
         heartRate: 0,

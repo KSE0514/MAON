@@ -15,10 +15,6 @@ const RunResult = ({ navigation, resultData }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  return (
-    <View style={{ flex: 1 }}>
-      <Text>run result</Text>
-    </View>
-  );
+  return <Wrapper></Wrapper>;
 };
 export default RunResult;
