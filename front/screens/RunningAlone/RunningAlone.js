@@ -22,12 +22,12 @@ import Timer from "../../components/Timer/Timer";
 import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
-import GoalDonutChart from "../../components/DonutChart/DonutChart";
+import GoalDonutChart from "../../components/DonutChart/GoalDonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
 
 const RunningAlone = ({ navigation, route }) => {
-  const { roomId } = route.params;
+  const { roomId, mode } = route.params;
   const fontsLoaded = useFontsLoaded();
 
   const [showStartModal, setShowStartModal] = useState(false); // 시작 모달
@@ -44,15 +44,16 @@ const RunningAlone = ({ navigation, route }) => {
   const runningDistanceRef = useRef(runningDistance);
 
   const [resultData, setResultData] = useState({
-    id: "",
+    id: "6732b031df66425d90049b80",
     routeId: "",
-    paceList: "",
+    paceList: [],
     recordedTrack: "",
-    runningTime: "",
-    averagePace: "",
-    averageHeartRate: "",
-    distance: "",
-    createdAt: "",
+    runningTime: "00:15:53",
+    averagePace: "12'51\"",
+    averageHeartRate: 0,
+    distance: 5,
+    createdAt: "2024-11-12T01:32:33.99",
+    routeDistance: 5,
   });
 
   const StopModalContent = {
@@ -92,7 +93,10 @@ const RunningAlone = ({ navigation, route }) => {
           };
 
           sendEndSession(roomId); // 종료 요청 전송
-          navigation.navigate("RunResult", { resultData: resultData }); // 종료 후 다른 화면으로 이동
+          navigation.navigate("RunResult", {
+            resultData: resultData,
+            mode: mode,
+          }); // 종료 후 다른 화면으로 이동
         },
       },
     ],
@@ -123,15 +127,29 @@ const RunningAlone = ({ navigation, route }) => {
 
       if (message.data.startsWith("CONNECTED")) {
         console.log("STOMP 연결 성공!");
-        // console.log("종료 응답 수신:", message.data);
-        // STOMP SUBSCRIBE 프레임
-        // const subscribeFrame = `SUBSCRIBE\nid:sub-0\ndestination:/sub/running/${roomId}\n\n\0`;
-        // kafkaWs.send(subscribeFrame);
-        // 종료 메시지 응답 경로를 구독
         const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${roomId}/end\n\n\0`;
         kafkaWs.send(subscribeFrame);
-      } else if (message.data.status.includes("end")) {
-        console.log("종료 응답 수신:", message.data);
+      } else {
+        try {
+          // JSON 형식만 추출하기
+          const jsonStartIndex = message.data.indexOf("{");
+          const jsonEndIndex = message.data.lastIndexOf("}");
+          if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
+            const jsonString = message.data.substring(
+              jsonStartIndex,
+              jsonEndIndex + 1
+            );
+            const parsedData = JSON.parse(jsonString); // JSON 부분만 파싱
+
+            if (parsedData.status === "end") {
+              console.log("종료 응답 수신:", parsedData);
+            }
+          } else {
+            console.error("유효한 JSON 형식이 포함되지 않음.");
+          }
+        } catch (error) {
+          console.error("메시지 파싱 오류:", error);
+        }
       }
     };
 
@@ -165,7 +183,7 @@ const RunningAlone = ({ navigation, route }) => {
       const locationDto = {
         recordId: roomId,
         time: elapsedTimeRef.current,
-        memberId: "예빈임니다.",
+        memberId: "현석",
         latitude: location.latitude,
         longitude: location.longitude,
         heartRate: 0,
@@ -243,7 +261,7 @@ const RunningAlone = ({ navigation, route }) => {
         navigation={navigation}
         runStart={runStart}
         setRunningDistance={setRunningDistance}
-        mode={"aloneRun"}
+        mode={mode}
         onLocationChange={handleUserLocationChange}
       />
       {running && (
@@ -255,18 +273,18 @@ const RunningAlone = ({ navigation, route }) => {
                   (runningDistance / 1000).toFixed(2)
                 )}
                 goalDistance={0}
-                mode={"aloneRun"}
+                mode={mode}
               />
             </RunInfoCol>
             <RunInfoCol style={{ flex: 2, paddingLeft: 21 }}>
               <Pace
-                mode={"aloneRun"}
+                mode={mode}
                 elapsedTime={elapsedTime}
                 currentDistance={(runningDistance / 1000).toFixed(2)}
                 setPace={setPace}
                 pace={pace}
               />
-              <HeartBeat mode={"aloneRun"} />
+              <HeartBeat mode={mode} />
             </RunInfoCol>
           </RunInfo>
         </Bottom>

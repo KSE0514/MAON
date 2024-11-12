@@ -46,6 +46,9 @@ public class Record {
 	@Field("pace_list")
 	private List<String> paceList = new ArrayList<>();
 
+	@Field("distance_list")
+	private List<Double> distanceList = new ArrayList<>();
+
 	@Field("recorded_track")
 	private GeoJsonLineString recordedTrack;
 
@@ -71,6 +74,7 @@ public class Record {
 		this.id = updateRecordDto.getRecordId();
 		this.runningInfo = updateRecordDto.getRunningInfo();
 		this.paceList = updateRecordDto.getPaceList();
+		this.distanceList = updateRecordDto.getDistanceList();
 		this.averageHeartRate = updateRecordDto.getAverageHeartRate();
 		this.distance = updateRecordDto.getDistance();
 		this.recordedTrack = updateRecordDto.getRecordedTrack();
