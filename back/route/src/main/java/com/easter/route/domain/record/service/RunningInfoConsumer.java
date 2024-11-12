@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.record.entity.dto.LocationDto;
@@ -22,7 +21,6 @@ import com.easter.route.global.utils.DistanceCalculator;
 import com.easter.route.global.utils.GoogleGeoCoding;
 import com.easter.route.global.utils.PaceCalculator;
 import org.springframework.data.geo.Point;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -120,6 +118,7 @@ public class RunningInfoConsumer {
 				.recordedTrack(recordedTrack)
 				.runningTime(runningTime)
 				.completed(isCompleted)
+			    .startPoint(startPoint)
 				.build();
 
 		Record updatedRecord = recordService.updateRecord(updateRecordDto);

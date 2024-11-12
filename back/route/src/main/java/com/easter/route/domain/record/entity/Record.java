@@ -67,6 +67,9 @@ public class Record {
 	@Field("record_type")
 	private RecordType recordType;
 
+	@Field("start_point")
+	private String startPoint;
+
 	@CreatedDate
 	private LocalDateTime createdAt;
 
@@ -80,6 +83,7 @@ public class Record {
 		this.recordedTrack = updateRecordDto.getRecordedTrack();
 		this.runningTime = updateRecordDto.getRunningTime();
 		this.averagePace = updateRecordDto.getAveragePace();
+		this.startPoint = updateRecordDto.getStartPoint();
 		this.completed = updateRecordDto.getCompleted();
 	}
 }
