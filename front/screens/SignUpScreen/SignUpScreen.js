@@ -36,7 +36,7 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const SignUpScreen = ({navigation, route}) => {
-  const { paramsName, paramsEmail, paramsImg } = route.params;
+  const { paramsName, paramsEmail, paramsImg, paramsAccessToken } = route.params;
   const fontsLoaded = useFontsLoaded();
   const [process, setProcess] = useState(0);
 
@@ -46,13 +46,15 @@ const SignUpScreen = ({navigation, route}) => {
   const [email, setEmail] = useState('') // 이메일 상태관리
   const [address, setAddress] = useState('') // 주소 상태관리
   const [nickName, setNickName] = useState('') // 닉네임 상태관리
-  const [selectedGender, setSelectedGender] = useState(null); // 선택된 성별 상태 관리
+  const [selectedGender, setSelectedGender] = useState(''); // 선택된 성별 상태 관리
 
   const [heightInfo, setHeightInfo] = useState('') // 키 상태관리
   const [weightInfo, setWeightInfo] = useState('') // 몸무게 상태관리
 
+  const [accessToken, setAccessToken] = useState('') // 액세스 토큰 상태관리
+
   // const [profileImgUrl, setProfileImgUrl] = useState() // 
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(testImg);
 
 
   if (!fontsLoaded) {
@@ -63,6 +65,8 @@ const SignUpScreen = ({navigation, route}) => {
     setName(paramsName)
     setEmail(paramsEmail)
     setImage(paramsImg)
+    setAccessToken(paramsAccessToken)
+    // console.log('이미지 주소:', paramsImg)
   }, [])
 
   // 회원가입 완료시 동작
@@ -93,9 +97,9 @@ const SignUpScreen = ({navigation, route}) => {
         requestBody,
         {
           withCredentials: true,
-          // headers: {
-          //   Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
-          // },
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
         }
       );
       console.log("가입완료", requestBody)
