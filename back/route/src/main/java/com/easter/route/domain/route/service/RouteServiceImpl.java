@@ -1,7 +1,10 @@
 package com.easter.route.domain.route.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.easter.route.domain.record.entity.Record;
+import com.easter.route.domain.record.repository.RecordRepository;
 import com.easter.route.domain.route.entity.Route;
 import com.easter.route.domain.route.entity.dto.*;
 import com.easter.route.domain.route.repository.RouteRepository;
@@ -19,17 +22,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class RouteServiceImpl implements RouteService {
 	private final RouteRepository routeRepository;
+	private final RecordRepository recordRepository;
+
 	@Override
 	public void createRoute(CreateRouteRequestDto createRouteRequestDto) {
+		Record record = recordRepository.findById(createRouteRequestDto.getRecordId())
+				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드를 찾을 수 없습니다."));
+
 		Route route = Route.builder()
 				.writerId(createRouteRequestDto.getMemberId())
 				.writerName(createRouteRequestDto.getMemberName())
 				.routeName(createRouteRequestDto.getRouteName())
-				.startPoint(createRouteRequestDto.getRunningResult().getStartPoint())
-				.distance(createRouteRequestDto.getRunningResult().getRecord().getDistance())
-				.track(createRouteRequestDto.getRunningResult().getRecord().getRecordedTrack())
-				.createdAt(createRouteRequestDto.getRunningResult().getRecord().getCreatedAt())
+				.startPoint(record.getStartPoint())
+				.distance(record.getDistance())
+				.track(record.getRecordedTrack())
+				.createdAt(LocalDateTime.now())
 				.build();
+
 		routeRepository.save(route);
 	}
 
