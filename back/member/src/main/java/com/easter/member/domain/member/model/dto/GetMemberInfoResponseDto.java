@@ -20,4 +20,5 @@ public class GetMemberInfoResponseDto {
     private String address;
     private String birthDate;
     private Gender gender;
+    private String imageUrl;
 }
