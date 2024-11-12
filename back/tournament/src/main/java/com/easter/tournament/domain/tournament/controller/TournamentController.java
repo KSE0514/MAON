@@ -1,5 +1,6 @@
 package com.easter.tournament.domain.tournament.controller;
 
+import com.easter.tournament.domain.tournament.model.dto.GetMarathonDetailResponseDto;
 import com.easter.tournament.domain.tournament.model.dto.GetMarathonRequestDto;
 import com.easter.tournament.domain.tournament.model.dto.GetMarathonResponseDto;
 import com.easter.tournament.domain.tournament.model.dto.SearchMyTournamentResponseDto;
@@ -51,13 +52,14 @@ public class TournamentController {
 
     /**
      * 마라톤 상세 조회
+     * 팀 소속여부 포함
      * @return
      */
     @GetMapping("/getMarathon/detail/{uuid}")
-    public ResponseEntity<?> getMarathonDetail(@PathVariable UUID uuid) {
+    public ResponseEntity<?> getMarathonDetail(@RequestAttribute("passport") PassportDto passport, @PathVariable UUID uuid) {
         log.info("Get marathon uuid: {}", uuid);
-        GetMarathonResponseDto getMarathonResponseDto = tournamentService.getMarathonDetail(uuid);
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, getMarathonResponseDto.getTitle() + " 조회성공", getMarathonResponseDto);
+        GetMarathonDetailResponseDto responseDto = tournamentService.getMarathonDetail(passport, uuid);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, responseDto.getTitle() + " 조회성공", responseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
