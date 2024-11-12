@@ -36,7 +36,7 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const SignUpScreen = ({navigation, route}) => {
-  const { paramsName, paramsEmail } = route.params;
+  const { paramsName, paramsEmail, paramsImg } = route.params;
   const fontsLoaded = useFontsLoaded();
   const [process, setProcess] = useState(0);
 
@@ -62,6 +62,7 @@ const SignUpScreen = ({navigation, route}) => {
   useEffect(() => {
     setName(paramsName)
     setEmail(paramsEmail)
+    setImage(paramsImg)
   }, [])
 
   // 회원가입 완료시 동작
