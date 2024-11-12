@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Document(collection = "marathon_route")
 public class MarathonRoute extends Route {
 

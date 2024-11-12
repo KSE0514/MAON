@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,9 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    @Value("${external-url.login-test}")
+    private String loginTestUrl;
 
     private final TokenProvider tokenProvider;
 
@@ -30,12 +34,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addHeader("accessToken", accessToken);
         response.addHeader("refreshToken", refreshToken);
         log.info("access token : {}, refresh token : {}", accessToken, refreshToken);
-        String redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:8765/maon/member/member/logindone")
+        String redirectUrl = UriComponentsBuilder.fromUriString(loginTestUrl)
                 .queryParam("token", accessToken)
 //                .queryParam("refreshToken", refreshToken)
                 .build().toUriString();
         response.sendRedirect(redirectUrl);
-//        getRedirectStrategy().sendRedirect(request, response, "http://localhost:8765/maon/member"); // todo : success handler redirect 고치기
     }
 
 }

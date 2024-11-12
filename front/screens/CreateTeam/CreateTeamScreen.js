@@ -24,9 +24,13 @@ import { Dimensions } from "react-native";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-import testImg from './../../assets/images/testProfile2.jpg'
-import testImg1 from "./../../assets/images/testProfile1.jpg"
-import testImg2 from "./../../assets/images/testProfile.jpg"
+// import testImg from './../../assets/images/testProfile2.jpg'
+// import testImg1 from "./../../assets/images/testProfile1.jpg"
+// import testImg2 from "./../../assets/images/testProfile.jpg"
+
+const testImg = require('./../../assets/images/testProfile2.jpg')
+const testImg1 = require("./../../assets/images/testProfile1.jpg")
+const testImg2 = require("./../../assets/images/testProfile.jpg")
 
 const testMyInfo2 = {
   marathonList: {

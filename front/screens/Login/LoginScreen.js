@@ -1,256 +1,105 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { LinearGradient } from "expo-linear-gradient";
-import MaskedView from "@react-native-masked-view/masked-view";
-import color from "../../styles/colors";
-import backImg from "./../../assets/images/Login_Back_cut2.jpg";
-import { Container, Logo, Wrap } from "./LoginScreenStyles";
-import { StyleSheet, View, Text, SafeAreaView, Image, Button } from "react-native";
-import { useFontsLoaded } from "../../utils/fontContext";
-import { Dimensions } from "react-native";
-// import * as Linking from "expo-linking";
-import * as AuthSession from "expo-auth-session";
-import useUserStore from "../../store/useUserStore";
-
-import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
-
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, Dimensions } from "react-native";
 import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as AuthSession from "expo-auth-session";
+import * as Linking from "expo-linking";
+import { Container, Logo, Wrap } from "./LoginScreenStyles";
+import backImg from "./../../assets/images/Login_Back_cut2.jpg";
+import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
+import { useFontsLoaded } from "../../utils/fontContext";
+import useAuthStore from "../../store/AuthStore";
+import { apiClient } from "../../customAxios";
 
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithCredential,
-  onAuthStateChanged,
-} from 'firebase/auth';
-
-import { auth } from "../../firebaseConfig"; // firebaseConfig에서 초기화된 auth 가져오기
-
-
-
-// 로그인 버튼 누르면 웹 브라우저가 열리고, 구글 로그인 페이지로 이동함.- 2024.11.09
 WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = ({ navigation }) => {
+  const { setUser } = useAuthStore()
+  const [userInfo, setUserInfo] = useState(null);
   const fontsLoaded = useFontsLoaded();
   const screenHeight = Dimensions.get("window").height;
-  const setUser = useUserStore((state) => state.setUser);
 
+  // 로그인 버튼 클릭 시 웹 로그인 페이지로 이동
+  const handleLogin = async () => {
+    // 로컬 IP 주소로 변경
+    const redirectUri = Linking.createURL("redirect");
+    // const redirectUri = `https://auth.expo.io/@maon/maon`;
+    const authUrl = `https://maon--login.web.app?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경
 
-  // // /////////////////////////////////////////// 2024.11.09 
+    // 웹 브라우저에서 로그인 페이지 열기
+    const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
+    if (result.type === "success" && result.url) {
+      const { token, name, email } = Linking.parse(result.url).queryParams;
+      setUserInfo({ token, name, email });
+      console.log("토큰 확인용: ", token )
 
-  // // 안드로이드, 웹 클라이언트 아이디를 사용하여 인증 요청 보냄.
-  // // Google 인증 요청을 위한 훅 초기화
-  // // promptAsync: 인증 요청 보냄.S
-  // const [request, response, promptAsync] = Google.useAuthRequest({
-  //   webClientId: "517964408407-o44n8rq8fvc58bbj6jmhfu8k2hlu6ss5.apps.googleusercontent.com",
-  //   androidClientId: "517964408407-lfjf2i7sd8p1q7rsmq3uv33l66hd9n5v.apps.googleusercontent.com",
-  //   iosClientId: "517964408407-1gvbjjp2hg9qjfrc1mmhv37s91507e3q.apps.googleusercontent.com",
-  //   redirectUri: AuthSession.makeRedirectUri({
-  //     useProxy: false, // Expo 고정 URI를 사용하도록 설정
-  //   }),
-  // });
+      // 가입한 적이 있는 회원이면 어떻게 처리할지 생각해보기(회원가입 과정 안 거치고 바로 홈으로 넘어가야 함)
+      login(token)
+      // navigation.navigate("SignUp", {paramsName: name, paramsEmail: email})
+      // navigation.navigate("SignUp", {paramsName: name, paramsEmail: email})
+    }
+  };
 
-  // const [userInfo, setUserInfo] = React.useState(null);
-
-  // // Google 로그인 처리하는 함수
-  // const handleSignInWithGoogle = async () => {
-  //   console.log("확인용 handleSignInWithGoogle 시작");
-  //   const user = await AsyncStorage.getItem("@user");
-  //   console.log("user: ", user);
-  
-  //   const result = await promptAsync();
-  //   console.log("Login result:", result);
-  
-  //   if (result.type === "success") {
-  //     await getUserInfo(result.authentication.accessToken);
-  //   } else {
-  //     console.log("Authentication was dismissed or failed:", result.type);
-  //   }
-  // };
-  
-  // // 토큰을 이용하여 유저 정보를 가져오는 함수
-  // const getUserInfo = async (token) => {
-  //   console.log("확인용 getUserInfo 시작")
-  //   if (!token) return;
-  //   try {
-  //     const response = await fetch(
-  //       "https://www.googleapis.com/oauth2/v3/userinfo",
-  //       {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }
-  //     );
-  //     const userInfoResponse = await response.json();
-  //     // 유저 정보를 AsyncStorage에 저장, 상태업뎃
-  //     await AsyncStorage.setItem("@user", JSON.stringify(userInfoResponse));
-  //     setUserInfo(userInfoResponse);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
+  // const requestBody = {
+  //   memberId: memberId,
+  //   maxMember: maxMember,
+  //   orderId: orderId,
+  //   merchantId: merchantId,
+  //   merchantName: merchantName,
+  //   categoryId: categoryId,
+  //   totalPrice: totalPrice,
   // };
 
-  // const handleLogout = async () => {
-  //   await AsyncStorage.removeItem("@user");
-  //   setUserInfo(null);
-  // };
+  //  로그인 요청_ 만약 가입한적 있는 유저일 경우엔 response.data.data.registered값이 true가 됨 
+  const login = async (accessToken) => {
+    try {
+      const response = await apiClient.post(
+        `/member/member/login`,
+        {
+          token: accessToken, // query parameter로 token 추가
+        },
+        {
+          withCredentials: true,
+          // headers: {
+          //   Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          // },
+        }
+      );
+      // console.log(response.status)
+      // console.log("로그인 성공_if문 밖")
+      if (response.status === 200) {
+        console.log("로그인 성공")
+        console.log(response.data.data)
+        const responseUserInfo = response.data.data
+        // 만약 가입한적 있는 회원이면 불러온 정보를 AuthStore에 저장하고 home으로 이동
+        if (responseUserInfo.registered) {
+          console.log("이미 회원입니다.")
+          // AuthStore에 응답값 저장
+          setUser({
+            id: responseUserInfo.id,
+            name: responseUserInfo.name,
+            email: responseUserInfo.email,
+            accessToken: responseUserInfo.accessToken,
+            refreshToken: responseUserInfo.refreshToken,
+            imageUrl: responseUserInfo.imageUrl,
+          })
+          navigation.navigate("Home")
+        } else {
+          // 가입한 적이 없는 회원일 경우에는 회원가입으로 이동 후, 회원가입 완료했을 시 AuthStore에 정보를 저장하고 home으로 이동
+          console.log("비회원이므로 회원가입 페이지로 이동합니다.")
+          navigation.navigate("SignUp", {paramsName: responseUserInfo.name, paramsEmail: responseUserInfo.email, paramsImg: responseUserInfo.imageUrl, paramsAccessToken: responseUserInfo.accessToken})
+        }
+      }
 
-  // // Google 인증 응답이 바뀔때마다 실행
-  // useEffect(() => {
-  //   handleSignInWithGoogle();
-  // }, [response]);
+    } catch (error) {
+      console.error("로그인 에러 발생: ", error);
+    }
+  };
+
 
 
   if (!fontsLoaded) {
     return null;
   }
-  
-
-  // useEffect(() => {
-  //   const handleUrl = ({ url }) => {
-  //     const { queryParams } = Linking.parse(url);
-  //     const idToken = queryParams.id_token;
-
-  //     if (idToken) {
-  //       console.log("Logged in with Google ID Token:", idToken);
-  //       sendIdTokenToServer(idToken);
-  //     }
-  //   };
-
-  //   Linking.addEventListener("url", handleUrl); // 기존 addListener 대신 addEventListener 사용
-
-  //   return () => {
-  //     Linking.removeEventListener("url", handleUrl); // 기존 remove 대신 removeEventListener 사용
-  //   };
-  // }, []);
-
-  // // 서버로 id_token을 전송하는 함수
-  // const sendIdTokenToServer = async (idToken) => {
-  //   try {
-  //     const response = await fetch("https://your-server.com/api/auth/google", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ idToken }),
-  //     });
-
-  //     const serverResponse = await response.json();
-  //     console.log("Server Response:", serverResponse);
-
-  //     if (serverResponse.success) {
-  //       // 서버가 인증에 성공하면 사용자 정보 상태 저장
-  //       setUser({
-  //         name: serverResponse.name,
-  //         email: serverResponse.email,
-  //         imageUrl: serverResponse.picture,
-  //       });
-  //       navigation.navigate("Home"); // 인증 후 원하는 화면으로 이동
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to send ID Token to server:", error);
-  //   }
-  // };
-
-  // const signInWithGoogle = async () => {
-  //   const redirectUri = AuthSession.makeRedirectUri({
-  //     scheme: "maon", // 위에서 설정한 스킴 이름과 동일해야 합니다.
-  //   });
-
-  //   // 인증 URL 생성
-  //   const authUrl =
-  //     `https://accounts.google.com/o/oauth2/v2/auth?` +
-  //     `response_type=code&` +
-  //     `client_id=${CLIENT_ID}&` +
-  //     `scope=openid%20email%20profile&` +
-  //     `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-  //     `state=abcd1234&` +
-  //     `nonce=abcd1234`;
-
-  //   const result = await AuthSession.startAsync({ authUrl });
-
-  //   if (result.type === "success" && result.params.code) {
-  //     const authorizationCode = result.params.code;
-  //     console.log("Authorization Code:", authorizationCode);
-
-  //     // 서버에 authorizationCode를 보내어 토큰을 교환합니다
-  //     sendAuthorizationCodeToServer(authorizationCode);
-  //   } else {
-  //     console.log("Google login was canceled or failed.");
-  //   }
-  // };
-
-  // const sendAuthorizationCodeToServer = async (authorizationCode) => {
-  //   try {
-  //     const response = await fetch("https://your-server.com/api/auth/google", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ authorizationCode }),
-  //     });
-
-  //     const serverResponse = await response.json();
-  //     console.log("Server Response:", serverResponse);
-
-  //     if (serverResponse.success) {
-  //       // 서버가 인증에 성공하면 사용자 정보 상태 저장
-  //       setUser({
-  //         name: serverResponse.name,
-  //         email: serverResponse.email,
-  //         imageUrl: serverResponse.picture,
-  //       });
-  //       navigation.navigate("Home"); // 인증 후 원하는 화면으로 이동
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to send Authorization Code to server:", error);
-  //   }
-  // };
-
-  const [userInfo, setUserInfo] = useState(null);
-
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '1067746671857-lqqe1t0vrelohj3lhpe479n4p7adnr7o.apps.googleusercontent.com',  // 여기서 Google OAuth 클라이언트 ID를 넣으세요
-    redirectUri: `https://auth.expo.io/@maon/maon`,
-    usePKCE: false
-  });
-
-  useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      
-      console.log("Firebase에 로그인 시도 중...");
-
-      signInWithCredential(auth, credential)
-        .then(async (userCredential) => {
-          const user = userCredential.user;
-          setUserInfo(user);
-          await AsyncStorage.setItem("@user", JSON.stringify(user));
-          console.log("Firebase 로그인 성공:", user);
-        })
-        .catch(error => {
-          console.log("Firebase 로그인 오류:", error);
-        });
-    } else {
-      console.log("Google OAuth 인증 실패:", response?.type);
-    }
-  }, [response]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserInfo(user);
-      }
-    });
-    return unsubscribe;
-  }, []);
-
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem("@user");
-    setUserInfo(null);
-    console.log("User logged out");
-  };
 
   return (
     <Container>
@@ -262,28 +111,24 @@ const LoginScreen = ({ navigation }) => {
           position: "absolute",
           backgroundColor: "rgba(0, 0, 0, 0.4)",
         }}
-      ></View>
+      />
       <Image
         source={backImg}
-        style={{
-          position: "absolute",
-          height: screenHeight,
-        }}
+        style={{ position: "absolute", height: screenHeight }}
       />
       <Wrap>
         <Logo>MA:ON</Logo>
-        <Text style={{color: color.white}}>{JSON.stringify(userInfo, null, 2)}</Text>
-        <RoundBtn text={"Google로 로그인"} onPress={() => promptAsync({ useProxy: true })} />
-        <Button title="logout" onPress={() => handleLogout()} />
+        <RoundBtn text={"Google로 로그인"} onPress={handleLogin} />
+        {userInfo && (
+          <View>
+            <Text style={{ color: "white" }}>Welcome, {userInfo.name}</Text>
+            <Text style={{ color: "white" }}>Email: {userInfo.email}</Text>
+            <Text style={{ color: "white" }}>Token: {userInfo.token}</Text>
+          </View>
+        )}
       </Wrap>
     </Container>
   );
 };
-
-// const styles = StyleSheet.create({npm
-//   logo: {
-
-//   }
-// })
 
 export default LoginScreen;

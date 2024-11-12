@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class RunningResultDto {
     private String startPoint;
     private RecordDto record;
+    private String status;
+    private Double routeDistance;
 }

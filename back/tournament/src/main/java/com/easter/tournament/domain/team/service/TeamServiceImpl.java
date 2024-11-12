@@ -5,7 +5,11 @@ import com.easter.tournament.domain.participant.model.ParticipantStatus;
 import com.easter.tournament.domain.participant.repository.ParticipantQueryRepository;
 import com.easter.tournament.domain.participant.repository.ParticipantRepository;
 import com.easter.tournament.domain.team.entity.Team;
+import com.easter.tournament.domain.team.entity.TeamInvitation;
 import com.easter.tournament.domain.team.model.dto.*;
+import com.easter.tournament.domain.team.repository.TeamInvitationQueryRepository;
+import com.easter.tournament.domain.team.repository.TeamInvitationRepository;
+import com.easter.tournament.domain.team.repository.TeamQueryRepository;
 import com.easter.tournament.domain.team.repository.TeamRepository;
 import com.easter.tournament.domain.tournament.entity.Tournament;
 import com.easter.tournament.domain.tournament.repository.TournamentRepository;
@@ -23,20 +27,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
 
+    private final TeamInvitationQueryRepository teamInvitationQueryRepository;
     @Value("${external-url.member}")
     private String memberUrl;
 
     private final TeamRepository teamRepository;
+    private final TeamQueryRepository teamQueryRepository;
+    private final TeamInvitationRepository teamInvitationRepository;
     private final TournamentRepository tournamentRepository;
     private final ParticipantQueryRepository participantQueryRepository;
     private final ParticipantRepository participantRepository;
@@ -68,7 +72,7 @@ public class TeamServiceImpl implements TeamService {
         // [1] 팀 생성
         Team team = Team.builder()
                 .name(dto.getName())
-                .tournament(tournament)
+                .tournamentId(tournament.getId())
                 .build();
         teamRepository.save(team);
         // [2] 팀 참여목록에 자기자신 추가
@@ -84,10 +88,32 @@ public class TeamServiceImpl implements TeamService {
     public SearchTeamMemberResponseDto searchTeamMember(UUID teamId) {
         Team team = teamRepository.findByUuid(teamId).orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다."));
         List<UUID> memberIdList = participantQueryRepository.findMemberIdByTeamId(team.getId());
+        // 이후 뒷쪽에 수락대기중인 멤버의 id를 삽입
+        List<UUID> waitingIdList = teamInvitationQueryRepository.findWaitingMemberId(team.getId());
+        memberIdList.addAll(waitingIdList);
+        Set<UUID> waitingSet = new HashSet<>(waitingIdList);
         SearchMemberResponseDto memberResponseDto = getMemberInfo(memberIdList,null);
-        return SearchTeamMemberResponseDto.builder()
-                .teamMemberList(memberResponseDto.getMemberInfoList())
-                .build();
+        List<TeamMemberDto> resultList = new ArrayList<>();
+        for(MemberDto member : memberResponseDto.getMemberInfoList()) {
+            boolean confirmed;
+            if(waitingSet.contains(member.getId())) {
+                // 대기중 멤버라면 false
+                confirmed = false;
+            } else {
+                confirmed = true;
+            }
+            resultList.add(
+                    TeamMemberDto.builder()
+                            .id(member.getId())
+                            .name(member.getName())
+                            .nickname(member.getNickname())
+                            .email(member.getEmail())
+                            .imageUrl(member.getImageUrl())
+                            .confirmed(confirmed)
+                            .build()
+            );
+        }
+        return SearchTeamMemberResponseDto.builder().teamMemberList(resultList).build();
     }
 
     @Override
@@ -96,14 +122,78 @@ public class TeamServiceImpl implements TeamService {
         if(tournament == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다.");
         }
+        log.info("found tournament : [{}] {}", tournament.getId(), tournament.getTitle());
         List<UUID> candidateIdList = participantQueryRepository.findCandidateByTournamentId(tournament.getId());
+        log.info(String.valueOf(candidateIdList.size()));
         SearchMemberResponseDto memberResponseDto = getMemberInfo(candidateIdList, dto.getKeyword());
         return SearchCandidateResponseDto.builder()
                 .candidateInfoList(memberResponseDto.getMemberInfoList())
                 .build();
     }
 
+    @Override
+    public CheckInvitationResponseDto checkInvitation(PassportDto passport) {
+        List<SimpleInvitationDto> resultList = teamInvitationQueryRepository.findInvitationRequest(passport.getId());
+        return CheckInvitationResponseDto.builder().invitationList(resultList).build();
+    }
+
+    @Override
+    public void inviteTeam(PassportDto passport, InviteTeamRequestDto dto) {
+        Team team = teamRepository.findByUuid(dto.getTeamId())
+                .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다."));
+        Participant inviter = participantQueryRepository.findByMemberIdAndTournamentId(passport.getId(), team.getTournamentId());
+        if (inviter == null || inviter.getStatus() == ParticipantStatus.CANCEL || inviter.getTeamId() != team.getId()) {
+            log.error("this is not inviter's team");
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효한 자신의 팀에만 초대할 수 있습니다.");
+        }
+        Participant invitee = participantQueryRepository.findByMemberIdAndTournamentId(dto.getInviteeId(), team.getTournamentId());
+        if (invitee == null || invitee.getStatus() == ParticipantStatus.CANCEL || invitee.getTeamId() != null) {
+            log.error("this invitee has some problem");
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "초대할 수 없는 사용자입니다.");
+        }
+        TeamInvitation duplicated = teamInvitationQueryRepository.findDuplicatedRequest(passport.getId(), dto.getInviteeId(), team.getId());
+        if(duplicated != null) {
+            log.error("duplicated team invite");
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "이미 초대 신청을 보냈습니다.");
+        }
+        TeamInvitation teamInvitation = TeamInvitation.builder()
+                .teamId(team.getId())
+                .inviterId(passport.getId())
+                .inviterNickname(passport.getNickname())
+                .inviterImage(passport.getImageUrl())
+                .inviteeId(dto.getInviteeId())
+                .valid(true)
+                .build();
+        teamInvitationRepository.save(teamInvitation);
+    }
+
+    @Override
+    @Transactional
+    public void confirmInvitation(PassportDto passport, ConfirmInvitationRequestDto dto) {
+       TeamInvitation invitation = teamInvitationQueryRepository.findByUuid(dto.getInvitationId());
+       if(invitation == null) {
+           throw new BusinessException(HttpStatus.BAD_REQUEST, "초대 정보를 확인해주세요.");
+       }
+       if(!invitation.getInviteeId().equals(passport.getId()) || !invitation.isValid()) {
+           log.error("invalid invitation");
+           throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
+       }
+       // 공통적으로는 invalid로 만들어줘야 함
+       invitation = invitation.toBuilder().valid(false).build();
+       teamInvitationRepository.save(invitation);
+       if(dto.isAccept()) {
+           // 수락했다면 팀 정보를 추가
+           log.info("accepted");
+           Participant participant = participantQueryRepository.findParticipant(passport.getId(), invitation.getTeam().getTournamentId());
+           participant = participant.toBuilder().teamId(invitation.getTeam().getId()).build();
+           participantRepository.save(participant);
+       }
+    }
+
     private SearchMemberResponseDto getMemberInfo(List<UUID> memberIdList, String nicknameKeyword) {
+        if(memberIdList == null || memberIdList.size() == 0) {
+            return SearchMemberResponseDto.builder().memberInfoList(new ArrayList<>()).build();
+        }
         ResponseEntity<Map> memberResponse = restClient.post().uri(memberUrl + "/service/search").contentType(MediaType.APPLICATION_JSON)
                 .body(SearchMemberRequestDto.builder().idList(memberIdList).nicknameKeyword(nicknameKeyword).build())
                 .retrieve()

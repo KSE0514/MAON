@@ -3,6 +3,7 @@ package com.easter.tournament.domain.participant.repository;
 import com.easter.tournament.domain.participant.entity.Participant;
 import com.easter.tournament.domain.participant.entity.QParticipant;
 import com.easter.tournament.domain.participant.model.ParticipantStatus;
+import com.easter.tournament.domain.team.entity.QTeam;
 import com.easter.tournament.domain.tournament.entity.QTournament;
 import com.easter.tournament.domain.tournament.model.dto.MyTournament;
 import com.querydsl.core.BooleanBuilder;
@@ -30,6 +31,17 @@ public class ParticipantQueryRepository {
                 ).fetchOne();
     }
 
+    public Participant findParticipantFetch(UUID memberId, long tournamentId) {
+        QTeam team = QTeam.team;
+        return queryFactory.selectFrom(participant)
+                .leftJoin(participant.team, team).fetchJoin()
+                .where(
+                participant.memberId.eq(memberId).and(
+                        participant.tournamentId.eq(tournamentId)
+                )
+        ).fetchOne();
+    }
+
     public List<UUID> findMemberIdByTeamId(long teamId) {
         return queryFactory.select(participant.memberId).from(participant).where(
                 participant.teamId.eq(teamId)
@@ -46,7 +58,8 @@ public class ParticipantQueryRepository {
 
     public List<MyTournament> findMyTournament(UUID memberId) {
         QTournament tournament = QTournament.tournament;
-        return queryFactory.select(Projections.constructor(MyTournament.class, tournament.uuid, tournament.title, tournament.tournamentDayStart, tournament.tournamentDayEnd, participant.tournamentCategory, tournament.location, tournament.imageUrl))
+        return queryFactory.select(Projections.constructor(MyTournament.class,
+                        tournament.uuid, tournament.title, tournament.tournamentDayStart, tournament.tournamentDayEnd, participant.tournamentCategory, tournament.location, tournament.longitude, tournament.latitude, tournament.imageUrl))
                 .from(participant)
                 .join(participant.tournament, tournament)
                 .where(participant.memberId.eq(memberId)
@@ -55,6 +68,11 @@ public class ParticipantQueryRepository {
                         )
                 .orderBy(tournament.tournamentDayStart.asc())
                 .fetch();
+    }
+
+    public Participant findByMemberIdAndTournamentId(UUID memberId, long tournamentId) {
+        return queryFactory.selectFrom(participant).where(
+                participant.memberId.eq(memberId).and(participant.tournamentId.eq(tournamentId))).fetchOne();
     }
 
 }

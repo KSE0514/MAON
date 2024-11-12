@@ -38,12 +38,6 @@ public class Route {
 
     private GeoJsonLineString track;
 
-    @Field("route_image_url")
-    private String routeImageUrl;
-
     @CreatedDate
     private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 }

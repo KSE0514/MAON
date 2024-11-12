@@ -14,18 +14,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-@Document(collection = "record")
+@Document(collection = "records")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
+@ToString
 public class Record {
 	@Id
 	private String id;
+
+	@Field("member_id")
+	private String memberId;
 
 	@Field("route_id")
 	private String routeId;
@@ -34,10 +41,13 @@ public class Record {
 	private boolean completed;
 
 	@Field("running_info")
-	private List<LocationDto> runningInfo;
+	private List<LocationDto> runningInfo = new ArrayList<>();
 
 	@Field("pace_list")
-	private List<String> paceList;
+	private List<String> paceList = new ArrayList<>();
+
+	@Field("distance_list")
+	private List<Double> distanceList = new ArrayList<>();
 
 	@Field("recorded_track")
 	private GeoJsonLineString recordedTrack;
@@ -57,6 +67,9 @@ public class Record {
 	@Field("record_type")
 	private RecordType recordType;
 
+	@Field("start_point")
+	private String startPoint;
+
 	@CreatedDate
 	private LocalDateTime createdAt;
 
@@ -64,11 +77,13 @@ public class Record {
 		this.id = updateRecordDto.getRecordId();
 		this.runningInfo = updateRecordDto.getRunningInfo();
 		this.paceList = updateRecordDto.getPaceList();
+		this.distanceList = updateRecordDto.getDistanceList();
 		this.averageHeartRate = updateRecordDto.getAverageHeartRate();
 		this.distance = updateRecordDto.getDistance();
 		this.recordedTrack = updateRecordDto.getRecordedTrack();
 		this.runningTime = updateRecordDto.getRunningTime();
 		this.averagePace = updateRecordDto.getAveragePace();
+		this.startPoint = updateRecordDto.getStartPoint();
 		this.completed = updateRecordDto.getCompleted();
 	}
 }

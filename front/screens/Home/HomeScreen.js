@@ -13,10 +13,15 @@ import HeaderNavigation from "../../components/HeaderNavigation/HeaderNavigation
 import fonts from "../../styles/fonts";
 import GradientButton from "../../components/Button/GradientsBtn/GradientsButton";
 import CustomCarousel from "../../components/CustomCarousel/CustomCarousel";
+import useAuthStore from "./../../store/AuthStore"
 import color from "../../styles/colors";
+import { useEffect } from "react";
 
 const { width } = Dimensions.get("window");
 const HomeScreen = ({ navigation }) => {
+  // const { user } = useAuthStore()
+  // console.log('유저 정보 확인', user)
+
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
@@ -64,7 +69,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
         <View style={styles.shadowContainer}>
           <CarouselView>
-            <CustomCarousel />
+            <CustomCarousel navigation={navigation} />
           </CarouselView>
         </View>
       </MaraThonInfoArea>

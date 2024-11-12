@@ -1,16 +1,19 @@
 package com.easter.route.domain.record.entity.dto;
 
+import org.springframework.data.geo.Point;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.geo.Point;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LocationDto {
 	private String memberId;
 	private String recordId;
@@ -22,6 +25,6 @@ public class LocationDto {
 	private String time;
 
 	public Point getPoint() {
-		return new Point(Double.parseDouble(longitude), Double.parseDouble(latitude));
+		return new Point(Double.parseDouble(latitude), Double.parseDouble(longitude));
 	}
 }
