@@ -248,6 +248,7 @@ public class MemberServiceImpl implements MemberService {
                 .address(member.getAddress())
                 .birthDate(birthDate)
                 .gender(member.getGender())
+                .imageUrl(member.getImageUrl())
                 .build();
     }
 }
