@@ -9,4 +9,5 @@ public interface MemberService {
     ReissueTokenResponseDto reissueToken(ReissueTokenRequestDto dto);
     void logout(String email);
     UpdateMemberResponseDto updateMember(PassportDto passport, UpdateMemberRequestDto dto);
+    CheckRedundancyResponseDto checkRedundancy(CheckRedundancyRequestDto dto);
 }

@@ -223,4 +223,12 @@ public class MemberServiceImpl implements MemberService {
                 .imageUrl(member.getImageUrl())
                 .build();
     }
+
+    @Override
+    public CheckRedundancyResponseDto checkRedundancy(CheckRedundancyRequestDto dto) {
+        boolean duplicated = memberRepository.existsByNickname(dto.getNickname());
+        return CheckRedundancyResponseDto.builder()
+                .duplicated(duplicated)
+                .build();
+    }
 }

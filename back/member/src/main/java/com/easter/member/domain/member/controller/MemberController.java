@@ -41,6 +41,14 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    @PostMapping("/check")
+    public ResponseEntity<ResultResponse> checkRedundancy(@RequestBody CheckRedundancyRequestDto dto) {
+        log.info("check redundancy of nickname");
+        CheckRedundancyResponseDto responseDto = memberService.checkRedundancy(dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "닉네임 중복여부를 조회했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
     @PostMapping("/info")
     public ResponseEntity<ResultResponse> register(@RequestAttribute("passport") PassportDto passport, @RequestBody RegisterMemberRequestDto requestDto) {
         log.info("register new member info");
