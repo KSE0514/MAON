@@ -156,10 +156,10 @@ export default function Map({
     const startTracking = async () => {
       locationInterval.current = setInterval(async () => {
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
+          accuracy: Location.Accuracy.Balanced,
         });
         handleUserLocationChange(location);
-      }, 1000); // 1초마다 위치 업데이트
+      }, 2000); // 1초마다 위치 업데이트
     };
 
     if (runStart) {
@@ -206,8 +206,7 @@ export default function Map({
           customMapStyle={MapStyle}
           style={{ alignSelf: "stretch", height: "100%" }}
           region={mapRegion}
-          showsUserLocation={false}
-        >
+          showsUserLocation={false}>
           {markers.map((marker) => (
             <Marker
               key={marker.id}
@@ -216,8 +215,7 @@ export default function Map({
                 longitude: marker.longitude,
               }}
               title={marker.title}
-              description={marker.description}
-            >
+              description={marker.description}>
               {/* 시작 */}
               {marker.title == "Start Point" && (
                 <View
@@ -233,8 +231,7 @@ export default function Map({
                     shadowOpacity: 1,
                     shadowRadius: 5,
                     elevation: 15, // Android 그림자 효과
-                  }}
-                ></View>
+                  }}></View>
               )}
               {/* 내 위치 */}
               {marker.title == "Current Point" && (

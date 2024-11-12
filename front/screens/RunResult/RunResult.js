@@ -30,11 +30,12 @@ import MapView, { Polyline } from "react-native-maps";
 import MapStyle from "../../components/Map/MapStyle";
 import { apiClient } from "../../customAxios";
 import SquareBtn from "../../components/Button/SquareBtn/SquareBtn";
+import PaceChart from "../../components/PaceChart/PaceChart";
 
 const RunResult = ({ navigation, route }) => {
   const { mode, resultData, recordId } = route.params || {};
   const fontsLoaded = useFontsLoaded();
-  const [seePaceChart, setSeePaceChart] = useState(true);
+  const [seePaceChart, setSeePaceChart] = useState(false);
   const routeList = resultData.recordedTrack;
   const [coordinates, setCoordinates] = useState([]);
 
@@ -78,8 +79,7 @@ const RunResult = ({ navigation, route }) => {
           <AddRouteBtn
             onPress={() => {
               addRoute();
-            }}
-          >
+            }}>
             <Text style={[styles.boldFont]}>경로 추가하기</Text>
           </AddRouteBtn>
         </View>
@@ -124,38 +124,34 @@ const RunResult = ({ navigation, route }) => {
           <View style={[styles.tab]}>
             <ViewTypeChangeBtn
               onPress={() => {
-                setSeePaceChart(true);
-              }}
-            >
+                setSeePaceChart(false);
+              }}>
               <Text
                 style={[
                   styles.boldFont,
-                  { color: seePaceChart ? color.light_orange : "black" },
-                ]}
-              >
-                페이스 그래프
+                  { color: !seePaceChart ? color.light_orange : "black" },
+                ]}>
+                달리기 경로
               </Text>
             </ViewTypeChangeBtn>
             <View style={[styles.bar]}></View>
             <ViewTypeChangeBtn
               onPress={() => {
-                setSeePaceChart(false);
-              }}
-            >
+                setSeePaceChart(true);
+              }}>
               <Text
                 style={[
                   styles.boldFont,
-                  { color: !seePaceChart ? color.light_orange : "black" },
-                ]}
-              >
-                달리기 경로
+                  { color: seePaceChart ? color.light_orange : "black" },
+                ]}>
+                페이스 그래프
               </Text>
             </ViewTypeChangeBtn>
           </View>
         </View>
         <View style={{ marginBottom: 20, flex: 1 }}>
           {seePaceChart ? (
-            <></>
+            <PaceChart />
           ) : (
             <View style={{ flex: 1 }}>
               <MapView
@@ -172,8 +168,7 @@ const RunResult = ({ navigation, route }) => {
                   longitude: routeList[0].y,
                   latitudeDelta: 0.005, // 줌 레벨 설정 (작을수록 줌 인)
                   longitudeDelta: 0.005,
-                }}
-              >
+                }}>
                 {polyLineLoading ? (
                   <></>
                 ) : (
