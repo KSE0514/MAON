@@ -5,45 +5,111 @@ import { Col, Row, RunBtn, Wrapper, styles } from "./CustomCarouselStyle";
 import color from "../../styles/colors";
 import {
   faLocationDot,
+  faMapLocationDot,
   faPersonRunning,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
 import fonts from "../../styles/fonts";
+import { apiClient } from "../../customAxios";
+import MapView, { Marker } from "react-native-maps";
+import MapStyle from "../../components/Map/MapStyle";
 
 const { width } = Dimensions.get("window");
 
 const data = [
-  {
-    name: "2024 국제 국민 마라톤",
-    eventDate: "2024.12.03",
-    routeLength: "5km",
-    place: "여의도 공원 문화의 마당",
-  },
-  {
-    name: "무안 마라톤",
-    eventDate: "2024.12.12",
-    routeLength: "10km",
-    place: "무안 어딘가에서",
-  },
-  {
-    name: "인천 무슨 무슨 마라톤",
-    eventDate: "2024.12.27",
-    routeLength: "10km",
-    place: "인천 무슨무슨구 무슨무슨 곳에서",
-  },
+  // {
+  //   title: "2024 국제 국민 마라톤",
+  //   tournamentDayStart: "2024-11-11T14:30:45",
+  //   tournamentCategory: "5km",
+  //   locatoin: "여의도 공원 문화의 마당",
+  //   longitude: 126.821194,
+  //   latitude: 35.220606,
+  // },
+  // {
+  //   title: "무안 마라톤",
+  //   tournamentDayStart: "2024-11-13T14:30:45",
+  //   tournamentCategory: "10km",
+  //   locatoin: "무안 어딘가에서",
+  //   longitude: 126.821194,
+  //   latitude: 35.220606,
+  // },
+  // {
+  //   title: "인천 무슨 무슨 마라톤",
+  //   tournamentDayStart: "2024-11-15T14:30:45",
+  //   tournamentCategory: "10km",
+  //   locatoin: "인천 무슨무슨구 무슨무슨 곳에서",
+  //   longitude: 126.821194,
+  //   latitude: 35.220606,
+  // },
 ];
 
-const CustomCarousel = () => {
+const CustomCarousel = ({ navigation }) => {
   const [myMarathonList, setMyMarathoneList] = useState();
-  useEffect(() => {});
-  return (
+  useEffect(() => {
+    const getMyMarathonList = async () => {
+      console.log("getMyMarathonList");
+      try {
+        const response = await apiClient.get(`/tournament/participant/my`);
+        console.log(response.data);
+        setMyMarathoneList(response.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getMyMarathonList();
+  });
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}.${month}.${day}`;
+  }
+  function calculateDaysLeft(targetDate) {
+    // 현재 날짜와 시간을 로컬 시간으로 강제 설정
+    const today = new Date();
+    const localToday = new Date(
+      today.getTime() - today.getTimezoneOffset() * 60000
+    );
+
+    // targetDate를 "YYYY-MM-DDTHH:MM:SS" 형식으로 파싱하여 로컬 시간으로 변환
+    const [datePart, timePart] = targetDate.split("T");
+    const [year, month, day] = datePart.split("-");
+    const [hours, minutes, seconds] = timePart.split(":");
+
+    // 로컬 시간대에서의 목표 날짜 및 시간을 생성
+    const target = new Date(
+      parseInt(year), // 연도
+      parseInt(month) - 1, // 월 (0부터 시작)
+      parseInt(day), // 일
+      parseInt(hours), // 시
+      parseInt(minutes), // 분
+      parseInt(seconds) // 초
+    );
+    console.log(localToday);
+    console.log(target);
+
+    // 두 날짜 간의 차이를 계산 (밀리초 단위)
+    const difference = target - localToday;
+    const daysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
+
+    // 남은 일수 또는 "D-Day" 반환
+    return daysLeft > 0 ? `D-${daysLeft}` : "D-Day";
+  }
+
+  return data.length > 0 ? (
     <Carousel
       width={width}
       data={data}
       renderItem={({ item }) => (
-        <Wrapper style={styles.wrapper}>
-          <Text style={styles.title}>{item.name}</Text>
+        <Wrapper
+          style={styles.wrapper}
+          onPress={() => {
+            navigation.navigate("MarathonInfoDetail", { uuid: item.uuid });
+          }}
+        >
+          <Text style={styles.title}>{item.title}</Text>
           <View style={{ flexDirection: "row", marginTop: 5, flex: 1 }}>
             <Col>
               <Row>
@@ -52,9 +118,11 @@ const CustomCarousel = () => {
                   icon={faCalendarDays}
                   color={color.grape_fruit}
                   secondaryColor={color.light_mandarin}
-                  swapOpacity={true} // 필요에 따라 두 색상 간의 불투명도 조정
+                  swapOpacity={true}
                 />
-                <Text style={styles.subText}>{item.eventDate}</Text>
+                <Text style={styles.subText}>
+                  {formatDate(item.tournamentDayStart)}
+                </Text>
               </Row>
               <Row>
                 <FontAwesomeIcon
@@ -62,7 +130,7 @@ const CustomCarousel = () => {
                   size={20}
                   color={color.grape_fruit}
                 />
-                <Text style={[styles.subText]}>{item.routeLength}</Text>
+                <Text style={[styles.subText]}>{item.tournamentCategory}</Text>
               </Row>
               <Row>
                 <FontAwesomeIcon
@@ -75,7 +143,7 @@ const CustomCarousel = () => {
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {item.place}
+                  {item.locatoin}
                 </Text>
               </Row>
               <Row
@@ -90,22 +158,59 @@ const CustomCarousel = () => {
                   <Text
                     style={{ color: "white", fontFamily: fonts.gMarketBold }}
                   >
-                    D-2
+                    {calculateDaysLeft(item.tournamentDayStart)}
                   </Text>
                 </RunBtn>
               </Row>
             </Col>
-            <Col style={{ marginRight: 20, marginLeft: 20 }}>
-              <Image
-                style={{ flex: 1 }}
-                source={require("../../assets/images/route.png")}
-              />
+            <Col style={{ marginLeft: 20 }}>
+              <MapView
+                provider={MapView.PROVIDER_GOOGLE}
+                customMapStyle={MapStyle}
+                style={{
+                  flex: 1,
+                  alignSelf: "stretch",
+                  borderRadius: 20,
+                }}
+                scrollEnabled={false}
+                zoomEnabled={false}
+                showsUserLocation={false}
+                initialRegion={{
+                  latitude: item.latitude,
+                  longitude: item.longitude,
+                  latitudeDelta: 0.003,
+                  longitudeDelta: 0.003,
+                }}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: item.latitude,
+                    longitude: item.longitude,
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faLocationDot}
+                    size={34}
+                    color={color.light_orange}
+                  />
+                </Marker>
+              </MapView>
             </Col>
           </View>
         </Wrapper>
       )}
       style={{ flex: 1 }}
     />
+  ) : (
+    <Text
+      style={{
+        fontFamily: fonts.gMarketBold,
+        fontSize: 16,
+        color: color.black,
+      }}
+    >
+      참가한 마라톤이 존재하지 않아요.
+    </Text>
   );
 };
 

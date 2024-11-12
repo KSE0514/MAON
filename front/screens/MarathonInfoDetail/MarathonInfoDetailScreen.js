@@ -29,10 +29,14 @@ import MarathonDetailRoundBtn from "../../components/Button/MarathonDetailRoundB
 import UserInfoBox from "../../components/Button/UserInfoBox/UserInfoBox";
 
 import { Text, View, Image, ScrollView } from "react-native";
-import testImg from "./../../assets/images/testProfile2.jpg";
-import testImg1 from "./../../assets/images/testProfile1.jpg";
-import testImg2 from "./../../assets/images/testProfile.jpg";
+// import testImg from "./../../assets/images/testProfile2.jpg";
+// import testImg1 from "./../../assets/images/testProfile1.jpg";
+// import testImg2 from "./../../assets/images/testProfile.jpg";
 import color from "../../styles/colors";
+
+const testImg = require("./../../assets/images/testProfile2.jpg")
+const testImg1 = require("./../../assets/images/testProfile1.jpg")
+const testImg2 = require("./../../assets/images/testProfile.jpg")
 
 // /////////////////// 테스트용
 const testMyInfo = {

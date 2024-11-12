@@ -27,7 +27,7 @@ public class Member {
     private Long id;
 
     @NotNull
-    @Column(name = "uuid", columnDefinition = "binary(16)")
+    @Column(name = "uuid", columnDefinition = "binary(16)", unique = true)
     private UUID uuid;
 
     @NotNull

@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   radioButtonContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10, // 줄 간격 추가
+    marginBottom: 10,
     flexGrow: 1,
     flexBasis: "50%",
   },

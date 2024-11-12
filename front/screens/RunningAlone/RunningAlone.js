@@ -39,6 +39,22 @@ const RunningAlone = ({ navigation, route }) => {
   const [pace, setPace] = useState("00'00''"); // 페이스
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
 
+  const elapsedTimeRef = useRef(elapsedTime);
+  const paceRef = useRef(pace);
+  const runningDistanceRef = useRef(runningDistance);
+
+  const [resultData, setResultData] = useState({
+    id: "",
+    routeId: "",
+    paceList: "",
+    recordedTrack: "",
+    runningTime: "",
+    averagePace: "",
+    averageHeartRate: "",
+    distance: "",
+    createdAt: "",
+  });
+
   const StopModalContent = {
     text: "종료하시겠습니까?",
     subText: "",
@@ -76,18 +92,13 @@ const RunningAlone = ({ navigation, route }) => {
           };
 
           sendEndSession(roomId); // 종료 요청 전송
-          navigation.navigate("RunResult"); // 종료 후 다른 화면으로 이동
+          navigation.navigate("RunResult", { resultData: resultData }); // 종료 후 다른 화면으로 이동
         },
       },
     ],
   };
 
   const kafkaStompClientRef = useRef(null);
-
-  const handleTimeUpdate = (time) => {
-    console.log(time);
-    setElapsedTime(time); // Timer로부터 업데이트된 시간 받기
-  };
 
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
@@ -119,7 +130,6 @@ const RunningAlone = ({ navigation, route }) => {
         // 종료 메시지 응답 경로를 구독
         const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${roomId}/end\n\n\0`;
         kafkaWs.send(subscribeFrame);
-        console.log("@@@@@@@@@@@@@@");
       } else if (message.data.status.includes("end")) {
         console.log("종료 응답 수신:", message.data);
       }
@@ -143,18 +153,24 @@ const RunningAlone = ({ navigation, route }) => {
     };
   }, [roomId]);
 
+  useEffect(() => {
+    elapsedTimeRef.current = elapsedTime;
+    paceRef.current = pace;
+    runningDistanceRef.current = runningDistance;
+  }, [elapsedTime, pace, runningDistance]);
+
   // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
   const handleUserLocationChange = (location) => {
     if (!connectedWatch) {
       const locationDto = {
         recordId: roomId,
-        time: elapsedTime,
-        memberId: "대현",
+        time: elapsedTimeRef.current,
+        memberId: "예빈임니다.",
         latitude: location.latitude,
         longitude: location.longitude,
         heartRate: 0,
-        pace, // 최신 페이스
-        runningDistance: runningDistance,
+        pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
+        runningDistance: runningDistanceRef.current,
       };
       console.log(
         " memberId:",
@@ -188,6 +204,11 @@ const RunningAlone = ({ navigation, route }) => {
         kafkaStompClientRef.current.send(sendFrame);
       }
     }
+  };
+
+  const handleTimeUpdate = (time) => {
+    console.log(time);
+    setElapsedTime(time); // Timer로부터 업데이트된 시간 받기
   };
 
   return (

@@ -11,6 +11,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchTeamMemberResponseDto {
-    private List<TeamMemberDto> teamMemberList;
+public class CheckInvitationResponseDto {
+    private List<SimpleInvitationDto> invitationList;
 }

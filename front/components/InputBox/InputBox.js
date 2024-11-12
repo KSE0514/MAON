@@ -60,20 +60,20 @@ const handleDateOfBirthChange = (text) => {
               <TouchableOpacity
                 style={[
                   styles.genderButton,
-                  (value === '남' || value === 'male') && { backgroundColor: colors.light_begie },
+                  (value === '남' || value === 'M') && { backgroundColor: colors.light_begie },
                   !isEditMode&&{borderWidth: 0}
                 ]}
-                onPress={() => setValue('남')}
+                onPress={() => setValue('M')}
               >
                 <Text style={styles.genderText}>남</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
                   styles.genderButton,
-                  (value === '여' || value==='female') && { backgroundColor: colors.light_begie },
+                  (value === '여' || value==='F') && { backgroundColor: colors.light_begie },
                   !isEditMode&&{borderWidth: 0}
                 ]}
-                onPress={() => setValue('여')}
+                onPress={() => setValue('F')}
               >
                 <Text style={styles.genderText}>여</Text>
               </TouchableOpacity>

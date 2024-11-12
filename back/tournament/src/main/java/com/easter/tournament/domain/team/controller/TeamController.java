@@ -44,6 +44,21 @@ public class TeamController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /* 팀 초대 관련 */
+
+    /**
+     * 자신에게 온 팀 초대 확인
+     * @return
+     */
+    @GetMapping("/invite/list")
+    public ResponseEntity<ResultResponse> checkInvite(@RequestAttribute("passport") PassportDto passport) {
+        log.info("check team invite");
+        CheckInvitationResponseDto responseDto = teamService.checkInvitation(passport);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "초대 리스트를 조회했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+
     /**
      * 마라톤 팀 초대 가능 멤버 조회
      * @return
@@ -57,22 +72,26 @@ public class TeamController {
     }
 
     /**
-     * 마라톤 팀 요청
+     * 마라톤 팀 초대 신청 전송
      * @return
      */
-    public ResponseEntity<ResultResponse> teamRequest(){
-
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "");
+    @PostMapping("/invite")
+    public ResponseEntity<ResultResponse> inviteTeam(@RequestAttribute("passport") PassportDto passport, @RequestBody InviteTeamRequestDto dto) {
+        log.info("invite team member");
+        teamService.inviteTeam(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀 멤버를 초대했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
     /**
-     * 팀 요청 수락
+     * 마라톤 팀 초대 요청 처리
      * @return
      */
-    @PostMapping("/teamResponse")
-    public ResponseEntity<ResultResponse> teamResponse(){
-
-        return null;
+    @PostMapping("/invite/confirm")
+    public ResponseEntity<ResultResponse> confirmInvite(@RequestAttribute("passport") PassportDto passport, @RequestBody ConfirmInvitationRequestDto dto) {
+        log.info("confirm invite : {} - {}", dto.getInvitationId(), dto.isAccept());
+        teamService.confirmInvitation(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "초대 요청을 처리했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 }

@@ -27,7 +27,7 @@ public class Team {
     private long id;
 
     @NotNull
-    @Column(name = "uuid", columnDefinition = "binary(16)")
+    @Column(name = "uuid", columnDefinition = "binary(16)", unique = true)
     private UUID uuid;
 
     @NotNull
@@ -35,8 +35,11 @@ public class Team {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tournament_id")
+    @JoinColumn(name = "tournament_id", insertable = false, updatable = false)
     private Tournament tournament;
+
+    @Column(name = "tournament_id")
+    private long tournamentId;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<Participant> participants;

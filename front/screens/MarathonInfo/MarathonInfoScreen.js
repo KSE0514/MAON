@@ -1,5 +1,8 @@
 import { SafeAreaView, View, Text, Button, ScrollView } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
+import { useEffect, useState } from "react";
+import { apiClient } from "../../customAxios";
+
 import MarathonInfoSearchBar from "../../components/MarathonInfoSearchBar/MarathonInfoSearchBar";
 import {
   Bottom,
@@ -7,10 +10,13 @@ import {
   Top,
   Wrapper,
 } from "../SelectRunRoute/SelectRunRouteStyle";
-import { useEffect, useState } from "react";
+
 import MarathonInfoPreview from "../../components/MaraThonInfoPreview/MaraThonInfoPreview";
-import { apiClient } from "../../customAxios";
+import InfoPreviewLoading from "../../components/InfoPreviewLoading/InfoPreviewLoading";
+
 const MarathonInfo = ({ navigation, route }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(true);
   const fontsLoaded = useFontsLoaded();
   const { mode } = route.params;
   const [infos, setInfos] = useState([]);
@@ -23,7 +29,7 @@ const MarathonInfo = ({ navigation, route }) => {
     area = 0,
     closed = true
   ) => {
-    console.log("get Data!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    setIsLoading(true);
     try {
       const response = await apiClient.post(
         `/tournament/tournament/getMarathon`,
@@ -43,9 +49,12 @@ const MarathonInfo = ({ navigation, route }) => {
     getMarathonInfo();
   }, []);
 
+  useEffect(() => {
+    if (setIsLoading && infos.length > 0) setIsLoading(false);
+  }, [infos]);
   return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
-      <ScrollView>
+      <ScrollView style={{ flex: 1 }}>
         <Wrapper>
           <Top>
             <MarathonInfoSearchBar
@@ -59,20 +68,28 @@ const MarathonInfo = ({ navigation, route }) => {
             />
           </Top>
           <Bottom>
-            <List>
-              {infos.length === 0 ? (
-                <Text>검색 조건에 맞는 마라톤이 존재하지 않아요</Text>
-              ) : (
-                infos.map((info) => (
-                  <MarathonInfoPreview
-                    key={info.uuid}
-                    data={info}
-                    mode="searchInfo"
-                    navigation={navigation}
-                  />
-                ))
-              )}
-            </List>
+            {isLoading ? (
+              <List>
+                {[1, 2, 3, 4, 5].map(() => (
+                  <InfoPreviewLoading />
+                ))}
+              </List>
+            ) : (
+              <List>
+                {infos.length === 0 ? (
+                  <Text>검색 조건에 맞는 마라톤이 존재하지 않아요</Text>
+                ) : (
+                  infos.map((info) => (
+                    <MarathonInfoPreview
+                      key={info.uuid}
+                      data={info}
+                      mode="searchInfo"
+                      navigation={navigation}
+                    />
+                  ))
+                )}
+              </List>
+            )}
           </Bottom>
         </Wrapper>
       </ScrollView>

@@ -33,10 +33,10 @@ public class MemberController {
     
     /* 테스트 메서드 종료  */
 
-    @GetMapping("/login")
-    public ResponseEntity<ResultResponse> login(@RequestParam("token") String token) {
+    @PostMapping("/login")
+    public ResponseEntity<ResultResponse> login(@RequestBody LoginRequestDto dto) {
         log.info("login via id_token");
-        LoginResponseDto responseDto = memberService.login(token);
+        LoginResponseDto responseDto = memberService.login(dto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "로그인 처리를 완료했습니다.", responseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
