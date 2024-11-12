@@ -165,7 +165,7 @@ const RunningAlone = ({ navigation, route }) => {
       const locationDto = {
         recordId: roomId,
         time: elapsedTimeRef.current,
-        memberId: "대현",
+        memberId: "예빈임니다.",
         latitude: location.latitude,
         longitude: location.longitude,
         heartRate: 0,
