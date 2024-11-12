@@ -112,6 +112,7 @@ public class TournamentServiceImpl implements TournamentService {
             return responseDto;
         }
         responseDto.setHasTeam(true);
+        responseDto.setTeamId(team.getUuid());
         List<TeamMemberDto> memberList = teamService.searchTeamMember(team.getUuid()).getTeamMemberList();
         responseDto.setTeamMembers(memberList);
         return responseDto;

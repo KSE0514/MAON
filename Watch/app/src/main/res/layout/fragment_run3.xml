@@ -8,11 +8,11 @@
         android:background="@color/real_black"
         tools:context=".presentation.view.run.RunFragment3">
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
 <!---->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
