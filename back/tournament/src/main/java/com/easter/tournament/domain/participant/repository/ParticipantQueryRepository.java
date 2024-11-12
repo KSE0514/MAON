@@ -3,6 +3,7 @@ package com.easter.tournament.domain.participant.repository;
 import com.easter.tournament.domain.participant.entity.Participant;
 import com.easter.tournament.domain.participant.entity.QParticipant;
 import com.easter.tournament.domain.participant.model.ParticipantStatus;
+import com.easter.tournament.domain.team.entity.QTeam;
 import com.easter.tournament.domain.tournament.entity.QTournament;
 import com.easter.tournament.domain.tournament.model.dto.MyTournament;
 import com.querydsl.core.BooleanBuilder;
@@ -28,6 +29,17 @@ public class ParticipantQueryRepository {
                                 participant.tournamentId.eq(tournamentId)
                         )
                 ).fetchOne();
+    }
+
+    public Participant findParticipantFetch(UUID memberId, long tournamentId) {
+        QTeam team = QTeam.team;
+        return queryFactory.selectFrom(participant)
+                .leftJoin(participant.team, team).fetchJoin()
+                .where(
+                participant.memberId.eq(memberId).and(
+                        participant.tournamentId.eq(tournamentId)
+                )
+        ).fetchOne();
     }
 
     public List<UUID> findMemberIdByTeamId(long teamId) {

@@ -1,22 +1,24 @@
 package com.easter.tournament.domain.tournament.service;
 
+import com.easter.tournament.domain.participant.entity.Participant;
+import com.easter.tournament.domain.participant.model.ParticipantStatus;
 import com.easter.tournament.domain.participant.repository.ParticipantQueryRepository;
 import com.easter.tournament.domain.participant.repository.ParticipantRepository;
+import com.easter.tournament.domain.team.entity.Team;
+import com.easter.tournament.domain.team.model.dto.TeamMemberDto;
+import com.easter.tournament.domain.team.service.TeamService;
 import com.easter.tournament.domain.tournament.entity.Tournament;
-import com.easter.tournament.domain.tournament.model.dto.GetMarathonRequestDto;
-import com.easter.tournament.domain.tournament.model.dto.GetMarathonResponseDto;
-import com.easter.tournament.domain.tournament.model.dto.SearchMyTournamentResponseDto;
-import com.easter.tournament.domain.tournament.model.dto.MyTournament;
+import com.easter.tournament.domain.tournament.model.dto.*;
 import com.easter.tournament.domain.tournament.repository.TournamentQueryRepository;
 import com.easter.tournament.domain.tournament.repository.TournamentRepository;
+import com.easter.tournament.global.exception.BusinessException;
 import com.easter.tournament.global.security.PassportDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class TournamentServiceImpl implements TournamentService {
     private final TournamentQueryRepository tournamentQueryRepository;
     private final ParticipantRepository participantRepository;
     private final ParticipantQueryRepository participantQueryRepository;
+    private final TeamService teamService;
 
     @Override
     public List<GetMarathonResponseDto> getMarathon(GetMarathonRequestDto getMarathonRequestDto) {
@@ -70,11 +73,20 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public GetMarathonResponseDto getMarathonDetail(UUID uuid) {
+    public GetMarathonDetailResponseDto getMarathonDetail(PassportDto passport, UUID uuid) {
 
-        Tournament tournament = tournamentRepository.findByUuid(uuid);
-
-        GetMarathonResponseDto getMarathonResponseDto = GetMarathonResponseDto.builder()
+        Tournament tournament = tournamentQueryRepository.findByUuid(uuid);
+        if(tournament == null) {
+            log.error("invalid tournament uuid : {}", uuid);
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
+        }
+        List<String> categoryValues = tournament.getTournamentAssignment().stream().map(
+                tournamentAssignment -> {
+                    return tournamentAssignment.getCategory().getCategoryValue();
+                }
+        ).toList();
+        // 경기 정보부터 삽입
+        GetMarathonDetailResponseDto responseDto = GetMarathonDetailResponseDto.builder()
                 .uuid(tournament.getUuid())
                 .title(tournament.getTitle())
                 .host(tournament.getHost())
@@ -84,10 +96,25 @@ public class TournamentServiceImpl implements TournamentService {
                 .receiptEnd(tournament.getReceiptEnd())
                 .tournamentDayStart(tournament.getTournamentDayStart())
                 .tournamentDayEnd(tournament.getTournamentDayEnd())
+                .latitude(tournament.getLatitude())
+                .longitude(tournament.getLongitude())
                 .closed(tournament.isClosed())
+                .categories(categoryValues)
                 .build();
-
-        return getMarathonResponseDto;
+        // 참여여부, 팀 여부를 알아내기 위해 서치
+        Participant participant = participantQueryRepository.findParticipantFetch(passport.getId(), tournament.getId());
+        if(participant == null || participant.getStatus() == ParticipantStatus.CANCEL) {
+            return responseDto;
+        }
+        responseDto.setParticipated(true);
+        Team team = participant.getTeam();
+        if(team == null) { // 팀이 없는 경우 그대로 반환
+            return responseDto;
+        }
+        responseDto.setHasTeam(true);
+        List<TeamMemberDto> memberList = teamService.searchTeamMember(team.getUuid()).getTeamMemberList();
+        responseDto.setTeamMembers(memberList);
+        return responseDto;
     }
 
     @Override
