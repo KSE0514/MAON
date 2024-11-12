@@ -11,15 +11,26 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class RouteServiceImpl implements RouteService {
 	private final RouteRepository routeRepository;
 	@Override
-	public CreateRouteResponseDto createRoute(CreateRouteRequestDto createRouteRequestDto) {
-		return null;
+	public void createRoute(CreateRouteRequestDto createRouteRequestDto) {
+		Route route = Route.builder()
+				.writerId(createRouteRequestDto.getMemberId())
+				.writerName(createRouteRequestDto.getMemberName())
+				.routeName(createRouteRequestDto.getRouteName())
+				.startPoint(createRouteRequestDto.getRunningResult().getStartPoint())
+				.distance(createRouteRequestDto.getRunningResult().getRecord().getDistance())
+				.track(createRouteRequestDto.getRunningResult().getRecord().getRecordedTrack())
+				.createdAt(createRouteRequestDto.getRunningResult().getRecord().getCreatedAt())
+				.build();
+		routeRepository.save(route);
 	}
 
 	@Override

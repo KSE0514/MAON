@@ -9,7 +9,7 @@ import com.easter.route.domain.route.entity.dto.DeleteRouteRequestDto;
 import com.easter.route.domain.route.entity.dto.RouteDto;
 
 public interface RouteService {
-    CreateRouteResponseDto createRoute(CreateRouteRequestDto createRouteRequestDto);
+    void createRoute(CreateRouteRequestDto createRouteRequestDto);
     void deleteRoute(DeleteRouteRequestDto deleteRouteRequestDto);
     List<RouteDto> getRouteList();
 }
