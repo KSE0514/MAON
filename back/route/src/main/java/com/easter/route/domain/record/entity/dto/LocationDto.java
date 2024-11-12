@@ -24,6 +24,6 @@ public class LocationDto {
 	private String time;
 
 	public Point getPoint() {
-		return new Point(Double.parseDouble(longitude), Double.parseDouble(latitude));
+		return new Point(Double.parseDouble(latitude), Double.parseDouble(longitude));
 	}
 }
