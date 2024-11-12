@@ -44,6 +44,18 @@ public class TeamController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /**
+     * 마라톤 팀 탈퇴
+     * @return
+     */
+    @DeleteMapping("/leave/{teamId}")
+    public ResponseEntity<ResultResponse> leave(@RequestAttribute("passport") PassportDto passport, @PathVariable("teamId") UUID teamId){
+        log.info("leave team [{}]", teamId);
+        teamService.leaveTeam(passport, teamId);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀을 탈퇴했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
     /* 팀 초대 관련 */
 
     /**
@@ -80,6 +92,18 @@ public class TeamController {
         log.info("invite team member");
         teamService.inviteTeam(passport, dto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀 멤버를 초대했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    /**
+     * 마라톤 팀 초대 취소
+     * @return
+     */
+    @DeleteMapping("/invite/cancel/{invitationId}")
+    public ResponseEntity<ResultResponse> cancelInvitation(@RequestAttribute("passport") PassportDto passport, @PathVariable UUID invitationId) {
+        log.info("cancel team invitation");
+        teamService.cancelInvitation(passport, invitationId);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀 멤버를 초대를 취소했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 

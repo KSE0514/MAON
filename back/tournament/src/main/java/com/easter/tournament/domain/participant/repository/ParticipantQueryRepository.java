@@ -75,4 +75,9 @@ public class ParticipantQueryRepository {
                 participant.memberId.eq(memberId).and(participant.tournamentId.eq(tournamentId))).fetchOne();
     }
 
+    public Participant findByMemberIdAndTeamId(UUID memberId, long teamId) {
+        return queryFactory.selectFrom(participant).where(
+                participant.memberId.eq(memberId).and(participant.teamId.eq(teamId))).fetchOne();
+    }
+
 }

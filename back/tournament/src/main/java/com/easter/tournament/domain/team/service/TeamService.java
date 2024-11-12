@@ -11,8 +11,10 @@ import java.util.UUID;
 public interface TeamService {
     CreateTeamResponseDto createTeam(PassportDto passport, CreateTeamRequestDto dto);
     SearchTeamMemberResponseDto searchTeamMember(UUID teamId);
+    void leaveTeam(PassportDto passport, UUID teamId);
     SearchCandidateResponseDto searchCandidate(PassportDto passport, SearchCandidateRequestDto dto);
     CheckInvitationResponseDto checkInvitation(PassportDto passport);
     void inviteTeam(PassportDto passport, InviteTeamRequestDto dto);
+    void cancelInvitation(PassportDto passport, UUID invitationId);
     void confirmInvitation(PassportDto passport, ConfirmInvitationRequestDto dto);
 }

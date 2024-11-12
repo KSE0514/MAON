@@ -31,5 +31,6 @@ public class GetMarathonDetailResponseDto {
 
     private boolean participated;
     private boolean hasTeam;
+    private UUID teamId;
     private List<TeamMemberDto> teamMembers;
 }
