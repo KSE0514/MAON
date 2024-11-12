@@ -64,7 +64,7 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
 
                 // 위치 업데이트 및 경로 추가
                 updateMapLocation(currentLatLng)
-                if (viewModel.isTracking.value == true) {
+                if (viewModel.isTracking.value == true && viewModel.isPaused.value == false) {
                     locationList.add(currentLatLng)
                     updatePolyline()
                 }
@@ -104,10 +104,13 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
     }
 
     private fun setupObservers() {
-        // ViewModel의 tracking 상태 관찰
         viewModel.isTracking.observe(viewLifecycleOwner) { isTracking ->
             if (isTracking) {
-                startTracking()
+                if (viewModel.isPaused.value == true) {
+                    resumeTracking()
+                } else {
+                    startTracking()
+                }
             } else {
                 stopTracking()
             }
@@ -115,11 +118,14 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
     }
 
     private fun startTracking() {
-        // 경로 초기화
+        if (viewModel.isPaused.value == true) {
+            resumeTracking()
+            return
+        }
+
         locationList.clear()
         polyline?.remove()
 
-        // Foreground 서비스 시작
         serviceIntent.action = LocationTrackingService.ACTION_START_TRACKING
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             requireContext().startForegroundService(serviceIntent)
@@ -129,9 +135,38 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
     }
 
     private fun stopTracking() {
-        // 서비스 중지
         serviceIntent.action = LocationTrackingService.ACTION_STOP_TRACKING
         requireContext().startService(serviceIntent)
+    }
+
+    private fun pauseTracking() {
+        stopLocationUpdates()
+    }
+
+    private fun resumeTracking() {
+        startLocationUpdates()
+    }
+
+
+    // 위치 업데이트 시작
+    private fun startLocationUpdates() {
+        // 위치 권한 확인
+        checkLocationPermission()
+
+        fusedLocationClient.requestLocationUpdates(
+            LocationRequest.create().apply {
+                priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+                interval = 1000
+                fastestInterval = 500
+            },
+            locationCallback,
+            Looper.getMainLooper()
+        )
+    }
+
+    // 위치 업데이트 중지
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     private fun updatePolyline() {
@@ -144,22 +179,24 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
         )
     }
 
+    // 위치 콜백
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            for (location in locationResult.locations) {
+                val currentLatLng = LatLng(location.latitude, location.longitude)
+                if (viewModel.isTracking.value == true && viewModel.isPaused.value == false) {
+                    locationList.add(currentLatLng)
+                    updateMapLocation(currentLatLng)
+                }
+            }
+        }
+    }
+
     private fun updateMapLocation(currentLatLng: LatLng) {
         mMap?.let { map ->
-            // 현재 위치 마커 업데이트
-//            map.clear()
-//            map.addMarker(
-//                MarkerOptions()
-//                    .position(currentLatLng)
-//                    .title("현재 위치")
-//            )
-
-            // 트래킹 중이면 경로 다시 그리기
-            if (viewModel.isTracking.value == true) {
+            if (viewModel.isTracking.value == true && viewModel.isPaused.value == false) {
                 updatePolyline()
             }
-
-            // 카메라 이동
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 18f))
         }
     }
@@ -215,7 +252,6 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
         try {
             requireActivity().unregisterReceiver(locationReceiver)
         } catch (e: IllegalArgumentException) {
-            // Receiver가 이미 해제되었을 경우 예외 처리
         }
         _binding = null
     }

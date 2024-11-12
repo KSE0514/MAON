@@ -205,34 +205,4 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
-//    fun startTimer(){
-//        timerTask = timer(period = 1000){
-//            time++
-//
-//            val hour = (time / 3600).toString().padStart(2, '0')
-//            val min = ((time % 3600) / 60).toString().padStart(2, '0')
-//            val sec = (time % 60).toString().padStart(2, '0')
-//
-//            runOnUiThread{
-//                if(hour.contains("00")){
-//                    binding.runTime.text = " ${min}:${sec} "
-//                }else{
-//                    binding.runTime.text = " ${hour}:${min}:${sec} "
-//                }
-//
-//            }
-//        }
-//    }
-//
-//    fun pauseTimer(){
-//        timerTask?.cancel()
-//    }
-//
-//    fun stopTimer(){
-//        timerTask?.cancel()
-//
-//        time = 0
-//        binding.runTime.text = "00:00:00"
-//    }
-
 }

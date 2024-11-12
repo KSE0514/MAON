@@ -7,10 +7,13 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.ViewModelProvider
 import com.easter.watch.R
 import com.easter.watch.presentation.view.run.RunActivity
 import com.easter.watch.presentation.view.run.RunFragment2
+import com.easter.watch.presentation.view.run.RunViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -23,6 +26,9 @@ class LocationTrackingService : Service() {
     private val locationList = mutableListOf<LatLng>()
     private var isTracking = false
 
+    private var long : Double? = null
+    private  var lat : Double? = null
+
     companion object {
         const val CHANNEL_ID = "LocationTrackingChannel"
         const val NOTIFICATION_ID = 1
@@ -31,16 +37,30 @@ class LocationTrackingService : Service() {
         const val ACTION_UPDATE_LOCATION = "UPDATE_LOCATION"
     }
 
+    // LiveData를 관찰할 수 있도록 ViewModel 인스턴스 생성
+    private val runViewModel: RunViewModel by lazy {
+        ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+            .create(RunViewModel::class.java)
+    }
+
     private val locationRequest = LocationRequest.create().apply {
-        priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY //HIGH 보다 BALANCED
-        interval = 1000
-        fastestInterval = 500
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY //HIGH 보다 BALANCED
+        interval = 3000 //1초
+        fastestInterval = 1000
     }
 
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             for (location in locationResult.locations) {
                 val currentLatLng = LatLng(location.latitude, location.longitude)
+                lat = location.latitude
+                long = location.longitude
+
+                // ViewModel로 위치 데이터 전달
+                runViewModel.updateDistance(lat!!, long!!)
+
+                Log.d("현재위치",currentLatLng.toString())
+
                 if (isTracking) {
                     locationList.add(currentLatLng)
                     // 위치 업데이트를 브로드캐스트로 전송
@@ -110,8 +130,8 @@ class LocationTrackingService : Service() {
         )
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("위치 추적 중")
-            .setContentText("경로를 기록하고 있습니다")
+            .setContentTitle("달리기 추적 중")
+            .setContentText("달리기를 기록하고 있습니다")
             .setSmallIcon(R.drawable.ic_calory)
             .setContentIntent(pendingIntent)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
