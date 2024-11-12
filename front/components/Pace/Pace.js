@@ -35,7 +35,7 @@ const Pace = ({ currentDistance, elapsedTime, setPace, mode, pace }) => {
 
   return (
     <View>
-      {mode === "aloneRun" && (
+      {mode === "notSelectedRoute" && (
         <View style={{ flexDirection: "row" }}>
           <Text style={{ fontSize: 32, fontFamily: fonts.gMarketBold }}>
             {pace}
@@ -51,7 +51,7 @@ const Pace = ({ currentDistance, elapsedTime, setPace, mode, pace }) => {
           </Text>
         </View>
       )}
-      {mode !== "aloneRun" && (
+      {mode !== "notSelectedRoute" && (
         <Text style={{ fontSize: 20, fontFamily: fonts.gMarketBold }}>
           {pace}
         </Text>
