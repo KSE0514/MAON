@@ -165,7 +165,8 @@ const handleDateOfBirthChange = (text) => {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri); // 선택한 이미지 URI를 상태에 저장
+      // setImage(result.assets[0].uri); // 선택한 이미지 URI를 상태에 저장
+      setImage(result.uri); // 선택한 이미지 URI를 상태에 저장
     }
   };
 
@@ -205,14 +206,14 @@ const handleDateOfBirthChange = (text) => {
                 {editMode? 
                   <ProfileImg as={TouchableOpacity} onPress={selectProfileImage}>
                     <Image style={{ width: '100%', height: '100%' }} 
-                    source={{ uri: image || testImg }}
+                    source={image ? { uri: image } : testImg}
                     />
                   </ProfileImg>
                 :
                   <ProfileImg>
                     <Image
                       style={{width: '100%', height: '100%'}}
-                      source={{ uri: image || testImg }}
+                      source={image ? { uri: image } : testImg}
                     />
                   </ProfileImg>
                 }
