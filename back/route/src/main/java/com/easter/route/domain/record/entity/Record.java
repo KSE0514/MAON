@@ -30,6 +30,9 @@ public class Record {
 	@Id
 	private String id;
 
+	@Field("member_id")
+	private String memberId;
+
 	@Field("route_id")
 	private String routeId;
 

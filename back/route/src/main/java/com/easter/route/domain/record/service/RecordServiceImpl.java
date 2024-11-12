@@ -1,5 +1,6 @@
 package com.easter.route.domain.record.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,7 @@ import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.record.entity.dto.CreateRunningDto;
 import com.easter.route.domain.record.entity.dto.RecordDto;
 import com.easter.route.domain.record.entity.dto.UpdateRecordDto;
+import com.easter.route.domain.record.entity.enums.RecordType;
 import com.easter.route.domain.record.repository.RecordRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,19 +24,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RecordServiceImpl implements RecordService {
 
-	private final MongoTemplate mongoTemplate;
 	private final RecordRepository recordRepository;
+	private final MongoTemplate mongoTemplate;
 
 	@Override
 	public Record createRunning(CreateRunningDto createRunningDto) {
 		Record record = Record.builder()
+			.memberId(createRunningDto.getMemberId())
+			.recordType(RecordType.valueOf(createRunningDto.getRecordType()))
 			.completed(false)
 			.runningTime("00:00:00")
 			.averagePace("00'00\"")
+			.averageHeartRate(0)
+			.distance(0)
+			.createdAt(LocalDateTime.now())
 			.routeId(createRunningDto.getRouteId())
 			.build();
 		log.error("레코드: {}", record);
-		return mongoTemplate.save(record);
+		return recordRepository.save(record);
 	}
 
 	@Override
