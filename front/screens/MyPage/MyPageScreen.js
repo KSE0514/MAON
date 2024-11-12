@@ -49,12 +49,12 @@ const MyPageScreen = ({navigation}) => {
   const [email, setEmail] = useState('') // 이메일 상태관리
   const [address, setAddress] = useState('') // 주소 상태관리
   const [nickName, setNickName] = useState('') // 닉네임 상태관리
-  const [selectedGender, setSelectedGender] = useState(null); // 선택된 성별 상태 관리
+  const [selectedGender, setSelectedGender] = useState(''); // 선택된 성별 상태 관리
 
   const [heightInfo, setHeightInfo] = useState('') // 키 상태관리
   const [weightInfo, setWeightInfo] = useState('') // 몸무게 상태관리
 
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(testImg);
   // const [profileImg, setProfileImg] = useState(testImg); // 초기 이미지를 테스트 이미지로 설정
 
   // 전화번호 형식 자동 변환
