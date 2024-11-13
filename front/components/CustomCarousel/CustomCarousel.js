@@ -50,7 +50,7 @@ const CustomCarousel = ({ navigation }) => {
     const getMyMarathonList = async () => {
       console.log("getMyMarathonList");
       try {
-        const response = await apiClient.get(`/tournament/participant/my`);
+        const response = await apiClient.get(`/tournament/tournament/my`);
         console.log(response.data);
         setMyMarathoneList(response.data);
       } catch (e) {
