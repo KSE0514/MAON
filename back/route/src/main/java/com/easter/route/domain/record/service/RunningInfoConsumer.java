@@ -47,6 +47,7 @@ public class RunningInfoConsumer {
 	private final RecordService recordService;
 	private final RecordRepository recordRepository;
 	private final RouteRepository routeRepository;
+	private final GoogleGeoCoding GoogleGeoCoding;
 	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
 	
 	// 카프카 리스너

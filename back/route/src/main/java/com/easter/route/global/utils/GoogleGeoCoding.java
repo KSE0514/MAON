@@ -15,17 +15,20 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class GoogleGeoCoding {
 
     @Value("${google.api.key}")
     private static String API_KEY;
-    private static RestTemplate restTemplate;
 
-    public static String getAddress(double latitude, double longitude) {
+    private final RestTemplate restTemplate;
+
+    public String getAddress(double latitude, double longitude) {
         String address = "";
         try {
             String url = String.format(
@@ -67,7 +70,7 @@ public class GoogleGeoCoding {
         return address;
     }
 
-    private static String getFormattedAddress(List<Map<String, Object>> results) {
+    private String getFormattedAddress(List<Map<String, Object>> results) {
         String city = null;
         String district = null;
 
