@@ -22,6 +22,7 @@ public class RecordDto {
 	private String routeId;
 	private List<String> paceList;
 	private List<Double> distanceList;
+	private String startPoint;
 	private GeoJsonLineString recordedTrack;
 	private String runningTime;
 	private String averagePace;
@@ -35,6 +36,7 @@ public class RecordDto {
 			.routeId(record.getRouteId())
 			.paceList(record.getPaceList())
 			.distanceList(record.getDistanceList())
+			.startPoint(record.getStartPoint())
 			.recordedTrack(record.getRecordedTrack())
 			.runningTime(record.getRunningTime())
 			.averagePace(record.getAveragePace())

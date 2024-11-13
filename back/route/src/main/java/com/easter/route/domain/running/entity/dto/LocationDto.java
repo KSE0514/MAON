@@ -1,4 +1,4 @@
-package com.easter.route.domain.record.entity.dto;
+package com.easter.route.domain.running.entity.dto;
 
 import org.springframework.data.geo.Point;
 

@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RunningResultDto {
-    private String startPoint;
-    private RecordDto record;
-    private String status;
-    private Double routeDistance;
+public class PointPair {
+	private Double startLatitude;
+	private Double startLongitude;
+	private Double endLatitude;
+	private Double endLongitude;
 }
