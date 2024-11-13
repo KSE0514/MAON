@@ -7,6 +7,7 @@ import com.easter.tournament.domain.tournament.entity.Tournament;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
 
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class TournamentQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
