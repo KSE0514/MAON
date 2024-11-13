@@ -80,6 +80,8 @@ const SignUpScreen = ({navigation, route}) => {
     setEmail(paramsEmail)
     setImage(paramsImg)
     setAccessToken(paramsAccessToken)
+    setNickName('')
+    setNicknameError(false)
     // console.log('이미지 주소:', paramsImg)
   }, [])
 
@@ -121,9 +123,12 @@ const SignUpScreen = ({navigation, route}) => {
       setNicknameError('닉네임은 1~10자 이내로 입력해주세요.');
       return;
     }
+    console.log(1)
+
 
     // 닉네임 중복 확인 (여기에 중복 확인 API 호출 추가 예정)
-    const isNicknameDuplicate = nickNameCheck(); // 나중에 실제 중복 확인 로직 추가
+    const isNicknameDuplicate = await nickNameCheck(); // 나중에 실제 중복 확인 로직 추가
+    console.log('닉네임 중복 확인 결과', isNicknameDuplicate)
     // 예시: const isNicknameDuplicate = await checkNicknameDuplicate(nickName);
     if (isNicknameDuplicate) {
       setNicknameError('이미 사용 중인 닉네임입니다.');
@@ -131,7 +136,7 @@ const SignUpScreen = ({navigation, route}) => {
     } else {
       setNicknameError('');
     }
-
+    console.log(2)
 
     // 닉네임 유효성 검사 및 중복 확인이 통과된 경우에만 가입 요청 실행
     const formattedDate = dateOfBirth.replaceAll("/", "");
@@ -171,7 +176,11 @@ const SignUpScreen = ({navigation, route}) => {
         refreshToken: responseUserInfo.accessToken,
         imageUrl: responseUserInfo.imageUrl,
       })
-      navigation.navigate("Home")
+      // navigation.navigate("Home")
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "MainTabs" }],
+      });
 
     } catch (error) {
       console.error("로그인 에러 발생: ", error, requestBody);
@@ -305,8 +314,9 @@ const SignUpScreen = ({navigation, route}) => {
       );
       // console.log("닉네임 중복확인 성공!:", response)
       if (response.status === 200) {
-        // console.log(response.data.data.duplicated)
-        return response.data.data.duplicated
+        console.log(response.data.data.duplicated)
+        const result = response.data.data.duplicated
+        return result;
         // if (response.data.data.duplicated) {
           
         // }
