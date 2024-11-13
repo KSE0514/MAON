@@ -24,6 +24,7 @@ public class GetMarathonDetailResponseDto {
     private LocalDateTime tournamentDayEnd;
     private Double latitude;
     private Double longitude;
+    private String inquiry;
     private String imageUrl;
     private boolean closed;
 
