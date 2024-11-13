@@ -44,6 +44,8 @@ export const ProfileImg = styled.View`
   border: 3px solid ${colors.grape_fruit};
   border-radius: 35px;
   overflow: hidden;
+  align-items: center;
+  justify-content: center;
 `
 export const TopInfoContainer = styled.View`
   align-items: center;
@@ -85,7 +87,7 @@ export const BodyinfoText = styled.Text`
 
 export const Content = styled.View`
   padding: 5% 10% 5%;
-  gap: 10%;
+  gap: 10px;
 `
 
 export const BtnArea = styled.View`

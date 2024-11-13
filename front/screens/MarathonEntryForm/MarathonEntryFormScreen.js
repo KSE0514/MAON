@@ -11,6 +11,8 @@ import InputBox from "../../components/InputBox/InputBox";
 import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
 import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
 import { useState, useEffect } from "react";
+import { apiClient } from "../../customAxios";
+import useAuthStore from "./../../store/AuthStore"
 
 const testMarathonName = "2024 국제 국민 마라톤"
 const testUser = {
@@ -25,7 +27,15 @@ const testUser = {
   userWeight: '1000'
 }
 
-const MarathonEntryFormScreen = ({navigation}) => {
+const modalMessageMap = {
+  OK: `마라톤 신청이\n완료되었습니다.`,
+  CONFLICT: `이미 신청한 마라톤입니다.`,
+  NOT_FOUND: `신청불가한 마라톤입니다.`
+}
+
+const MarathonEntryFormScreen = ({navigation, route}) => {
+  const { user } = useAuthStore()
+  const { memberId, tournamentCategory, tournamentId, teamId } = route
   const [dateOfBirth, setDateOfBirth] = useState(''); // 생년월일 상태 관리
   const [phoneNumber, setPhoneNumber] = useState(''); // 전화번호 상태 관리
   const [name, setName] = useState('') // 이름 상태관리
@@ -42,15 +52,40 @@ const MarathonEntryFormScreen = ({navigation}) => {
       {
         title: "확인",
         onPress: () => {
-          clickEntryBtn();
+          setShowEntryModal(false)
+          navigation.navigate("MarathonInfoDetail", { uuid: tournamentId });
+          // navigation.navigate("Home") // 나중에 디테일 화면으로 돌아가도록 바꾸기
         },
       },
     ],
   };
   
-  const clickEntryBtn = () => {
-    setShowEntryModal(false)
-    navigation.navigate("Home") // 나중에 디테일 화면으로 돌아가도록 바꾸기
+  const clickEntryBtn = async () => {
+    const requestBody = {
+      memberId: memberId,
+      tournamentCategory : tournamentCategory,
+      tournamentId : tournamentId,
+      teamId: teamId
+    }
+
+    try {
+      const response = await apiClient.post(
+        `/tournament/participant/join`,
+        requestBody,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      );
+      console.log("마라톤 신청 성공: ", response)
+      // 응답 결과에 따라 모달 메시지 다르게 뜨게 하기
+      setShowEntryModal(true)
+    } catch (error) {
+      console.error("마라톤 신청 에러 발생: ", error)
+    }
+    
   }
 
 
@@ -117,7 +152,7 @@ const MarathonEntryFormScreen = ({navigation}) => {
                 <InputBox label={'주소'} placeholder={'주소를 입력해주세요.'} value={address} setValue={setAddress} isEditMode={false} />
                 <InputBox label={'성별'} placeholder={''} value={selectedGender} setValue={setSelectedGender} isEditMode={false} />
                 <BtnArea>
-                 <RoundBtn text={'신청하기'} onPress={() => setShowEntryModal(true)} />
+                 <RoundBtn text={'신청하기'} onPress={clickEntryBtn} />
                 </BtnArea>
               </ContentArea>
             </Container>

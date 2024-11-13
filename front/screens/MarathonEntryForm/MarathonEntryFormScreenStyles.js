@@ -28,7 +28,7 @@ export const TitleText = styled.Text`
 `
 
 export const ContentArea = styled.View`
-  gap: 10%;
+  gap: 10px;
 `
 
 
