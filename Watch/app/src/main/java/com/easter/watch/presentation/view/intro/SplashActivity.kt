@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.easter.watch.R
+import com.easter.watch.presentation.view.run.StartActivity
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 
@@ -27,7 +28,7 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed(Runnable { // 타이머가 끝나면 내부 실행
 
             //test용 - 후에 주석 쳐주기
-            intent = Intent(this@SplashActivity, AuthActivity::class.java) // 앱의 MainActivity로 넘어가기
+            intent = Intent(this@SplashActivity, StartActivity::class.java) // 앱의 MainActivity로 넘어가기
             startActivity(intent)
             finish()
 

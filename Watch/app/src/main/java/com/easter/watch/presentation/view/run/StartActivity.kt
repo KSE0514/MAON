@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.animation.AnimationUtils
 import android.view.animation.ScaleAnimation
 import android.widget.Toast
@@ -17,6 +18,8 @@ import com.easter.watch.databinding.ActivityStartBinding
 import com.easter.watch.presentation.WebSocketManager
 import com.easter.watch.presentation.dataModel.MemberInfo
 import com.easter.watch.presentation.service.SensorPermissionService
+import com.easter.watch.presentation.service.WebSocketClient
+import com.google.firebase.messaging.FirebaseMessaging
 
 class StartActivity : AppCompatActivity() {
 
@@ -26,6 +29,11 @@ class StartActivity : AppCompatActivity() {
     private val viewModel: RunViewModel by viewModels()
     private lateinit var permissionService: SensorPermissionService
 
+
+    private lateinit var webSocketClient: WebSocketClient
+    private val serverUrl = "wss://k11c207.p.ssafy.io/maon/route/ws/location"  // 실제 URL로 수정 필요
+
+
     private val sharedPreferences by lazy {
         getSharedPreferences("watch_prefs", Context.MODE_PRIVATE)
     }
@@ -34,6 +42,9 @@ class StartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        webSocketClient = WebSocketClient(serverUrl)
+
 
         // SensorPermissionService 초기화
         permissionService = SensorPermissionService()
@@ -49,6 +60,17 @@ class StartActivity : AppCompatActivity() {
 
         intent.getStringExtra("deviceToken")?.let { deviceToken ->
             connectWebSocket(deviceToken)
+        }
+
+        //토큰 확인하고 websocket으로 서버에 전송
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                Log.d("토큰 확인", "FCM 토큰: $token")
+                webSocketClient.connect(token)
+            } else {
+                Log.w("토큰 확인", "토큰 가져오기 실패", task.exception)
+            }
         }
     }
 

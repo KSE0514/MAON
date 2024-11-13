@@ -38,18 +38,19 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".presentation.MainActivity"
-            android:exported="false"
+            android:exported="true"
             android:taskAffinity=""
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
         <activity
             android:name=".presentation.view.run.StartActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".presentation.view.intro.AuthActivity"
@@ -64,12 +65,12 @@
             android:exported="true"
             android:theme="@style/Theme.Maon">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
 
 
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
 
         <uses-library
@@ -87,7 +88,7 @@
             android:value="AIzaSyAPkUdZTFZnS2rgOugb_vPsA_KP1RMiQtc" />
 
         <service
-            android:name=".presentation.service.WatchMessageService"
+            android:name=".presentation.service.FCMMessageService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
