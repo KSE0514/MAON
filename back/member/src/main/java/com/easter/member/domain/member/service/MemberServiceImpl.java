@@ -8,6 +8,7 @@ import com.easter.member.global.s3.S3Service;
 import com.easter.member.global.security.jwt.TokenProvider;
 import com.easter.member.global.security.userinfo.PassportDto;
 import com.easter.member.global.security.userinfo.Role;
+import com.easter.member.global.security.userinfo.TokenType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -148,13 +149,15 @@ public class MemberServiceImpl implements MemberService {
                 .imageUrl(member.getImageUrl())
                 .role(Role.REGISTERED)
                 .build();
-        String token = tokenProvider.generateAccessToken(newPassport);
+        String accessToken = tokenProvider.generateAccessToken(newPassport);
+        String refreshToken = tokenProvider.getTokenByEmail(member.getEmail(), TokenType.REFRESH);
         return RegisterMemberResponseDto.builder()
                 .id(member.getUuid())
                 .name(member.getName())
                 .email(member.getEmail())
                 .imageUrl(member.getImageUrl())
-                .accessToken(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
