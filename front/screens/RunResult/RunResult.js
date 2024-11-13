@@ -35,8 +35,11 @@ import SquareBtn from "../../components/Button/SquareBtn/SquareBtn";
 import PaceChart from "../../components/PaceChart/PaceChart";
 import InputModal from "../../components/Modal/InputModal/InputModal";
 import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
+import useAuthStore from "./../../store/AuthStore";
 
 const RunResult = ({ navigation, route }) => {
+  const { user } = useAuthStore();
+
   const { mode, resultData, recordId } = route.params || {};
   const fontsLoaded = useFontsLoaded();
   const [seePaceChart, setSeePaceChart] = useState(false);
@@ -111,12 +114,21 @@ const RunResult = ({ navigation, route }) => {
 
   const addRoute = async () => {
     try {
-      const response = await apiClient.post(`/route/course/create`, {
-        memberId: "현석",
-        memberName: "현석",
-        routeName: addRouteName,
-        recordId: recordId,
-      });
+      const response = await apiClient.post(
+        `/route/course/create`,
+        {
+          memberId: "현석",
+          memberName: "현석",
+          routeName: addRouteName,
+          recordId: recordId,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      );
       if (response.status == 201) {
         setAddModal(false);
         setAddEndModal(true);

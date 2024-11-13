@@ -14,43 +14,49 @@ import fonts from "../../styles/fonts";
 import { apiClient } from "../../customAxios";
 import MapView, { Marker } from "react-native-maps";
 import MapStyle from "../../components/Map/MapStyle";
-
+import useAuthStore from "./../../store/AuthStore";
 const { width } = Dimensions.get("window");
 
 const data = [
-  // {
-  //   title: "2024 국제 국민 마라톤",
-  //   tournamentDayStart: "2024-11-11T14:30:45",
-  //   tournamentCategory: "5km",
-  //   locatoin: "여의도 공원 문화의 마당",
-  //   longitude: 126.821194,
-  //   latitude: 35.220606,
-  // },
-  // {
-  //   title: "무안 마라톤",
-  //   tournamentDayStart: "2024-11-13T14:30:45",
-  //   tournamentCategory: "10km",
-  //   locatoin: "무안 어딘가에서",
-  //   longitude: 126.821194,
-  //   latitude: 35.220606,
-  // },
-  // {
-  //   title: "인천 무슨 무슨 마라톤",
-  //   tournamentDayStart: "2024-11-15T14:30:45",
-  //   tournamentCategory: "10km",
-  //   locatoin: "인천 무슨무슨구 무슨무슨 곳에서",
-  //   longitude: 126.821194,
-  //   latitude: 35.220606,
-  // },
+  {
+    title: "2024 국제 국민 마라톤",
+    tournamentDayStart: "2024-11-11T14:30:45",
+    tournamentCategory: "5km",
+    locatoin: "여의도 공원 문화의 마당",
+    longitude: 126.821194,
+    latitude: 35.220606,
+  },
+  {
+    title: "무안 마라톤",
+    tournamentDayStart: "2024-11-13T14:30:45",
+    tournamentCategory: "10km",
+    locatoin: "무안 어딘가에서",
+    longitude: 126.821194,
+    latitude: 35.220606,
+  },
+  {
+    title: "인천 무슨 무슨 마라톤",
+    tournamentDayStart: "2024-11-15T14:30:45",
+    tournamentCategory: "10km",
+    locatoin: "인천 무슨무슨구 무슨무슨 곳에서",
+    longitude: 126.821194,
+    latitude: 35.220606,
+  },
 ];
 
 const CustomCarousel = ({ navigation }) => {
   const [myMarathonList, setMyMarathoneList] = useState();
+  const { user } = useAuthStore();
   useEffect(() => {
     const getMyMarathonList = async () => {
       console.log("getMyMarathonList");
       try {
-        const response = await apiClient.get(`/tournament/tournament/my`);
+        const response = await apiClient.get(`/tournament/tournament/my`, {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        });
         console.log(response.data);
         setMyMarathoneList(response.data);
       } catch (e) {
@@ -58,7 +64,7 @@ const CustomCarousel = ({ navigation }) => {
       }
     };
     getMyMarathonList();
-  });
+  }, []);
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
