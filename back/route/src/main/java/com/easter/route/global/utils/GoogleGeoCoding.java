@@ -1,6 +1,8 @@
 package com.easter.route.global.utils;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.bson.json.JsonObject;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.BufferedReader;
@@ -26,7 +28,7 @@ public class GoogleGeoCoding {
 
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod("POST");
 
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -43,7 +45,7 @@ public class GoogleGeoCoding {
                 JSONArray results = jsonObject.getJSONArray("results");
 
                 if (!results.isEmpty()) {
-                    address = results.getJSONObject(0).getString("formatted_address");
+                    address = getFormattedAddress(results);
                 } else {
                     address = "주소를 찾을 수 없습니다.";
                 }
@@ -55,5 +57,39 @@ public class GoogleGeoCoding {
             address = "오류 발생: " + e.getMessage();
         }
         return address;
+    }
+
+    private static String getFormattedAddress(JSONArray resultsArray) {
+        String city = null;
+        String district = null;
+
+        for (int i = 0; i < resultsArray.length(); i++) {
+            JSONObject resultObject = resultsArray.getJSONObject(i);
+            JSONArray addressComponents = resultObject.getJSONArray("address_components");
+
+            for (int j = 0; j < addressComponents.length(); j++) {
+                JSONObject componentObject = addressComponents.getJSONObject(j);
+                JSONArray typesArray = componentObject.getJSONArray("types");
+
+                for (int k = 0; k < typesArray.length(); k++) {
+                    String type = typesArray.getString(k);
+
+                    if (type.equals("administrative_area_level_1")) {
+                        city = componentObject.getString("long_name");
+                    } else if (type.equals("sublocality_level_1")) {
+                        district = componentObject.getString("long_name");
+                    }
+                }
+            }
+
+            // city와 district 값을 모두 찾았다면 루프를 종료합니다.
+            if (city != null && district != null) {
+                break;
+            }
+        }
+
+        // city와 district를 합쳐 결과 문자열을 만듭니다.
+        String result = (city != null && district != null) ? city + " " + district : "지역 정보가 없습니다.";
+        return result;
     }
 }
