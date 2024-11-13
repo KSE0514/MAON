@@ -112,4 +112,20 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     // Fragment
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+
+    // ROOM
+    //def roomVersion = "2.4.1"
+
+    implementation("androidx.room:room-runtime:2.4.1")
+    annotationProcessor("androidx.room:room-compiler:2.4.1")
+
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:2.4.1")
+
+    // livedata
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+
+    // Coroutine WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
 }

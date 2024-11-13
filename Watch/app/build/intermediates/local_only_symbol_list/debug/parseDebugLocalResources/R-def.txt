@@ -37,6 +37,7 @@ font gmarketsansttflight
 font gmarketsansttfmedium
 id authCodeText
 id clockText
+id connectBtn
 id distanceText
 id heartImg
 id heartText

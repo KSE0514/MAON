@@ -18,7 +18,6 @@ import com.easter.watch.databinding.ActivityStartBinding
 import com.easter.watch.presentation.WebSocketManager
 import com.easter.watch.presentation.dataModel.MemberInfo
 import com.easter.watch.presentation.service.SensorPermissionService
-import com.easter.watch.presentation.service.WebSocketClient
 import com.google.firebase.messaging.FirebaseMessaging
 
 class StartActivity : AppCompatActivity() {
@@ -29,9 +28,7 @@ class StartActivity : AppCompatActivity() {
     private val viewModel: RunViewModel by viewModels()
     private lateinit var permissionService: SensorPermissionService
 
-
-    private lateinit var webSocketClient: WebSocketClient
-    private val serverUrl = "wss://k11c207.p.ssafy.io/maon/route/ws/location"  // 실제 URL로 수정 필요
+    //val stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
 
 
     private val sharedPreferences by lazy {
@@ -43,35 +40,45 @@ class StartActivity : AppCompatActivity() {
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        webSocketClient = WebSocketClient(serverUrl)
-
-
         // SensorPermissionService 초기화
         permissionService = SensorPermissionService()
         // 권한 확인 및 요청
         permissionService.checkAndRequestPermissions(this)
 
         binding.runStartBtn.setOnClickListener {
-            val intent = Intent(this,RunActivity::class.java)
+            val intent = Intent(this, RunActivity::class.java)
 
             startActivity(intent)
             finish()
         }
 
-        intent.getStringExtra("deviceToken")?.let { deviceToken ->
-            connectWebSocket(deviceToken)
-        }
 
-        //토큰 확인하고 websocket으로 서버에 전송
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val token = task.result
-                Log.d("토큰 확인", "FCM 토큰: $token")
-                webSocketClient.connect(token)
-            } else {
-                Log.w("토큰 확인", "토큰 가져오기 실패", task.exception)
-            }
-        }
+//토큰 확인하고 websocket으로 서버에 전송
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                val token = task.result
+//                Log.d("토큰 확인", "FCM 토큰: $token")
+//
+//                // 연결
+//                stompClient.connect(
+//                    onConnected = {
+//                        println("STOMP 연결 성공")
+//
+//                        // FCM 토큰을 JSON 형태로 전송
+//                        stompClient.send("pub/running/1", """{"fcmToken": "$token"}""")
+//
+//                        // 전송 완료 후 연결 종료
+//                        stompClient.disconnect()
+//                    },
+//                    onError = { error ->
+//                        println("에러 발생: $error")
+//                    }
+//                )
+//
+//            } else {
+//                Log.w("토큰 확인", "토큰 가져오기 실패", task.exception)
+//            }
+//        }
     }
 
     // 권한 요청 결과 확인
@@ -92,31 +99,6 @@ class StartActivity : AppCompatActivity() {
                 startActivity(Intent(this,StartActivity::class.java))
             }
         }
-    }
-
-
-    private fun connectWebSocket(deviceToken: String) {
-        webSocketManager.setMemberInfoCallback { memberInfo ->
-            // 회원 정보 저장
-            memberId = memberInfo.uuid
-            sharedPreferences.edit()
-                .putString("member_id", memberInfo.uuid)
-                .putString("member_name", memberInfo.name)
-                .apply()
-
-            // UI 업데이트
-            updateUI(memberInfo)
-        }
-
-        webSocketManager.connect(
-            "https://k11c207.p.ssafy.io/maon/",  // 웹소켓 서버 URL
-            deviceToken
-        )
-    }
-
-    private fun updateUI(memberInfo: MemberInfo) {
-        // UI 업데이트 로직
-        binding.memberName.text = memberInfo.name
     }
 
     override fun onDestroy() {

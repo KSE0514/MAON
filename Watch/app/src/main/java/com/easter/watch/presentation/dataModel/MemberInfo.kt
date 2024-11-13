@@ -4,6 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MemberInfo (
-    val uuid:String,
-    val name : String
+    val memberId : String
 )

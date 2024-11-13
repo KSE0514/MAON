@@ -15,6 +15,7 @@ public class ActivityAuthBindingImpl extends ActivityAuthBinding  {
         sIncludes = null;
         sViewsWithIds = new android.util.SparseIntArray();
         sViewsWithIds.put(R.id.authCodeText, 1);
+        sViewsWithIds.put(R.id.connectBtn, 2);
     }
     // views
     // variables
@@ -23,11 +24,12 @@ public class ActivityAuthBindingImpl extends ActivityAuthBinding  {
     // Inverse Binding Event Handlers
 
     public ActivityAuthBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 2, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 3, sIncludes, sViewsWithIds));
     }
     private ActivityAuthBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 0
-            , (android.widget.TextView) bindings[1]
+            , (android.widget.EditText) bindings[1]
+            , (android.widget.Button) bindings[2]
             , (androidx.constraintlayout.widget.ConstraintLayout) bindings[0]
             );
         this.main.setTag(null);
