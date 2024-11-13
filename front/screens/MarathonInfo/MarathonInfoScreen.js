@@ -13,8 +13,11 @@ import {
 
 import MarathonInfoPreview from "../../components/MaraThonInfoPreview/MaraThonInfoPreview";
 import InfoPreviewLoading from "../../components/InfoPreviewLoading/InfoPreviewLoading";
+import useAuthStore from "./../../store/AuthStore";
 
 const MarathonInfo = ({ navigation, route }) => {
+  const { user } = useAuthStore();
+
   const [isLoading, setIsLoading] = useState(false);
   // const [isLoading, setIsLoading] = useState(true);
   const fontsLoaded = useFontsLoaded();
@@ -38,6 +41,12 @@ const MarathonInfo = ({ navigation, route }) => {
           month: month,
           area: area,
           closed: closed,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
         }
       );
       setInfos(response.data.data || []); // 데이터가 없을 때 빈 배열로 설정
