@@ -9,10 +9,13 @@ import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
 import { useFontsLoaded } from "../../utils/fontContext";
 import useAuthStore from "../../store/AuthStore";
 import { apiClient } from "../../customAxios";
+import { useNavigation } from "@react-navigation/native";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const LoginScreen = ({ navigation }) => {
+// const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
+  const navigation = useNavigation(); // useNavigation으로 navigation 객체 가져오기
   const { setUser } = useAuthStore()
   const [userInfo, setUserInfo] = useState(null);
   const fontsLoaded = useFontsLoaded();
@@ -82,7 +85,8 @@ const LoginScreen = ({ navigation }) => {
             refreshToken: responseUserInfo.refreshToken,
             imageUrl: responseUserInfo.imageUrl,
           })
-          navigation.navigate("Home")
+          navigation.navigate("MainTabs", { screen: "Home" });
+
         } else {
           // 가입한 적이 없는 회원일 경우에는 회원가입으로 이동 후, 회원가입 완료했을 시 AuthStore에 정보를 저장하고 home으로 이동
           console.log("비회원이므로 회원가입 페이지로 이동합니다.")

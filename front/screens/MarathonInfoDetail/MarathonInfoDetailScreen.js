@@ -27,6 +27,8 @@ import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
 import SelectModal from "../../components/Modal/SelectModal/SelectModal";
 import MarathonDetailRoundBtn from "../../components/Button/MarathonDetailRoundBtn/MarathonDetailRoundBtn";
 import UserInfoBox from "../../components/Button/UserInfoBox/UserInfoBox";
+import { apiClient } from "../../customAxios";
+import useAuthStore from "./../../store/AuthStore"
 
 import { Text, View, Image, ScrollView } from "react-native";
 // import testImg from "./../../assets/images/testProfile2.jpg";
@@ -117,21 +119,43 @@ const testUsers = [
 ];
 // ///////////////////
 
-const MarathonInfoDetailScreen = ({ navigation, uuid }) => {
+const MarathonInfoDetailScreen = ({ navigation, route }) => {
+  const { uuid } = route.params
+  const { user } = useAuthStore()
+  const [ marathonInfo, setMarathonInfo ] = useState({
+    uuid: '', // 대회 uuid
+    categories: '', // 종목 종류(리스트)
+    closed: '', // 신청 가능한가
+    hasTeam: '', // 팀에 속해있는가
+    tournamentDayEnd: '',
+    tournamentDayStart: '',
+    location: '',
+    homepage: '',
+    host: '',
+    imageUrl: '',
+    latitude: '',
+    longitude: '',
+    participated: '', // 이 마라톤을 신청했는가
+    receiptEnd: '',
+    receiptStart: '',
+    teamId: '',
+    teamMembers: '',
+    title: '',
+  }); // 마라톤 디테일 정보 조회를 통해 받아온 마라톤 정보
   const [myMarathonInfo, setMyMarathonInfo] = useState(testMyInfo);
   const [isActivated, setIsActived] = useState(false); // 북마크 여부
   const [showSelectCourseModal, setShowSelectCourseModal] = useState(false); // 모달
-  const [runType, setRunType] = useState("");
+  const [runType, setRunType] = useState(""); // 모달에서 선택한 종목
 
-  const [marathonName, setMarathonName] = useState("");
-  const [marathonDate, setMarathonDate] = useState("");
-  const [marathonFormatDate, setMarathonFormatDate] = useState("");
-  const [marathonPeriod, setMarathonPeriod] = useState("");
-  const [marathonPlace, setMarathonPlace] = useState("");
-  const [marathonUrl, setMarathonUrl] = useState("");
-  const [marathonCourse, setMarathonCourse] = useState([]);
-  const [marathonHost, setMarathonHost] = useState("");
-  const [marathonCallNum, setMarathonCallNum] = useState("");
+  const [marathonName, setMarathonName] = useState(""); // 마라톤 이름
+  const [marathonDate, setMarathonDate] = useState(""); // 대회 일시
+  const [marathonFormatDate, setMarathonFormatDate] = useState(""); // 대회 일시 양식 변화
+  const [marathonPeriod, setMarathonPeriod] = useState(""); // 접수 기간
+  const [marathonPlace, setMarathonPlace] = useState(""); // 대회 장소
+  const [marathonUrl, setMarathonUrl] = useState(""); // 홈페이지
+  const [marathonCourse, setMarathonCourse] = useState([]); // 종목 종류
+  const [marathonHost, setMarathonHost] = useState(""); // 주최
+  const [marathonCallNum, setMarathonCallNum] = useState(""); // 문의 번호
 
   const [dDay, setDDay] = useState(null); // 마라톤 시작 디데이
   const [showWarning, setShowWarning] = useState(false); // 경고 메시지 표시 상태
@@ -154,8 +178,9 @@ const MarathonInfoDetailScreen = ({ navigation, uuid }) => {
       {
         title: "신청",
         onPress: () => {
+          // navigation.navigate("MarathonEntryForm", { memberId: user.id, tournamentCategory: runType, tournamentId: marathonInfo.tournamentId, teamId: marathonInfo.teamId})
           console.log("정보 확인용:", selectCourseModalContent);
-          // entryMarathon()
+          entryMarathon()
         },
       },
     ],
@@ -163,6 +188,10 @@ const MarathonInfoDetailScreen = ({ navigation, uuid }) => {
   });
 
   useEffect(() => {
+
+    // 마라톤 상세 정보 조회
+    getMarathonDetailInfo()
+
     // marathonCourse와 selectCourseModalContent를 함께 업데이트
     const updatedCourse = testMarathonInfo.course;
     setMarathonCourse(updatedCourse);
@@ -175,6 +204,19 @@ const MarathonInfoDetailScreen = ({ navigation, uuid }) => {
       }));
     }
   }, []);
+
+  useEffect(() => {
+    setMarathonName(marathonInfo.title)
+    // setMarathonDate(marathonInfo.tournamentDayStart)
+    setMarathonFormatDate(marathonInfo.tournamentDayStart)
+    // 접수 기간(시작 끝으로 수정하기)
+
+    setMarathonPlace(marathonInfo.location)
+    setMarathonUrl(marathonInfo.homepage)
+    setMarathonCourse(marathonInfo.categories)
+    setMarathonHost(marathonInfo.host)
+    // setMarathonCallNum(marathonInfo.) // 문의가 없넹...
+  }, [marathonInfo])
 
   console.log("선택 가능한 코스:", selectCourseModalContent.item); // 디버깅용
 
@@ -263,7 +305,7 @@ const MarathonInfoDetailScreen = ({ navigation, uuid }) => {
     console.log(selectCourseModalContent.item);
     console.log(runType);
     if (runType !== "") {
-      navigation.navigate("MarathonEntryForm");
+      navigation.navigate("MarathonEntryForm", { memberId: user.id, tournamentCategory: runType, tournamentId: marathonInfo.tournamentId, teamId: marathonInfo.teamId});
     }
   };
 
@@ -271,6 +313,34 @@ const MarathonInfoDetailScreen = ({ navigation, uuid }) => {
   const handleNotStartedWarning = () => {
     setShowWarning(true);
     setTimeout(() => setShowWarning(false), 2000); // 2초 후 경고 메시지 숨김
+  };
+
+  const getMarathonDetailInfo = async () => {
+    if (!user.accessToken) {
+      console.error("Access token is missing!");
+      return;
+    }
+    // console.log(uuid)
+  
+    try {
+      const response = await apiClient.get(
+        `/tournament/tournament/getMarathon/detail/${uuid}`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      );
+      // console.log('마라톤 상세정보 조회 성공: ', response.status);
+      if (response.status === 200) {
+        console.log('마라톤 상세정보 조회 성공: ',response.data.data);
+        const getMarathonInfo = response.data.data
+        setMarathonInfo(getMarathonInfo)
+      }
+    } catch (error) {
+      console.error("마라톤 상세정보 조회 에러 발생: ", error);
+    }
   };
 
   return (
