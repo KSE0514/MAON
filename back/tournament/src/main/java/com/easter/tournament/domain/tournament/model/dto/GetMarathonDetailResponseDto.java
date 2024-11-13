@@ -28,6 +28,7 @@ public class GetMarathonDetailResponseDto {
     private boolean closed;
 
     private List<String> categories;
+    private boolean bookmarked;
 
     private boolean participated;
     private boolean hasTeam;

@@ -28,8 +28,8 @@ public class TournamentController {
      * @return
      */
     @PostMapping("/getMarathon")
-    public ResponseEntity<?> getAllMarathon(@Valid @RequestBody GetMarathonRequestDto getMarathonRequestDto) {
-        List<GetMarathonResponseDto> getMarathonResponseDtos = tournamentService.getMarathon(getMarathonRequestDto);
+    public ResponseEntity<?> getAllMarathon(@RequestAttribute("passport") PassportDto passport, @Valid @RequestBody GetMarathonRequestDto getMarathonRequestDto) {
+        List<GetMarathonResponseDto> getMarathonResponseDtos = tournamentService.getMarathon(passport, getMarathonRequestDto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "마라톤 정보 조회 성공", getMarathonResponseDtos);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
