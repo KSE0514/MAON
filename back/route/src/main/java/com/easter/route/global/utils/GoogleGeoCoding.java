@@ -1,5 +1,6 @@
 package com.easter.route.global.utils;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 public class GoogleGeoCoding {
 
     @Value("${google.api.key}")
-    private static String API_KEY;
+    private String API_KEY;
 
     private final RestTemplate restTemplate;
 
