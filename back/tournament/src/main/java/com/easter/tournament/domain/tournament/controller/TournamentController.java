@@ -1,9 +1,6 @@
 package com.easter.tournament.domain.tournament.controller;
 
-import com.easter.tournament.domain.tournament.model.dto.GetMarathonDetailResponseDto;
-import com.easter.tournament.domain.tournament.model.dto.GetMarathonRequestDto;
-import com.easter.tournament.domain.tournament.model.dto.GetMarathonResponseDto;
-import com.easter.tournament.domain.tournament.model.dto.SearchMyTournamentResponseDto;
+import com.easter.tournament.domain.tournament.model.dto.*;
 import com.easter.tournament.domain.tournament.service.TournamentService;
 import com.easter.tournament.domain.tournament.service.TournamentServiceImpl;
 import com.easter.tournament.global.response.ResultResponse;
@@ -75,5 +72,23 @@ public class TournamentController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    /**
+     * 마라톤 북마크
+     * @return
+     */
+    @PostMapping("/bookmark")
+    public ResponseEntity<ResultResponse> bookmarkTournament(@RequestAttribute("passport") PassportDto passport, @RequestBody BookmarkRequestDto dto) {
+        log.info("bookmark tournament : {}", dto.getTournamentId());
+        tournamentService.bookmark(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "마라톤을 북마크했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
 
+    @DeleteMapping("/bookmark")
+    public ResponseEntity<ResultResponse> unbookmarkTournament(@RequestAttribute("passport") PassportDto passport, @RequestBody BookmarkRequestDto dto) {
+        log.info("remove tournament bookmark : {}", dto.getTournamentId());
+        tournamentService.unbookmark(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "마라톤을 북마크를 취소했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
 }
