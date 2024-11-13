@@ -1,47 +1,31 @@
-import { GoogleLogin } from "@react-oauth/google";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { jwtDecode as jwt_decode } from "jwt-decode";
 import { useState } from "react";
-
-const GoogleLoginButton = ({ setUserInfo, setToken }) => {
-  const clientId =
-    "517964408407-o44n8rq8fvc58bbj6jmhfu8k2hlu6ss5.apps.googleusercontent.com";
-
-  const handleSuccess = (credentialResponse) => {
-    const token = credentialResponse.credential;
-    const decoded = jwt_decode(token);
-
-    setToken(token); // 부모 컴포넌트(App)에서 정의된 setToken을 통해 token을 저장
-    setUserInfo(decoded); // 부모 컴포넌트(App)에서 정의된 setUserInfo를 통해 userInfo 저장
-
-    // React Native 앱으로 리디렉션 (딥 링크)
-    const appRedirectUrl = `exp://127.0.0.1:8081/--/redirect?token=${token}&name=${encodeURIComponent(
-      decoded.name
-    )}&email=${encodeURIComponent(decoded.email)}`;
-    console.log("Redirecting to:", appRedirectUrl);
-    window.location.href = appRedirectUrl;
-  };
-
-  return (
-    <GoogleOAuthProvider clientId={clientId}>
-      <GoogleLogin
-        onSuccess={handleSuccess}
-        onError={(error) => {
-          console.error("Login Failed", error);
-        }}
-      />
-    </GoogleOAuthProvider>
-  );
-};
 
 function App() {
   const [userInfo, setUserInfo] = useState(null); // 유저 정보를 저장할 상태
   const [token, setToken] = useState(null); // 토큰을 저장할 상태
 
+  // 테스트용 사용자 정보
+  const testUserInfo = {
+    name: "John Doe",
+    email: "john.doe@example.com",
+    picture: "https://via.placeholder.com/100",
+  };
+
+  // 테스트용 토큰
+  const testToken = "sample_token_123456";
+
+  const handleTestButtonClick = () => {
+    // 버튼 클릭 시 테스트용 사용자 정보와 토큰을 설정
+    setUserInfo(testUserInfo);
+    setToken(testToken);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <GoogleLoginButton setUserInfo={setUserInfo} setToken={setToken} />
+        <h1>Google OAuth 테스트 페이지</h1>
+        {/* 테스트 버튼 클릭 시 토큰과 유저 정보 설정 */}
+        <button onClick={handleTestButtonClick}>테스트 정보 로드</button>
 
         {/* 토큰을 화면에 표시하는 부분 */}
         {token && (
