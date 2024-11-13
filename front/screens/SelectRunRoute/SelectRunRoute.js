@@ -57,7 +57,9 @@ const SelectRunRoute = ({ navigation }) => {
                   mode="searchInfo"
                   moveDetail={() => {
                     // routeId랑 같이 보내기
-                    navigation.navigate("RouteDetail", { routeId: 1 });
+                    navigation.navigate("RouteDetail", {
+                      routeId: route.routeId,
+                    });
                   }}
                 />
               ))}
