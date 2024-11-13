@@ -1,12 +1,29 @@
 package com.easter.route.domain.ranking.entity.dto;
 
+import com.easter.route.domain.record.entity.Record;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class RankedRecord {
-    private String memberProfileUrl;
+    private String memberId;
     private String memberNickname;
-    private Double runningTime;
+    private String memberProfileUrl;
+    private String recordId;
+    private String runningTime;
+    private String averagePace;
+
+    public static RankedRecord of(Record record) {
+        return RankedRecord.builder()
+                .memberId(record.getMemberId())
+                .recordId(record.getId())
+                .runningTime(record.getRunningTime())
+                .averagePace(record.getAveragePace())
+                .build();
+    }
 }
