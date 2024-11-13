@@ -41,6 +41,14 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    @PostMapping("/check")
+    public ResponseEntity<ResultResponse> checkRedundancy(@RequestBody CheckRedundancyRequestDto dto) {
+        log.info("check redundancy of nickname");
+        CheckRedundancyResponseDto responseDto = memberService.checkRedundancy(dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "닉네임 중복여부를 조회했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
     @PostMapping("/info")
     public ResponseEntity<ResultResponse> register(@RequestAttribute("passport") PassportDto passport, @RequestBody RegisterMemberRequestDto requestDto) {
         log.info("register new member info");
@@ -49,10 +57,13 @@ public class MemberController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    @PatchMapping("/info")
-    public ResponseEntity<ResultResponse> modify(@RequestAttribute("passport") PassportDto passport, @RequestBody Object o) {
-        log.info("modify member info");
-        return null; // todo : 회원정보 수정 제작
+    @PostMapping("/info/edit")
+    public ResponseEntity<ResultResponse> modify(@RequestAttribute("passport") PassportDto passport, @ModelAttribute UpdateMemberRequestDto dto) {
+        log.info("edit member info");
+        log.info(dto.toString());
+        UpdateMemberResponseDto responseDto = memberService.updateMember(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "회원 정보를 수정했습니다.", responseDto);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
     
     @PostMapping("/reissue")

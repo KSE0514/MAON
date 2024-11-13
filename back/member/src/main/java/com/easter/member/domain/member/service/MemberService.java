@@ -8,4 +8,7 @@ public interface MemberService {
     RegisterMemberResponseDto registerMember(PassportDto passport, RegisterMemberRequestDto dto);
     ReissueTokenResponseDto reissueToken(ReissueTokenRequestDto dto);
     void logout(String email);
+    UpdateMemberResponseDto updateMember(PassportDto passport, UpdateMemberRequestDto dto);
+    CheckRedundancyResponseDto checkRedundancy(CheckRedundancyRequestDto dto);
+    GetMemberInfoResponseDto getMyInfo(PassportDto passport);
 }

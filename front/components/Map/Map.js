@@ -16,8 +16,8 @@ export default function Map({
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
     longitude: 127.0757584,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
+    latitudeDelta: 0.002,
+    longitudeDelta: 0.002,
   });
   const [gps, setGps] = useState([]);
 
@@ -121,6 +121,7 @@ export default function Map({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       };
+
       setGps((prevGps) => {
         if (prevGps.length > 0) {
           const lastPosition = prevGps[prevGps.length - 1];
@@ -195,7 +196,7 @@ export default function Map({
         Math.sin(deltaLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return R * c; // 거리 (미터)
+    return (R * c) / 1000; // 거리 (킬로미터)
   };
   return (
     <View style={styles.container}>

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.record.entity.dto.LocationDto;
@@ -22,7 +21,6 @@ import com.easter.route.global.utils.DistanceCalculator;
 import com.easter.route.global.utils.GoogleGeoCoding;
 import com.easter.route.global.utils.PaceCalculator;
 import org.springframework.data.geo.Point;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -49,6 +47,7 @@ public class RunningInfoConsumer {
 	private final RecordService recordService;
 	private final RecordRepository recordRepository;
 	private final RouteRepository routeRepository;
+	private final GoogleGeoCoding GoogleGeoCoding;
 	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
 	
 	// 카프카 리스너
@@ -75,9 +74,10 @@ public class RunningInfoConsumer {
 		// 계산
 		List<LocationDto> list = getRunningInfo(recordId);
 		List<String> paceList = getPaceList(recordId);
+		List<Double> distanceList = getDistanceList(recordId);
 		int averageHeartRate = getAverageHeartRate(recordId);
 		GeoJsonLineString recordedTrack = getRecordedTrack(recordId);
-		String runningTime = list.size() > 2 ? timeDifference(list.get(0).getTime(), list.get(list.size()-1).getTime()): "00:00:00";
+		String runningTime = list.size() > 1 ? list.get(list.size()-1).getTime(): "00:00:00";
 		double distance = !list.isEmpty() ? list.get(list.size() - 1).getRunningDistance() : 0;
 		String averagePace = PaceCalculator.calculateAveragePace(paceList);
 
@@ -112,18 +112,20 @@ public class RunningInfoConsumer {
 				.recordId(recordId)
 				.runningInfo(list)
 				.paceList(paceList)
+				.distanceList(distanceList)
 				.averageHeartRate(averageHeartRate)
 				.distance(distance)
 				.averagePace(averagePace)
 				.recordedTrack(recordedTrack)
 				.runningTime(runningTime)
 				.completed(isCompleted)
+			    .startPoint(startPoint)
 				.build();
 
-		recordService.updateRecord(updateRecordDto);
+		Record updatedRecord = recordService.updateRecord(updateRecordDto);
 		clearRunningInfo(recordId);
-		Record updatedRecord = recordRepository.findById(recordId)
-				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
+		// Record updatedRecord = recordRepository.findById(recordId)
+		// 		.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
 
 		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord), "end", routeDistance);
 	}
@@ -139,6 +141,11 @@ public class RunningInfoConsumer {
 	public List<String> getPaceList(String recordId) {
 		List<LocationDto> list = getRunningInfo(recordId);
 		return list.stream().map(LocationDto::getPace).toList();
+	}
+
+	public List<Double> getDistanceList(String recordId) {
+		List<LocationDto> list = getRunningInfo(recordId);
+		return list.stream().map(LocationDto::getRunningDistance).toList();
 	}
 
 	public int getAverageHeartRate(String recordId) {

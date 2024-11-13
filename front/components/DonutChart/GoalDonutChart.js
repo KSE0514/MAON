@@ -21,12 +21,12 @@ const GoalDonutChart = ({ goalDistance, currentDistance, mode }) => {
         coverFill={"#FFF"}
       />
       <View style={{ position: "absolute", alignItems: "center" }}>
-        {mode == "aloneRun" && (
+        {mode == "notSelectedRoute" && (
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>
             {currentDistance.toFixed(1)}km
           </Text>
         )}
-        {mode != "aloneRun" && (
+        {mode != "notSelectedRoute" && (
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>
             {currentDistance.toFixed(1)} / {goalDistance} km
           </Text>

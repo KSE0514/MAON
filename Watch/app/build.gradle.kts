@@ -53,6 +53,7 @@ android {
 
 }
 
+val lifecycleVersion = "2.6.2"  // 최신 버전 사용
 
 dependencies {
 
@@ -104,4 +105,11 @@ dependencies {
 
     implementation ("androidx.wear:wear:1.2.0")
     implementation ("androidx.appcompat:appcompat:1.4.0")
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    // LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
+    // Fragment
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 }

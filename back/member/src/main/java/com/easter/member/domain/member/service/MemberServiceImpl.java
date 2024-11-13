@@ -4,9 +4,11 @@ import com.easter.member.domain.member.entity.Member;
 import com.easter.member.domain.member.model.dto.*;
 import com.easter.member.domain.member.repository.MemberRepository;
 import com.easter.member.global.exception.BusinessException;
+import com.easter.member.global.s3.S3Service;
 import com.easter.member.global.security.jwt.TokenProvider;
 import com.easter.member.global.security.userinfo.PassportDto;
 import com.easter.member.global.security.userinfo.Role;
+import com.easter.member.global.security.userinfo.TokenType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +23,11 @@ import org.springframework.web.client.RestClient;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -34,10 +38,12 @@ public class MemberServiceImpl implements MemberService {
     @Value("${external-url.google-oauth}")
     private String googleOauthUrl;
 
+    private final S3Service s3Service;
     private final MemberRepository MemberRepository;
     private final TokenProvider tokenProvider;
     private final RestClient restClient;
     private final ObjectMapper objectMapper;
+
 
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
@@ -114,6 +120,7 @@ public class MemberServiceImpl implements MemberService {
         Date date;
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
             date = formatter.parse(dto.getBirthDate());
         } catch(ParseException e) {
             log.error("invalid date format : {}", dto.getBirthDate());
@@ -142,13 +149,15 @@ public class MemberServiceImpl implements MemberService {
                 .imageUrl(member.getImageUrl())
                 .role(Role.REGISTERED)
                 .build();
-        String token = tokenProvider.generateAccessToken(newPassport);
+        String accessToken = tokenProvider.generateAccessToken(newPassport);
+        String refreshToken = tokenProvider.getTokenByEmail(member.getEmail(), TokenType.REFRESH);
         return RegisterMemberResponseDto.builder()
                 .id(member.getUuid())
                 .name(member.getName())
                 .email(member.getEmail())
                 .imageUrl(member.getImageUrl())
-                .accessToken(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -162,5 +171,87 @@ public class MemberServiceImpl implements MemberService {
     public void logout(String email) {
         log.info("logout : {}", email);
         tokenProvider.removeToken(email);
+    }
+
+    @Override
+    @Transactional
+    public UpdateMemberResponseDto updateMember(PassportDto passport, UpdateMemberRequestDto dto) {
+        Member member = memberRepository.findByEmail(passport.getEmail()).get();
+        // [1] 사진 업로드
+        String imageUrl = member.getImageUrl();
+        if(dto.getProfileImage() != null && !dto.getProfileImage().isEmpty()) {
+            imageUrl = s3Service.uploadFile(dto.getProfileImage());
+        }
+        Date date;
+        SimpleDateFormat formatter;
+        try {
+            formatter = new SimpleDateFormat("yyyyMMdd");
+            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            if(dto.getBirthDate() != null) {
+                date = formatter.parse(dto.getBirthDate());
+            } else {
+                date = member.getBirthDate();
+            }
+
+        } catch(ParseException e) {
+            log.error("invalid date format : {}", dto.getBirthDate());
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다.");
+        }
+        member = member.toBuilder()
+                .name(dto.getName() == null ? member.getName() : dto.getName())
+                .phoneNumber(dto.getPhoneNumber() == null ? member.getPhoneNumber() : dto.getPhoneNumber())
+                .birthDate(date)
+                .height(dto.getHeight() == null ? member.getHeight() : dto.getHeight())
+                .weight(dto.getWeight() == null ? member.getWeight() : dto.getWeight())
+                .imageUrl(imageUrl)
+                .build();
+        memberRepository.save(member);
+        // 이후 액세스 토큰 재발급
+        PassportDto newPassport = PassportDto.builder()
+                .id(member.getUuid())
+                .name(member.getName())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .imageUrl(member.getImageUrl())
+                .role(Role.REGISTERED)
+                .build();
+        String newAccessToken = tokenProvider.generateAccessToken(newPassport);
+        return UpdateMemberResponseDto.builder()
+                .name(member.getName())
+                .phoneNumber(member.getPhoneNumber())
+                .birthDate(formatter.format(member.getBirthDate()))
+                .height(member.getHeight())
+                .weight(member.getWeight())
+                .accessToken(newAccessToken)
+                .imageUrl(member.getImageUrl())
+                .build();
+    }
+
+    @Override
+    public CheckRedundancyResponseDto checkRedundancy(CheckRedundancyRequestDto dto) {
+        boolean duplicated = memberRepository.existsByNickname(dto.getNickname());
+        return CheckRedundancyResponseDto.builder()
+                .duplicated(duplicated)
+                .build();
+    }
+
+    @Override
+    public GetMemberInfoResponseDto getMyInfo(PassportDto passport) {
+        Member member = memberRepository.findByEmail(passport.getEmail()).get();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        String birthDate = formatter.format(member.getBirthDate());
+        return GetMemberInfoResponseDto.builder()
+                .nickname(member.getNickname())
+                .height(member.getHeight())
+                .weight(member.getWeight())
+                .name(member.getName())
+                .phoneNumber(member.getPhoneNumber())
+                .email(member.getEmail())
+                .address(member.getAddress())
+                .birthDate(birthDate)
+                .gender(member.getGender())
+                .imageUrl(member.getImageUrl())
+                .build();
     }
 }

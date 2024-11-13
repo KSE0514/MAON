@@ -117,6 +117,19 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public void leaveTeam(PassportDto passport, UUID teamId) {
+        Team team = teamRepository.findByUuid(teamId)
+                .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다."));
+        Participant participant = participantQueryRepository.findByMemberIdAndTeamId(passport.getId(), team.getId());
+        if(participant == null) {
+            log.error("this member is not team member");
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
+        }
+        participant = participant.toBuilder().teamId(null).build();
+        participantRepository.save(participant); // 팀 id 부분을 비운다
+    }
+
+    @Override
     public SearchCandidateResponseDto searchCandidate(PassportDto passport, SearchCandidateRequestDto dto) {
         Tournament tournament = tournamentRepository.findByUuid(dto.getTournamentId());
         if(tournament == null) {
@@ -165,6 +178,16 @@ public class TeamServiceImpl implements TeamService {
                 .valid(true)
                 .build();
         teamInvitationRepository.save(teamInvitation);
+    }
+
+    @Override
+    public void cancelInvitation(PassportDto passport, UUID invitationId) {
+        TeamInvitation inv = teamInvitationRepository.findByUuid(invitationId)
+                .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "존재하지 않는 초대 id입니다."));
+        if(!inv.getInviterId().equals(passport.getId()) || !inv.isValid()) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
+        }
+        teamInvitationRepository.delete(inv);
     }
 
     @Override

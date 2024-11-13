@@ -7,7 +7,7 @@ spring:
 
   cloud:
     config:
-      name: route
+      name: route, s3, googlemap
       profile: ${SPRING_PROFILES_ACTIVE:local}
 
 server:
