@@ -112,12 +112,9 @@ const RunResult = ({ navigation, route }) => {
   const addRoute = async () => {
     try {
       const response = await apiClient.post(`/route/course/create`, {
-        writerId: "현석",
-
-        writerName: "현석",
-
+        memberId: "현석",
+        memberName: "현석",
         routeName: addRouteName,
-
         recordId: recordId,
       });
       if (response.status == 201) {

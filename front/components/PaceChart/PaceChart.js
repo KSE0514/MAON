@@ -12,7 +12,6 @@ import Svg, {
   Line,
 } from "react-native-svg";
 import * as d3 from "d3-shape";
-import { scaleLog } from "d3-scale"; // d3-scale 모듈에서 scaleLog를 가져옴
 
 const PaceChart = ({ xData = [], yData = [], yLabel }) => {
   const screenWidth = Dimensions.get("window").width - 60;

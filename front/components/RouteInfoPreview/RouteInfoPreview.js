@@ -30,10 +30,11 @@ const RouteInfoPreview = ({ navigation, data, mode, moveDetail }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-          }}>
+          }}
+        >
           <View style={{ flexDirection: "row" }}>
             <FontAwesomeIcon icon={faLocationDot} color={color.red} />
-            <Text style={[styles.SmallText]}>{data.address}</Text>
+            <Text style={[styles.SmallText]}>{data.startPoint}</Text>
           </View>
 
           {true ? (
@@ -46,12 +47,13 @@ const RouteInfoPreview = ({ navigation, data, mode, moveDetail }) => {
           <Text
             numberOfLines={1}
             ellipsizeMode="tail"
-            style={[styles.LargeText]}>
-            {data.name}
+            style={[styles.LargeText]}
+          >
+            {data.routeName}
           </Text>
         </Row>
         <Row>
-          <Text style={[styles.LargeText]}>{data.routeLenght}Km</Text>
+          <Text style={[styles.LargeText]}>{data.distance}Km</Text>
         </Row>
         <Row>
           <FontAwesomeIcon
@@ -61,11 +63,21 @@ const RouteInfoPreview = ({ navigation, data, mode, moveDetail }) => {
             swapOpacity={true} // 필요에 따라 두 색상 간의 불투명도 조정
           />
 
-          <Text style={[styles.SmallText]}>등록일: {data.registerDate}</Text>
+          <Text style={[styles.SmallText]}>
+            등록일:
+            {new Date(data.createdAt)
+              .toLocaleDateString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              })
+              .replace(/\s/g, "")
+              .replace(/\.$/, "")}
+          </Text>
         </Row>
         <Row>
           <FontAwesomeIcon color={color.grape_fruit} icon={faPenToSquare} />
-          <Text style={[styles.SmallText]}>작성자: {data.register}</Text>
+          <Text style={[styles.SmallText]}>작성자: {data.memberName}</Text>
         </Row>
       </Col>
     </Wrapper>
