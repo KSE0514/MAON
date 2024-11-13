@@ -15,10 +15,12 @@ FROM nginx:1.24.0
 # nginx 기본 설정 제거 (메인 nginx.conf에서 관리되므로)
 # RUN rm /etc/nginx/conf.d/default.conf
 
-RUN chmod -R 755 /usr/share/nginx/html/web
+
 
 # 빌드된 파일을 /web 디렉토리로 복사
 COPY --from=build /app/build /usr/share/nginx/html/web
+
+RUN chmod -R 755 /usr/share/nginx/html/web
 
 # 컨테이너 헬스체크를 위한 상태 페이지
 RUN echo "OK" > /usr/share/nginx/html/health.html
