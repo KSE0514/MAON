@@ -27,4 +27,6 @@ public class GetMarathonResponseDto {
     private boolean closed;
 
     private List<String> categories;
+
+    private boolean bookmarked;
 }

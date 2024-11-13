@@ -37,13 +37,19 @@ public class TournamentServiceImpl implements TournamentService {
     private final BookmarkQueryRepository bookmarkQueryRepository;
 
     @Override
-    public List<GetMarathonResponseDto> getMarathon(GetMarathonRequestDto getMarathonRequestDto) {
+    public List<GetMarathonResponseDto> getMarathon(PassportDto passport, GetMarathonRequestDto getMarathonRequestDto) {
 
         Integer year = getMarathonRequestDto.getYear();
         Integer month = getMarathonRequestDto.getMonth();
         Integer area = getMarathonRequestDto.getArea();
         boolean closed = getMarathonRequestDto.isClosed();
 
+        // 북마크 여부를 알아내기 위해 set 추출
+        List<TournamentBookmark> bookmarkList = bookmarkRepository.findByMemberId(passport.getId());
+        Set<Long> bookmarkIdSet = new HashSet<>();
+        for(TournamentBookmark bookmark : bookmarkList) {
+            bookmarkIdSet.add(bookmark.getTournamentId());
+        }
         List<Tournament> tournaments = tournamentQueryRepository.findByYearAndMonth(year, month, area, closed);
 
         List<GetMarathonResponseDto> getMarathonResponseDtos = tournaments.stream().map(
@@ -70,6 +76,7 @@ public class TournamentServiceImpl implements TournamentService {
                             .imageUrl(tournament.getImageUrl())
                             .closed(tournament.isClosed())
                             .categories(categoryValues)
+                            .bookmarked(bookmarkIdSet.contains(tournament.getId()))
                             .build();
                 }
         ).toList();
@@ -90,6 +97,7 @@ public class TournamentServiceImpl implements TournamentService {
                     return tournamentAssignment.getCategory().getCategoryValue();
                 }
         ).toList();
+        TournamentBookmark bookmark = bookmarkQueryRepository.findByMemberIdAndTournamentId(passport.getId(), tournament.getId());
         // 경기 정보부터 삽입
         GetMarathonDetailResponseDto responseDto = GetMarathonDetailResponseDto.builder()
                 .uuid(tournament.getUuid())
@@ -105,6 +113,7 @@ public class TournamentServiceImpl implements TournamentService {
                 .longitude(tournament.getLongitude())
                 .closed(tournament.isClosed())
                 .categories(categoryValues)
+                .bookmarked(bookmark != null)
                 .build();
         // 참여여부, 팀 여부를 알아내기 위해 서치
         Participant participant = participantQueryRepository.findParticipantFetch(passport.getId(), tournament.getId());

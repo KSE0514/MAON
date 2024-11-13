@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TournamentService {
-    List<GetMarathonResponseDto> getMarathon(GetMarathonRequestDto getMarathonRequestDto);
+    List<GetMarathonResponseDto> getMarathon(PassportDto passport, GetMarathonRequestDto getMarathonRequestDto);
 
     GetMarathonDetailResponseDto getMarathonDetail(PassportDto passport, UUID uuid);
 
