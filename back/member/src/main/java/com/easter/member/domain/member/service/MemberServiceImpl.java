@@ -148,13 +148,15 @@ public class MemberServiceImpl implements MemberService {
                 .imageUrl(member.getImageUrl())
                 .role(Role.REGISTERED)
                 .build();
-        String token = tokenProvider.generateAccessToken(newPassport);
+        String accessToken = tokenProvider.generateAccessToken(newPassport);
+        String refreshToken = tokenProvider.generateRefreshToken(newPassport);
         return RegisterMemberResponseDto.builder()
                 .id(member.getUuid())
                 .name(member.getName())
                 .email(member.getEmail())
                 .imageUrl(member.getImageUrl())
-                .accessToken(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
