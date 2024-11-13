@@ -32,6 +32,7 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
 
   useEffect(() => {
     async function loadFonts() {
@@ -44,6 +45,17 @@ export default function App() {
     }
 
     loadFonts();
+
+
+    // 로그인 상태 확인 로직 (예시)
+    const checkLoginStatus = async () => {
+      // 여기에 실제 로그인 상태 확인 로직을 추가하세요
+      // 예를 들어, AsyncStorage에서 토큰 확인
+      const token = null; // 로그인 토큰 예시 (없으면 false 상태 유지)
+      setIsLoggedIn(!!token);
+    };
+
+    checkLoginStatus();
   }, []);
 
   if (!fontsLoaded) {
@@ -55,13 +67,14 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="Home"
+          initialRouteName={isLoggedIn ? "MainTabs" : "Login"}
         >
-          {/* FooterNavigation이 포함된 화면들 */}
+          {/* 로그인 여부에 따른 화면 설정 */}
+          <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="MainTabs" component={MainTabs} />
+
           {/* FooterNavigation이 포함되지 않은 화면 */}
           <Stack.Screen name="Modal" component={ModalTestScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SelectRunType" component={SelectRunType} />
           <Stack.Screen name="SelectRunRoute" component={SelectRunRoute} />
           <Stack.Screen name="MarathonInfo" component={MarathonInfo} />
@@ -82,11 +95,6 @@ export default function App() {
           />
           <Stack.Screen name="RouteDetail" component={RouteDetail} />
           <Stack.Screen name="RunningWithRoute" component={RunningWithRoute} />
-          {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
-          <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
-          <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />
-          <Stack.Screen name="Challenge" component={ScreenWithFooter(ChallengeScreen)} />
-          <Stack.Screen name="Modal" component={ScreenWithFooter(ModalTestScreen)} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </FontContext.Provider>

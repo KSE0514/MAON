@@ -27,7 +27,7 @@ export const TitleContent = styled.Text`
 `
 
 export const Main = styled.View`
-  gap: 30%;
+  gap: 30px;
   margin: 9% 0;
   align-items: center;
 `
@@ -53,7 +53,7 @@ export const PlusIcon = styled.View`
 `
 
 export const UserInfo = styled.View`
-  gap: 10%;
+  gap: 10px;
 `
 
 export const UserBodyInfo = styled.View`
