@@ -1,6 +1,9 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import * as Font from "expo-font";
 import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { BackHandler } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Alert, StyleSheet, Text, View, sta } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -103,6 +106,20 @@ export default function App() {
 
 // FooterNavigation이 포함된 하단 탭 네비게이션 설정
 const MainTabs = ({ route }) => {
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        // 뒤로가기 무시하고 홈 화면 유지
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
+
   return (
     <Tab.Navigator
       tabBar={({ state }) => (
