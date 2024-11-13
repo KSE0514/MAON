@@ -85,7 +85,11 @@ const LoginScreen = () => {
             refreshToken: responseUserInfo.refreshToken,
             imageUrl: responseUserInfo.imageUrl,
           })
-          navigation.navigate("MainTabs", { screen: "Home" });
+          // navigation.navigate("MainTabs", { screen: "Home" });
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "MainTabs" }],
+          });
 
         } else {
           // 가입한 적이 없는 회원일 경우에는 회원가입으로 이동 후, 회원가입 완료했을 시 AuthStore에 정보를 저장하고 home으로 이동
