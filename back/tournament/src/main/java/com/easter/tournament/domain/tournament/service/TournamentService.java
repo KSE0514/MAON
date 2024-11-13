@@ -1,9 +1,6 @@
 package com.easter.tournament.domain.tournament.service;
 
-import com.easter.tournament.domain.tournament.model.dto.GetMarathonDetailResponseDto;
-import com.easter.tournament.domain.tournament.model.dto.GetMarathonRequestDto;
-import com.easter.tournament.domain.tournament.model.dto.GetMarathonResponseDto;
-import com.easter.tournament.domain.tournament.model.dto.SearchMyTournamentResponseDto;
+import com.easter.tournament.domain.tournament.model.dto.*;
 import com.easter.tournament.global.security.PassportDto;
 
 import java.util.List;
@@ -17,5 +14,9 @@ public interface TournamentService {
     List<GetMarathonResponseDto> getMarathonByTitle(String title);
 
     SearchMyTournamentResponseDto searchMyTournament(PassportDto passport);
+
+    void bookmark(PassportDto passport, BookmarkRequestDto dto);
+
+    void unbookmark(PassportDto passport, BookmarkRequestDto dto);
 
 }
