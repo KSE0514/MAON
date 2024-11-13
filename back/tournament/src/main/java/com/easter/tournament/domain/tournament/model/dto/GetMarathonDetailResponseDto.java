@@ -24,10 +24,12 @@ public class GetMarathonDetailResponseDto {
     private LocalDateTime tournamentDayEnd;
     private Double latitude;
     private Double longitude;
+    private String inquiry;
     private String imageUrl;
     private boolean closed;
 
     private List<String> categories;
+    private boolean bookmarked;
 
     private boolean participated;
     private boolean hasTeam;

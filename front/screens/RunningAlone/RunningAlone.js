@@ -137,6 +137,7 @@ const RunningAlone = ({ navigation, route }) => {
         const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${roomId}/end\n\n\0`;
         kafkaWs.send(subscribeFrame);
       } else {
+        console.log("여기까진 왔니");
         try {
           // JSON 형식만 추출하기
           const jsonStartIndex = message.data.indexOf("{");
@@ -163,7 +164,7 @@ const RunningAlone = ({ navigation, route }) => {
                 distance: parsedData.record.distance,
                 createdAt: parsedData.record.createdAt,
                 routeDistance: parsedData.routeDistance || 0,
-                distanceList: [],
+                distanceList: parsedData.record.distanceList,
               });
             }
           } else {

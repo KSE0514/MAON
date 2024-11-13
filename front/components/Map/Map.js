@@ -156,7 +156,7 @@ export default function Map({
     const startTracking = async () => {
       locationInterval.current = setInterval(async () => {
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
+          accuracy: Location.Accuracy.Balanced,
         });
         handleUserLocationChange(location);
       }, 1000); // 1초마다 위치 업데이트
