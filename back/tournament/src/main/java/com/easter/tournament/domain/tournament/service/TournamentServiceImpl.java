@@ -8,7 +8,10 @@ import com.easter.tournament.domain.team.entity.Team;
 import com.easter.tournament.domain.team.model.dto.TeamMemberDto;
 import com.easter.tournament.domain.team.service.TeamService;
 import com.easter.tournament.domain.tournament.entity.Tournament;
+import com.easter.tournament.domain.tournament.entity.TournamentBookmark;
 import com.easter.tournament.domain.tournament.model.dto.*;
+import com.easter.tournament.domain.tournament.repository.BookmarkQueryRepository;
+import com.easter.tournament.domain.tournament.repository.BookmarkRepository;
 import com.easter.tournament.domain.tournament.repository.TournamentQueryRepository;
 import com.easter.tournament.domain.tournament.repository.TournamentRepository;
 import com.easter.tournament.global.exception.BusinessException;
@@ -17,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -27,18 +31,25 @@ public class TournamentServiceImpl implements TournamentService {
 
     private final TournamentRepository tournamentRepository;
     private final TournamentQueryRepository tournamentQueryRepository;
-    private final ParticipantRepository participantRepository;
     private final ParticipantQueryRepository participantQueryRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final TeamService teamService;
+    private final BookmarkQueryRepository bookmarkQueryRepository;
 
     @Override
-    public List<GetMarathonResponseDto> getMarathon(GetMarathonRequestDto getMarathonRequestDto) {
+    public List<GetMarathonResponseDto> getMarathon(PassportDto passport, GetMarathonRequestDto getMarathonRequestDto) {
 
         Integer year = getMarathonRequestDto.getYear();
         Integer month = getMarathonRequestDto.getMonth();
         Integer area = getMarathonRequestDto.getArea();
         boolean closed = getMarathonRequestDto.isClosed();
 
+        // 북마크 여부를 알아내기 위해 set 추출
+        List<TournamentBookmark> bookmarkList = bookmarkRepository.findByMemberId(passport.getId());
+        Set<Long> bookmarkIdSet = new HashSet<>();
+        for(TournamentBookmark bookmark : bookmarkList) {
+            bookmarkIdSet.add(bookmark.getTournamentId());
+        }
         List<Tournament> tournaments = tournamentQueryRepository.findByYearAndMonth(year, month, area, closed);
 
         List<GetMarathonResponseDto> getMarathonResponseDtos = tournaments.stream().map(
@@ -62,9 +73,11 @@ public class TournamentServiceImpl implements TournamentService {
                             .tournamentDayEnd(tournament.getTournamentDayEnd())
                             .longitude(tournament.getLongitude())
                             .latitude(tournament.getLatitude())
+                            .inquiry(tournament.getInquiry())
                             .imageUrl(tournament.getImageUrl())
                             .closed(tournament.isClosed())
                             .categories(categoryValues)
+                            .bookmarked(bookmarkIdSet.contains(tournament.getId()))
                             .build();
                 }
         ).toList();
@@ -85,6 +98,7 @@ public class TournamentServiceImpl implements TournamentService {
                     return tournamentAssignment.getCategory().getCategoryValue();
                 }
         ).toList();
+        TournamentBookmark bookmark = bookmarkQueryRepository.findByMemberIdAndTournamentId(passport.getId(), tournament.getId());
         // 경기 정보부터 삽입
         GetMarathonDetailResponseDto responseDto = GetMarathonDetailResponseDto.builder()
                 .uuid(tournament.getUuid())
@@ -98,8 +112,10 @@ public class TournamentServiceImpl implements TournamentService {
                 .tournamentDayEnd(tournament.getTournamentDayEnd())
                 .latitude(tournament.getLatitude())
                 .longitude(tournament.getLongitude())
+                .inquiry(tournament.getInquiry())
                 .closed(tournament.isClosed())
                 .categories(categoryValues)
+                .bookmarked(bookmark != null)
                 .build();
         // 참여여부, 팀 여부를 알아내기 위해 서치
         Participant participant = participantQueryRepository.findParticipantFetch(passport.getId(), tournament.getId());
@@ -149,5 +165,40 @@ public class TournamentServiceImpl implements TournamentService {
         return SearchMyTournamentResponseDto.builder()
                 .tournamentList(tournamentList)
                 .build();
+    }
+
+    @Override
+    public void bookmark(PassportDto passport, BookmarkRequestDto dto) {
+        Tournament tournament = tournamentQueryRepository.findByUuid(dto.getTournamentId());
+        if(tournament == null) {
+            log.error("cannot find tournament : {}", dto.getTournamentId());
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
+        }
+        if(bookmarkQueryRepository.findByMemberIdAndTournamentId(passport.getId(), tournament.getId()) != null) {
+            log.error("already bookmarked tournament : {}", dto.getTournamentId());
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
+        }
+        // 부재를 확인했다면 DB insert
+        TournamentBookmark bookmark = TournamentBookmark.builder()
+                .tournamentId(tournament.getId())
+                .memberId(passport.getId())
+                .build();
+        bookmarkRepository.save(bookmark);
+    }
+
+    @Override
+    @Transactional
+    public void unbookmark(PassportDto passport, BookmarkRequestDto dto) {
+        Tournament tournament = tournamentQueryRepository.findByUuid(dto.getTournamentId());
+        if(tournament == null) {
+            log.error("cannot find tournament : {}", dto.getTournamentId());
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
+        }
+        TournamentBookmark bookmark = bookmarkQueryRepository.findByMemberIdAndTournamentId(passport.getId(), tournament.getId());
+        if(bookmark == null) {
+            log.error("bookmark does not exist : {}", dto.getTournamentId());
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
+        }
+        bookmarkRepository.delete(bookmark);
     }
 }

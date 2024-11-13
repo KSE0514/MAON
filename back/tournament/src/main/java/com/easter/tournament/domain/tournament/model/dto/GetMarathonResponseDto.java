@@ -23,8 +23,11 @@ public class GetMarathonResponseDto {
     private LocalDateTime tournamentDayEnd;
     private Double latitude;
     private Double longitude;
+    private String inquiry;
     private String imageUrl;
     private boolean closed;
 
     private List<String> categories;
+
+    private boolean bookmarked;
 }
