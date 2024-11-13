@@ -1,4 +1,4 @@
-package com.easter.route.domain.record.service;
+package com.easter.route.domain.running.service;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -8,17 +8,20 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.easter.route.domain.record.entity.Record;
-import com.easter.route.domain.record.entity.dto.LocationDto;
+import com.easter.route.domain.record.entity.dto.PointPair;
+import com.easter.route.domain.running.entity.dto.LocationDto;
 
 import com.easter.route.domain.record.entity.dto.RecordDto;
-import com.easter.route.domain.record.entity.dto.RunningResultDto;
+import com.easter.route.domain.running.entity.dto.RunningResultDto;
 import com.easter.route.domain.record.entity.dto.UpdateRecordDto;
 import com.easter.route.domain.record.repository.RecordRepository;
+import com.easter.route.domain.record.service.RecordService;
 import com.easter.route.domain.route.entity.Route;
 import com.easter.route.domain.route.repository.RouteRepository;
 import com.easter.route.global.exception.BusinessException;
 import com.easter.route.global.utils.DistanceCalculator;
 import com.easter.route.global.utils.GoogleGeoCoding;
+import com.easter.route.global.utils.OffCourseCalculator;
 import com.easter.route.global.utils.PaceCalculator;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
@@ -35,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class RunningInfoConsumer {
+public class RunningConsumer {
 
 	// Kafka recordId를 key로 메시지가 쌓이고, 그 값은 Map에 저장된다.
 	// 발생할 수 있는 동시성 이슈들
@@ -48,10 +51,28 @@ public class RunningInfoConsumer {
 	private final RecordRepository recordRepository;
 	private final RouteRepository routeRepository;
 	private final GoogleGeoCoding GoogleGeoCoding;
+	private final OffCourseCalculator offCourseCalculator;
 	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
-	
-	// 카프카 리스너
-	@KafkaListener(topics = "maon.route.location", groupId = "running.group", containerFactory = "locationKafkaListenerContainerFactory")
+
+	// 처음에 시작점 찾기 위해 위치 정보 받는 상황(실제로 뛰고 있지 않음)
+	// @KafkaListener(topics = "route.running.find-start-point", groupId = "running.find.start-point", containerFactory = "locationKafkaListenerContainerFactory")
+	// public void listenStartPoint(PointPair pointPair, Acknowledgment acknowledgment) {
+	// 	try {
+	// 		log.info("Received location data in start point listener: {}", pointPair);
+	// 		boolean isStartPoint = DistanceCalculator.isWithinDistance(
+	// 			pointPair.getStartLatitude(),
+	// 			pointPair.getStartLongitude(),
+	// 			pointPair.getEndLatitude(),
+	// 			pointPair.getEndLongitude(),
+	// 			10);
+	// 		acknowledgment.acknowledge();
+	// 	} catch (Exception e) {
+	// 		log.error("Failed to acknowledge message: {}", pointPair, e);
+	// 	}
+	// }
+
+	// 탭 하여 시작하기 버튼을 누른 상황(실제로 뛰고 있는 경우)
+	@KafkaListener(topics = "route.running.process-location", groupId = "running.process.location", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
 			log.error("Received location data in listener: {}", locationDto);
@@ -63,11 +84,9 @@ public class RunningInfoConsumer {
 		}
 	}
 
-	// 러닝 종료시 게산
-	public RunningResultDto finish(String recordId) {
-		Record record = recordRepository.findById(recordId)
-				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
-		log.info("record: {} 를 찾았습니다.", record.toString());
+	// 러닝 종료시 결과 값 계산 후 엔티티에 저장한다.
+	public Record calculateResult(Record record) {
+		String recordId = record.getId();
 		// 시간 순서로 정렬
 		runningInfoMap.get(recordId).sort((a, b) -> a.getTime().compareTo(b.getTime()));
 
@@ -77,14 +96,12 @@ public class RunningInfoConsumer {
 		List<Double> distanceList = getDistanceList(recordId);
 		int averageHeartRate = getAverageHeartRate(recordId);
 		GeoJsonLineString recordedTrack = getRecordedTrack(recordId);
-		String runningTime = list.size() > 1 ? list.get(list.size()-1).getTime(): "00:00:00";
+		String runningTime = list.size() > 1 ? list.get(list.size() - 1).getTime() : "00:00:00";
 		double distance = !list.isEmpty() ? list.get(list.size() - 1).getRunningDistance() : 0;
 		String averagePace = PaceCalculator.calculateAveragePace(paceList);
 
-
 		boolean isCompleted = false;
 		String startPoint;
-		double routeDistance = distance;
 		Optional<Route> route = routeRepository.findById(record.getRouteId());
 
 		if (route.isPresent()) {
@@ -94,40 +111,53 @@ public class RunningInfoConsumer {
 			Point endPoint = coordinates.get(coordinates.size() - 1);
 			// 사용자가 달린 거리가 등록된 경로의 총 길이 이상이고, 도착지점과 10m 이내라면 완주로 처리한다.
 			if (findRoute.getDistance() <= distance && DistanceCalculator.isWithinDistance(
-					endPoint.getX(),
-					endPoint.getY(),
-					Double.parseDouble(list.get(list.size() - 1).getLatitude()),
-					Double.parseDouble(list.get(list.size() - 1).getLongitude()),
-					10)) {
+				endPoint.getX(),
+				endPoint.getY(),
+				Double.parseDouble(list.get(list.size() - 1).getLatitude()),
+				Double.parseDouble(list.get(list.size() - 1).getLongitude()),
+				10)) {
 				isCompleted = true;
 			}
 			startPoint = findRoute.getStartPoint();
-			routeDistance = findRoute.getDistance();
 		} else {
 			log.info("등록된 경로가 없습니다.");
 			startPoint = GoogleGeoCoding.getAddress(Double.parseDouble(list.get(0).getLatitude()), Double.parseDouble(list.get(0).getLongitude()));
 		}
 
 		UpdateRecordDto updateRecordDto = UpdateRecordDto.builder()
-				.recordId(recordId)
-				.runningInfo(list)
-				.paceList(paceList)
-				.distanceList(distanceList)
-				.averageHeartRate(averageHeartRate)
-				.distance(distance)
-				.averagePace(averagePace)
-				.recordedTrack(recordedTrack)
-				.runningTime(runningTime)
-				.completed(isCompleted)
-			    .startPoint(startPoint)
-				.build();
+			.recordId(recordId)
+			.runningInfo(list)
+			.paceList(paceList)
+			.distanceList(distanceList)
+			.averageHeartRate(averageHeartRate)
+			.distance(distance)
+			.averagePace(averagePace)
+			.recordedTrack(recordedTrack)
+			.runningTime(runningTime)
+			.completed(isCompleted)
+			.startPoint(startPoint)
+			.build();
 
 		Record updatedRecord = recordService.updateRecord(updateRecordDto);
 		clearRunningInfo(recordId);
-		// Record updatedRecord = recordRepository.findById(recordId)
-		// 		.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
+		return updatedRecord;
+	}
 
-		return new RunningResultDto(startPoint, RecordDto.of(updatedRecord), "end", routeDistance);
+	// 현재 위치가 경로에 이탈했는지 체크한다.
+	// TODO: 로직 구현하기
+	public boolean checkPoint(String recordId, LocationDto locationDto) {
+		List<LocationDto> list = getRunningInfo(recordId);
+		return false;
+	}
+
+	// 러닝 종료시 계산한 값을 클라이언트에 반환한다.
+	public RunningResultDto finish(String recordId) {
+		Record record = recordRepository.findById(recordId)
+			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
+		log.info("record: {} 를 찾았습니다.", record.toString());
+		Record updatedRecord = calculateResult(record);
+		double routeDistance = updatedRecord.getRouteId() != null ? routeRepository.findById(updatedRecord.getRouteId()).get().getDistance() : updatedRecord.getDistance();
+		return new RunningResultDto(RecordDto.of(updatedRecord), routeDistance, "end");
 	}
 
 	public List<LocationDto> getRunningInfo(String recordId) {

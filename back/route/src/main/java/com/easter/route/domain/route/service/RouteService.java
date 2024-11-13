@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.easter.route.domain.route.entity.dto.CreateRouteRequestDto;
-import com.easter.route.domain.route.entity.dto.CreateRouteResponseDto;
 import com.easter.route.domain.route.entity.dto.DeleteRouteRequestDto;
 import com.easter.route.domain.route.entity.dto.RouteDto;
 

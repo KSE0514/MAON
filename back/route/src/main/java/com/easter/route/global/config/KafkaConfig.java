@@ -22,7 +22,7 @@ import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-import com.easter.route.domain.record.entity.dto.LocationDto;
+import com.easter.route.domain.running.entity.dto.LocationDto;
 
 @Configuration
 @EnableKafka
@@ -68,7 +68,7 @@ public class KafkaConfig {
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-		props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.easter.route.domain.record.entity.dto");
+		props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.easter.route.domain.running.entity.dto");
 		return props;
 	}
 

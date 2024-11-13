@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 
 import java.util.List;
 
+import com.easter.route.domain.running.entity.dto.LocationDto;
+
 @Data
 @Builder
 public class UpdateRecordDto {

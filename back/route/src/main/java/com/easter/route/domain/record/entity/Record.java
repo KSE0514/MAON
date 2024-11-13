@@ -1,6 +1,6 @@
 package com.easter.route.domain.record.entity;
 
-import com.easter.route.domain.record.entity.dto.LocationDto;
+import com.easter.route.domain.running.entity.dto.LocationDto;
 import com.easter.route.domain.record.entity.dto.UpdateRecordDto;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -18,7 +18,6 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Document(collection = "records")
