@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,7 +34,20 @@ public class GoogleGeoCoding {
             );
             log.info("Requesting address to Google API: {}", url);
 
-            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            // POST 요청을 위한 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // POST 요청을 위한 HttpEntity 생성 (비어있는 body 사용)
+            HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
+
+            // POST 요청 보내기
+            ResponseEntity<Map> response = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                Map.class
+            );
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 List<Map<String, Object>> results = (List<Map<String, Object>>) response.getBody().get("results");
