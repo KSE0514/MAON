@@ -4060,6 +4060,7 @@ layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_auth
 layout activity_main
+layout activity_member
 layout activity_restart
 layout activity_result
 layout activity_run

@@ -61,6 +61,7 @@ class AuthActivity : AppCompatActivity() {
         binding.connectBtn.setOnClickListener {
             val authCode = binding.authCodeText.text.toString()
             subscribeToAuthTopic(authCode)
+
         }
 
     }
@@ -77,9 +78,7 @@ class AuthActivity : AppCompatActivity() {
                     memberDao.insertMember(Member(memberId.toString()))
                 }
 
-                // 전체 테이블에 memberId가 하나라도 있는지 확인
-                 val anyMemberExists = memberDao.isAnyMemberExists()
-                 Log.d(TAG, "Any member exists: $anyMemberExists")
+
             }
         }
     }

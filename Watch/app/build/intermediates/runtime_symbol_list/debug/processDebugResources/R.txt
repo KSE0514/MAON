@@ -4059,6 +4059,7 @@ int layout abc_select_dialog_material 0x7f0e001a
 int layout abc_tooltip 0x7f0e001b
 int layout activity_auth 0x7f0e001c
 int layout activity_main 0x7f0e001d
+int layout activity_member 0x7f0e0086
 int layout activity_restart 0x7f0e001e
 int layout activity_result 0x7f0e001f
 int layout activity_run 0x7f0e0020
