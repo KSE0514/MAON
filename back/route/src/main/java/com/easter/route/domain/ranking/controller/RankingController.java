@@ -41,4 +41,12 @@ public class RankingController {
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "모든 랭킹 정보를 업데이트했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
+
+    // test용, 삭제 할 것
+    @GetMapping("/ranking/openFeignTest")
+    public ResponseEntity<ResultResponse> openFeignTest() {
+        rankingService.feignTest();
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "openFeignTest");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
 }

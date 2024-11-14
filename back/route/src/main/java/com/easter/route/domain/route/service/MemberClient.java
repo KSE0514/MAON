@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "member", url = "http://localhost:8765")
+@FeignClient(name = "member")
 public interface MemberClient {
 
     @PostMapping("/maon/member/service/search")

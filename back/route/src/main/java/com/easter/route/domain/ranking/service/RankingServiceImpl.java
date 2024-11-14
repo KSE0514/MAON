@@ -127,4 +127,66 @@ public class RankingServiceImpl implements RankingService {
 		rankingRepository.save(ranking);
 	}
 
+	public void feignTest() {
+		// List<UUID> memberIds = new ArrayList<>();
+		// GetMemberListRequestFeignDto getMemberListRequestFeignDto = GetMemberListRequestFeignDto.builder().idList(memberIds).build();
+		// ResponseEntity<ResultResponse> res = memberClient.getMemberInfoList(getMemberListRequestFeignDto);
+		// if (res.getStatusCode() != HttpStatus.OK) {
+		// 	throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "멤버 서비스에서 정보를 가져오는데 실패했습니다.");
+		// }
+		// // 멤버 정보 최신화
+		// List<MemberInfo> memberList =
+		// 	objectMapper.convertValue(Objects.requireNonNull(res.getBody()).getData(), GetMemberListResponseFeignDto.class).getMemberInfoList();
+		try {
+			List<UUID> memberIds = new ArrayList<>();
+			GetMemberListRequestFeignDto getMemberListRequestFeignDto = GetMemberListRequestFeignDto.builder()
+				.idList(memberIds)
+				.build();
+
+			log.info("Feign request DTO: {}", getMemberListRequestFeignDto); // 요청 데이터 로깅
+
+			ResponseEntity<ResultResponse> res = memberClient.getMemberInfoList(getMemberListRequestFeignDto);
+			log.info("Feign response status: {}", res.getStatusCode()); // 응답 상태 로깅
+
+			if (res.getStatusCode() != HttpStatus.OK) {
+				log.error("Failed to get member info. Status: {}, Body: {}",
+					res.getStatusCode(),
+					res.getBody()); // 실패 시 응답 바디까지 로깅
+
+				throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR,
+					String.format("멤버 서비스에서 정보를 가져오는데 실패했습니다. Status: %s", res.getStatusCode()));
+			}
+
+			// 멤버 정보 최신화
+			ResultResponse resultResponse = res.getBody();
+			if (resultResponse == null || resultResponse.getData() == null) {
+				log.error("Response body or data is null");
+				throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "멤버 서비스 응답이 올바르지 않습니다.");
+			}
+
+			try {
+				GetMemberListResponseFeignDto responseDto = objectMapper.convertValue(
+					resultResponse.getData(),
+					GetMemberListResponseFeignDto.class
+				);
+				List<MemberInfo> memberList = responseDto.getMemberInfoList();
+				log.info("Successfully retrieved {} members", memberList.size()); // 성공 시 결과 개수 로깅
+
+			} catch (IllegalArgumentException e) {
+				log.error("Failed to convert response data: {}", e.getMessage(), e);
+				throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "멤버 정보 변환에 실패했습니다.");
+			}
+		} catch (FeignException e) {
+			log.error("Feign client error occurred: status={}, message={}",
+				e.status(),
+				e.getMessage(),
+				e); // Feign 예외 상세 정보 로깅
+			throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR,
+				String.format("멤버 서비스 호출 중 오류가 발생했습니다: %s", e.getMessage()));
+		} catch (Exception e) {
+			log.error("Unexpected error during member service call: {}", e.getMessage(), e);
+			throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR,
+				"멤버 서비스 호출 중 예상치 못한 오류가 발생했습니다.");
+		}
+	}
 }
