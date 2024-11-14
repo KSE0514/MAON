@@ -23,7 +23,10 @@ import org.springframework.web.client.RestClient;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -117,12 +120,12 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "타 사용자의 이메일로 가입을 시도하고 있습니다.");
         }
         // 주어진 정보를 기반으로 entity 구축
-        Date date;
+        LocalDate date;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-            date = formatter.parse(dto.getBirthDate());
-        } catch(ParseException e) {
+            date = LocalDate.parse(dto.getBirthDate(), formatter);
+
+        } catch(DateTimeParseException e) {
             log.error("invalid date format : {}", dto.getBirthDate());
             throw new BusinessException(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다.");
         }
@@ -182,18 +185,15 @@ public class MemberServiceImpl implements MemberService {
         if(dto.getProfileImage() != null && !dto.getProfileImage().isEmpty()) {
             imageUrl = s3Service.uploadFile(dto.getProfileImage());
         }
-        Date date;
-        SimpleDateFormat formatter;
+        LocalDate date;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         try {
-            formatter = new SimpleDateFormat("yyyyMMdd");
-            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
             if(dto.getBirthDate() != null) {
-                date = formatter.parse(dto.getBirthDate());
+                date = LocalDate.parse(dto.getBirthDate(), formatter);
             } else {
                 date = member.getBirthDate();
             }
-
-        } catch(ParseException e) {
+        } catch(DateTimeParseException e) {
             log.error("invalid date format : {}", dto.getBirthDate());
             throw new BusinessException(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다.");
         }
@@ -203,6 +203,7 @@ public class MemberServiceImpl implements MemberService {
                 .birthDate(date)
                 .height(dto.getHeight() == null ? member.getHeight() : dto.getHeight())
                 .weight(dto.getWeight() == null ? member.getWeight() : dto.getWeight())
+                .address(dto.getAddress() == null ? member.getAddress() : dto.getAddress())
                 .imageUrl(imageUrl)
                 .build();
         memberRepository.save(member);
@@ -222,6 +223,7 @@ public class MemberServiceImpl implements MemberService {
                 .birthDate(formatter.format(member.getBirthDate()))
                 .height(member.getHeight())
                 .weight(member.getWeight())
+                .address(member.getAddress())
                 .accessToken(newAccessToken)
                 .imageUrl(member.getImageUrl())
                 .build();
@@ -238,9 +240,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public GetMemberInfoResponseDto getMyInfo(PassportDto passport) {
         Member member = memberRepository.findByEmail(passport.getEmail()).get();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-        String birthDate = formatter.format(member.getBirthDate());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String birthDate = member.getBirthDate().format(formatter);
         return GetMemberInfoResponseDto.builder()
                 .nickname(member.getNickname())
                 .height(member.getHeight())

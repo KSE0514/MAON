@@ -117,8 +117,8 @@ const RunResult = ({ navigation, route }) => {
       const response = await apiClient.post(
         `/route/course/create`,
         {
-          memberId: "현석",
-          memberName: "현석",
+          memberId: user.id,
+          memberName: user.name,
           routeName: addRouteName,
           recordId: recordId,
         },

@@ -4,18 +4,16 @@ import com.easter.member.domain.member.model.Gender;
 import com.fasterxml.uuid.Generators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
 @Getter
+@ToString
 @Builder(toBuilder = true)
 @Table(name = "member")
 @NoArgsConstructor
@@ -54,7 +52,7 @@ public class Member {
     private Integer weight;
 
     @Column(name = "birth_date", columnDefinition = "Date")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column(name = "address", length = 50)
     private String address;

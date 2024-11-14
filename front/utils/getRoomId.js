@@ -1,12 +1,13 @@
 import { apiClient } from "../customAxios";
-
+import useAuthStore from "../store/AuthStore";
 export const getPracticeRoomIdWithRoute = async (routeId) => {
+  const { user } = useAuthStore();
   try {
     const response = await apiClient.post(
       `/route/running/createRunning`,
       {
         routeId: routeId,
-        memberId: "dpqls0356",
+        memberId: user.id,
         recordType: "PRACTICE",
       },
       {
@@ -24,12 +25,13 @@ export const getPracticeRoomIdWithRoute = async (routeId) => {
 };
 
 export const getPracticeRoomId = async () => {
+  const { user } = useAuthStore();
   try {
     const response = await apiClient.post(
       `/route/running/createRunning`,
       {
         routeId: "",
-        memberId: "dpqls0356",
+        memberId: user.id,
         recordType: "PRACTICE",
       },
       {
@@ -47,12 +49,13 @@ export const getPracticeRoomId = async () => {
 };
 
 export const getRaceRoomId = async (routeId) => {
+  const { user } = useAuthStore();
   try {
     const response = await apiClient.post(
       `/route/running/createRunning`,
       {
         routeId: routeId,
-        memberId: "dpqls0356",
+        memberId: user.id,
         recordType: "RACE",
       },
       {

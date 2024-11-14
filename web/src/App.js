@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const GoogleLoginButton = ({ setUserInfo, setToken }) => {
   const clientId =
-    "517964408407-o44n8rq8fvc58bbj6jmhfu8k2hlu6ss5.apps.googleusercontent.com";
+    "440199819883-gcepu2hg885mqeqkdue00dagrphri08u.apps.googleusercontent.com";
 
   const handleSuccess = (credentialResponse) => {
     const token = credentialResponse.credential;
@@ -15,10 +15,30 @@ const GoogleLoginButton = ({ setUserInfo, setToken }) => {
     setUserInfo(decoded); // 부모 컴포넌트(App)에서 정의된 setUserInfo를 통해 userInfo 저장
 
     // React Native 앱으로 리디렉션 (딥 링크)
-    const appRedirectUrl = `exp://127.0.0.1:8081/--/redirect?token=${token}&name=${encodeURIComponent(
-      decoded.name
-    )}&email=${encodeURIComponent(decoded.email)}`;
-    console.log("Redirecting to:", appRedirectUrl);
+    //    const appRedirectUrl = AuthSession.makeRedirectUri({ scheme: "maon" });
+    //    const RedirectUrl = `${appRedirectUrl}?token=${token}&name=${encodeURIComponent(
+    //      decoded.name
+    //    )}&email=${encodeURIComponent(decoded.email)}`;
+    //    console.log("Redirecting to:", appRedirectUrl);
+    //    window.location.href =RedirectUrl;
+
+    // React Native 앱으로 리디렉션 (딥 링크)
+    //    const appRedirectUrl = `intent://redirect#Intent;scheme=maon;package=com.ssafy.maon;S.token=${token};S.name=${encodeURIComponent(
+    //      decoded.name
+    //    )};S.email=${encodeURIComponent(decoded.email)};end`;
+
+    console.log("token : ", token);
+    console.log("decoded : ", decoded);
+
+    const appRedirectUrl = `maon://redirect?token=${encodeURIComponent(
+      token
+    )}&name=${encodeURIComponent(decoded.name)}&email=${encodeURIComponent(
+      decoded.email
+    )}`;
+
+    //console.log("Redirecting to:", appRedirectUrl);
+
+    //console.log("Redirecting to:", appRedirectUrl);
     window.location.href = appRedirectUrl;
   };
 
