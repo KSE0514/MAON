@@ -62,7 +62,7 @@ id textView9
 id viewPager
 layout activity_auth
 layout activity_main
-layout activity_member
+layout activity_record
 layout activity_restart
 layout activity_result
 layout activity_run

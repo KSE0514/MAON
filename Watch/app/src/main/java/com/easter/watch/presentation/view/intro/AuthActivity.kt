@@ -61,7 +61,7 @@ class AuthActivity : AppCompatActivity() {
         binding.connectBtn.setOnClickListener {
             val authCode = binding.authCodeText.text.toString()
             subscribeToAuthTopic(authCode)
-
+            stompClient.sendMessage("/topic/sub/connect/$authCode","watch-connected") //구독후 메시지 보내기
         }
 
     }
@@ -77,7 +77,6 @@ class AuthActivity : AppCompatActivity() {
                     Log.d(TAG, "멤버 저장")
                     memberDao.insertMember(Member(memberId.toString()))
                 }
-
 
             }
         }

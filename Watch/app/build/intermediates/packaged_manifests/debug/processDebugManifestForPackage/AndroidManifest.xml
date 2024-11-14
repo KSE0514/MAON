@@ -61,7 +61,7 @@
         android:testOnly="true"
         android:theme="@android:style/Theme.DeviceDefault" >
         <activity
-            android:name="com.easter.watch.presentation.view.MemberActivity"
+            android:name="com.easter.watch.presentation.view.RecordActivity"
             android:exported="false"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar" />
         <activity

@@ -8,13 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.easter.watch.R
 import com.easter.watch.presentation.db.MemberDatabase
 import com.easter.watch.presentation.db.dao.MemberDao
-import com.easter.watch.presentation.view.MemberActivity
 import com.easter.watch.presentation.view.run.StartActivity
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class SplashActivity : AppCompatActivity() {
 
@@ -53,7 +49,7 @@ class SplashActivity : AppCompatActivity() {
 //                        anyMemberExists = memberDao.isAnyMemberExists()
 //                    }
 //                    if(anyMemberExists){ //연동이 되어있다면
-//                        intent = Intent(this@SplashActivity,MemberActivity::class.java)
+//                        intent = Intent(this@SplashActivity,RecordActivity::class.java)
 //                    }else{
 //                        intent = Intent(this@SplashActivity,AuthActivity::class.java)
 //                    }

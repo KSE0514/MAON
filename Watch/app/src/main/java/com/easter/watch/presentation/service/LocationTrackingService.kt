@@ -44,9 +44,10 @@ class LocationTrackingService : Service() {
     }
 
     private val locationRequest = LocationRequest.create().apply {
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY //HIGH 보다 BALANCED
-        interval = 3000 //1초
-        fastestInterval = 1000
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        interval = 1000  // 1초
+        fastestInterval = 500   // 0.5초
+        smallestDisplacement = 3f  // 3미터
     }
 
     private val locationCallback = object : LocationCallback() {
@@ -57,7 +58,7 @@ class LocationTrackingService : Service() {
                 long = location.longitude
 
                 // ViewModel로 위치 데이터 전달
-                runViewModel.updateDistance(lat!!, long!!)
+                //runViewModel.updateDistance(lat!!, long!!)
 
                 Log.d("현재위치",currentLatLng.toString())
 

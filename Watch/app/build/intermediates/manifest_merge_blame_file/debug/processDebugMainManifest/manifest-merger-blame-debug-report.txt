@@ -123,7 +123,7 @@
 62-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:26:9-59
 63        <activity
 63-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:27:9-30:78
-64            android:name="com.easter.watch.presentation.view.MemberActivity"
+64            android:name="com.easter.watch.presentation.view.RecordActivity"
 64-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:28:13-61
 65            android:exported="false"
 65-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:29:13-37

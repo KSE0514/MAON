@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.view.MemberActivity">
+    tools:context=".presentation.view.RecordActivity">
 
     <TextView
         android:text="멤버 기록 보여주기"

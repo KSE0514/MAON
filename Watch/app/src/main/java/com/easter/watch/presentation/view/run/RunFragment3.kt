@@ -64,6 +64,9 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
 
                 // 위치 업데이트 및 경로 추가
                 updateMapLocation(currentLatLng)
+                // ViewModel로 위치 데이터 전달
+                viewModel.updateDistance(latitude!!, longitude!!)
+
                 if (viewModel.isTracking.value == true && viewModel.isPaused.value == false) {
                     locationList.add(currentLatLng)
                     updatePolyline()
