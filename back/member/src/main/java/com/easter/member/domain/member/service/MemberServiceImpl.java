@@ -203,6 +203,7 @@ public class MemberServiceImpl implements MemberService {
                 .birthDate(date)
                 .height(dto.getHeight() == null ? member.getHeight() : dto.getHeight())
                 .weight(dto.getWeight() == null ? member.getWeight() : dto.getWeight())
+                .address(dto.getAddress() == null ? member.getAddress() : dto.getAddress())
                 .imageUrl(imageUrl)
                 .build();
         memberRepository.save(member);
@@ -222,6 +223,7 @@ public class MemberServiceImpl implements MemberService {
                 .birthDate(formatter.format(member.getBirthDate()))
                 .height(member.getHeight())
                 .weight(member.getWeight())
+                .address(member.getAddress())
                 .accessToken(newAccessToken)
                 .imageUrl(member.getImageUrl())
                 .build();
