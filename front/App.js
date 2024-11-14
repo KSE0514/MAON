@@ -29,6 +29,7 @@ import RunningAlone from "./screens/RunningAlone/RunningAlone.js";
 import RunResult from "./screens/RunResult/RunResult.js";
 import RouteDetail from "./screens/RouteDetail/RouteDetail.js";
 import RunningWithRoute from "./screens/RunningWithRoute/RunningWithRoute.js";
+import PairingWatch from "./screens/PairingWatch/PairingWatch.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -48,7 +49,6 @@ export default function App() {
     }
 
     loadFonts();
-
 
     // 로그인 상태 확인 로직 (예시)
     const checkLoginStatus = async () => {
@@ -88,6 +88,7 @@ export default function App() {
           <Stack.Screen name="Notification" component={NotificationScreen} />
           <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
           <Stack.Screen name="Challenge" component={ChallengeScreen} />
+          <Stack.Screen name="PairingWatch" component={PairingWatch} />
           <Stack.Screen
             name="MarathonEntryForm"
             component={MarathonEntryFormScreen}
