@@ -29,6 +29,14 @@ import MarathonDetailRoundBtn from "../../components/Button/MarathonDetailRoundB
 import UserInfoBox from "../../components/Button/UserInfoBox/UserInfoBox";
 import { apiClient } from "../../customAxios";
 import useAuthStore from "./../../store/AuthStore"
+import {
+  faLocationDot,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
+import MapView, { Marker } from "react-native-maps";
+import MapStyle from "./../../components/Map/MapStyle"
 
 import { Text, View, Image, ScrollView } from "react-native";
 // import testImg from "./../../assets/images/testProfile2.jpg";
@@ -160,6 +168,9 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   const [dDay, setDDay] = useState(null); // 마라톤 시작 디데이
   const [showWarning, setShowWarning] = useState(false); // 경고 메시지 표시 상태
 
+  const [latitude, setLatitude] = useState('')
+  const [longitude, setLongitude] = useState('')
+
   const [teamMemberList, setTeamMemberList] = useState([]); // 팀원들
   const [myTeamCode, setMyTeamCode] = useState(1); // 내 팀 코드
 
@@ -215,6 +226,9 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     setMarathonUrl(marathonInfo.homepage)
     setMarathonCourse(marathonInfo.categories)
     setMarathonHost(marathonInfo.host)
+    setLatitude(marathonInfo.latitude)
+    setLongitude(marathonInfo.longitude)
+    console.log(marathonInfo.latitude, marathonInfo.longitude)
     // setMarathonCallNum(marathonInfo.) // 문의가 없넹...
   }, [marathonInfo])
 
@@ -348,10 +362,41 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
       <ScrollView>
         {/* 지도 영역 */}
         <MapArea>
-          <Image
+          {/* <Image
             // style={{height: '100%'}}
             source={testImg}
-          />
+          /> */}
+          <MapView
+                provider={MapView.PROVIDER_GOOGLE}
+                customMapStyle={MapStyle}
+                style={{
+                  flex: 1,
+                  alignSelf: "stretch",
+                  borderRadius: 20,
+                }}
+                // scrollEnabled={false} // 지도 이동 비활성화
+                // zoomEnabled={false} // 줌인, 줌아웃 비활성화
+                showsUserLocation={false}
+                initialRegion={{
+                  latitude: latitude,
+                  longitude: longitude,
+                  latitudeDelta: 0.005, // 줌 레벨 설정 (작을수록 줌 인)
+                  longitudeDelta: 0.005,
+                }}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: latitude,
+                    longitude: longitude,
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faLocationDot}
+                    size={34}
+                    color={color.light_orange}
+                  />
+                </Marker>
+              </MapView>
           <BookmarkBtnArea>
             <BookmarkBtn
               text={"경로 북마크"}
