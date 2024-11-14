@@ -14,6 +14,7 @@ public class UpdateMemberRequestDto {
     private String name;
     private String phoneNumber;
     private String birthDate;
+    private String address;
     private Integer height;
     private Integer weight;
     private MultipartFile profileImage;

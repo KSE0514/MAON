@@ -17,6 +17,7 @@ public class UpdateMemberResponseDto {
     private String birthDate;
     private int height;
     private int weight;
+    private String address;
     private String accessToken;
     private String imageUrl;
 }
