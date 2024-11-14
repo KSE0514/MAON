@@ -26,8 +26,10 @@ import GoalDonutChart from "../../components/DonutChart/GoalDonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
 import { locationDtoPrint } from "../../utils/console";
+import useAuthStore from "../../store/AuthStore";
 
 const RunningAlone = ({ navigation, route }) => {
+  const { user } = useAuthStore();
   const { roomId, mode } = route.params;
   const fontsLoaded = useFontsLoaded();
 
@@ -206,7 +208,7 @@ const RunningAlone = ({ navigation, route }) => {
       const locationDto = {
         recordId: roomId,
         time: elapsedTimeRef.current,
-        memberId: "현석",
+        memberId: user.id,
         latitude: location.latitude,
         longitude: location.longitude,
         heartRate: 0,
