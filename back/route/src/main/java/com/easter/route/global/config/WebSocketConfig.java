@@ -64,7 +64,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
 		registration
-			.setMessageSizeLimit(128 * 1024)     // 메시지 크기 제한
+			.setMessageSizeLimit(256 * 1024)     // 메시지 크기 제한
 			.setSendBufferSizeLimit(512 * 1024)  // 버퍼 크기
 			.setSendTimeLimit(20 * 1000)         // 전송 타임아웃
 			.setTimeToFirstMessage(30 * 1000);   // 첫 메시지 대기 시간
@@ -108,7 +108,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/maon/route/ws/**")
-					.allowedOrigins("https://k11c207.p.ssafy.io")
+					.allowedOrigins("*") // 모든 출처 허용 (임시 설정)
 					.allowedMethods("GET", "POST")
 					.allowCredentials(true);
 			}
