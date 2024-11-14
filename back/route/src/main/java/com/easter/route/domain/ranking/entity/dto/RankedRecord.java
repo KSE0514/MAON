@@ -26,4 +26,9 @@ public class RankedRecord {
                 .averagePace(record.getAveragePace())
                 .build();
     }
+
+    public void updateMemberInfo(String memberNickname, String memberProfileUrl) {
+        this.memberNickname = memberNickname;
+        this.memberProfileUrl = memberProfileUrl;
+    }
 }

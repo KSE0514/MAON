@@ -23,8 +23,8 @@ public class RankingController {
     private final RankingService rankingService;
 
     @GetMapping("/ranking/{routeId}")
-    public ResponseEntity<ResultResponse> getRanking(@PathVariable String routeId) {
-        GetRankingListDto ranking = rankingService.getRanking(routeId);
+    public ResponseEntity<ResultResponse> getAllRankingList(@PathVariable String routeId) {
+        GetRankingListDto ranking = rankingService.getRankingList(routeId);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "Ranking 정보: {} ", ranking);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }

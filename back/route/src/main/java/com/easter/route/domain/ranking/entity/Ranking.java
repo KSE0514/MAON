@@ -35,8 +35,7 @@ public class Ranking {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public void updateRanking(List<RankedRecord> rankedRecords) {
+    public void updateRankingRecords(List<RankedRecord> rankedRecords) {
         this.rankedRecords = rankedRecords;
-        this.updatedAt = LocalDateTime.now();
     }
 }

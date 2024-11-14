@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class GetMyRankingDto {
-    private String memberId;
     private String routeId;
     private String recordId;
+    private String memberId;
     private String memberNickname;
-    private String ranking;
+    private String memberProfileUrl;
+    private int ranking;
     private String runningTime;
     private String averagePace;
 }
