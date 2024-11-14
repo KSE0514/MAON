@@ -98,25 +98,27 @@ const PairingWatch = ({ navigation, route }) => {
           justifyContent: "center",
           alignItems: "center",
           marginHorizontal: 50,
-        }}>
+        }}
+      >
         {step === 1 &&
           (pairedWatch ? (
             <View>
               <Title
-                style={[
-                  styles.BoldFont,
-                ]}>{`연동된 워치가 존재합니다.\n새 워치를 연동하시겠습니까?`}</Title>
+                style={[styles.BoldFont]}
+              >{`연동된 워치가 존재합니다.\n새 워치를 연동하시겠습니까?`}</Title>
               <ButtonView>
                 <Button
                   onPress={() => {
                     goHome();
-                  }}>
+                  }}
+                >
                   <Text style={[styles.buttonText]}>취소</Text>
                 </Button>
                 <Button
                   onPress={() => {
                     changeStep();
-                  }}>
+                  }}
+                >
                   <Text style={[styles.buttonText]}>확인</Text>
                 </Button>
               </ButtonView>
@@ -128,7 +130,8 @@ const PairingWatch = ({ navigation, route }) => {
                 <Button
                   onPress={() => {
                     goHome();
-                  }}>
+                  }}
+                >
                   <Text style={[styles.buttonText]}>취소</Text>
                 </Button>
                 <Button>
@@ -136,7 +139,8 @@ const PairingWatch = ({ navigation, route }) => {
                     style={[styles.buttonText]}
                     onPress={() => {
                       changeStep();
-                    }}>
+                    }}
+                  >
                     확인
                   </Text>
                 </Button>
@@ -149,6 +153,11 @@ const PairingWatch = ({ navigation, route }) => {
               {`연동할 워치에서 앱을 실행해\n아래의 PIN번호를 입력해주세요`}
             </Title>
             <Title style={[styles.BoldFont]}>{pairingNumber}</Title>
+          </View>
+        )}
+        {step === 3 && !pairedWatch && (
+          <View>
+            <Title style={[styles.BoldFont]}>{`연동이 완료되었습니다!`}</Title>
           </View>
         )}
       </View>
