@@ -1,6 +1,7 @@
 package com.easter.member.domain.challenge.entity;
 
-import com.easter.member.domain.challenge.model.dto.ChallengeType;
+import com.easter.member.domain.challenge.model.ChallengeType;
+import com.easter.member.domain.challenge.model.Feature;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,10 @@ public class Challenge {
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private ChallengeType type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "feature")
+    private Feature feature;
 
     @Column(name = "amount", columnDefinition = "decimal(5, 2)")
     private double amount;

@@ -1,5 +1,6 @@
 package com.easter.member.domain.member.service;
 
+import com.easter.member.domain.challenge.service.ChallengeService;
 import com.easter.member.domain.member.entity.Member;
 import com.easter.member.domain.member.model.dto.*;
 import com.easter.member.domain.member.repository.MemberRepository;
@@ -41,6 +42,7 @@ public class MemberServiceImpl implements MemberService {
     @Value("${external-url.google-oauth}")
     private String googleOauthUrl;
 
+    private final ChallengeService challengeService;
     private final S3Service s3Service;
     private final MemberRepository MemberRepository;
     private final TokenProvider tokenProvider;
@@ -152,6 +154,7 @@ public class MemberServiceImpl implements MemberService {
                 .imageUrl(member.getImageUrl())
                 .role(Role.REGISTERED)
                 .build();
+        challengeService.initChallenge(newPassport);
         String accessToken = tokenProvider.generateAccessToken(newPassport);
         String refreshToken = tokenProvider.getTokenByEmail(member.getEmail(), TokenType.REFRESH);
         return RegisterMemberResponseDto.builder()
