@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -54,7 +55,7 @@ public class Member {
     private Integer weight;
 
     @Column(name = "birth_date", columnDefinition = "Date")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column(name = "address", length = 50)
     private String address;
