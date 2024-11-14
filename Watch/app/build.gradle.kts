@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    id("kotlin-kapt")
 }
 
 android {
@@ -114,14 +115,16 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     // ROOM
-    //def roomVersion = "2.4.1"
+    val roomVersion = "2.6.1"
 
-    implementation("androidx.room:room-runtime:2.4.1")
-    annotationProcessor("androidx.room:room-compiler:2.4.1")
+//    implementation("androidx.room:room-runtime:$roomVersion")
+//    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+//    kapt ("android.arch.persistence.room:compiler:$roomVersion")
+//    implementation("androidx.room:room-ktx:$roomVersion")
 
-
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.4.1")
+    implementation ("androidx.room:room-runtime:$roomVersion")
+    kapt ("androidx.room:room-compiler:$roomVersion")
+    implementation ("androidx.room:room-ktx:$roomVersion")
 
     // livedata
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")

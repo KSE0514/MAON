@@ -13,6 +13,7 @@ import com.easter.watch.databinding.ActivityAuthBinding
 import com.easter.watch.presentation.service.ApiService
 import com.easter.watch.presentation.dataModel.AuthInfo
 import com.easter.watch.presentation.dataModel.MemberInfo
+import com.easter.watch.presentation.db.MemberDatabase
 import com.easter.watch.presentation.db.dao.MemberDao
 import com.easter.watch.presentation.db.entity.Member
 import com.easter.watch.presentation.view.run.StartActivity
@@ -48,12 +49,12 @@ class AuthActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Database 초기화
-//        val db = AppDatabase.getDatabase(this)
-//        memberDao = db.memberDao()
+        val db = MemberDatabase.getDatabase(this)
+        memberDao = db.memberDao()
 
-        // WebSocket 연결
+        // WebSocket + STOMP 연결
         CoroutineScope(Dispatchers.IO).launch {
-            stompClient = StompWebSocketClient()
+            stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
             stompClient.connect()
         }
 
@@ -64,23 +65,22 @@ class AuthActivity : AppCompatActivity() {
 
     }
 
-    private fun subscribeToAuthTopic(authCode: String) {
-        stompClient.subscribe("/sub/connect/$authCode") { payload ->
+    fun subscribeToAuthTopic(authCode: String) {
+        stompClient.subscribeToTopic("/topic/sub/connect/$authCode") { payload ->
             // 구독 채널에서 받은 데이터 처리
-            val memberId = Gson().fromJson(payload.toString(), MemberInfo::class.java)
-            Log.d(TAG, "memberID : {$memberId}")
+            val memberId = Gson().fromJson(payload, MemberInfo::class.java)
+            Log.d(TAG, "memberID : $memberId")
 
             CoroutineScope(Dispatchers.IO).launch {
-                if(memberId != null){
+                memberId?.let {
                     Log.d(TAG, "멤버 저장")
                     memberDao.insertMember(Member(memberId.toString()))
                 }
 
                 // 전체 테이블에 memberId가 하나라도 있는지 확인
-//                val anyMemberExists = memberDao.isAnyMemberExists()
-//                Log.d(TAG, "Any member exists: $anyMemberExists")
+                 val anyMemberExists = memberDao.isAnyMemberExists()
+                 Log.d(TAG, "Any member exists: $anyMemberExists")
             }
-
         }
     }
 

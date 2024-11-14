@@ -13,10 +13,10 @@ interface MemberDao {
     suspend fun insertMember(member: Member)
 
     // 특정 memberId가 존재하는지 확인
-    @Query("SELECT EXISTS(SELECT * FROM member WHERE memberId = :memberId)")
+    @Query("SELECT EXISTS(SELECT 1 FROM member WHERE memberId = :memberId)")
     suspend fun isMemberExists(memberId: String): Boolean
 
     // member 테이블에 데이터가 하나라도 존재하는지 확인
-    @Query("SELECT EXISTS(SELECT * FROM member)")
+    @Query("SELECT EXISTS(SELECT 1 FROM member)")
     suspend fun isAnyMemberExists(): Boolean
 }

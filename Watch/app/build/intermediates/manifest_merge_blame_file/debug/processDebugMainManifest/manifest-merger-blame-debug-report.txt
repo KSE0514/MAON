@@ -663,13 +663,13 @@
 356-->[com.google.android.gms:play-services-basement:18.4.0] C:\Users\SSAFY\.gradle\caches\transforms-4\7ddaf7bbf8bf65859c815ebd313dcf56\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:66-119
 357
 358        <service
-358-->[androidx.room:room-runtime:2.4.1] C:\Users\SSAFY\.gradle\caches\transforms-4\0db533f677b1959d86ec0a858662308f\transformed\room-runtime-2.4.1\AndroidManifest.xml:25:9-28:40
+358-->[androidx.room:room-runtime:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-4\631533121a7ee41b9b78a08c672fe06d\transformed\room-runtime-2.6.1\AndroidManifest.xml:24:9-28:63
 359            android:name="androidx.room.MultiInstanceInvalidationService"
-359-->[androidx.room:room-runtime:2.4.1] C:\Users\SSAFY\.gradle\caches\transforms-4\0db533f677b1959d86ec0a858662308f\transformed\room-runtime-2.4.1\AndroidManifest.xml:26:13-74
+359-->[androidx.room:room-runtime:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-4\631533121a7ee41b9b78a08c672fe06d\transformed\room-runtime-2.6.1\AndroidManifest.xml:25:13-74
 360            android:directBootAware="true"
-360-->[androidx.room:room-runtime:2.4.1] C:\Users\SSAFY\.gradle\caches\transforms-4\0db533f677b1959d86ec0a858662308f\transformed\room-runtime-2.4.1\AndroidManifest.xml:27:13-43
+360-->[androidx.room:room-runtime:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-4\631533121a7ee41b9b78a08c672fe06d\transformed\room-runtime-2.6.1\AndroidManifest.xml:26:13-43
 361            android:exported="false" />
-361-->[androidx.room:room-runtime:2.4.1] C:\Users\SSAFY\.gradle\caches\transforms-4\0db533f677b1959d86ec0a858662308f\transformed\room-runtime-2.4.1\AndroidManifest.xml:28:13-37
+361-->[androidx.room:room-runtime:2.6.1] C:\Users\SSAFY\.gradle\caches\transforms-4\631533121a7ee41b9b78a08c672fe06d\transformed\room-runtime-2.6.1\AndroidManifest.xml:27:13-37
 362
 363        <receiver
 363-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\SSAFY\.gradle\caches\transforms-4\dfcf44f827c2f66ba768a9be2e0c566e\transformed\profileinstaller-1.4.0\AndroidManifest.xml:34:9-52:20
