@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/maon/route")
@@ -33,6 +31,14 @@ public class RankingController {
     public ResponseEntity<ResultResponse> getMyRanking(@PathVariable String routeId, @PathVariable String memberId) {
         GetMyRankingDto myRanking = rankingService.getMyRanking(routeId, memberId);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "My Ranking 정보: {} ", myRanking);
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    // test용, 삭제 할 것
+    @GetMapping("/ranking/updateAllRankingList")
+    public ResponseEntity<ResultResponse> updateAllRankingList() {
+        rankingService.updateAllRankingList();
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "모든 랭킹 정보를 업데이트했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 }

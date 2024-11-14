@@ -87,6 +87,10 @@ public class RankingServiceImpl implements RankingService {
 	@Scheduled(cron = "0 0 15 * * *")
 	public void updateAllRankingList() {
 		List<Ranking> rankings = rankingRepository.findAll();
+		log.info("랭킹 수: {}", rankings.size());
+		for(int i = 0; i < rankings.size(); i++) {
+			log.info("랭킹 {}/{}", i + 1, rankings.get(i).getRouteId());
+		}
 		rankings.forEach(this::updateRanking);
 	}
 
