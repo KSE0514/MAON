@@ -120,6 +120,8 @@ export default function Map({
       const newCoordinate = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
+        latitudeDelta: 0.002,
+        longitudeDelta: 0.002,
       };
 
       setGps((prevGps) => {

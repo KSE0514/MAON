@@ -15,7 +15,9 @@ export const Button = styled(TouchableOpacity)`
 export const ButtonView = styled.View`
   flex-direction: row;
 `;
-export const Title = styled.Text``;
+export const Title = styled.Text`
+  font-size: 20px;
+`;
 export const styles = StyleSheet.create({
   BoldFont: {
     fontFamily: fonts.gMarketBold,
