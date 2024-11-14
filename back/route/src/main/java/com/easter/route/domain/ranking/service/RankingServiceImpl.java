@@ -1,5 +1,6 @@
 package com.easter.route.domain.ranking.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import com.easter.route.domain.ranking.repository.RankingRepository;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -124,4 +126,5 @@ public class RankingServiceImpl implements RankingService {
 		ranking.updateRankingRecords(rankedRecords);
 		rankingRepository.save(ranking);
 	}
+
 }

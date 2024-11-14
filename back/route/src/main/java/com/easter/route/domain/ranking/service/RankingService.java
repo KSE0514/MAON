@@ -7,6 +7,8 @@ import com.easter.route.domain.ranking.entity.dto.GetRankingListDto;
 
 public interface RankingService {
     GetRankingListDto getRankingList(String routeId);
+
     GetMyRankingDto getMyRanking(String routeId, String memberId);
+
     void updateAllRankingList();
 }

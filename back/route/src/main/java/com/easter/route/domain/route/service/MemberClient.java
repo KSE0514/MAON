@@ -5,10 +5,11 @@ import com.easter.route.global.response.ResultResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient("member")
+@FeignClient(name = "member", url = "http://localhost:8765")
 public interface MemberClient {
 
-    @PostMapping("member/service/search")
-    ResponseEntity<ResultResponse> getMemberInfoList(GetMemberListRequestFeignDto requestFeignDto);
+    @PostMapping("/maon/member/service/search")
+    ResponseEntity<ResultResponse> getMemberInfoList(@RequestBody GetMemberListRequestFeignDto requestFeignDto);
 }
