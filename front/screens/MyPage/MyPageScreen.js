@@ -295,7 +295,11 @@ const MyPageScreen = ({ navigation }) => {
                   {image ? (
                     <Image
                       style={{ width: "100%", height: "100%" }}
-                      source={image ? { uri: image } : testImg}
+                      source={
+                        typeof image === "string" && image
+                          ? { uri: image }
+                          : testImg
+                      }
                     />
                   ) : (
                     <Svg
@@ -323,7 +327,11 @@ const MyPageScreen = ({ navigation }) => {
                   {image ? (
                     <Image
                       style={{ width: "100%", height: "100%" }}
-                      source={image ? { uri: image } : testImg}
+                      source={
+                        typeof image === "string" && image
+                          ? { uri: image }
+                          : testImg
+                      }
                     />
                   ) : (
                     <Svg
