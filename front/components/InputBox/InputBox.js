@@ -3,8 +3,10 @@ import { useFontsLoaded } from "../../utils/fontContext";
 import fonts from '../../styles/fonts';
 import colors from '../../styles/colors';
 import { useState, useEffect } from 'react';
+import RNPickerSelect from 'react-native-picker-select'; // 추가
 
-const InputBox = ({label, placeholder, value, setValue, isEditMode}) => {
+const InputBox = ({label, placeholder, value, setValue, isEditMode, options = [] }) => {
+  // console.log('마라톤 종목: ', options)
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
@@ -146,6 +148,22 @@ const handleDateOfBirthChange = (text) => {
               editable={isEditMode} // 입력 불가능 상태 여부
             />
           )
+          :
+          label === '참가 종목' ? (
+          <RNPickerSelect
+            onValueChange={(value) => setValue(value)}
+            items={options.map((option) => ({ label: option, value: option }))}
+            style={{
+              inputIOS: styles.input,
+              inputAndroid: styles.input,
+            }}
+            placeholder={{ label: placeholder, value: null }}
+            value={value}
+            useNativeAndroidPickerStyle={false} // 안드로이드에서 네이티브 스타일을 사용하지 않도록 설정
+            disabled={!isEditMode}
+            Icon={() => <Text style={{ color: colors.gray }}>▼</Text>} // 드롭다운 아이콘 추가
+          />
+          ) 
           :
           (
             // 2. 생일과 전화번호를 제외한 모든 input
