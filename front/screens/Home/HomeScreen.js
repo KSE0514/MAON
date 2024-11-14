@@ -13,7 +13,7 @@ import HeaderNavigation from "../../components/HeaderNavigation/HeaderNavigation
 import fonts from "../../styles/fonts";
 import GradientButton from "../../components/Button/GradientsBtn/GradientsButton";
 import CustomCarousel from "../../components/CustomCarousel/CustomCarousel";
-import useAuthStore from "./../../store/AuthStore"
+import useAuthStore from "./../../store/AuthStore";
 import color from "../../styles/colors";
 import { useEffect } from "react";
 
@@ -53,11 +53,11 @@ const HomeScreen = ({ navigation }) => {
             />
             <GradientButton
               onPress={() => {
-                navigation.navigate("Home");
+                navigation.navigate("PairingWatch");
               }}
-              title={`친구목록`}
+              title={`워치연동`}
               gradientType="balck_gradient"
-              mode="friend"
+              mode="watch"
             />
           </View>
         </View>

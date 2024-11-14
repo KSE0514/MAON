@@ -7,12 +7,8 @@ import {
   Dimensions,
   Image,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faPersonRunning,
-  faUserGroup,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 import { faRoute } from "@fortawesome/pro-duotone-svg-icons";
 
 import { ButtonContainer, ButtonText, GradientBtn } from "./GradientBtnStyle";
@@ -37,7 +33,7 @@ const directions = {
 const fontStyle = {
   alone: { fontSize: 40, lineHeight: 50 },
   together: { fontSize: 32, lineHeight: 42 },
-  friend: { fontSize: 20, lineHeight: 30 },
+  watch: { fontSize: 20, lineHeight: 30 },
   selectedRoute: { fontSize: 40, lineHeight: 50 },
   notSelectedRoute: { fontSize: 40, lineHeight: 50 },
   ghost: { fontSize: 40, lineHeight: 50 },
@@ -77,17 +73,18 @@ const GradientButton = ({
             />
           </View>
         ) : null}
-        {mode == "friend" ? (
+        {mode == "watch" ? (
           <View
             style={{
+              fontSize: 14,
               flex: 1,
               justifyContent: "flex-end",
             }}
           >
             <FontAwesomeIcon
+              icon={faLink}
+              size={screenWidth * 0.14}
               style={{ color: "white" }}
-              icon={faUserGroup}
-              size={screenWidth * 0.14} // 화면 너비의 10% 크기 설정
             />
           </View>
         ) : null}

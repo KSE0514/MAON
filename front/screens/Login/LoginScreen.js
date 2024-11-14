@@ -21,56 +21,12 @@ const LoginScreen = () => {
   const fontsLoaded = useFontsLoaded();
   const screenHeight = Dimensions.get("window").height;
 
-  useEffect(() => {
-    // 딥링크 핸들러 등록
-    const subscription = Linking.addEventListener("url", ({ url }) => {
-      handleUrl(url);
-    });
-
-    // 앱이 처음 실행될 때 딥링크로 실행되었는지 확인
-    const getInitialUrl = async () => {
-      const initialUrl = await Linking.getInitialURL();
-      if (initialUrl) {
-        handleUrl(initialUrl);
-      }
-    };
-
-    getInitialUrl();
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  const handleUrl = (url) => {
-    if (!url) return;
-
-    try {
-      const { queryParams } = Linking.parse(url);
-      if (queryParams.token) {
-        setUserInfo({
-          token: queryParams.token,
-          name: queryParams.name,
-          email: queryParams.email,
-        });
-        login(queryParams.token);
-      }
-    } catch (error) {
-      console.error("Error parsing URL:", error);
-    }
-  };
-
   // 로그인 버튼 클릭 시 웹 로그인 페이지로 이동
   const handleLogin = async () => {
     // 로컬 IP 주소로 변경
-
-    const redirectUri = AuthSession.makeRedirectUri({
-      scheme: "maon", // app.json에서 설정한 scheme 사용
-    });
-
-    // const redirectUri = Linking.createURL("redirect");
+    const redirectUri = Linking.createURL("redirect");
     // const redirectUri = `https://auth.expo.io/@maon/maon`;
-    const authUrl = `https://k11c207.p.ssafy.io/web?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경
+    const authUrl = `https://maon--login.web.app?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경
 
     // 웹 브라우저에서 로그인 페이지 열기
     const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
@@ -129,7 +85,11 @@ const LoginScreen = () => {
             refreshToken: responseUserInfo.refreshToken,
             imageUrl: responseUserInfo.imageUrl,
           });
-          navigation.navigate("MainTabs", { screen: "Home" });
+          // navigation.navigate("MainTabs", { screen: "Home" });
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "MainTabs" }],
+          });
         } else {
           // 가입한 적이 없는 회원일 경우에는 회원가입으로 이동 후, 회원가입 완료했을 시 AuthStore에 정보를 저장하고 home으로 이동
           console.log("비회원이므로 회원가입 페이지로 이동합니다.");
