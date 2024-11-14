@@ -8,6 +8,7 @@ import backImg from "./../../assets/images/Login_Back_cut2.jpg";
 import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
 import { useFontsLoaded } from "../../utils/fontContext";
 import useAuthStore from "../../store/AuthStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiClient } from "../../customAxios";
 import { useNavigation } from "@react-navigation/native";
 
@@ -20,6 +21,27 @@ const LoginScreen = () => {
   const [userInfo, setUserInfo] = useState(null);
   const fontsLoaded = useFontsLoaded();
   const screenHeight = Dimensions.get("window").height;
+
+  useEffect(() => {
+    // 앱 실행 시 AsyncStorage에서 토큰 확인
+    const checkLoginStatus = async () => {
+      const storedToken = await AsyncStorage.getItem("accessToken");
+      if (storedToken) {
+        // 자동 로그인 진행
+        console.log("토큰 확인용", storedToken)
+        setUser({
+          accessToken: storedToken,
+        });
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "MainTabs" }],
+        });
+        // login(storedToken)
+      }
+    };
+    checkLoginStatus();
+  }, []);
+
 
   // 로그인 버튼 클릭 시 웹 로그인 페이지로 이동
   const handleLogin = async () => {
@@ -85,6 +107,10 @@ const LoginScreen = () => {
             refreshToken: responseUserInfo.refreshToken,
             imageUrl: responseUserInfo.imageUrl,
           })
+
+          // // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
+          // await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
+          
           // navigation.navigate("MainTabs", { screen: "Home" });
           navigation.reset({
             index: 0,
@@ -100,6 +126,7 @@ const LoginScreen = () => {
 
     } catch (error) {
       console.error("로그인 에러 발생: ", error);
+      await AsyncStorage.removeItem("accessToken");
     }
   };
 
