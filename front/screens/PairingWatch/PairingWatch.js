@@ -40,14 +40,14 @@ const PairingWatch = ({ navigation, route }) => {
                     goHome();
                   }}
                 >
-                  <Text>취소</Text>
+                  <Text style={[styles.buttonText]}>취소</Text>
                 </Button>
                 <Button
                   onPress={() => {
                     setStep(2);
                   }}
                 >
-                  <Text>확인</Text>
+                  <Text style={[styles.buttonText]}>확인</Text>
                 </Button>
               </ButtonView>
             </View>
@@ -60,10 +60,11 @@ const PairingWatch = ({ navigation, route }) => {
                     goHome();
                   }}
                 >
-                  <Text>취소</Text>
+                  <Text style={[styles.buttonText]}>취소</Text>
                 </Button>
                 <Button>
                   <Text
+                    style={[styles.buttonText]}
                     onPress={() => {
                       setStep(2);
                     }}
