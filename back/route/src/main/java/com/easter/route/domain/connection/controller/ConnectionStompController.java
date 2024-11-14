@@ -1,9 +1,6 @@
 package com.easter.route.domain.connection.controller;
 
-import com.easter.route.domain.connection.model.dto.ConnectionTestDto;
-import com.easter.route.domain.connection.model.dto.MemberInfoDto;
-import com.easter.route.domain.connection.model.dto.RelayMemberInfoDto;
-import com.easter.route.domain.connection.model.dto.SimpleTimestampDto;
+import com.easter.route.domain.connection.model.dto.*;
 import com.easter.route.domain.connection.service.ConnectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,18 +24,13 @@ public class ConnectionStompController {
         connectionService.saveMemberInfo(dto, code);
     }
 
-    @MessageMapping("/connection/start/{code}")
-    public void startConnectionTest(@DestinationVariable String code, SimpleTimestampDto dto) {
+    @MessageMapping("/connection/watch/{code}")
+    public void watchConnectionTest(@DestinationVariable String code, SimpleTimestampDto dto) {
         log.info("start connection test at {}", dto.getTimestamp());
-        ConnectionTestDto sendDto = connectionService.connectionTest(code);
+        ConnectionResultDto sendDto = connectionService.connect(code);
         messagingTemplate.convertAndSend(SUB_PATH + code, sendDto);
-    }
-
-    @MessageMapping("/connection/success/{code}")
-    public void confirmSuccess(@DestinationVariable String code, SimpleTimestampDto dto) {
-        log.info("confirm success arrived {} at {}", code, dto.getTimestamp());
-        RelayMemberInfoDto sendDto = connectionService.relayMemberInfo(code);
-        messagingTemplate.convertAndSend(SUB_PATH + code, sendDto);
+//        WatchConnectDto sendDto = connectionService.connectionSuccess(code);
+//        messagingTemplate.convertAndSend(SUB_PATH + code, sendDto);
     }
 
 }
