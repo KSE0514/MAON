@@ -41,7 +41,20 @@ const MarathonEntryFormScreen = ({navigation, route}) => {
   const [name, setName] = useState('') // 이름 상태관리
   const [email, setEmail] = useState('') // 이메일 상태관리
   const [address, setAddress] = useState('') // 주소 상태관리
-  const [selectedGender, setSelectedGender] = useState(null); // 선택된 성별 상태 관리
+  const [selectedGender, setSelectedGender] = useState(''); // 선택된 성별 상태 관리
+
+  const [userInfo, setUserInfo] = useState({
+    nickname: '',
+    height: '',
+    weight: '',
+    name: '',
+    phoneNumber: '',
+    email: '',
+    address: '',
+    birthDate: '',
+    gender: '',
+    imageUrl: '',
+  })
 
   const [showEntryModal, setShowEntryModal] =useState(false)
 
@@ -120,14 +133,43 @@ const MarathonEntryFormScreen = ({navigation, route}) => {
   };
   
     useEffect(() => {
-      setName(testUser.userName)
-      handlePhoneNumberChange(testUser.userPhoneNum)
-      setEmail(testUser.userEmail)
-      handleDateOfBirthChange(testUser.userBirth)
-      setAddress(testUser.userAddress)
-      setSelectedGender(testUser.userGender)
+      getMyProfile() // 내 정보 조회
     }, [])
 
+    useEffect(() => {
+      // 조회한 정보 state 변수에 넣기
+      setName(userInfo.name)
+      // setNickName(userInfo.nickname)
+      handlePhoneNumberChange(userInfo.phoneNumber)
+      setEmail(userInfo.email)
+      handleDateOfBirthChange(userInfo.birthDate)
+      setAddress(userInfo.address)
+      setSelectedGender(userInfo.gender)
+      // setHeightInfo(userInfo.height)
+      // setWeightInfo(userInfo.weight)
+      // setImage(userInfo.imageUrl)
+    }, [userInfo])
+
+    const getMyProfile = async () => {
+      try{
+        const response = await apiClient.get(
+          `/member/mypage/info`,
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          console.log('마이페이지 조회 성공: ', response.data.data)
+          const getUserInfo = response.data.data
+          setUserInfo({...getUserInfo})
+        }
+      } catch (error) {
+        console.error("마이페이지 조회 에러 발생: ",error)
+      }
+    }
     
   return (
     <Wrapper>
