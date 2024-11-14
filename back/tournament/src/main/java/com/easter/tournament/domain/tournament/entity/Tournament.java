@@ -66,6 +66,9 @@ public class Tournament {
     @Column(name = "host")
     private String host;
 
+    @Column(name = "inquiry")
+    private String inquiry;
+
     @Column(name = "image_url")
     private String imageUrl;
 

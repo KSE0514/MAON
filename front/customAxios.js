@@ -1,4 +1,5 @@
 import axios from "axios";
+import useAuthStore from "./store/AuthStore";
 import { RUN_API } from "@env";
 
 export const apiClient = axios.create({

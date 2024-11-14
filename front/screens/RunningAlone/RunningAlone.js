@@ -26,8 +26,10 @@ import GoalDonutChart from "../../components/DonutChart/GoalDonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
 import { locationDtoPrint } from "../../utils/console";
+import useAuthStore from "../../store/AuthStore";
 
 const RunningAlone = ({ navigation, route }) => {
+  const { user } = useAuthStore();
   const { roomId, mode } = route.params;
   const fontsLoaded = useFontsLoaded();
 
@@ -137,6 +139,7 @@ const RunningAlone = ({ navigation, route }) => {
         const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${roomId}/end\n\n\0`;
         kafkaWs.send(subscribeFrame);
       } else {
+        console.log("여기까진 왔니");
         try {
           // JSON 형식만 추출하기
           const jsonStartIndex = message.data.indexOf("{");
@@ -163,7 +166,7 @@ const RunningAlone = ({ navigation, route }) => {
                 distance: parsedData.record.distance,
                 createdAt: parsedData.record.createdAt,
                 routeDistance: parsedData.routeDistance || 0,
-                distanceList: [],
+                distanceList: parsedData.record.distanceList,
               });
             }
           } else {
@@ -205,7 +208,7 @@ const RunningAlone = ({ navigation, route }) => {
       const locationDto = {
         recordId: roomId,
         time: elapsedTimeRef.current,
-        memberId: "현석",
+        memberId: user.id,
         latitude: location.latitude,
         longitude: location.longitude,
         heartRate: 0,

@@ -1,6 +1,9 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import * as Font from "expo-font";
 import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { BackHandler } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Alert, StyleSheet, Text, View, sta } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -26,12 +29,14 @@ import RunningAlone from "./screens/RunningAlone/RunningAlone.js";
 import RunResult from "./screens/RunResult/RunResult.js";
 import RouteDetail from "./screens/RouteDetail/RouteDetail.js";
 import RunningWithRoute from "./screens/RunningWithRoute/RunningWithRoute.js";
+import PairingWatch from "./screens/PairingWatch/PairingWatch.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
 
   useEffect(() => {
     async function loadFonts() {
@@ -44,6 +49,16 @@ export default function App() {
     }
 
     loadFonts();
+
+    // 로그인 상태 확인 로직 (예시)
+    const checkLoginStatus = async () => {
+      // 여기에 실제 로그인 상태 확인 로직을 추가하세요
+      // 예를 들어, AsyncStorage에서 토큰 확인
+      const token = null; // 로그인 토큰 예시 (없으면 false 상태 유지)
+      setIsLoggedIn(!!token);
+    };
+
+    checkLoginStatus();
   }, []);
 
   if (!fontsLoaded) {
@@ -55,13 +70,14 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="Home"
+          initialRouteName={isLoggedIn ? "MainTabs" : "Login"}
         >
-          {/* FooterNavigation이 포함된 화면들 */}
+          {/* 로그인 여부에 따른 화면 설정 */}
+          <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="MainTabs" component={MainTabs} />
+
           {/* FooterNavigation이 포함되지 않은 화면 */}
           <Stack.Screen name="Modal" component={ModalTestScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SelectRunType" component={SelectRunType} />
           <Stack.Screen name="SelectRunRoute" component={SelectRunRoute} />
           <Stack.Screen name="MarathonInfo" component={MarathonInfo} />
@@ -72,6 +88,7 @@ export default function App() {
           <Stack.Screen name="Notification" component={NotificationScreen} />
           <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
           <Stack.Screen name="Challenge" component={ChallengeScreen} />
+          <Stack.Screen name="PairingWatch" component={PairingWatch} />
           <Stack.Screen
             name="MarathonEntryForm"
             component={MarathonEntryFormScreen}
@@ -82,11 +99,6 @@ export default function App() {
           />
           <Stack.Screen name="RouteDetail" component={RouteDetail} />
           <Stack.Screen name="RunningWithRoute" component={RunningWithRoute} />
-          {/* <Stack.Screen name="Home" component={ScreenWithFooter(HomeScreen)} />
-          <Stack.Screen name="MarathonInfo" component={ScreenWithFooter(MarathonInfoScreen)} />
-          <Stack.Screen name="Record" component={ScreenWithFooter(RecordScreen)} />
-          <Stack.Screen name="Challenge" component={ScreenWithFooter(ChallengeScreen)} />
-          <Stack.Screen name="Modal" component={ScreenWithFooter(ModalTestScreen)} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </FontContext.Provider>
@@ -95,6 +107,20 @@ export default function App() {
 
 // FooterNavigation이 포함된 하단 탭 네비게이션 설정
 const MainTabs = ({ route }) => {
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        // 뒤로가기 무시하고 홈 화면 유지
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
+
   return (
     <Tab.Navigator
       tabBar={({ state }) => (

@@ -3,7 +3,7 @@ export const locationDtoPrint = async (locationDto) => {
     " memberId:",
     locationDto.memberId,
     "recordId: ",
-    roomId,
+    locationDto.recordId,
     "latitude: ",
     locationDto.latitude,
     " longitude:",

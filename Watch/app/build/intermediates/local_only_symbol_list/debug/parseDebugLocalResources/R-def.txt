@@ -37,6 +37,7 @@ font gmarketsansttflight
 font gmarketsansttfmedium
 id authCodeText
 id clockText
+id connectBtn
 id distanceText
 id heartImg
 id heartText
@@ -61,6 +62,7 @@ id textView9
 id viewPager
 layout activity_auth
 layout activity_main
+layout activity_member
 layout activity_restart
 layout activity_result
 layout activity_run

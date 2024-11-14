@@ -120,6 +120,8 @@ export default function Map({
       const newCoordinate = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
+        latitudeDelta: 0.002,
+        longitudeDelta: 0.002,
       };
 
       setGps((prevGps) => {
@@ -156,7 +158,7 @@ export default function Map({
     const startTracking = async () => {
       locationInterval.current = setInterval(async () => {
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
+          accuracy: Location.Accuracy.Balanced,
         });
         handleUserLocationChange(location);
       }, 1000); // 1초마다 위치 업데이트

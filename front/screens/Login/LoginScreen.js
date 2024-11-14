@@ -9,11 +9,14 @@ import RoundBtn from "../../components/Button/RoundBtn/RoundBtn";
 import { useFontsLoaded } from "../../utils/fontContext";
 import useAuthStore from "../../store/AuthStore";
 import { apiClient } from "../../customAxios";
+import { useNavigation } from "@react-navigation/native";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const LoginScreen = ({ navigation }) => {
-  const { setUser } = useAuthStore()
+// const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
+  const navigation = useNavigation(); // useNavigation으로 navigation 객체 가져오기
+  const { setUser } = useAuthStore();
   const [userInfo, setUserInfo] = useState(null);
   const fontsLoaded = useFontsLoaded();
   const screenHeight = Dimensions.get("window").height;
@@ -30,10 +33,10 @@ const LoginScreen = ({ navigation }) => {
     if (result.type === "success" && result.url) {
       const { token, name, email } = Linking.parse(result.url).queryParams;
       setUserInfo({ token, name, email });
-      console.log("토큰 확인용: ", token )
+      console.log("토큰 확인용: ", token);
 
       // 가입한 적이 있는 회원이면 어떻게 처리할지 생각해보기(회원가입 과정 안 거치고 바로 홈으로 넘어가야 함)
-      login(token)
+      login(token);
       // navigation.navigate("SignUp", {paramsName: name, paramsEmail: email})
       // navigation.navigate("SignUp", {paramsName: name, paramsEmail: email})
     }
@@ -49,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
   //   totalPrice: totalPrice,
   // };
 
-  //  로그인 요청_ 만약 가입한적 있는 유저일 경우엔 response.data.data.registered값이 true가 됨 
+  //  로그인 요청_ 만약 가입한적 있는 유저일 경우엔 response.data.data.registered값이 true가 됨
   const login = async (accessToken) => {
     try {
       const response = await apiClient.post(
@@ -67,12 +70,12 @@ const LoginScreen = ({ navigation }) => {
       // console.log(response.status)
       // console.log("로그인 성공_if문 밖")
       if (response.status === 200) {
-        console.log("로그인 성공")
-        console.log(response.data.data)
-        const responseUserInfo = response.data.data
+        console.log("로그인 성공");
+        console.log(response.data.data);
+        const responseUserInfo = response.data.data;
         // 만약 가입한적 있는 회원이면 불러온 정보를 AuthStore에 저장하고 home으로 이동
         if (responseUserInfo.registered) {
-          console.log("이미 회원입니다.")
+          console.log("이미 회원입니다.");
           // AuthStore에 응답값 저장
           setUser({
             id: responseUserInfo.id,
@@ -81,21 +84,27 @@ const LoginScreen = ({ navigation }) => {
             accessToken: responseUserInfo.accessToken,
             refreshToken: responseUserInfo.refreshToken,
             imageUrl: responseUserInfo.imageUrl,
-          })
-          navigation.navigate("Home")
+          });
+          // navigation.navigate("MainTabs", { screen: "Home" });
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "MainTabs" }],
+          });
         } else {
           // 가입한 적이 없는 회원일 경우에는 회원가입으로 이동 후, 회원가입 완료했을 시 AuthStore에 정보를 저장하고 home으로 이동
-          console.log("비회원이므로 회원가입 페이지로 이동합니다.")
-          navigation.navigate("SignUp", {paramsName: responseUserInfo.name, paramsEmail: responseUserInfo.email, paramsImg: responseUserInfo.imageUrl, paramsAccessToken: responseUserInfo.accessToken})
+          console.log("비회원이므로 회원가입 페이지로 이동합니다.");
+          navigation.navigate("SignUp", {
+            paramsName: responseUserInfo.name,
+            paramsEmail: responseUserInfo.email,
+            paramsImg: responseUserInfo.imageUrl,
+            paramsAccessToken: responseUserInfo.accessToken,
+          });
         }
       }
-
     } catch (error) {
       console.error("로그인 에러 발생: ", error);
     }
   };
-
-
 
   if (!fontsLoaded) {
     return null;

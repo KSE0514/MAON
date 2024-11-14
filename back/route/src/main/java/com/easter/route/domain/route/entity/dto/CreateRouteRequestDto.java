@@ -1,7 +1,5 @@
 package com.easter.route.domain.route.entity.dto;
 
-import com.easter.route.domain.record.entity.dto.RunningResultDto;
-import com.easter.route.domain.route.entity.Route;
 import lombok.Builder;
 import lombok.Data;
 
