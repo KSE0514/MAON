@@ -26,18 +26,19 @@ export  const BookmarkBtnArea = styled.View`
 `
 
 export const ContentArea = styled.View`
+  gap: 10px;
 `
 
 export const TitleArea = styled.View`
   flex-direction: row;
   align-items: center;
-  height: ${screenHeight*0.09}px;
+  height: ${screenHeight*0.13}px;
   padding: 0 ${screenWidth*0.05}px;
 `
 
 export const TitleText = styled.Text`
-  font-size: 25px;
-  font-family: ${fonts.gMarketMedium};
+  font-size: 27px;
+  font-family: ${fonts.gMarketBold};
 `
 
 export const DetailInfoArea = styled.View`
@@ -50,12 +51,24 @@ export const DetailInfoView = styled.View`
 
 export const LineInfoView = styled.View`
   flex-direction: row;
-  align-items: center;
   gap: 10px;
 `
-export const LineInfoText = styled.Text`
+export const LineIconTitleWrap = styled.View`
+  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+`
+
+
+export const LineInfoTitleText = styled.Text`
   font-size: 16px;
-  font-family: ${fonts.gMarketLight};
+  font-family: ${fonts.gMarketMedium};
+`
+export const LineInfoText = styled.Text`
+  padding-top: 4px;
+  flex: 1;
+  font-size: 16px;
+  font-family: ${fonts.gMarketMedium};
 `
 
 export const BtnArea = styled.View`
