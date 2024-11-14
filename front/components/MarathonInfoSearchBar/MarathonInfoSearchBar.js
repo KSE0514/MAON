@@ -6,6 +6,7 @@ import {
   Button,
   TouchableOpacity,
   TextInput,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useState } from "react";
 import { useFontsLoaded } from "../../utils/fontContext";
@@ -133,13 +134,11 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
               colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.gradient}
-            >
+              style={styles.gradient}>
               <SearchButton
                 onPress={() => {
                   onPress();
-                }}
-              >
+                }}>
                 <Text style={styles.buttonText}>검색</Text>
               </SearchButton>
             </LinearGradient>
@@ -151,34 +150,41 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
           <Middle style={{ paddingTop: 0, paddingBottom: 20 }}>
             <SelectView>
               <View style={styles.pickerContainer}>
-                <RNPickerSelect
-                  onValueChange={(value) => setYear(value)}
-                  items={years}
-                  value={year}
-                  style={pickerSelectStyles} // 커스텀 스타일 적용
-                  placeholder={{}}
-                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
-                ></RNPickerSelect>
+                <TouchableWithoutFeedback onPress={() => {}}>
+                  <RNPickerSelect
+                    onValueChange={(value) => setYear(value)}
+                    items={years}
+                    value={year}
+                    style={pickerSelectStyles}
+                    placeholder={{}}
+                    useNativeAndroidPickerStyle={false}
+                  />
+                </TouchableWithoutFeedback>
               </View>
+
               <View style={[styles.pickerContainer, { marginHorizontal: 20 }]}>
-                <RNPickerSelect
-                  onValueChange={(value) => setMonth(value)}
-                  items={months}
-                  value={month}
-                  style={pickerSelectStyles} // 커스텀 스타일 적용
-                  placeholder={{}}
-                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
-                ></RNPickerSelect>
+                <TouchableWithoutFeedback onPress={() => {}}>
+                  <RNPickerSelect
+                    onValueChange={(value) => setMonth(value)}
+                    items={months}
+                    value={month}
+                    style={pickerSelectStyles} // 커스텀 스타일 적용
+                    placeholder={{}}
+                    useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용  pointerEvents="auto"
+                  ></RNPickerSelect>
+                </TouchableWithoutFeedback>
               </View>
               <View style={styles.pickerContainer}>
-                <RNPickerSelect
-                  onValueChange={(value) => setRegion(value)}
-                  items={regions}
-                  value={region}
-                  style={pickerSelectStyles} // 커스텀 스타일 적용
-                  placeholder={{}}
-                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
-                ></RNPickerSelect>
+                <TouchableWithoutFeedback onPress={() => {}}>
+                  <RNPickerSelect
+                    onValueChange={(value) => setRegion(value)}
+                    items={regions}
+                    value={region}
+                    style={pickerSelectStyles} // 커스텀 스타일 적용
+                    placeholder={{}}
+                    useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
+                  ></RNPickerSelect>
+                </TouchableWithoutFeedback>
               </View>
             </SelectView>
           </Middle>
@@ -194,13 +200,11 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
               colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={[styles.gradient]}
-            >
+              style={[styles.gradient]}>
               <SearchButton
                 onPress={() => {
                   searchFunc(year, month, region, possible);
-                }}
-              >
+                }}>
                 <Text style={styles.buttonText}>검색</Text>
               </SearchButton>
             </LinearGradient>
