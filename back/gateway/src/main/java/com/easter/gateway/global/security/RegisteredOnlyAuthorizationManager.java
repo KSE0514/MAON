@@ -22,8 +22,13 @@ public class RegisteredOnlyAuthorizationManager implements ReactiveAuthorization
         ServerWebExchange exchange = context.getExchange();
         log.debug("jwt custom authorization manager entered");
         HttpHeaders headers = exchange.getRequest().getHeaders();
+        if(!headers.containsKey(HttpHeaders.AUTHORIZATION)) {
+            // jwt가 아예 없었던 경우 무조건 거절
+            log.error("unauthorized request -> Access Denied");
+            return Mono.just(new AuthorizationDecision(false));
+        }
         Role role = Role.valueOf(new String(Base64.getDecoder().decode(headers.getFirst("role"))));
-        if(headers.containsKey(HttpHeaders.AUTHORIZATION) && headers.containsKey("passport") && role == Role.REGISTERED) {
+        if(headers.containsKey("passport") && role == Role.REGISTERED) {
             log.debug("registered member,  jwt : {}", headers.get(HttpHeaders.AUTHORIZATION));
             return Mono.just(new AuthorizationDecision(true));
         } else {
