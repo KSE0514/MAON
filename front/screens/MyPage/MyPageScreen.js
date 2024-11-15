@@ -214,17 +214,26 @@ const MyPageScreen = ({ navigation }) => {
           accessToken: newAccessToken,
         });
         // 새로운 accessToken을 AsyncStorage에 갱신
+        console.log(1)
         await updateAccessToken(newAccessToken);
 
         // 상세 정보까지 저장
+        console.log(2)
         await AsyncStorage.setItem("name", name);
-        await AsyncStorage.setItem("height", heightInfo);
-        await AsyncStorage.setItem("weight", weightInfo);
+        console.log(3)
+        await AsyncStorage.setItem("height", String(heightInfo));
+        console.log(4)
+        await AsyncStorage.setItem("weight", String(weightInfo));
+        console.log(5)
         await AsyncStorage.setItem("birthDate", formattedDateOfBirth);
+        console.log(6)
         await AsyncStorage.setItem("address", address);
+        console.log(7)
         await AsyncStorage.setItem("phoneNumber", formattedPhoneNumber);
-        
+        console.log(8)
         setEditMode(false);
+        console.log(9)
+
       }
     } catch (error) {
       console.error("회원정보 수정 에러 발생: ", error);
