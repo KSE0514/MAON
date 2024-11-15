@@ -343,8 +343,21 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   // }, []);
 
   // 팀 생성 및 인원 추가 버튼
-  const createTeam = () => {
-    navigation.navigate("CreateTeam");
+  const createTeam = async () => {
+    try{
+      const response = await apiClient.post(
+        `tournament/team/create`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      )
+      navigation.navigate("CreateTeam");
+    } catch (error) {
+      console.error("팀 생성 에러 발생: ", error)
+    }
   };
 
   // 코스선택 모달에서 신청 버튼- km정보 어떻게 담아서 넘길지 고민하기

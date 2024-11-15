@@ -32,7 +32,7 @@ const LoginScreen = () => {
 
 
       const name = await AsyncStorage.getItem("name");
-      const nickName = await AsyncStorage.getItem("nickName");
+      const nickname = await AsyncStorage.getItem("nickName");
 
 
       // 상세 정보까지 저장
@@ -53,7 +53,7 @@ const LoginScreen = () => {
           refreshToken: refreshToken,
           email: email,
           name: name,
-          nickName: nickName,
+          nickname: nickName,
           height: height,
           weight: weight,
           birthDate: birthDate,
