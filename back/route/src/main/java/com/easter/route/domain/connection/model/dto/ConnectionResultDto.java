@@ -16,5 +16,6 @@ import java.util.UUID;
 public class ConnectionResultDto {
     private ConnectionType type;
     private UUID memberId;
+    private String memberNickname;
     private LocalDateTime timestamp;
 }
