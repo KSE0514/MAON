@@ -182,6 +182,22 @@ const SignUpScreen = ({navigation, route}) => {
       // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
       await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
       await AsyncStorage.setItem("refreshToken", responseUserInfo.refreshToken);
+      await AsyncStorage.setItem("id", responseUserInfo.id);
+      await AsyncStorage.setItem("email", responseUserInfo.email);
+
+
+      await AsyncStorage.setItem("name", responseUserInfo.name);
+      await AsyncStorage.setItem("nickName", requestBody.nickname);
+
+
+      // 상세 정보까지 저장
+      await AsyncStorage.setItem("height", requestBody.height);
+      await AsyncStorage.setItem("weight", requestBody.weight);
+      await AsyncStorage.setItem("birthDate", requestBody.birthDate);
+      await AsyncStorage.setItem("address", requestBody.address);
+      await AsyncStorage.setItem("gender", requestBody.gender);
+      await AsyncStorage.setItem("imageUrl", requestBody.imageUrl);
+      await AsyncStorage.setItem("phoneNumber", requestBody.phoneNumber);
 
       navigation.reset({
         index: 0,
