@@ -12,6 +12,7 @@ export default function Map({
   setRunningDistance,
   mode,
   onLocationChange, // 위치 변경 콜백
+  connectedWatch,
 }) {
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
@@ -164,7 +165,7 @@ export default function Map({
       }, 1000); // 1초마다 위치 업데이트
     };
 
-    if (runStart) {
+    if (runStart && !connectedWatch) {
       startTracking();
     } else {
       // runStart가 false로 변경되면 위치 추적 중지
