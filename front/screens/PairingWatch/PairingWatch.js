@@ -3,8 +3,12 @@ import { useFontsLoaded } from "../../utils/fontContext";
 import { useEffect, useRef, useState } from "react";
 import { apiClient } from "../../customAxios";
 import { Button, ButtonView, Title, styles } from "./PairingWatchStyle";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import useAuthStore from "../../store/AuthStore";
+import {
+  savePairedWatch,
+  fetchPairedWatch,
+} from "../../utils/checkPairedWatch";
 
 const PairingWatch = ({ navigation, route }) => {
   const { user } = useAuthStore();
@@ -21,8 +25,20 @@ const PairingWatch = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    // 페어링된 워치가 있는지 판단
-  });
+    console.log("hello");
+    const checkWatch = async () => {
+      try {
+        const storedPairedWatch = await fetchPairedWatch();
+        if (storedPairedWatch === "true") {
+          setPairedWatch(true);
+        }
+      } catch (error) {
+        console.error("Error checking paired watch:", error);
+      }
+    };
+
+    checkWatch(); // 비동기 함수 호출
+  }, []);
 
   const changeStep = async () => {
     if (step === 1) {
@@ -57,9 +73,12 @@ const PairingWatch = ({ navigation, route }) => {
           console.log("페어링 STOMP 연결 성공!");
 
           // CONNECTED 후, 지정된 경로로 데이터 전송
-          const destination = `pub/connection/info/${generatedNumber}`;
+          const destination = `/pub/connection/info/${generatedNumber}`;
+          console.log(user?.nickname);
           const payload = {
             memberId: user?.id, // user 객체의 UUID 또는 기본 UUID
+            // memberNickname: user?.nickname,
+            memberNickname: "예삐",
             timestamp: new Date().toISOString(), // ISO 형식의 timestamp
           };
 
@@ -71,7 +90,7 @@ const PairingWatch = ({ navigation, route }) => {
           console.log(`메시지가 ${destination} 경로로 전송되었습니다.`);
 
           // SUBSCRIBE 프레임 전송
-          const subscribeDestination = `sub/connection/${generatedNumber}`;
+          const subscribeDestination = `/sub/connection/${generatedNumber}`;
           const subscribeFrame = `SUBSCRIBE\nid:sub-${generatedNumber}\ndestination:${subscribeDestination}\n\n\0`;
 
           pairingWs.send(subscribeFrame);
@@ -92,6 +111,7 @@ const PairingWatch = ({ navigation, route }) => {
               if (parsedData.type === "CONNECTION_SUCCEED") {
                 console.log("연동 응답 수신:", JSON.stringify(parsedData));
                 //유저 정보에 넣기
+                savePairedWatch();
                 setStep(3);
               }
             } else {
@@ -116,6 +136,12 @@ const PairingWatch = ({ navigation, route }) => {
       console.log("pairing error : ", e);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (pairingStompClientRef.current) pairingStompClientRef.current.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
+    };
+  }, []);
 
   const goHome = () => {
     navigation.navigate("Home");
@@ -186,7 +212,7 @@ const PairingWatch = ({ navigation, route }) => {
               </ButtonView>
             </View>
           ))}
-        {step === 2 && !pairedWatch && (
+        {step === 2 && (
           <View>
             <Title style={[styles.BoldFont]}>
               {`연동할 워치에서 앱을 실행해\n아래의 PIN번호를 입력해주세요`}
@@ -194,9 +220,20 @@ const PairingWatch = ({ navigation, route }) => {
             <Title style={[styles.BoldFont]}>{pairingNumber}</Title>
           </View>
         )}
-        {step === 3 && !pairedWatch && (
+        {step === 3 && (
           <View>
             <Title style={[styles.BoldFont]}>{`연동이 완료되었습니다!`}</Title>
+            <ButtonView>
+              <Button
+                onPress={() => {
+                  goHome();
+                }}
+              >
+                <View>
+                  <Text style={[styles.buttonText]}>확인</Text>
+                </View>
+              </Button>
+            </ButtonView>
           </View>
         )}
       </View>

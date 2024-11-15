@@ -57,6 +57,7 @@ public class TeamServiceImpl implements TeamService {
         }
         Participant participant = participantQueryRepository.findParticipant(passport.getId(), tournament.getId());
         // 잘 참여하고 있는가를 확인
+//        log.info("participant : {}", participant.toString());
         if (participant == null || participant.getStatus() == ParticipantStatus.CANCEL) {
             log.error("participant not found or canceled");
             throw new BusinessException(HttpStatus.BAD_REQUEST, "해당 경기에 정상 참가한 사용자가 아닙니다.");
@@ -127,16 +128,37 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public SearchCandidateResponseDto searchCandidate(PassportDto passport, SearchCandidateRequestDto dto) {
-        Tournament tournament = tournamentRepository.findByUuid(dto.getTournamentId());
+        Team team = teamQueryRepository.findByUuid(dto.getTeamId());
+        if(team == null) {
+            log.error("invalid team id : {}", dto.getTeamId());
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다.");
+        }
+        Tournament tournament = team.getTournament();
         if(tournament == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다.");
         }
         log.info("found tournament : [{}] {}", tournament.getId(), tournament.getTitle());
         List<UUID> candidateIdList = participantQueryRepository.findCandidateByTournamentId(tournament.getId());
-        log.info(String.valueOf(candidateIdList.size()));
+//        log.info(String.valueOf(candidateIdList.size()));
         SearchMemberResponseDto memberResponseDto = getMemberInfo(candidateIdList, dto.getKeyword());
+        // 다음으로는 초대여부 검색
+        List<UUID> waitingIdList = teamInvitationQueryRepository.findWaitingMemberId(team.getId());
+        Set<UUID> waitingSet = new HashSet<>(waitingIdList);
+        List<CandidateMemberDto> resultList = new ArrayList<>();
+        for(MemberDto m : memberResponseDto.getMemberInfoList()) {
+            resultList.add(
+                    CandidateMemberDto.builder()
+                            .id(m.getId())
+                            .name(m.getName())
+                            .nickname(m.getNickname())
+                            .email(m.getEmail())
+                            .imageUrl(m.getImageUrl())
+                            .invited(waitingSet.contains(m.getId()))
+                            .build()
+            );
+        }
         return SearchCandidateResponseDto.builder()
-                .candidateInfoList(memberResponseDto.getMemberInfoList())
+                .candidateInfoList(resultList)
                 .build();
     }
 
@@ -204,8 +226,14 @@ public class TeamServiceImpl implements TeamService {
            // 수락했다면 팀 정보를 추가
            log.info("accepted");
            Participant participant = participantQueryRepository.findParticipant(passport.getId(), invitation.getTeam().getTournamentId());
+           if(participant.getTeamId() != null) {
+               log.error("this member already has team");
+               throw new BusinessException(HttpStatus.CONFLICT, "이미 속한 팀이 있습니다.");
+           }
            participant = participant.toBuilder().teamId(invitation.getTeam().getId()).build();
            participantRepository.save(participant);
+           // 이후 같은 경기에 대해 들어온 팀 요청 invalid 처리
+           teamInvitationQueryRepository.invalidateDroppedInvitations(passport.getId(), invitation.getTeam().getTournamentId());
        }
     }
 

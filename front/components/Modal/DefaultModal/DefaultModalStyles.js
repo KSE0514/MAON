@@ -21,7 +21,7 @@ export const ModalContent = styled.View`
   align-items: center;
   flex-direction: row;
   border-radius: 21px;
-  height: 30%;
+  height: 25%;
   padding: 10% 0%;
 `;
 export const ModalText = styled(Text)`
