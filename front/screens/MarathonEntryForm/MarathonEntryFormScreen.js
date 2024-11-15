@@ -22,6 +22,7 @@ import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
 import { useState, useEffect } from "react";
 import { apiClient } from "../../customAxios";
 import useAuthStore from "./../../store/AuthStore";
+import RNPickerSelect from "react-native-picker-select";
 
 const testMarathonName = "2024 국제 국민 마라톤";
 const testUser = {
@@ -44,13 +45,17 @@ const modalMessageMap = {
 
 const MarathonEntryFormScreen = ({ navigation, route }) => {
   const { user } = useAuthStore();
-  const { memberId, tournamentCategory, tournamentId, teamId } = route;
+  const { memberId, tournamentCategory, tournamentId, teamId, marathonName } =
+    route.params;
+  console.log(memberId, tournamentCategory, tournamentId, teamId, marathonName);
   const [dateOfBirth, setDateOfBirth] = useState(""); // 생년월일 상태 관리
   const [phoneNumber, setPhoneNumber] = useState(""); // 전화번호 상태 관리
   const [name, setName] = useState(""); // 이름 상태관리
   const [email, setEmail] = useState(""); // 이메일 상태관리
   const [address, setAddress] = useState(""); // 주소 상태관리
   const [selectedGender, setSelectedGender] = useState(""); // 선택된 성별 상태 관리
+
+  const [selectRunType, setSelectRunType] = useState(""); // 참가 종목 상태 관리
 
   const [userInfo, setUserInfo] = useState({
     nickname: "",
@@ -82,6 +87,14 @@ const MarathonEntryFormScreen = ({ navigation, route }) => {
     ],
   };
 
+  console.log("선택한 마라톤 종목:", selectRunType);
+
+  // Picker에 사용할 아이템 배열 생성
+  const runTypeOptions = tournamentCategory.map((item) => ({
+    label: item,
+    value: item,
+  }));
+
   const clickEntryBtn = async () => {
     const requestBody = {
       memberId: memberId,
@@ -90,6 +103,7 @@ const MarathonEntryFormScreen = ({ navigation, route }) => {
       teamId: teamId,
     };
 
+    console.log("마라톤 신청 요청값", requestBody);
     try {
       const response = await apiClient.post(
         `/tournament/participant/join`,
@@ -194,7 +208,7 @@ const MarathonEntryFormScreen = ({ navigation, route }) => {
           >
             <Container>
               <TitleArea>
-                <TitleText>{testMarathonName}신청서</TitleText>
+                <TitleText>{marathonName} 신청서</TitleText>
               </TitleArea>
               <ContentArea>
                 <InputBox
@@ -239,6 +253,17 @@ const MarathonEntryFormScreen = ({ navigation, route }) => {
                   setValue={setSelectedGender}
                   isEditMode={false}
                 />
+
+                {/* 드롭다운 컴포넌트 */}
+                <InputBox
+                  label="참가 종목"
+                  placeholder="종목을 선택해주세요"
+                  value={selectRunType}
+                  setValue={setSelectRunType}
+                  isEditMode={true}
+                  options={tournamentCategory} // 드롭다운에 사용할 옵션 전달
+                />
+
                 <BtnArea>
                   <RoundBtn text={"신청하기"} onPress={clickEntryBtn} />
                 </BtnArea>

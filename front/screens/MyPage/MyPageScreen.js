@@ -16,6 +16,7 @@ import {
 // import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { useState, useEffect } from "react";
 import useAuthStore from "./../../store/AuthStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiClient } from "../../customAxios";
 import {
   Wapper,
@@ -81,6 +82,17 @@ const MyPageScreen = ({ navigation }) => {
     gender: "",
     imageUrl: "",
   });
+
+  // Async Storage accessToken 갱신
+  const updateAccessToken = async (newAccessToken) => {
+    try {
+      await AsyncStorage.setItem("accessToken", newAccessToken);
+      console.log("accessToken이 성공적으로 갱신되었습니다.");
+    } catch (error) {
+      console.error("accessToken 갱신 중 오류 발생: ", error);
+    }
+  };
+
 
   // 전화번호 형식 자동 변환
   const handlePhoneNumberChange = (text) => {
@@ -195,10 +207,15 @@ const MyPageScreen = ({ navigation }) => {
       );
 
       if (response.status === 200) {
+        console.log("수정된 주소: ", address);
         console.log("회원정보 수정 성공: ", response.data);
+        const newAccessToken = response.data.data.accessToken;
         setUser({
-          accessToken: response.data.data.accessToken,
+          accessToken: newAccessToken,
         });
+        // 새로운 accessToken을 AsyncStorage에 갱신
+        await updateAccessToken(newAccessToken);
+        
         setEditMode(false);
       }
     } catch (error) {

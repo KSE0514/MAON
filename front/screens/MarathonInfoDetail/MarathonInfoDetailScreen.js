@@ -8,6 +8,8 @@ import {
   DetailInfoArea,
   DetailInfoView,
   LineInfoView,
+  LineIconTitleWrap,
+  LineInfoTitleText,
   LineInfoText,
   BtnArea,
   HalfBtnContainer,
@@ -38,7 +40,7 @@ import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
 import MapView, { Marker } from "react-native-maps";
 import MapStyle from "./../../components/Map/MapStyle"
 
-import { Text, View, Image, ScrollView } from "react-native";
+import { Text, View, Image, ScrollView, Linking, Alert, TouchableOpacity } from "react-native";
 // import testImg from "./../../assets/images/testProfile2.jpg";
 // import testImg1 from "./../../assets/images/testProfile1.jpg";
 // import testImg2 from "./../../assets/images/testProfile.jpg";
@@ -149,6 +151,8 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     teamId: '',
     teamMembers: '',
     title: '',
+    inquiry : "", // 문의처
+    bookmarked : '' // true:북마크했음 false:북마크안함
   }); // 마라톤 디테일 정보 조회를 통해 받아온 마라톤 정보
   const [myMarathonInfo, setMyMarathonInfo] = useState(testMyInfo);
   const [isActivated, setIsActived] = useState(false); // 북마크 여부
@@ -156,6 +160,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   const [runType, setRunType] = useState(""); // 모달에서 선택한 종목
 
   const [marathonName, setMarathonName] = useState(""); // 마라톤 이름
+  const [marathonUuid, setMarathonUuid] = useState('') // 마라톤 uuid
   const [marathonDate, setMarathonDate] = useState(""); // 대회 일시
   const [marathonFormatDate, setMarathonFormatDate] = useState(""); // 대회 일시 양식 변화
   const [marathonPeriod, setMarathonPeriod] = useState(""); // 접수 기간
@@ -168,8 +173,9 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   const [dDay, setDDay] = useState(null); // 마라톤 시작 디데이
   const [showWarning, setShowWarning] = useState(false); // 경고 메시지 표시 상태
 
-  const [latitude, setLatitude] = useState('')
-  const [longitude, setLongitude] = useState('')
+  const [latitude, setLatitude] = useState(37.5665); // 예: 서울의 위도 값
+  const [longitude, setLongitude] = useState(126.9780); // 예: 서울의 경도 값
+  const [bookmarked, setBookmarked] = useState(false) // 북마크 여부
 
   const [teamMemberList, setTeamMemberList] = useState([]); // 팀원들
   const [myTeamCode, setMyTeamCode] = useState(1); // 내 팀 코드
@@ -190,7 +196,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
         title: "신청",
         onPress: () => {
           // navigation.navigate("MarathonEntryForm", { memberId: user.id, tournamentCategory: runType, tournamentId: marathonInfo.tournamentId, teamId: marathonInfo.teamId})
-          console.log("정보 확인용:", selectCourseModalContent);
+          // console.log("정보 확인용:", selectCourseModalContent);
           entryMarathon()
         },
       },
@@ -203,8 +209,45 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     // 마라톤 상세 정보 조회
     getMarathonDetailInfo()
 
+    setMarathonUuid(uuid)
+
+  }, []);
+
+  useEffect(() => {
+    // 대회 일시 양식 맞춤
+    if (marathonInfo.tournamentDayStart) {
+      // 날짜 부분만 추출하고 '-'를 '.'로 변환
+      const formattedDate = marathonInfo.tournamentDayStart.split("T")[0].split("-").join(".");
+      setMarathonFormatDate(formattedDate);
+      console.log('변경된 날짜:', formattedDate);
+    }
+
+    // 접수 기간 양식 맞춤
+    if (marathonInfo.receiptStart && marathonInfo.receiptEnd) {
+      // 시작일과 마감일을 각각 형식 변환
+      const formattedStartDate = marathonInfo.receiptStart.split("T")[0].split("-").join(".");
+      const formattedEndDate = marathonInfo.receiptEnd.split("T")[0].split("-").join(".");
+  
+      // 시작일과 마감일을 결합하여 "YYYY.MM.DD~YYYY.MM.DD" 형태로 저장
+      setMarathonPeriod(`${formattedStartDate} ~ ${formattedEndDate}`);
+      console.log('접수 기간:', `${formattedStartDate}~${formattedEndDate}`);
+    }
+
+    setMarathonName(marathonInfo.title)
+    setMarathonDate(marathonInfo.tournamentDayStart)
+    setMarathonPlace(marathonInfo.location)
+    setMarathonUrl(marathonInfo.homepage)
+    setMarathonCourse(marathonInfo.categories)
+    setMarathonHost(marathonInfo.host)
+    setLatitude(marathonInfo.latitude)
+    setLongitude(marathonInfo.longitude)
+    setMarathonCallNum(marathonInfo.inquiry)
+    console.log(marathonInfo.latitude, marathonInfo.longitude)
+    // setMarathonCallNum(marathonInfo.) // 문의가 없넹...
+
+
     // marathonCourse와 selectCourseModalContent를 함께 업데이트
-    const updatedCourse = testMarathonInfo.course;
+    const updatedCourse = marathonInfo.categories;
     setMarathonCourse(updatedCourse);
 
     // 코스 데이터가 있을 경우에만 selectCourseModalContent 업데이트
@@ -214,22 +257,6 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
         item: updatedCourse.map((course) => ({ label: course, value: course })),
       }));
     }
-  }, []);
-
-  useEffect(() => {
-    setMarathonName(marathonInfo.title)
-    // setMarathonDate(marathonInfo.tournamentDayStart)
-    setMarathonFormatDate(marathonInfo.tournamentDayStart)
-    // 접수 기간(시작 끝으로 수정하기)
-
-    setMarathonPlace(marathonInfo.location)
-    setMarathonUrl(marathonInfo.homepage)
-    setMarathonCourse(marathonInfo.categories)
-    setMarathonHost(marathonInfo.host)
-    setLatitude(marathonInfo.latitude)
-    setLongitude(marathonInfo.longitude)
-    console.log(marathonInfo.latitude, marathonInfo.longitude)
-    // setMarathonCallNum(marathonInfo.) // 문의가 없넹...
   }, [marathonInfo])
 
   console.log("선택 가능한 코스:", selectCourseModalContent.item); // 디버깅용
@@ -238,20 +265,20 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
 
   // 북마크 버튼 토글
   const toggleBookmark = () => {
-    const marathonName = testMarathonInfo.name;
+    // const marathonName = testMarathonInfo.name;
 
-    setMyMarathonInfo((prevState) => {
-      const isBookmarked = prevState.bookmarkList.includes(marathonName);
+    // setMyMarathonInfo((prevState) => {
+    //   const isBookmarked = prevState.bookmarkList.includes(marathonName);
 
-      return {
-        ...prevState,
-        bookmarkList: isBookmarked
-          ? prevState.bookmarkList.filter((name) => name !== marathonName)
-          : [...prevState.bookmarkList, marathonName],
-      };
-    });
+    //   return {
+    //     ...prevState,
+    //     bookmarkList: isBookmarked
+    //       ? prevState.bookmarkList.filter((name) => name !== marathonName)
+    //       : [...prevState.bookmarkList, marathonName],
+    //   };
+    // });
 
-    setIsActived((prev) => !prev); // 북마크 상태 토글
+    // setIsActived((prev) => !prev); // 북마크 상태 토글
   };
 
   useEffect(() => {
@@ -266,6 +293,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
       // 밀리초를 일 단위로 변환
       const dayDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
+      console.log('디데이 계산 확인용' , dayDifference)
       // D-Day 값 업데이트
       setDDay(dayDifference);
     };
@@ -273,40 +301,40 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     calculateDDay(); // D-Day 계산 함수 호출
   }, [marathonDate]);
 
-  useEffect(() => {
-    setMyMarathonInfo(testMyInfo);
+  // useEffect(() => {
+  //   setMyMarathonInfo(testMyInfo);
 
-    const maraName = testMarathonInfo.name;
-    // 사용자의 북마크 목록에 해당 마라톤이 있는지 확인
-    setIsActived(testMyInfo.bookmarkList.includes(maraName));
+  //   const maraName = testMarathonInfo.name;
+  //   // 사용자의 북마크 목록에 해당 마라톤이 있는지 확인
+  //   setIsActived(testMyInfo.bookmarkList.includes(maraName));
 
-    setRunType(""); // 선택 타입 초기화
+  //   setRunType(""); // 선택 타입 초기화
 
-    // 날짜 형식을 'YYYY.MM.DD'로 변환
-    const formattedDate = testMarathonInfo.date.split("-").join(".");
-    setMarathonFormatDate(formattedDate);
+  //   // 날짜 형식을 'YYYY.MM.DD'로 변환
+  //   const formattedDate = testMarathonInfo.date.split("-").join(".");
+  //   setMarathonFormatDate(formattedDate);
 
-    // isActived 초기값 확인용
-    console.log(
-      "isActived 초기값 확인용",
-      testMyInfo.bookmarkList.includes(maraName)
-    );
-    setMarathonName(maraName);
-    setMarathonDate(testMarathonInfo.date);
-    setMarathonPeriod(testMarathonInfo.period);
-    setMarathonPlace(testMarathonInfo.place);
-    setMarathonUrl(testMarathonInfo.url);
-    setMarathonCourse(testMarathonInfo.course);
-    setMarathonHost(testMarathonInfo.host);
-    setMarathonCallNum(testMarathonInfo.callNum);
+  //   // isActived 초기값 확인용
+  //   console.log(
+  //     "isActived 초기값 확인용",
+  //     testMyInfo.bookmarkList.includes(maraName)
+  //   );
+  //   setMarathonName(maraName);
+  //   setMarathonDate(testMarathonInfo.date);
+  //   setMarathonPeriod(testMarathonInfo.period);
+  //   setMarathonPlace(testMarathonInfo.place);
+  //   setMarathonUrl(testMarathonInfo.url);
+  //   setMarathonCourse(testMarathonInfo.course);
+  //   setMarathonHost(testMarathonInfo.host);
+  //   setMarathonCallNum(testMarathonInfo.callNum);
 
-    // setTeamMemberList(testUsers)
-    // 나와 같은 팀인 팀원들 필터링해서 teamMemberList에 저장하기
-    const filteredTeamMembers = testUsers.filter(
-      (user) => user.teamCode === myTeamCode
-    );
-    setTeamMemberList(filteredTeamMembers);
-  }, []);
+  //   // setTeamMemberList(testUsers)
+  //   // 나와 같은 팀인 팀원들 필터링해서 teamMemberList에 저장하기
+  //   const filteredTeamMembers = testUsers.filter(
+  //     (user) => user.teamCode === myTeamCode
+  //   );
+  //   setTeamMemberList(filteredTeamMembers);
+  // }, []);
 
   // 팀 생성 및 인원 추가 버튼
   const createTeam = () => {
@@ -315,13 +343,31 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
 
   // 코스선택 모달에서 신청 버튼- km정보 어떻게 담아서 넘길지 고민하기
   const entryMarathon = () => {
-    console.log(selectCourseModalContent);
-    console.log(selectCourseModalContent.item);
-    console.log(runType);
-    if (runType !== "") {
-      navigation.navigate("MarathonEntryForm", { memberId: user.id, tournamentCategory: runType, tournamentId: marathonInfo.tournamentId, teamId: marathonInfo.teamId});
-    }
-  };
+    // 필요한 값들이 모두 존재하는지 확인
+    // if (!user?.id || !marathonInfo.title || !marathonInfo.tournamentId || !runType) {
+    //   console.log("모든 데이터가 설정되지 않았습니다.");
+    //   return;
+    // }
+
+    console.log('모달 신청 버튼 누름');
+    console.log( user.id, runType, marathonInfo.tournamentId, marathonInfo.teamId, marathonInfo.title)
+  navigation.navigate("MarathonEntryForm", {
+    memberId: user.id,
+    tournamentCategory: marathonCourse,
+    tournamentId: marathonUuid,
+    teamId: marathonInfo.teamId,
+    marathonName: marathonInfo.title
+  });
+};
+    // console.log('모달 신청 버튼 누름')
+    // navigation.navigate("MarathonEntryForm", { memberId: user.id, tournamentCategory: runType, tournamentId: marathonInfo.tournamentId, teamId: marathonInfo.teamId, marathonName:marathonInfo.title})
+    // console.log('selectCourseModalContent', selectCourseModalContent);
+    // console.log(selectCourseModalContent.item);
+    // console.log('runType', runType);
+    // if (runType !== "") {
+    //   navigation.navigate("MarathonEntryForm", { memberId: user.id, tournamentCategory: runType, tournamentId: marathonInfo.tournamentId, teamId: marathonInfo.teamId});
+    // }
+  // };
 
   // 시작일이 아닌데 시작 버튼을 눌렀을 경우
   const handleNotStartedWarning = () => {
@@ -357,16 +403,29 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     }
   };
 
+
+  // 홈페이지 url 터치 시 이동
+  const handlePress = async () => {
+    const supported = await Linking.canOpenURL(marathonUrl);
+    if (supported) {
+      // URL을 열 수 있는 경우 이동
+      await Linking.openURL(marathonUrl);
+    } else {
+      // URL을 열 수 없는 경우 알림 표시
+      Alert.alert("해당 URL을 열 수 없습니다.");
+    }
+  };
+
   return (
     <Wrapper>
       <ScrollView>
         {/* 지도 영역 */}
         <MapArea>
-          {/* <Image
+          <Image
             // style={{height: '100%'}}
             source={testImg}
-          /> */}
-          <MapView
+          />
+          {/* <MapView
                 provider={MapView.PROVIDER_GOOGLE}
                 customMapStyle={MapStyle}
                 style={{
@@ -396,10 +455,10 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                     color={color.light_orange}
                   />
                 </Marker>
-              </MapView>
+              </MapView> */}
           <BookmarkBtnArea>
             <BookmarkBtn
-              text={"경로 북마크"}
+              text={"대회 북마크"}
               isActivated={isActivated}
               toggleBookmark={toggleBookmark}
             />
@@ -412,48 +471,87 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
           </TitleArea>
           <DetailInfoArea>
             <DetailInfoView>
-              {marathonDate && (
+              {marathonFormatDate && (
                 <LineInfoView>
-                  <MarathonInfoDetailIcon iconName={"date"} />
-                  <LineInfoText>대회 일시: {marathonFormatDate}</LineInfoText>
+                  <View>
+                    <LineIconTitleWrap>
+                      <MarathonInfoDetailIcon iconName={"date"} />
+                      <LineInfoTitleText>대회 일시:</LineInfoTitleText>
+                    </LineIconTitleWrap>                   
+                  </View>
+                  <LineInfoText>{marathonFormatDate}</LineInfoText>
                 </LineInfoView>
               )}
               {marathonPeriod && (
                 <LineInfoView>
-                  <MarathonInfoDetailIcon iconName={"period"} />
-                  <LineInfoText>접수 기간: {marathonPeriod}</LineInfoText>
+                  <View>
+                    <LineIconTitleWrap>
+                      <MarathonInfoDetailIcon iconName={"period"} />
+                      <LineInfoTitleText>접수 기간:</LineInfoTitleText>
+                    </LineIconTitleWrap>
+                  </View>
+                  <LineInfoText>{marathonPeriod}</LineInfoText>
                 </LineInfoView>
               )}
               {marathonPlace && (
                 <LineInfoView>
-                  <MarathonInfoDetailIcon iconName={"location"} />
-                  <LineInfoText>대회 장소: {marathonPlace}</LineInfoText>
+                  <View>
+                    <LineIconTitleWrap>
+                      <MarathonInfoDetailIcon iconName={"location"} />
+                      <LineInfoTitleText>대회 장소:</LineInfoTitleText>
+                    </LineIconTitleWrap>
+                  </View>
+                  <LineInfoText>{marathonPlace}</LineInfoText>
                 </LineInfoView>
               )}
               {marathonUrl && (
                 <LineInfoView>
-                  <MarathonInfoDetailIcon iconName={"url"} />
-                  <LineInfoText>홈페이지: {marathonUrl}</LineInfoText>
+                  <View>
+                    <LineIconTitleWrap>
+                      <MarathonInfoDetailIcon iconName={"url"} />
+                      <LineInfoTitleText>홈페이지:</LineInfoTitleText>
+                    </LineIconTitleWrap>
+                  </View>
+                  <LineInfoText
+                  onPress={handlePress}
+                   numberOfLines={1} ellipsizeMode="tail"
+                  >{marathonUrl}</LineInfoText>
                 </LineInfoView>
               )}
               {marathonCourse && (
                 <LineInfoView>
-                  <MarathonInfoDetailIcon iconName={"course"} />
-                  <LineInfoText>
-                    대회 종목: {marathonCourse.join(", ")}
-                  </LineInfoText>
+                  <View>
+                    <LineIconTitleWrap>
+                      <MarathonInfoDetailIcon iconName={"course"} />
+                      <LineInfoTitleText>대회 종목:</LineInfoTitleText>
+                    </LineIconTitleWrap>
+                  </View>
+                  <LineInfoText>{marathonCourse.join(", ")}</LineInfoText>
                 </LineInfoView>
               )}
               {marathonHost && (
                 <LineInfoView>
-                  <MarathonInfoDetailIcon iconName={"host"} />
-                  <LineInfoText>주최: {marathonHost}</LineInfoText>
+                  <View>
+                    <LineIconTitleWrap>
+                      <MarathonInfoDetailIcon iconName={"host"} />
+                      <LineInfoTitleText>주최:</LineInfoTitleText>
+                    </LineIconTitleWrap>
+                  </View>
+                  <LineInfoText>{marathonHost}</LineInfoText>
                 </LineInfoView>
               )}
               {marathonCallNum && (
                 <LineInfoView>
-                  <MarathonInfoDetailIcon iconName={"callNum"} />
-                  <LineInfoText>문의: {marathonCallNum}</LineInfoText>
+                  <View>
+                    <LineIconTitleWrap>
+                      <MarathonInfoDetailIcon iconName={"callNum"} />
+                      <LineInfoTitleText>문의:</LineInfoTitleText>
+                    </LineIconTitleWrap>
+                  </View>
+                  <View>
+                  <LineInfoText>{marathonCallNum}</LineInfoText>
+
+                  </View>
                 </LineInfoView>
               )}
 
@@ -538,10 +636,11 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                 )
               ) : (
                 <BtnArea>
-                  <RoundBtn
+                  {marathonName&&<RoundBtn
                     text={"참가 신청하기"}
-                    onPress={() => setShowSelectCourseModal(true)}
-                  />
+                    // onPress={() => setShowSelectCourseModal(true)}
+                    onPress={entryMarathon}
+                  />}
                 </BtnArea>
               )}
             </DetailInfoView>

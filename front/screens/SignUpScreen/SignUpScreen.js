@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import {KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import useAuthStore from "./../../store/AuthStore"
 import * as ImagePicker from 'expo-image-picker';
 import { useFontsLoaded } from "../../utils/fontContext";
@@ -173,10 +174,15 @@ const SignUpScreen = ({navigation, route}) => {
         name: responseUserInfo.name,
         email: responseUserInfo.email,
         accessToken: responseUserInfo.accessToken,
-        refreshToken: responseUserInfo.accessToken,
+        refreshToken: responseUserInfo.refreshToken,
         imageUrl: responseUserInfo.imageUrl,
       })
       // navigation.navigate("Home")
+
+      // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
+      await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
+      await AsyncStorage.setItem("refreshToken", responseUserInfo.refreshToken);
+
       navigation.reset({
         index: 0,
         routes: [{ name: "MainTabs" }],
@@ -352,7 +358,7 @@ const SignUpScreen = ({navigation, route}) => {
                 {nameError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{nameError}</Text> : null}
                 <InputBox label={'전화번호'} placeholder={'010-XXXX-XXXX'} value={phoneNumber} setValue={setPhoneNumber} isEditMode={true}/>
                 {phoneError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{phoneError}</Text> : null}
-                <InputBox label={'이메일'} placeholder={'email@email.com'} value={email} setValue={setEmail} isEditMode={true} />
+                <InputBox label={'이메일'} placeholder={'email@email.com'} value={email} setValue={setEmail} isEditMode={false} />
                 {emailError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{emailError}</Text> : null}
                 <InputBox label={'생년월일'} placeholder={'YYYY/MM/DD'} value={dateOfBirth} setValue={setDateOfBirth} isEditMode={true} />
                 {birthDateError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{birthDateError}</Text> : null}

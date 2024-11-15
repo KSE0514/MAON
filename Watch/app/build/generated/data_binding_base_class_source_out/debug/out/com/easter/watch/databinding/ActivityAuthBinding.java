@@ -4,7 +4,8 @@ package com.easter.watch.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -16,15 +17,19 @@ import java.lang.Object;
 
 public abstract class ActivityAuthBinding extends ViewDataBinding {
   @NonNull
-  public final TextView authCodeText;
+  public final EditText authCodeText;
+
+  @NonNull
+  public final Button connectBtn;
 
   @NonNull
   public final ConstraintLayout main;
 
   protected ActivityAuthBinding(Object _bindingComponent, View _root, int _localFieldCount,
-      TextView authCodeText, ConstraintLayout main) {
+      EditText authCodeText, Button connectBtn, ConstraintLayout main) {
     super(_bindingComponent, _root, _localFieldCount);
     this.authCodeText = authCodeText;
+    this.connectBtn = connectBtn;
     this.main = main;
   }
 
