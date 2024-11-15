@@ -42,7 +42,7 @@ public class SecurityConfig {
                                 .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**", "/maon/member/member/oauth2/**", "/maon/member/service/**", "/maon/member/member/logindone").permitAll()
                                 .pathMatchers("/maon/route/ws/location/**").permitAll() // websocket 관련
                                 .pathMatchers("/maon/member/member/reissue").permitAll()
-                                .pathMatchers("/maon/member/member/info", "/maon/member/member/logout").access(customAuthorizationManager)
+                                .pathMatchers("/maon/member/member/info", "/maon/member/member/logout", "/maon/member/member/check").access(customAuthorizationManager)
 //                        .pathMatchers("/maon/member/**").access(customAuthorizationManager)
 //                        .anyExchange().permitAll()
                                 .anyExchange().access(registeredOnlyAuthorizationManager)
