@@ -10,5 +10,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class MemberInfoDto {
     private UUID memberId;
+    private String memberNickname;
     private LocalDateTime timestamp;
 }

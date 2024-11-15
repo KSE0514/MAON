@@ -31,15 +31,18 @@ public class ConnectionServiceImpl implements ConnectionService {
             log.error("already exist : {}", code);
             return;
         }
-        ops.set(key, dto.getMemberId().toString());
-        redisTemplate.expire(key, 10, TimeUnit.MINUTES); // 코드의 유효기간은 10분
+        ops.set(key + ":ID", dto.getMemberId().toString());
+        ops.set(key + ":NICKNAME", dto.getMemberNickname());
+        redisTemplate.expire(key + ":ID", 10, TimeUnit.MINUTES); // 코드의 유효기간은 10분
+        redisTemplate.expire(key + ":NICKNAME", 10, TimeUnit.MINUTES); // 코드의 유효기간은 10분
     }
 
     @Override
     public ConnectionResultDto connect(String code) {
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         String key = CODE_PREFIX + code;
-        String memberId = ops.get(key);
+        String memberId = ops.get(key + ":ID");
+        String memberNickname = ops.get(key + ":NICKNAME");
         if(memberId == null) {
             return ConnectionResultDto.builder()
                     .type(ConnectionType.CONNECTION_FAILED)
@@ -49,6 +52,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         return ConnectionResultDto.builder()
                 .type(ConnectionType.CONNECTION_SUCCEED)
                 .memberId(UUID.fromString(memberId))
+                .memberNickname(memberNickname)
                 .timestamp(LocalDateTime.now())
                 .build();
     }
