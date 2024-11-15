@@ -4,8 +4,8 @@
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\fragment_run2.xml"
     },
     {
-        "merged": "com.easter.watch.app-mergeDebugResources-4:/layout/activity_auth.xml",
-        "source": "com.easter.watch.app-main-7:/layout/activity_auth.xml"
+        "merged": "com.easter.watch.app-mergeDebugResources-4:/layout/activity_connect_success.xml",
+        "source": "com.easter.watch.app-main-7:/layout/activity_connect_success.xml"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-mergeDebugResources-4:\\layout\\activity_result.xml",
@@ -22,6 +22,10 @@
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-mergeDebugResources-4:\\layout\\fragment_run1.xml",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\fragment_run1.xml"
+    },
+    {
+        "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-mergeDebugResources-4:\\layout\\activity_connect_success.xml",
+        "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\activity_connect_success.xml"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-mergeDebugResources-4:\\layout\\activity_start.xml",

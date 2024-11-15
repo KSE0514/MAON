@@ -45,6 +45,7 @@ id imageView
 id main
 id map
 id memberName
+id nickNameText
 id paceText
 id page1
 id page2
@@ -57,10 +58,14 @@ id runTime
 id runtimeText
 id stopBtn
 id textView
+id textView2
 id textView3
+id textView4
 id textView9
 id viewPager
 layout activity_auth
+layout activity_connect_failed
+layout activity_connect_success
 layout activity_main
 layout activity_record
 layout activity_restart

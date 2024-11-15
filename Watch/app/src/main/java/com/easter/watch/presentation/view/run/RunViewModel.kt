@@ -41,7 +41,7 @@ class RunViewModel : ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            _pace.value = "00'00\""
+            _pace.value = "00'00''"
             _totalDistance.value = 0.0
         }
     }
@@ -57,8 +57,6 @@ class RunViewModel : ViewModel() {
     // 달린 거리 관련
     private val _distance = MutableLiveData(0.0)
     val distance: LiveData<Double> = _distance
-
-
 
     // 심박수 관련
     private val _heartRate = MutableLiveData(0)
@@ -116,7 +114,7 @@ class RunViewModel : ViewModel() {
         pauseTimer()
         timeInSeconds = 0
         _distance.value = 0.0
-        _pace.value = "00'00\""
+        _pace.value = "00'00''"
         _heartRate.value = 0
         updateTimerText()
         setPausedState(false)
@@ -166,7 +164,7 @@ class RunViewModel : ViewModel() {
                 val paceInSeconds = (tt / distance).toInt()
                 val paceMinutes = paceInSeconds / 60
                 val paceSeconds = paceInSeconds % 60
-                val paceString = String.format("%02d'%02d\"", paceMinutes, paceSeconds)
+                val paceString = String.format("%02d'%02d''", paceMinutes, paceSeconds)
 
                 Log.d("Pace", "Calculating pace - Time: $tt, Distance: $distance")
                 Log.d("Pace", "New pace value: $paceString")

@@ -75,7 +75,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
-
     private fun checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
@@ -135,12 +134,9 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
                     binding.page3.setImageDrawable(ContextCompat.getDrawable(this@RunActivity,R.drawable.round_selected_page))
                     binding.heartText.setTextColor(ContextCompat.getColor(this@RunActivity,R.color.real_black))
                 }
-
-
             }
         })
     }
-
 
     private fun setupSensors() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -148,21 +144,11 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         sensorManager.registerListener(this, heartSensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
-    //1초단위
-//    override fun onSensorChanged(event: SensorEvent?) {
-//        if(event!!.sensor.type == Sensor.TYPE_HEART_RATE){
-//            val i = event.values[0].toInt()
-//            binding.heartText.text = i.toString()
-//        }
-//    }
-
-
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
             viewModel.updateHeartRate(event.values[0].toInt())
         }
     }
-
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
 

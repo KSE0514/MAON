@@ -3701,6 +3701,7 @@ int id navigation_header_container 0x7f0b0154
 int id never 0x7f0b0155
 int id neverCompleteToEnd 0x7f0b0156
 int id neverCompleteToStart 0x7f0b0157
+int id nickNameText 0x7f0b024a
 int id noScroll 0x7f0b0158
 int id noState 0x7f0b0159
 int id none 0x7f0b015a
@@ -3860,7 +3861,9 @@ int id textSpacerNoTitle 0x7f0b01f3
 int id textStart 0x7f0b01f4
 int id textTop 0x7f0b01f5
 int id textView 0x7f0b01f6
+int id textView2 0x7f0b0248
 int id textView3 0x7f0b01f7
+int id textView4 0x7f0b0249
 int id textView9 0x7f0b01f8
 int id textWatcher 0x7f0b01f9
 int id text_input_end_icon 0x7f0b01fa
@@ -4058,6 +4061,8 @@ int layout abc_search_view 0x7f0e0019
 int layout abc_select_dialog_material 0x7f0e001a
 int layout abc_tooltip 0x7f0e001b
 int layout activity_auth 0x7f0e001c
+int layout activity_connect_failed 0x7f0e0088
+int layout activity_connect_success 0x7f0e0089
 int layout activity_main 0x7f0e001d
 int layout activity_record 0x7f0e0087
 int layout activity_restart 0x7f0e001f

@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.easter.watch.presentation.db.dao.MemberDao
 import com.easter.watch.presentation.db.entity.Member
 
-@Database(entities = [Member::class], version = 1, exportSchema = false)
+@Database(entities = [Member::class], version = 2, exportSchema = false)
 abstract class MemberDatabase : RoomDatabase() {
 
     abstract fun memberDao(): MemberDao
@@ -26,7 +26,9 @@ abstract class MemberDatabase : RoomDatabase() {
                     context.applicationContext,
                     MemberDatabase::class.java,
                     "member_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration() // 데이터 삭제 후 새로 생성
+                    .build()
                 INSTANCE = instance
                 instance
             }

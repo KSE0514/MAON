@@ -27,6 +27,10 @@ import com.easter.watch.presentation.view.notification.ConnectSuccessActivity
 import com.easter.watch.presentation.view.run.StartActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +43,7 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAuthBinding
     private lateinit var stompClient: StompWebSocketClient
     private lateinit var memberDao: MemberDao
-    val TAG = "authActivity"
+    val TAG = "인증화면"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,46 +70,93 @@ class AuthActivity : AppCompatActivity() {
             // JSON 형식의 메시지 생성
             val messageMap = mapOf("timestamp" to LocalDateTime.now().toString())
             val messageJson = Gson().toJson(messageMap) // JSON 문자열로 변환
-            stompClient.sendMessageJson("/sub/connection/$authCodeText",messageJson)
+            stompClient.sendMessageJson("/pub/connection/watch/$authCodeText", messageJson)
         }
     }
 
+    // STOMP 메시지에서 JSON 추출
+    private fun extractJsonFromStompMessage(stompMessage: String): String {
+        val parts = stompMessage.split("\n\n")
+        val json = if (parts.size >= 2) {
+            parts.last().trim()
+        } else {
+            stompMessage.trim()
+        }
+
+        // 한글(AC00-D7A3)을 제외한 모든 비ASCII 유니코드 문자 제거
+        return json.replace(Regex("[^\\x20-\\x7E가-힣]"), "").trim()
+    }
+
+    // Auth 토픽 구독 함수
     fun subscribeToAuthTopic(authCode: String) {
         stompClient.subscribeToTopic("/sub/connection/$authCode") { payload ->
-            // JSON 데이터를 AuthInfo 객체로 변환
-            val authInfo = Gson().fromJson(payload, AuthInfo::class.java)
-            Log.d(TAG, authInfo.toString())
+            try {
+                // JSON 데이터를 AuthInfo 객체로 변환
+                val jsonBody = extractJsonFromStompMessage(payload)
+                Log.d(TAG, "추출된 JSON: $jsonBody")
 
-            when(authInfo.type) {
-                Connect.CONNECTION_SUCCEED -> {
-                    // 연결 성공 시 memberId 저장
-                    Log.d(TAG, "연결 성공: memberID = ${authInfo.memberId}")
-                    CoroutineScope(Dispatchers.IO).launch {
-                        memberDao.insertMember(Member(authInfo.memberId))
-                        Log.d(TAG, "멤버 저장 완료")
+                // Gson 설정
+                val gson = GsonBuilder()
+                    .setLenient()
+                    .registerTypeAdapter(Connect::class.java, object : TypeAdapter<Connect>() {
+                        override fun write(out: JsonWriter, value: Connect?) {
+                            out.value(value?.name)
+                        }
+
+                        override fun read(`in`: JsonReader): Connect {
+                            val connectionType = `in`.nextString()
+                            return Connect.valueOf(connectionType)
+                        }
+                    })
+                    .create()
+
+                val authInfo = gson.fromJson(jsonBody, AuthInfo::class.java)
+                Log.d(TAG, "변환된 AuthInfo: $authInfo")
+
+                when (authInfo.type) {
+                    Connect.CONNECTION_SUCCEED -> {
+                        // memberId와 memberNickname이 null이 아닌 경우에만 처리
+                        if (authInfo.memberId != null && authInfo.memberNickname != null) {
+                            Log.d(TAG, "연결 성공: memberNickName = ${authInfo.memberNickname}")
+
+                            CoroutineScope(Dispatchers.IO).launch {
+                                memberDao.insertMember(Member(authInfo.memberId, authInfo.memberNickname))
+                                Log.d(TAG, "멤버 저장 완료")
+                            }
+
+                            // 진동 알림
+                            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                            if (vibrator.hasVibrator()) {
+                                val vibrationEffect =
+                                    VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)
+                                vibrator.vibrate(vibrationEffect)
+                            }
+
+                            // ConnectSuccessActivity로 이동
+                            runOnUiThread {
+                                val intent = Intent(this@AuthActivity, ConnectSuccessActivity::class.java).apply {
+                                    putExtra("memberNickname", authInfo.memberNickname)
+                                }
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
                     }
 
-                    // 진동 알림 추가
-                    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    if (vibrator.hasVibrator()) {
-                        val vibrationEffect = VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)
-                        vibrator.vibrate(vibrationEffect)
+                    Connect.CONNECTION_FAILED -> {
+                        Log.d(TAG, "연결 실패")
+                        runOnUiThread {
+                            val intent = Intent(this@AuthActivity, ConnectFailedActivity::class.java)
+                            startActivity(intent)
+                        }
                     }
-
-                    val intent = Intent(this, ConnectSuccessActivity::class.java)
-                    startActivity(intent)
-                    finish()
                 }
-                Connect.CONNECTION_FAILED -> {
-                    // 연결 실패 시 로그 메시지 출력
-                    Log.d(TAG, "연결 실패")
-                    val intent = Intent(this, ConnectFailedActivity::class.java)
-                    startActivity(intent)
-                    finish()
+            } catch (e: Exception) {
+                Log.e(TAG, "JSON 파싱 에러: ${e.message}", e)
+                runOnUiThread {
+                    Toast.makeText(this@AuthActivity, "연결 처리 중 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
                 }
-
             }
         }
     }
-
 }

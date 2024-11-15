@@ -3702,6 +3702,7 @@ id navigation_header_container
 id never
 id neverCompleteToEnd
 id neverCompleteToStart
+id nickNameText
 id noScroll
 id noState
 id none
@@ -3861,7 +3862,9 @@ id textSpacerNoTitle
 id textStart
 id textTop
 id textView
+id textView2
 id textView3
+id textView4
 id textView9
 id textWatcher
 id text_input_end_icon
@@ -4059,6 +4062,8 @@ layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_auth
+layout activity_connect_failed
+layout activity_connect_success
 layout activity_main
 layout activity_record
 layout activity_restart
