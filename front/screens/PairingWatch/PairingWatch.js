@@ -3,7 +3,7 @@ import { useFontsLoaded } from "../../utils/fontContext";
 import { useEffect, useRef, useState } from "react";
 import { apiClient } from "../../customAxios";
 import { Button, ButtonView, Title, styles } from "./PairingWatchStyle";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import useAuthStore from "../../store/AuthStore";
 
 const PairingWatch = ({ navigation, route }) => {
@@ -20,9 +20,16 @@ const PairingWatch = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
+  const checkingPairedWatch = async () => {
+    const storedPairedWatch = await AsyncStorage.getItem("pairedWatch");
+    return storedPairedWatch;
+  };
   useEffect(() => {
     // 페어링된 워치가 있는지 판단
-  });
+    if (checkingPairedWatch) {
+      setPairedWatch(true);
+    }
+  }, []);
 
   const changeStep = async () => {
     if (step === 1) {
@@ -58,6 +65,7 @@ const PairingWatch = ({ navigation, route }) => {
 
           // CONNECTED 후, 지정된 경로로 데이터 전송
           const destination = `pub/connection/info/${generatedNumber}`;
+          console.log(user.id);
           const payload = {
             memberId: user?.id, // user 객체의 UUID 또는 기본 UUID
             timestamp: new Date().toISOString(), // ISO 형식의 timestamp
@@ -92,6 +100,7 @@ const PairingWatch = ({ navigation, route }) => {
               if (parsedData.type === "CONNECTION_SUCCEED") {
                 console.log("연동 응답 수신:", JSON.stringify(parsedData));
                 //유저 정보에 넣기
+                AsyncStorage.setItem("pairedWatch", true);
                 setStep(3);
               }
             } else {
@@ -194,9 +203,20 @@ const PairingWatch = ({ navigation, route }) => {
             <Title style={[styles.BoldFont]}>{pairingNumber}</Title>
           </View>
         )}
-        {step === 3 && !pairedWatch && (
+        {step === 3 && pairedWatch && (
           <View>
             <Title style={[styles.BoldFont]}>{`연동이 완료되었습니다!`}</Title>
+            <ButtonView>
+              <Button
+                onPress={() => {
+                  goHome();
+                }}
+              >
+                <View>
+                  <Text style={[styles.buttonText]}>확인</Text>
+                </View>
+              </Button>
+            </ButtonView>
           </View>
         )}
       </View>

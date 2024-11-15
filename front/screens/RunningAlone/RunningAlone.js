@@ -134,6 +134,9 @@ const RunningAlone = ({ navigation, route }) => {
 
       if (message.data.startsWith("CONNECTED")) {
         console.log("STOMP 연결 성공!");
+
+        //종료 sub 구독하기
+
         const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${roomId}/end\n\n\0`;
         kafkaWs.send(subscribeFrame);
       } else {
@@ -245,7 +248,8 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}>
+            }}
+          >
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}
