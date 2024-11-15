@@ -201,7 +201,7 @@ const SignUpScreen = ({navigation, route}) => {
 
       await AsyncStorage.setItem("name", responseUserInfo.name);
       console.log(7)
-      await AsyncStorage.setItem("nickName", requestBody.nickname);
+      await AsyncStorage.setItem("nickname", requestBody.nickname);
       console.log(8)
 
       // 상세 정보까지 저장

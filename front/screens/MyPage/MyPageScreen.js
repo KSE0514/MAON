@@ -209,9 +209,17 @@ const MyPageScreen = ({ navigation }) => {
       if (response.status === 200) {
         console.log("수정된 주소: ", address);
         console.log("회원정보 수정 성공: ", response.data);
+        const responseResult = response.data.data;
         const newAccessToken = response.data.data.accessToken;
         setUser({
           accessToken: newAccessToken,
+          name: responseResult.name,
+          phoneNumber: responseResult.phoneNumber,
+          birthDate: responseResult.birthDate,
+          height: responseResult.height,
+          weight: responseResult.weight,
+          address: responseResult.address,
+          imageUrl: responseResult.imageUrl
         });
         // 새로운 accessToken을 AsyncStorage에 갱신
         console.log(1)
@@ -231,6 +239,7 @@ const MyPageScreen = ({ navigation }) => {
         console.log(7)
         await AsyncStorage.setItem("phoneNumber", formattedPhoneNumber);
         console.log(8)
+        await AsyncStorage.setItem("imageUrl", responseResult.imageUrl);
         setEditMode(false);
         console.log(9)
 
@@ -252,7 +261,6 @@ const MyPageScreen = ({ navigation }) => {
         console.log("마이페이지 조회 성공: ", response.data.data);
         const getUserInfo = response.data.data;
         setUserInfo({ ...getUserInfo });
-        await AsyncStorage.setItem("imageUrl", response.data.data.imageUrl);
       }
     } catch (error) {
       console.error("마이페이지 조회 에러 발생: ", error);
