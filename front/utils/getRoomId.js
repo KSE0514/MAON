@@ -16,7 +16,7 @@ export const getPracticeRoomIdWithRoute = async (routeId, memberId) => {
         },
       }
     );
-    console.log(response.data.data);
+    // console.log(response.data.data);
     return response.data.data;
   } catch (error) {
     console.error("Error:", error);
@@ -39,8 +39,8 @@ export const getPracticeRoomId = async (memberId, accessToken) => {
         },
       }
     );
-    console.log(response.data.data);
-    return response.data.data;
+    // console.log(response.data.data);
+    return response.data.data.recordId;
   } catch (error) {
     console.error("getPracticeRoomId Error:", error);
   }
@@ -62,7 +62,7 @@ export const getRaceRoomId = async (routeId, memberId) => {
         },
       }
     );
-    console.log(response.data.data);
+    // console.log(response.data.data);
     return response.data.data;
   } catch (error) {
     console.error("Error:", error);
