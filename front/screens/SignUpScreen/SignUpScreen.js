@@ -172,10 +172,18 @@ const SignUpScreen = ({navigation, route}) => {
       setUser({
         id: responseUserInfo.id,
         name: responseUserInfo.name,
+        nickName: requestBody.nickName,
         email: responseUserInfo.email,
         accessToken: responseUserInfo.accessToken,
         refreshToken: responseUserInfo.refreshToken,
         imageUrl: responseUserInfo.imageUrl,
+        height: requestBody.height,
+        weight: requestBody.weight,
+        birthDate: requestBody.birthDate,
+        address: requestBody.address,
+        gender: requestBody.gender,
+        phoneNumber: requestBody.phoneNumber,
+        imageUrl: requestBody.imageUrl,
       })
       // navigation.navigate("Home")
 
