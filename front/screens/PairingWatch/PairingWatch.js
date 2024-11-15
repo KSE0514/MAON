@@ -69,6 +69,36 @@ const PairingWatch = ({ navigation, route }) => {
 
           pairingWs.send(sendFrame);
           console.log(`메시지가 ${destination} 경로로 전송되었습니다.`);
+
+          // SUBSCRIBE 프레임 전송
+          const subscribeDestination = `sub/connection/${generatedNumber}`;
+          const subscribeFrame = `SUBSCRIBE\nid:sub-${generatedNumber}\ndestination:${subscribeDestination}\n\n\0`;
+
+          pairingWs.send(subscribeFrame);
+          console.log(`구독이 ${subscribeDestination} 경로로 추가되었습니다.`);
+        } else {
+          console.log("연동 응답이 와버려");
+          try {
+            // JSON 형식만 추출하기
+            const jsonStartIndex = message.data.indexOf("{");
+            const jsonEndIndex = message.data.lastIndexOf("}");
+            if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
+              const jsonString = message.data.substring(
+                jsonStartIndex,
+                jsonEndIndex + 1
+              );
+              const parsedData = JSON.parse(jsonString); // JSON 부분만 파싱
+
+              if (parsedData.type === "CONNECTION_SUCCEED") {
+                console.log("연동 응답 수신:", JSON.stringify(parsedData));
+                //유저 정보에 넣기
+              }
+            } else {
+              console.error("유효한 JSON 형식이 포함되지 않음.");
+            }
+          } catch (error) {
+            console.error("메시지 파싱 오류:", error);
+          }
         }
       };
 
