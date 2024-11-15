@@ -73,18 +73,7 @@ public class TeamInvitationQueryRepository {
         ).fetch();
     }
 
-    public List<TeamInvitation> findDroppedInvitation(UUID inviteeId, long tournamentId) {
-        QTeam team = QTeam.team;
-        return queryFactory.selectFrom(teamInvitation)
-                .leftJoin(teamInvitation.team, team).fetchJoin()
-                .where(
-                        teamInvitation.inviteeId.eq(inviteeId)
-                                .and(teamInvitation.team.tournamentId.eq(tournamentId)
-                                        .and(teamInvitation.valid.eq(true)))
-                ).fetch();
-    }
-
-    public long invalidateDroppedInvitations(UUID inviteeId, long tournamentId) {
+    public void invalidateDroppedInvitations(UUID inviteeId, long tournamentId) {
         long updatedRows = queryFactory.update(teamInvitation)
                 .set(teamInvitation.valid, false)
                 .where(
@@ -95,7 +84,8 @@ public class TeamInvitationQueryRepository {
                 .execute();
 
         entityManager.clear(); // 영속성 컨텍스트 초기화
-        return updatedRows;
     }
+//
+//    public List<UUID> find
 
 }

@@ -8,6 +8,6 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 public class SearchCandidateRequestDto {
-    private UUID tournamentId;
+    private UUID teamId;
     private String keyword;
 }
