@@ -57,6 +57,7 @@ public class TeamServiceImpl implements TeamService {
         }
         Participant participant = participantQueryRepository.findParticipant(passport.getId(), tournament.getId());
         // 잘 참여하고 있는가를 확인
+//        log.info("participant : {}", participant.toString());
         if (participant == null || participant.getStatus() == ParticipantStatus.CANCEL) {
             log.error("participant not found or canceled");
             throw new BusinessException(HttpStatus.BAD_REQUEST, "해당 경기에 정상 참가한 사용자가 아닙니다.");
@@ -204,8 +205,14 @@ public class TeamServiceImpl implements TeamService {
            // 수락했다면 팀 정보를 추가
            log.info("accepted");
            Participant participant = participantQueryRepository.findParticipant(passport.getId(), invitation.getTeam().getTournamentId());
+           if(participant.getTeamId() != null) {
+               log.error("this member already has team");
+               throw new BusinessException(HttpStatus.CONFLICT, "이미 속한 팀이 있습니다.");
+           }
            participant = participant.toBuilder().teamId(invitation.getTeam().getId()).build();
            participantRepository.save(participant);
+           // 이후 같은 경기에 대해 들어온 팀 요청 invalid 처리
+           teamInvitationQueryRepository.invalidateDroppedInvitations(passport.getId(), invitation.getTeam().getTournamentId());
        }
     }
 
