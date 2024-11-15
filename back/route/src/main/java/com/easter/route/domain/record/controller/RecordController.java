@@ -3,9 +3,10 @@ package com.easter.route.domain.record.controller;
 import java.util.List;
 
 import com.easter.route.domain.record.entity.Record;
+import com.easter.route.domain.record.entity.dto.CreateRunningResponseDto;
 import com.easter.route.domain.record.entity.dto.RecordDto;
 import com.easter.route.domain.record.service.RecordService;
-import com.easter.route.domain.record.entity.dto.CreateRunningDto;
+import com.easter.route.domain.record.entity.dto.CreateRunningRequestDto;
 import com.easter.route.global.response.ResultResponse;
 import com.easter.route.global.security.PassportDto;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +26,18 @@ public class RecordController {
 
     //TODO: routeType 구분하기?
     @PostMapping("/running/createRunning")
-    public ResponseEntity<ResultResponse> createRunning(@RequestAttribute("passport") PassportDto passport, @RequestBody CreateRunningDto createRunningDto) {
+    public ResponseEntity<ResultResponse> createRunning(@RequestAttribute("passport") PassportDto passport, @RequestBody CreateRunningRequestDto createRunningRequestDto) {
         log.info("passport : {}", passport);
-        Record record = recordService.createRunning(passport, createRunningDto);
-        log.info("Record created: {}", record);
-        log.info("reateRunningDto created: {}", createRunningDto);
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "Record를 생성했습니다.", record.getId());
+        CreateRunningResponseDto responseDto = recordService.createRunning(passport, createRunningRequestDto);
+//        log.info("Record created: {}", record);
+//        log.info("createRunningDto created: {}", createRunningRequestDto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "Record를 생성했습니다.", responseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    @GetMapping("/record/{memberId}")
-    public ResponseEntity<ResultResponse> getMyRecords(@PathVariable String memberId) {
-        List<RecordDto> recordList = recordService.getRecordListByMemberId(memberId);
+    @GetMapping("/record")
+    public ResponseEntity<ResultResponse> getMyRecords(@RequestAttribute("passport") PassportDto passport) {
+        List<RecordDto> recordList = recordService.getRecordListByMemberId(passport.getId().toString());
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "Record 리스트를 가져왔습니다.", recordList);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }

@@ -9,6 +9,7 @@ import com.easter.route.domain.route.entity.Route;
 import com.easter.route.domain.route.entity.dto.*;
 import com.easter.route.domain.route.repository.RouteRepository;
 import com.easter.route.global.exception.BusinessException;
+import com.easter.route.global.security.PassportDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,13 +26,13 @@ public class RouteServiceImpl implements RouteService {
 	private final RecordRepository recordRepository;
 
 	@Override
-	public void createRoute(CreateRouteRequestDto createRouteRequestDto) {
+	public void createRoute(PassportDto passport, CreateRouteRequestDto createRouteRequestDto) {
 		Record record = recordRepository.findById(createRouteRequestDto.getRecordId())
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드를 찾을 수 없습니다."));
 
 		Route route = Route.builder()
-				.writerId(createRouteRequestDto.getMemberId())
-				.writerName(createRouteRequestDto.getMemberName())
+				.writerId(passport.getId().toString())
+				.writerName(passport.getNickname())
 				.routeName(createRouteRequestDto.getRouteName())
 				.startPoint(record.getStartPoint())
 				.distance(record.getDistance())
