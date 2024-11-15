@@ -6,6 +6,7 @@ import {
   Button,
   TouchableOpacity,
   TextInput,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useState } from "react";
 import { useFontsLoaded } from "../../utils/fontContext";
@@ -155,30 +156,35 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
                   onValueChange={(value) => setYear(value)}
                   items={years}
                   value={year}
-                  style={pickerSelectStyles} // 커스텀 스타일 적용
+                  style={pickerSelectStyles}
                   placeholder={{}}
-                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
-                ></RNPickerSelect>
+                  useNativeAndroidPickerStyle={false}
+                />
               </View>
+
               <View style={[styles.pickerContainer, { marginHorizontal: 20 }]}>
-                <RNPickerSelect
-                  onValueChange={(value) => setMonth(value)}
-                  items={months}
-                  value={month}
-                  style={pickerSelectStyles} // 커스텀 스타일 적용
-                  placeholder={{}}
-                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
-                ></RNPickerSelect>
+                <TouchableWithoutFeedback onPress={() => {}}>
+                  <RNPickerSelect
+                    onValueChange={(value) => setMonth(value)}
+                    items={months}
+                    value={month}
+                    style={pickerSelectStyles} // 커스텀 스타일 적용
+                    placeholder={{}}
+                    useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용  pointerEvents="auto"
+                  ></RNPickerSelect>
+                </TouchableWithoutFeedback>
               </View>
               <View style={styles.pickerContainer}>
-                <RNPickerSelect
-                  onValueChange={(value) => setRegion(value)}
-                  items={regions}
-                  value={region}
-                  style={pickerSelectStyles} // 커스텀 스타일 적용
-                  placeholder={{}}
-                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
-                ></RNPickerSelect>
+                <TouchableWithoutFeedback onPress={() => {}}>
+                  <RNPickerSelect
+                    onValueChange={(value) => setRegion(value)}
+                    items={regions}
+                    value={region}
+                    style={pickerSelectStyles} // 커스텀 스타일 적용
+                    placeholder={{}}
+                    useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
+                  ></RNPickerSelect>
+                </TouchableWithoutFeedback>
               </View>
             </SelectView>
           </Middle>

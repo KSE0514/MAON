@@ -11,7 +11,9 @@ import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 const ModalTestScreen = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const openModal = () => setModalVisible(true);
+  const openModal = () => {
+    setModalVisible(true);
+  };
   const closeModal = () => setModalVisible(false);
 
   const [runType, setRunType] = useState("");
@@ -28,24 +30,24 @@ const ModalTestScreen = ({ navigation }) => {
     // subText: "현재까지의 기록은 저장됩니다.",
     subText: "",
     buttons: [
-      // {
-      //   title: "취소",
-      //   onPress: () => {
-      //     closeModal();
-      //   },
-      // },
-      // {
-      //   title: "종료",
-      //   onPress: () => {
-      //     closeModal();
-      //   },
-      // },
       {
-        title: "확인",
+        title: "취소",
         onPress: () => {
           closeModal();
         },
       },
+      {
+        title: "종료",
+        onPress: () => {
+          closeModal();
+        },
+      },
+      // {
+      //   title: "확인",
+      //   onPress: () => {
+      //     closeModal();
+      //   },
+      // },
     ],
   };
   const SelectModalContent = {
@@ -81,7 +83,10 @@ const ModalTestScreen = ({ navigation }) => {
         >
           <OpenModalBtnText>기본 모달 열기</OpenModalBtnText>
         </OpenModalBtn> */}
-        {/* <DefaultModal isVisible={isModalVisible} content={defalutModalContent} /> */}
+        <DefaultModal
+          isVisible={isModalVisible}
+          content={defalutModalContent}
+        />
         {/* <OpenModalBtn
           title=""
           onPress={() => {
@@ -98,8 +103,11 @@ const ModalTestScreen = ({ navigation }) => {
           title=""
           onPress={() => {
             openModal();
-          }}>
-          <OpenModalBtnText>달리기 시작 모달 열기</OpenModalBtnText>
+          }}
+        >
+          <View>
+            <OpenModalBtnText>달리기 시작 모달 열기</OpenModalBtnText>
+          </View>
         </OpenModalBtn>
         <RunStartModal isVisible={isModalVisible} startTimer={startTimer} />
       </Wrapper>
