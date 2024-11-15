@@ -22,7 +22,9 @@ const LoginScreen = () => {
   const fontsLoaded = useFontsLoaded();
   const screenHeight = Dimensions.get("window").height;
 
+  
   useEffect(() => {
+    // AsyncStorage.clear();
     // 앱 실행 시 AsyncStorage에서 토큰 확인
     const checkLoginStatus = async () => {
       const storedToken = await AsyncStorage.getItem("accessToken");
@@ -53,7 +55,7 @@ const LoginScreen = () => {
           refreshToken: refreshToken,
           email: email,
           name: name,
-          nickname: nickName,
+          nickname: nickname,
           height: height,
           weight: weight,
           birthDate: birthDate,

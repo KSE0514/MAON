@@ -40,6 +40,8 @@ import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
 import MapView, { Marker } from "react-native-maps";
 import MapStyle from "./../../components/Map/MapStyle"
 
+import InputModal from "./../../components/Modal/InputModal/InputModal";
+
 import { Text, View, Image, ScrollView, Linking, Alert, TouchableOpacity } from "react-native";
 // import testImg from "./../../assets/images/testProfile2.jpg";
 // import testImg1 from "./../../assets/images/testProfile1.jpg";
@@ -182,6 +184,10 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   const [teamMemberList, setTeamMemberList] = useState([]); // 팀원들
   const [myTeamCode, setMyTeamCode] = useState(''); // 내 팀 코드
 
+  const [addModal, setAddModal] = useState(false);
+  const [teamName, setTeamName] = useState("");
+
+  
   // 코스 선택 모달 내용
   // 코스 선택 모달 내용
   const [selectCourseModalContent, setSelectCourseModalContent] = useState({
@@ -248,8 +254,8 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     
 
     setMyTeamCode(marathonInfo.teamId)
-    // setParticipated(marathonInfo.participated) // 나중에 주석 풀기
-    setParticipated(true)
+    setParticipated(marathonInfo.participated) // 나중에 주석 풀기
+    // setParticipated(true)
 
 
     // marathonCourse와 selectCourseModalContent를 함께 업데이트
@@ -344,9 +350,14 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
 
   // 팀 생성 및 인원 추가 버튼
   const createTeam = async () => {
+    console.log("팀 이름 확인용:", teamName, '대회 uuid: ', marathonUuid)
     try{
       const response = await apiClient.post(
-        `tournament/team/create`,
+        `/tournament/team/create`,
+        {
+          name: teamName, // 팀 이름
+          tournamentId: marathonUuid
+        },
         {
           withCredentials: true,
           headers: {
@@ -354,6 +365,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
           },
         }
       )
+      console.log("팀 생성 성공: ", response)
       navigation.navigate("CreateTeam");
     } catch (error) {
       console.error("팀 생성 에러 발생: ", error)
@@ -627,7 +639,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                       <BtnHalfArea>
                         <MarathonDetailRoundBtn
                           text={"팀 생성"}
-                          onPress={createTeam}
+                          onPress={() => setAddModal(true)}
                         />
                       </BtnHalfArea>
                       <BtnHalfArea>
@@ -665,6 +677,32 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
           </DetailInfoArea>
         </ContentArea>
       </ScrollView>
+      {addModal && (
+          <InputModal
+            isVisible={addModal}
+            textValue={teamName}
+            setTextValue={setTeamName}
+            content={{
+              text: `팀 이름을 입력해주세요`,
+              subText: "",
+              buttons: [
+                {
+                  title: "취소",
+                  onPress: () => {
+                    setAddModal(false);
+                  },
+                },
+                {
+                  title: "생성",
+                  onPress: () => {
+                    createTeam()
+                    // addRoute();
+                  },
+                },
+              ],
+            }}
+          />
+        )}
       {showSelectCourseModal && selectCourseModalContent.item.length > 0 && (
         <SelectModal
           isVisible={showSelectCourseModal}
