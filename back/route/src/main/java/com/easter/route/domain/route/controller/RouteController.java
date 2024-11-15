@@ -5,6 +5,7 @@ import java.util.List;
 import com.easter.route.domain.route.entity.dto.*;
 import com.easter.route.domain.route.service.RouteService;
 import com.easter.route.global.response.ResultResponse;
+import com.easter.route.global.security.PassportDto;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ public class RouteController {
     private final RouteService routeService;
 
     @PostMapping("/course/create")
-    public ResponseEntity<ResultResponse> createRoute(@RequestBody CreateRouteRequestDto createRouteRequestDto) {
-        routeService.createRoute(createRouteRequestDto);
+    public ResponseEntity<ResultResponse> createRoute(@RequestAttribute("passport") PassportDto passport, @RequestBody CreateRouteRequestDto createRouteRequestDto) {
+        routeService.createRoute(passport, createRouteRequestDto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "경로 등록을 완료했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
