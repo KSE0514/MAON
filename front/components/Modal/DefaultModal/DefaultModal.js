@@ -20,7 +20,7 @@ const DefaultModal = ({ isVisible, content }) => {
   return (
     <ModalContainer>
       <ModalContent>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <ModalText subText={content.subText.length > 1}>
             {content.text}
           </ModalText>
@@ -39,7 +39,6 @@ const DefaultModal = ({ isVisible, content }) => {
               </ModalButton>
             ))}
           </ButtonView>
-
         </View>
       </ModalContent>
     </ModalContainer>

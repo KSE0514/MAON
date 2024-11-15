@@ -19,8 +19,10 @@ export const ModalContent = styled.View`
   background-color: ${colors.white};
   width: 70%;
   align-items: center;
-  padding: 10% 0%;
+  flex-direction: row;
   border-radius: 21px;
+  height: 30%;
+  padding: 10% 0%;
 `;
 export const ModalText = styled(Text)`
   color: ${colors.black};
@@ -46,6 +48,7 @@ export const ModalSubText = styled(Text)`
 
 export const ButtonView = styled.View`
   flex-direction: row;
+  justify-content: center;
 `;
 export const ModalButton = styled.TouchableOpacity`
   width: 35%;
