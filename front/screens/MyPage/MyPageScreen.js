@@ -215,6 +215,14 @@ const MyPageScreen = ({ navigation }) => {
         });
         // 새로운 accessToken을 AsyncStorage에 갱신
         await updateAccessToken(newAccessToken);
+
+        // 상세 정보까지 저장
+        await AsyncStorage.setItem("name", name);
+        await AsyncStorage.setItem("height", heightInfo);
+        await AsyncStorage.setItem("weight", weightInfo);
+        await AsyncStorage.setItem("birthDate", formattedDateOfBirth);
+        await AsyncStorage.setItem("address", address);
+        await AsyncStorage.setItem("phoneNumber", formattedPhoneNumber);
         
         setEditMode(false);
       }
@@ -235,6 +243,7 @@ const MyPageScreen = ({ navigation }) => {
         console.log("마이페이지 조회 성공: ", response.data.data);
         const getUserInfo = response.data.data;
         setUserInfo({ ...getUserInfo });
+        await AsyncStorage.setItem("imageUrl", response.data.data.imageUrl);
       }
     } catch (error) {
       console.error("마이페이지 조회 에러 발생: ", error);

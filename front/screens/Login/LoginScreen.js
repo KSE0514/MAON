@@ -28,6 +28,22 @@ const LoginScreen = () => {
       const storedToken = await AsyncStorage.getItem("accessToken");
       const refreshToken = await AsyncStorage.getItem("refreshToken");
       const id = await AsyncStorage.getItem("id");
+      const email = await AsyncStorage.getItem("email");
+
+
+      const name = await AsyncStorage.getItem("name");
+      const nickName = await AsyncStorage.getItem("nickName");
+
+
+      // 상세 정보까지 저장
+      const height = await AsyncStorage.getItem("height");
+      const weight = await AsyncStorage.getItem("weight");
+      const birthDate = await AsyncStorage.getItem("birthDate");
+      const address = await AsyncStorage.getItem("address");
+      const gender = await AsyncStorage.getItem("gender");
+      const imageUrl = await AsyncStorage.getItem("imageUrl");
+      const phoneNumber = await AsyncStorage.getItem("phoneNumber");
+
       if (storedToken) {
         // 자동 로그인 진행
         console.log("토큰 확인용", storedToken)
@@ -35,6 +51,16 @@ const LoginScreen = () => {
           accessToken: storedToken,
           id: id,
           refreshToken: refreshToken,
+          email: email,
+          name: name,
+          nickName: nickName,
+          height: height,
+          weight: weight,
+          birthDate: birthDate,
+          address: address,
+          gender: gender,
+          imageUrl: imageUrl,
+          phoneNumber: phoneNumber,
         });
         navigation.reset({
           index: 0,
