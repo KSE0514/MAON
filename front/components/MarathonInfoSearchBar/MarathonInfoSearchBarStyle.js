@@ -90,15 +90,10 @@ export const styles = StyleSheet.create({
 });
 export const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
     fontSize: 12,
     paddingVertical: 12,
     color: "#A1A1A1",
     paddingRight: 30, // 아이콘 표시할 공간 확보
-    textAlign: "center",
-    width: "100%", // iOS에서 중앙 정렬 강제
     zIndex: 10, // iOS에서 터치 우선순위를 높이기 위해 추가
   },
   inputAndroid: {
@@ -107,7 +102,6 @@ export const pickerSelectStyles = StyleSheet.create({
     paddingHorizontal: 30,
     color: "#A1A1A1",
     paddingRight: 30, // 아이콘 표시할 공간 확보
-    textAlign: "center",
     width: "100%", // iOS에서 중앙 정렬 강제
   },
 });

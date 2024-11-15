@@ -134,11 +134,13 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
               colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.gradient}>
+              style={styles.gradient}
+            >
               <SearchButton
                 onPress={() => {
                   onPress();
-                }}>
+                }}
+              >
                 <Text style={styles.buttonText}>검색</Text>
               </SearchButton>
             </LinearGradient>
@@ -150,16 +152,14 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
           <Middle style={{ paddingTop: 0, paddingBottom: 20 }}>
             <SelectView>
               <View style={styles.pickerContainer}>
-                <TouchableWithoutFeedback onPress={() => {}}>
-                  <RNPickerSelect
-                    onValueChange={(value) => setYear(value)}
-                    items={years}
-                    value={year}
-                    style={pickerSelectStyles}
-                    placeholder={{}}
-                    useNativeAndroidPickerStyle={false}
-                  />
-                </TouchableWithoutFeedback>
+                <RNPickerSelect
+                  onValueChange={(value) => setYear(value)}
+                  items={years}
+                  value={year}
+                  style={pickerSelectStyles}
+                  placeholder={{}}
+                  useNativeAndroidPickerStyle={false}
+                />
               </View>
 
               <View style={[styles.pickerContainer, { marginHorizontal: 20 }]}>
@@ -200,11 +200,13 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
               colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={[styles.gradient]}>
+              style={[styles.gradient]}
+            >
               <SearchButton
                 onPress={() => {
                   searchFunc(year, month, region, possible);
-                }}>
+                }}
+              >
                 <Text style={styles.buttonText}>검색</Text>
               </SearchButton>
             </LinearGradient>

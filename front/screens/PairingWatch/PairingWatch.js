@@ -92,6 +92,7 @@ const PairingWatch = ({ navigation, route }) => {
               if (parsedData.type === "CONNECTION_SUCCEED") {
                 console.log("연동 응답 수신:", JSON.stringify(parsedData));
                 //유저 정보에 넣기
+                setStep(3);
               }
             } else {
               console.error("유효한 JSON 형식이 포함되지 않음.");
@@ -142,14 +143,18 @@ const PairingWatch = ({ navigation, route }) => {
                     goHome();
                   }}
                 >
-                  <Text style={[styles.buttonText]}>취소</Text>
+                  <View>
+                    <Text style={[styles.buttonText]}>취소</Text>
+                  </View>
                 </Button>
                 <Button
                   onPress={() => {
                     changeStep();
                   }}
                 >
-                  <Text style={[styles.buttonText]}>확인</Text>
+                  <View>
+                    <Text style={[styles.buttonText]}>확인</Text>
+                  </View>
                 </Button>
               </ButtonView>
             </View>
@@ -162,17 +167,21 @@ const PairingWatch = ({ navigation, route }) => {
                     goHome();
                   }}
                 >
-                  <Text style={[styles.buttonText]}>취소</Text>
+                  <View>
+                    <Text style={[styles.buttonText]}>취소</Text>
+                  </View>
                 </Button>
                 <Button>
-                  <Text
-                    style={[styles.buttonText]}
-                    onPress={() => {
-                      changeStep();
-                    }}
-                  >
-                    확인
-                  </Text>
+                  <View>
+                    <Text
+                      style={[styles.buttonText]}
+                      onPress={() => {
+                        changeStep();
+                      }}
+                    >
+                      확인
+                    </Text>
+                  </View>
                 </Button>
               </ButtonView>
             </View>
