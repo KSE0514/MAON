@@ -29,9 +29,13 @@ import { locationDtoPrint } from "../../utils/console";
 import useAuthStore from "../../store/AuthStore";
 
 const RunningAlone = ({ navigation, route }) => {
-  const { user } = useAuthStore();
-  const { roomId, mode } = route.params;
   const fontsLoaded = useFontsLoaded();
+  if (!fontsLoaded) {
+    return null; // 폰트 로드 전까지 렌더링 방지
+  }
+
+  const { user } = useAuthStore();
+  const { mode } = route.params;
 
   const [showStartModal, setShowStartModal] = useState(false); // 시작 모달
   const [runStart, setRunStart] = useState(false); // 달리기 시작 / 멈춤
@@ -111,11 +115,19 @@ const RunningAlone = ({ navigation, route }) => {
     }
   }, [resultData]);
 
-  if (!fontsLoaded) {
-    return null; // 폰트 로드 전까지 렌더링 방지
-  }
-
   useEffect(() => {
+    const getRoomId = async () => {
+      try {
+        const roomId = await getPracticeRoomId(user.id, user.accessToken);
+        console.log("Room ID:", roomId);
+        // roomId를 상태로 저장하거나 필요한 작업 수행
+      } catch (error) {
+        console.error("Error fetching room ID:", error);
+      }
+    };
+
+    getRoomId(); // 비동기 함수 호출
+
     const kafkaWs = new WebSocket(
       "wss://k11c207.p.ssafy.io/maon/route/ws/location"
     );
@@ -195,7 +207,7 @@ const RunningAlone = ({ navigation, route }) => {
     return () => {
       kafkaWs.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
     };
-  }, [roomId]);
+  }, []);
 
   useEffect(() => {
     elapsedTimeRef.current = elapsedTime;

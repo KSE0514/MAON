@@ -67,9 +67,11 @@ const PairingWatch = ({ navigation, route }) => {
           const destination = `pub/connection/info/${generatedNumber}`;
           console.log(user.id);
           console.log(user.nickname);
+          console.log(user);
           const payload = {
             memberId: user?.id, // user 객체의 UUID 또는 기본 UUID
-            memberNickname: user.nickname,
+            // memberNickname: user?.nickname,
+            memberNickname: "예삐",
             timestamp: new Date().toISOString(), // ISO 형식의 timestamp
           };
 
@@ -102,7 +104,7 @@ const PairingWatch = ({ navigation, route }) => {
               if (parsedData.type === "CONNECTION_SUCCEED") {
                 console.log("연동 응답 수신:", JSON.stringify(parsedData));
                 //유저 정보에 넣기
-                AsyncStorage.setItem("pairedWatch", true);
+                AsyncStorage.setItem("pairedWatch", "true");
                 setStep(3);
               }
             } else {
@@ -197,7 +199,7 @@ const PairingWatch = ({ navigation, route }) => {
               </ButtonView>
             </View>
           ))}
-        {step === 2 && !pairedWatch && (
+        {step === 2 && (
           <View>
             <Title style={[styles.BoldFont]}>
               {`연동할 워치에서 앱을 실행해\n아래의 PIN번호를 입력해주세요`}
@@ -205,7 +207,7 @@ const PairingWatch = ({ navigation, route }) => {
             <Title style={[styles.BoldFont]}>{pairingNumber}</Title>
           </View>
         )}
-        {step === 3 && pairedWatch && (
+        {step === 3 && (
           <View>
             <Title style={[styles.BoldFont]}>{`연동이 완료되었습니다!`}</Title>
             <ButtonView>
