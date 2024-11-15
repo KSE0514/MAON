@@ -30,10 +30,8 @@ const LoginScreen = () => {
       const id = await AsyncStorage.getItem("id");
       const email = await AsyncStorage.getItem("email");
 
-
       const name = await AsyncStorage.getItem("name");
       const nickName = await AsyncStorage.getItem("nickName");
-
 
       // 상세 정보까지 저장
       const height = await AsyncStorage.getItem("height");
