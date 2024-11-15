@@ -89,7 +89,7 @@ const MarathonEntryFormScreen = ({navigation, route}) => {
   const clickEntryBtn = async () => {
     const requestBody = {
       memberId: memberId,
-      tournamentCategory : tournamentCategory,
+      tournamentCategory : selectRunType,
       tournamentId : tournamentId,
       teamId: teamId
     }
