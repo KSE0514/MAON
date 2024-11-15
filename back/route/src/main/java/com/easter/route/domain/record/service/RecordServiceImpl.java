@@ -3,10 +3,13 @@ package com.easter.route.domain.record.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.easter.route.global.exception.BusinessException;
+import com.easter.route.global.security.PassportDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +33,11 @@ public class RecordServiceImpl implements RecordService {
 	private final MongoTemplate mongoTemplate;
 
 	@Override
-	public Record createRunning(CreateRunningDto createRunningDto) {
+	public Record createRunning(PassportDto passport, CreateRunningDto createRunningDto) {
+		if(!createRunningDto.getMemberId().equals(passport.getId().toString())) {
+			log.error("멤버 id 불일치 : {} - {}", passport.getId(), createRunningDto.getMemberId());
+			throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다.");
+		}
 		Record record = Record.builder()
 			.memberId(createRunningDto.getMemberId())
 			.recordType(RecordType.valueOf(createRunningDto.getRecordType()))
