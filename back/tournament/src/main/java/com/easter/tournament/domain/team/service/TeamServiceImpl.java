@@ -128,16 +128,37 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public SearchCandidateResponseDto searchCandidate(PassportDto passport, SearchCandidateRequestDto dto) {
-        Tournament tournament = tournamentRepository.findByUuid(dto.getTournamentId());
+        Team team = teamQueryRepository.findByUuid(dto.getTeamId());
+        if(team == null) {
+            log.error("invalid team id : {}", dto.getTeamId());
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다.");
+        }
+        Tournament tournament = team.getTournament();
         if(tournament == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 정보입니다.");
         }
         log.info("found tournament : [{}] {}", tournament.getId(), tournament.getTitle());
         List<UUID> candidateIdList = participantQueryRepository.findCandidateByTournamentId(tournament.getId());
-        log.info(String.valueOf(candidateIdList.size()));
+//        log.info(String.valueOf(candidateIdList.size()));
         SearchMemberResponseDto memberResponseDto = getMemberInfo(candidateIdList, dto.getKeyword());
+        // 다음으로는 초대여부 검색
+        List<UUID> waitingIdList = teamInvitationQueryRepository.findWaitingMemberId(team.getId());
+        Set<UUID> waitingSet = new HashSet<>(waitingIdList);
+        List<CandidateMemberDto> resultList = new ArrayList<>();
+        for(MemberDto m : memberResponseDto.getMemberInfoList()) {
+            resultList.add(
+                    CandidateMemberDto.builder()
+                            .id(m.getId())
+                            .name(m.getName())
+                            .nickname(m.getNickname())
+                            .email(m.getEmail())
+                            .imageUrl(m.getImageUrl())
+                            .invited(waitingSet.contains(m.getId()))
+                            .build()
+            );
+        }
         return SearchCandidateResponseDto.builder()
-                .candidateInfoList(memberResponseDto.getMemberInfoList())
+                .candidateInfoList(resultList)
                 .build();
     }
 

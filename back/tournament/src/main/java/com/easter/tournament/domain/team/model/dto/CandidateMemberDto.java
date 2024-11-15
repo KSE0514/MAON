@@ -5,12 +5,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchCandidateResponseDto {
-    private List<CandidateMemberDto> candidateInfoList;
+public class CandidateMemberDto {
+    private UUID id;
+    private String name;
+    private String nickname;
+    private String email;
+    private String imageUrl;
+    boolean invited;
 }
