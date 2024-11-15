@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export const fetchPairedWatch = async () => {
   try {
     const storedPairedWatch = await AsyncStorage.getItem("pairedWatch");

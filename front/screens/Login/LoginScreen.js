@@ -51,7 +51,7 @@ const LoginScreen = () => {
           refreshToken: refreshToken,
           email: email,
           name: name,
-          nickName: nickName,
+          nickname: nickName,
           height: height,
           weight: weight,
           birthDate: birthDate,

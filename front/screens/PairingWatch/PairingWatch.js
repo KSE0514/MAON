@@ -64,10 +64,7 @@ const PairingWatch = ({ navigation, route }) => {
           console.log("페어링 STOMP 연결 성공!");
 
           // CONNECTED 후, 지정된 경로로 데이터 전송
-          const destination = `pub/connection/info/${generatedNumber}`;
-          console.log(user.id);
-          console.log(user.nickname);
-          console.log(user);
+          const destination = `/pub/connection/info/${generatedNumber}`;
           const payload = {
             memberId: user?.id, // user 객체의 UUID 또는 기본 UUID
             // memberNickname: user?.nickname,
@@ -83,7 +80,7 @@ const PairingWatch = ({ navigation, route }) => {
           console.log(`메시지가 ${destination} 경로로 전송되었습니다.`);
 
           // SUBSCRIBE 프레임 전송
-          const subscribeDestination = `sub/connection/${generatedNumber}`;
+          const subscribeDestination = `/sub/connection/${generatedNumber}`;
           const subscribeFrame = `SUBSCRIBE\nid:sub-${generatedNumber}\ndestination:${subscribeDestination}\n\n\0`;
 
           pairingWs.send(subscribeFrame);
