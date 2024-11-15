@@ -3,6 +3,7 @@ package com.easter.tournament.domain.participant.controller;
 import com.easter.tournament.domain.participant.model.dto.ParticipantRequestDto;
 import com.easter.tournament.domain.participant.service.ParticipantService;
 import com.easter.tournament.global.response.ResultResponse;
+import com.easter.tournament.global.security.PassportDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,8 @@ public class ParticipantController {
      * @param participantRequestDto
      */
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody ParticipantRequestDto participantRequestDto) {
-        participantService.marathonJoin(participantRequestDto);
+    public ResponseEntity<?> join(@RequestAttribute("passport") PassportDto passport, @Valid @RequestBody ParticipantRequestDto participantRequestDto) {
+        participantService.marathonJoin(passport, participantRequestDto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "대회 신청이 완료되었습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
