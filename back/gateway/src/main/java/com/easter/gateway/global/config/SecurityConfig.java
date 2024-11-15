@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .pathMatchers("/favicon.ico", "/error").permitAll()
                         .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**","/maon/member/member/oauth2/**", "/maon/member/service/**", "/maon/member/member/logindone", "/ws/**", "/ws/location", "/pub/**", "/sub").permitAll()
                         .pathMatchers("/maon/member/member/reissue").permitAll()
-                        .pathMatchers("/maon/member/member/info").access(customAuthorizationManager)
+                        .pathMatchers("/maon/member/member/info", "/maon/member/member/logout").access(customAuthorizationManager)
 //                        .pathMatchers("/maon/member/**").access(customAuthorizationManager)
 //                        .anyExchange().permitAll()
                         .anyExchange().access(registeredOnlyAuthorizationManager)
