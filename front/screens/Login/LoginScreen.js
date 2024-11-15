@@ -157,7 +157,8 @@ const LoginScreen = () => {
       }
     } catch (error) {
       console.error("로그인 에러 발생: ", error);
-      await AsyncStorage.removeItem("accessToken");
+      // await AsyncStorage.removeItem("accessToken");
+      await AsyncStorage.clear();
     }
   };
 
