@@ -97,7 +97,7 @@ const MarathonEntryFormScreen = ({ navigation, route }) => {
 
   const clickEntryBtn = async () => {
     const requestBody = {
-      memberId: memberId,
+      memberId: user.uuid,
       tournamentCategory : selectRunType,
       tournamentId : tournamentId,
       teamId: teamId
@@ -115,9 +115,11 @@ const MarathonEntryFormScreen = ({ navigation, route }) => {
           },
         }
       );
-      console.log("마라톤 신청 성공: ", response);
-      // 응답 결과에 따라 모달 메시지 다르게 뜨게 하기
-      setShowEntryModal(true);
+      if (response.status === 200) {
+        console.log("마라톤 신청 성공: ", response.data.data);
+        // 응답 결과에 따라 모달 메시지 다르게 뜨게 하기
+        setShowEntryModal(true);
+      }
     } catch (error) {
       console.error("마라톤 신청 에러 발생: ", error);
     }

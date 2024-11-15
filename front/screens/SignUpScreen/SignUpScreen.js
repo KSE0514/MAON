@@ -182,6 +182,7 @@ const SignUpScreen = ({navigation, route}) => {
       // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
       await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
       await AsyncStorage.setItem("refreshToken", responseUserInfo.refreshToken);
+      await AsyncStorage.setItem("id", responseUserInfo.id);
 
       navigation.reset({
         index: 0,

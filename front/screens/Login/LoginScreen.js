@@ -26,11 +26,15 @@ const LoginScreen = () => {
     // 앱 실행 시 AsyncStorage에서 토큰 확인
     const checkLoginStatus = async () => {
       const storedToken = await AsyncStorage.getItem("accessToken");
+      const refreshToken = await AsyncStorage.getItem("refreshToken");
+      const id = await AsyncStorage.getItem("id");
       if (storedToken) {
         // 자동 로그인 진행
         console.log("토큰 확인용", storedToken)
         setUser({
           accessToken: storedToken,
+          id: id,
+          refreshToken: refreshToken,
         });
         navigation.reset({
           index: 0,
