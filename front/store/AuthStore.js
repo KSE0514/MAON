@@ -10,6 +10,13 @@ const AuthStore = create((set) => ({
     accessToken: null,
     refreshToken: null,
     imageUrl: null,
+    nickname: null,
+    height: null,
+    weight: null,
+    birthDate: null,
+    address: null,
+    gender: null,
+    phoneNumber: null,
   },
 
   // // 사용자 정보 설정 함수
@@ -41,6 +48,13 @@ const AuthStore = create((set) => ({
       accessToken: null,
       refreshToken: null,
       imageUrl: null,
+      nickname: null,
+      height: null,
+      weight: null,
+      birthDate: null,
+      address: null,
+      gender: null,
+      phoneNumber: null,
     }
   }),
 }));
