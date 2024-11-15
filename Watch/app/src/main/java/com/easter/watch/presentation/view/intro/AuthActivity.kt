@@ -4,6 +4,8 @@ import StompWebSocketClient
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.InputFilter
 import android.util.Log
 import android.view.View
@@ -20,6 +22,8 @@ import com.easter.watch.presentation.dataModel.MemberInfo
 import com.easter.watch.presentation.db.MemberDatabase
 import com.easter.watch.presentation.db.dao.MemberDao
 import com.easter.watch.presentation.db.entity.Member
+import com.easter.watch.presentation.view.notification.ConnectFailedActivity
+import com.easter.watch.presentation.view.notification.ConnectSuccessActivity
 import com.easter.watch.presentation.view.run.StartActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
@@ -42,9 +46,8 @@ class AuthActivity : AppCompatActivity() {
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val authCode = findViewById<EditText>(R.id.authCodeText)
+        val authCode = binding.authCodeText
         authCode.filters = arrayOf(InputFilter.LengthFilter(6))
-
 
         // Database 초기화
         val db = MemberDatabase.getDatabase(this)
@@ -57,9 +60,9 @@ class AuthActivity : AppCompatActivity() {
         }
 
         binding.connectBtn.setOnClickListener {
-            //val authCode = binding.authCodeText.text.toString()
             val authCodeText = authCode.text.toString()
             subscribeToAuthTopic(authCodeText)
+
             // JSON 형식의 메시지 생성
             val messageMap = mapOf("timestamp" to LocalDateTime.now().toString())
             val messageJson = Gson().toJson(messageMap) // JSON 문자열로 변환
@@ -81,11 +84,26 @@ class AuthActivity : AppCompatActivity() {
                         memberDao.insertMember(Member(authInfo.memberId))
                         Log.d(TAG, "멤버 저장 완료")
                     }
+
+                    // 진동 알림 추가
+                    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                    if (vibrator.hasVibrator()) {
+                        val vibrationEffect = VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)
+                        vibrator.vibrate(vibrationEffect)
+                    }
+
+                    val intent = Intent(this, ConnectSuccessActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
                 Connect.CONNECTION_FAILED -> {
                     // 연결 실패 시 로그 메시지 출력
                     Log.d(TAG, "연결 실패")
+                    val intent = Intent(this, ConnectFailedActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
+
             }
         }
     }

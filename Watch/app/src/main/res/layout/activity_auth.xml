@@ -9,6 +9,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/real_black"
         tools:context=".presentation.view.intro.AuthActivity">
 
         <TextView
@@ -47,7 +48,7 @@
             android:background="@drawable/button_background"
             android:fontFamily="@font/gmarketsansttfmedium"
             android:padding="5sp"
-            android:text="연결하기"
+            android:text="인증하기"
             android:textColor="@color/white"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
