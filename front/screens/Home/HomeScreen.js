@@ -53,7 +53,7 @@ const HomeScreen = ({ navigation }) => {
             />
             <GradientButton
               onPress={() => {
-                navigation.navigate("PairingWatch");
+                navigation.navigate("Modal");
               }}
               title={`워치연동`}
               gradientType="balck_gradient"

@@ -26,11 +26,41 @@ const LoginScreen = () => {
     // 앱 실행 시 AsyncStorage에서 토큰 확인
     const checkLoginStatus = async () => {
       const storedToken = await AsyncStorage.getItem("accessToken");
+      const refreshToken = await AsyncStorage.getItem("refreshToken");
+      const id = await AsyncStorage.getItem("id");
+      const email = await AsyncStorage.getItem("email");
+
+
+      const name = await AsyncStorage.getItem("name");
+      const nickName = await AsyncStorage.getItem("nickName");
+
+
+      // 상세 정보까지 저장
+      const height = await AsyncStorage.getItem("height");
+      const weight = await AsyncStorage.getItem("weight");
+      const birthDate = await AsyncStorage.getItem("birthDate");
+      const address = await AsyncStorage.getItem("address");
+      const gender = await AsyncStorage.getItem("gender");
+      const imageUrl = await AsyncStorage.getItem("imageUrl");
+      const phoneNumber = await AsyncStorage.getItem("phoneNumber");
+
       if (storedToken) {
         // 자동 로그인 진행
         console.log("토큰 확인용", storedToken)
         setUser({
           accessToken: storedToken,
+          id: id,
+          refreshToken: refreshToken,
+          email: email,
+          name: name,
+          nickName: nickName,
+          height: height,
+          weight: weight,
+          birthDate: birthDate,
+          address: address,
+          gender: gender,
+          imageUrl: imageUrl,
+          phoneNumber: phoneNumber,
         });
         navigation.reset({
           index: 0,
@@ -48,8 +78,8 @@ const LoginScreen = () => {
     // 로컬 IP 주소로 변경
     const redirectUri = Linking.createURL("redirect");
     // const redirectUri = `https://auth.expo.io/@maon/maon`;
-    const authUrl = `https://k11c207.p.ssafy.io/web?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경
-    // const authUrl = `https://maon--login.web.app?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경(firebase)
+    // const authUrl = `https://k11c207.p.ssafy.io/web?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경
+    const authUrl = `https://maon--login.web.app?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경(firebase)
 
     // 웹 브라우저에서 로그인 페이지 열기
     const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);

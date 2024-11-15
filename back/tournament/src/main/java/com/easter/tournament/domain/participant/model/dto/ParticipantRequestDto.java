@@ -10,7 +10,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString
 public class ParticipantRequestDto {
-    private UUID memberId;
     private String tournamentCategory;
     private UUID tournamentId;
     private long teamId;

@@ -16,10 +16,7 @@ import {
 // import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { useState, useEffect } from "react";
 import useAuthStore from "./../../store/AuthStore";
-<<<<<<< HEAD
 import AsyncStorage from "@react-native-async-storage/async-storage";
-=======
->>>>>>> dev
 import { apiClient } from "../../customAxios";
 import {
   Wapper,
@@ -85,7 +82,6 @@ const MyPageScreen = ({ navigation }) => {
     gender: "",
     imageUrl: "",
   });
-<<<<<<< HEAD
 
   // Async Storage accessToken 갱신
   const updateAccessToken = async (newAccessToken) => {
@@ -97,8 +93,6 @@ const MyPageScreen = ({ navigation }) => {
     }
   };
 
-=======
->>>>>>> dev
 
   // 전화번호 형식 자동 변환
   const handlePhoneNumberChange = (text) => {
@@ -217,16 +211,19 @@ const MyPageScreen = ({ navigation }) => {
         console.log("회원정보 수정 성공: ", response.data);
         const newAccessToken = response.data.data.accessToken;
         setUser({
-<<<<<<< HEAD
           accessToken: newAccessToken,
         });
         // 새로운 accessToken을 AsyncStorage에 갱신
         await updateAccessToken(newAccessToken);
+
+        // 상세 정보까지 저장
+        await AsyncStorage.setItem("name", name);
+        await AsyncStorage.setItem("height", heightInfo);
+        await AsyncStorage.setItem("weight", weightInfo);
+        await AsyncStorage.setItem("birthDate", formattedDateOfBirth);
+        await AsyncStorage.setItem("address", address);
+        await AsyncStorage.setItem("phoneNumber", formattedPhoneNumber);
         
-=======
-          accessToken: response.data.data.accessToken,
-        });
->>>>>>> dev
         setEditMode(false);
       }
     } catch (error) {
@@ -246,6 +243,7 @@ const MyPageScreen = ({ navigation }) => {
         console.log("마이페이지 조회 성공: ", response.data.data);
         const getUserInfo = response.data.data;
         setUserInfo({ ...getUserInfo });
+        await AsyncStorage.setItem("imageUrl", response.data.data.imageUrl);
       }
     } catch (error) {
       console.error("마이페이지 조회 에러 발생: ", error);
@@ -323,15 +321,11 @@ const MyPageScreen = ({ navigation }) => {
                   {image ? (
                     <Image
                       style={{ width: "100%", height: "100%" }}
-<<<<<<< HEAD
-                      source={image ? { uri: image } : testImg}
-=======
                       source={
                         typeof image === "string" && image
                           ? { uri: image }
                           : testImg
                       }
->>>>>>> dev
                     />
                   ) : (
                     <Svg
@@ -359,15 +353,11 @@ const MyPageScreen = ({ navigation }) => {
                   {image ? (
                     <Image
                       style={{ width: "100%", height: "100%" }}
-<<<<<<< HEAD
-                      source={image ? { uri: image } : testImg}
-=======
                       source={
                         typeof image === "string" && image
                           ? { uri: image }
                           : testImg
                       }
->>>>>>> dev
                     />
                   ) : (
                     <Svg

@@ -177,8 +177,10 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   const [longitude, setLongitude] = useState(126.9780); // 예: 서울의 경도 값
   const [bookmarked, setBookmarked] = useState(false) // 북마크 여부
 
+  const [participated, setParticipated] = useState(false) // 참가 신청 여부
+
   const [teamMemberList, setTeamMemberList] = useState([]); // 팀원들
-  const [myTeamCode, setMyTeamCode] = useState(1); // 내 팀 코드
+  const [myTeamCode, setMyTeamCode] = useState(''); // 내 팀 코드
 
   // 코스 선택 모달 내용
   // 코스 선택 모달 내용
@@ -243,7 +245,11 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     setLongitude(marathonInfo.longitude)
     setMarathonCallNum(marathonInfo.inquiry)
     console.log(marathonInfo.latitude, marathonInfo.longitude)
-    // setMarathonCallNum(marathonInfo.) // 문의가 없넹...
+    
+
+    setMyTeamCode(marathonInfo.teamId)
+    // setParticipated(marathonInfo.participated) // 나중에 주석 풀기
+    setParticipated(true)
 
 
     // marathonCourse와 selectCourseModalContent를 함께 업데이트
@@ -583,9 +589,8 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
               ) : null}
 
               {/* 버튼 */}
-              {myMarathonInfo?.marathonList &&
-              marathonName in myMarathonInfo.marathonList ? (
-                myMarathonInfo.marathonList[marathonName].teamCode ? (
+              {participated ? (
+                myTeamCode ? (
                   <BtnArea>
                     <RoundBtn
                       text={dDay === 0 ? "시작하기" : `D - ${dDay}`}

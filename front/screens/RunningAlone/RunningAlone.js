@@ -42,6 +42,7 @@ const RunningAlone = ({ navigation, route }) => {
   const [pace, setPace] = useState("00'00''"); // 페이스
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
 
+  const kafkaStompClientRef = useRef(null);
   const elapsedTimeRef = useRef(elapsedTime);
   const paceRef = useRef(pace);
   const runningDistanceRef = useRef(runningDistance);
@@ -82,8 +83,7 @@ const RunningAlone = ({ navigation, route }) => {
             const sendFrame =
               `SEND\n` +
               `destination:/pub/running/${recordId}/end\n` +
-              `content-type:application/json\n\n` +
-              `{"status": "end"}\0`;
+              `content-type:application/json\n\n\0`;
 
             if (
               kafkaStompClientRef.current &&
@@ -111,8 +111,6 @@ const RunningAlone = ({ navigation, route }) => {
     }
   }, [resultData]);
 
-  const kafkaStompClientRef = useRef(null);
-
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
@@ -127,7 +125,7 @@ const RunningAlone = ({ navigation, route }) => {
 
       // STOMP CONNECT 프레임 직접 전송
       const connectFrame =
-        "CONNECT\naccept-version:1.2,1.1,1.0\nhost:k11c207.p.ssafy.io\n\n\0";
+        "CONNECT\naccept-version:1.2,1.1,1.0\nhost:k11c207.p.ssafy.io\n\n";
       kafkaWs.send(connectFrame);
     };
 
@@ -247,8 +245,7 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}
-          >
+            }}>
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}

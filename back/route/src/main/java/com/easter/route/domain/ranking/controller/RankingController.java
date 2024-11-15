@@ -5,13 +5,11 @@ import com.easter.route.domain.ranking.entity.dto.GetRankingListDto;
 import com.easter.route.domain.ranking.entity.dto.RankedRecordDto;
 import com.easter.route.domain.ranking.service.RankingService;
 import com.easter.route.global.response.ResultResponse;
+import com.easter.route.global.security.PassportDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,9 +25,9 @@ public class RankingController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    @GetMapping("/ranking/{routeId}/{memberId}")
-    public ResponseEntity<ResultResponse> getMyRanking(@PathVariable String routeId, @PathVariable String memberId) {
-        GetMyRankingDto myRanking = rankingService.getMyRanking(routeId, memberId);
+    @GetMapping("/ranking/{routeId}/my")
+    public ResponseEntity<ResultResponse> getMyRanking(@RequestAttribute("passport") PassportDto passport, @PathVariable String routeId) {
+        GetMyRankingDto myRanking = rankingService.getMyRanking(routeId, passport.getId().toString());
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "My Ranking 정보: {} ", myRanking);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
