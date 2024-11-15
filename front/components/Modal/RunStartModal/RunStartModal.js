@@ -44,8 +44,7 @@ const RunStartModal = ({
           onPress={() => {
             setStartTap(false);
           }}
-          style={styles.base}
-        >
+          style={styles.base}>
           <View style={[styles.whiteBorder]}>
             <Text style={styles.whiteFont}>{`탭하여\n시작하기`}</Text>
           </View>
@@ -54,7 +53,11 @@ const RunStartModal = ({
       {!startTap && (
         <TouchableOpacity onPress={() => {}} style={styles.base}>
           <View style={[styles.whiteBorder]}>
-            <Text style={styles.whiteFont}>{count == 0 ? "시작" : count}</Text>
+            {count != -1 && (
+              <Text style={styles.whiteFont}>
+                {count == 0 ? "시작" : count}
+              </Text>
+            )}
           </View>
         </TouchableOpacity>
       )}
