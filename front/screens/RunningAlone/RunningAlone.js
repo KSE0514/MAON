@@ -27,11 +27,16 @@ import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
 import { locationDtoPrint } from "../../utils/console";
 import useAuthStore from "../../store/AuthStore";
+import { fetchPairedWatch } from "../../utils/checkPairedWatch";
 
 const RunningAlone = ({ navigation, route }) => {
-  const { user } = useAuthStore();
-  const { roomId, mode } = route.params;
   const fontsLoaded = useFontsLoaded();
+  if (!fontsLoaded) {
+    return null; // 폰트 로드 전까지 렌더링 방지
+  }
+
+  const { user } = useAuthStore();
+  const { mode } = route.params;
 
   const [showStartModal, setShowStartModal] = useState(false); // 시작 모달
   const [runStart, setRunStart] = useState(false); // 달리기 시작 / 멈춤
@@ -41,6 +46,7 @@ const RunningAlone = ({ navigation, route }) => {
   const [elapsedTime, setElapsedTime] = useState("00:00:00"); // 경과 시간
   const [pace, setPace] = useState("00'00''"); // 페이스
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
+  const [recordId, setRecordId] = useState();
 
   const kafkaStompClientRef = useRef(null);
   const elapsedTimeRef = useRef(elapsedTime);
@@ -96,115 +102,17 @@ const RunningAlone = ({ navigation, route }) => {
             }
           };
 
-          sendEndSession(roomId); // 종료 요청 전송
+          sendEndSession(recordId); // 종료 요청 전송
         },
       },
     ],
   };
-  useEffect(() => {
-    if (resultData.id) {
-      navigation.navigate("RunResult", {
-        resultData: resultData,
-        mode: mode,
-        recordId: roomId,
-      });
-    }
-  }, [resultData]);
-
-  if (!fontsLoaded) {
-    return null; // 폰트 로드 전까지 렌더링 방지
-  }
-
-  useEffect(() => {
-    const kafkaWs = new WebSocket(
-      "wss://k11c207.p.ssafy.io/maon/route/ws/location"
-    );
-
-    kafkaWs.onopen = () => {
-      console.log("WebSocket 연결 성공!");
-
-      // STOMP CONNECT 프레임 직접 전송
-      const connectFrame =
-        "CONNECT\naccept-version:1.2,1.1,1.0\nhost:k11c207.p.ssafy.io\n\n";
-      kafkaWs.send(connectFrame);
-    };
-
-    kafkaWs.onmessage = (message) => {
-      console.log("서버로부터 메시지 수신:", message.data);
-
-      if (message.data.startsWith("CONNECTED")) {
-        console.log("STOMP 연결 성공!");
-        const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${roomId}/end\n\n\0`;
-        kafkaWs.send(subscribeFrame);
-      } else {
-        console.log("여기까진 왔니");
-        try {
-          // JSON 형식만 추출하기
-          const jsonStartIndex = message.data.indexOf("{");
-          const jsonEndIndex = message.data.lastIndexOf("}");
-          if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
-            const jsonString = message.data.substring(
-              jsonStartIndex,
-              jsonEndIndex + 1
-            );
-            const parsedData = JSON.parse(jsonString); // JSON 부분만 파싱
-
-            if (parsedData.status === "end") {
-              console.log("종료 응답 수신:", JSON.stringify(parsedData));
-
-              setResultData({
-                id: parsedData.record.id,
-                routeId: parsedData.record.routeId,
-                paceList: parsedData.record.paceList,
-                recordedTrack:
-                  parsedData.record.recordedTrack.coordinates || [],
-                runningTime: parsedData.record.runningTime,
-                averagePace: parsedData.record.averagePace,
-                averageHeartRate: parsedData.record.averageHeartRate,
-                distance: parsedData.record.distance,
-                createdAt: parsedData.record.createdAt,
-                routeDistance: parsedData.routeDistance || 0,
-                distanceList: parsedData.record.distanceList,
-              });
-            }
-          } else {
-            console.error("유효한 JSON 형식이 포함되지 않음.");
-          }
-        } catch (error) {
-          console.error("메시지 파싱 오류:", error);
-        }
-      }
-    };
-
-    kafkaWs.onclose = () => {
-      console.log("WebSocket 연결이 종료되었습니다.");
-    };
-
-    kafkaWs.onerror = (error) => {
-      console.error("WebSocket 오류:", error);
-    };
-
-    kafkaStompClientRef.current = kafkaWs;
-
-    // 워치에 연결된 경우 워치와의 웹소켓 열고 connectedWatch = true로 변경
-    // 열린 웹 소켓으로 1초마다 값이 넘어오기에 이를 백엔드로 넘겨주면 됨.
-
-    return () => {
-      kafkaWs.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
-    };
-  }, [roomId]);
-
-  useEffect(() => {
-    elapsedTimeRef.current = elapsedTime;
-    paceRef.current = pace;
-    runningDistanceRef.current = runningDistance;
-  }, [elapsedTime, pace, runningDistance]);
 
   // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
   const handleUserLocationChange = (location) => {
     if (!connectedWatch) {
       const locationDto = {
-        recordId: roomId,
+        recordId: recordId,
         time: elapsedTimeRef.current,
         memberId: user.id,
         latitude: location.latitude,
@@ -221,7 +129,7 @@ const RunningAlone = ({ navigation, route }) => {
         // STOMP 프레임을 구성하여 데이터 전송
         const sendFrame =
           `SEND\n` +
-          `destination:/pub/running/${roomId}\n` +
+          `destination:/pub/running/${recordId}\n` +
           `content-type:application/json\n\n` +
           `${JSON.stringify(locationDto)}\0`;
 
@@ -235,6 +143,129 @@ const RunningAlone = ({ navigation, route }) => {
     setElapsedTime(time); // Timer로부터 업데이트된 시간 받기
   };
 
+  //연동 여부 가져오기
+  useEffect(() => {
+    setConnectedWatch(fetchPairedWatch());
+  }, []);
+
+  useEffect(() => {
+    if (running) {
+      const getRoomId = async () => {
+        try {
+          const responseRecordId = await getPracticeRoomId(
+            user.id,
+            user.accessToken
+          );
+          setRecordId(responseRecordId);
+        } catch (error) {
+          console.error("Error fetching room ID:", error);
+        }
+      };
+
+      getRoomId(); // 비동기 함수 호출
+
+      console.log("가져온 recordId: ", recordId);
+      //워치가 연동되었을 때
+      if (connectedWatch) {
+      }
+      // 워치 연동이 안되었을 때
+      else {
+        const kafkaWs = new WebSocket(
+          "wss://k11c207.p.ssafy.io/maon/route/ws/location"
+        );
+
+        kafkaWs.onopen = () => {
+          console.log("WebSocket 연결 성공!");
+
+          // STOMP CONNECT 프레임 직접 전송
+          const connectFrame =
+            "CONNECT\naccept-version:1.2,1.1,1.0\nhost:k11c207.p.ssafy.io\n\n";
+          kafkaWs.send(connectFrame);
+        };
+
+        kafkaWs.onmessage = (message) => {
+          console.log("서버로부터 메시지 수신:", message.data);
+
+          if (message.data.startsWith("CONNECTED")) {
+            console.log("STOMP 연결 성공!");
+
+            //종료 sub 구독하기
+            const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${recordId}/end\n\n\0`;
+            kafkaWs.send(subscribeFrame);
+          } else {
+            try {
+              // JSON 형식만 추출하기
+              const jsonStartIndex = message.data.indexOf("{");
+              const jsonEndIndex = message.data.lastIndexOf("}");
+              if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
+                const jsonString = message.data.substring(
+                  jsonStartIndex,
+                  jsonEndIndex + 1
+                );
+                const parsedData = JSON.parse(jsonString); // JSON 부분만 파싱
+
+                if (parsedData.status === "end") {
+                  console.log("종료 응답 수신:", JSON.stringify(parsedData));
+
+                  setResultData({
+                    id: parsedData.record.id,
+                    routeId: parsedData.record.routeId,
+                    paceList: parsedData.record.paceList,
+                    recordedTrack:
+                      parsedData.record.recordedTrack.coordinates || [],
+                    runningTime: parsedData.record.runningTime,
+                    averagePace: parsedData.record.averagePace,
+                    averageHeartRate: parsedData.record.averageHeartRate,
+                    distance: parsedData.record.distance,
+                    createdAt: parsedData.record.createdAt,
+                    routeDistance: parsedData.routeDistance || 0,
+                    distanceList: parsedData.record.distanceList,
+                  });
+                }
+              } else {
+                console.error("유효한 JSON 형식이 포함되지 않음.");
+              }
+            } catch (error) {
+              console.error("메시지 파싱 오류:", error);
+            }
+          }
+        };
+
+        kafkaWs.onclose = () => {
+          console.log("WebSocket 연결이 종료되었습니다.");
+        };
+
+        kafkaWs.onerror = (error) => {
+          console.error("WebSocket 오류:", error);
+        };
+
+        kafkaStompClientRef.current = kafkaWs;
+
+        // 워치에 연결된 경우 워치와의 웹소켓 열고 connectedWatch = true로 변경
+        // 열린 웹 소켓으로 1초마다 값이 넘어오기에 이를 백엔드로 넘겨주면 됨.
+
+        return () => {
+          kafkaWs.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
+        };
+      }
+    }
+  }, [running]);
+
+  useEffect(() => {
+    if (resultData.id) {
+      navigation.navigate("RunResult", {
+        resultData: resultData,
+        mode: mode,
+        recordId: recordId,
+      });
+    }
+  }, [resultData]);
+
+  useEffect(() => {
+    elapsedTimeRef.current = elapsedTime;
+    paceRef.current = pace;
+    runningDistanceRef.current = runningDistance;
+  }, [elapsedTime, pace, runningDistance]);
   return (
     <View style={{ flex: 1 }}>
       {running && (
@@ -245,7 +276,8 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}>
+            }}
+          >
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}
@@ -268,6 +300,7 @@ const RunningAlone = ({ navigation, route }) => {
         setRunningDistance={setRunningDistance}
         mode={mode}
         onLocationChange={handleUserLocationChange}
+        connectedWatch={connectedWatch}
       />
       {running && (
         <Bottom>
