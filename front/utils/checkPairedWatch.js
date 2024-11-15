@@ -9,3 +9,11 @@ export const fetchPairedWatch = async () => {
     console.error("Error fetching paired watch:", error);
   }
 };
+export const savePairedWatch = async () => {
+  try {
+    await AsyncStorage.setItem("pairedWatch", "true");
+    console.log("Paired Watch value saved successfully");
+  } catch (error) {
+    console.error("Error saving Paired Watch:", error);
+  }
+};

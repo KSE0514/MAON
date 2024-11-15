@@ -19,8 +19,7 @@ import { useEffect } from "react";
 
 const { width } = Dimensions.get("window");
 const HomeScreen = ({ navigation }) => {
-  // const { user } = useAuthStore()
-  // console.log('유저 정보 확인', user)
+  const { user } = useAuthStore();
 
   const fontsLoaded = useFontsLoaded();
 
@@ -54,6 +53,7 @@ const HomeScreen = ({ navigation }) => {
             <GradientButton
               onPress={() => {
                 navigation.navigate("PairingWatch");
+                // navigation.navigate("Modal");
               }}
               title={`워치연동`}
               gradientType="balck_gradient"

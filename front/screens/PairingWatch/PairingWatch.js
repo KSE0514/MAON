@@ -5,6 +5,10 @@ import { apiClient } from "../../customAxios";
 import { Button, ButtonView, Title, styles } from "./PairingWatchStyle";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useAuthStore from "../../store/AuthStore";
+import {
+  savePairedWatch,
+  fetchPairedWatch,
+} from "../../utils/checkPairedWatch";
 
 const PairingWatch = ({ navigation, route }) => {
   const { user } = useAuthStore();
@@ -20,15 +24,20 @@ const PairingWatch = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  const checkingPairedWatch = async () => {
-    const storedPairedWatch = await AsyncStorage.getItem("pairedWatch");
-    return storedPairedWatch;
-  };
   useEffect(() => {
-    // 페어링된 워치가 있는지 판단
-    if (checkingPairedWatch) {
-      setPairedWatch(true);
-    }
+    console.log("hello");
+    const checkWatch = async () => {
+      try {
+        const storedPairedWatch = await fetchPairedWatch();
+        if (storedPairedWatch === "true") {
+          setPairedWatch(true);
+        }
+      } catch (error) {
+        console.error("Error checking paired watch:", error);
+      }
+    };
+
+    checkWatch(); // 비동기 함수 호출
   }, []);
 
   const changeStep = async () => {
@@ -65,6 +74,7 @@ const PairingWatch = ({ navigation, route }) => {
 
           // CONNECTED 후, 지정된 경로로 데이터 전송
           const destination = `/pub/connection/info/${generatedNumber}`;
+          console.log(user?.nickname);
           const payload = {
             memberId: user?.id, // user 객체의 UUID 또는 기본 UUID
             // memberNickname: user?.nickname,
@@ -101,7 +111,7 @@ const PairingWatch = ({ navigation, route }) => {
               if (parsedData.type === "CONNECTION_SUCCEED") {
                 console.log("연동 응답 수신:", JSON.stringify(parsedData));
                 //유저 정보에 넣기
-                AsyncStorage.setItem("pairedWatch", "true");
+                savePairedWatch();
                 setStep(3);
               }
             } else {
@@ -126,6 +136,12 @@ const PairingWatch = ({ navigation, route }) => {
       console.log("pairing error : ", e);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (pairingStompClientRef.current) pairingStompClientRef.current.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
+    };
+  }, []);
 
   const goHome = () => {
     navigation.navigate("Home");
