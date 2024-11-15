@@ -10,12 +10,15 @@ import okhttp3.WebSocketListener
 import java.util.concurrent.TimeUnit
 
 class StompWebSocketClient(private val serverUrl: String) {
+
+
     private lateinit var webSocket: WebSocket
     val TAG = "STOMP"
     private var onMessageCallback: ((String) -> Unit)? = null
     private var isStompConnected = false  // STOMP 연결 상태 플래그 추가
 
     fun connect() {
+
         val okHttpClient = OkHttpClient.Builder()
             .pingInterval(10, TimeUnit.SECONDS)
             .build()
@@ -42,23 +45,9 @@ class StompWebSocketClient(private val serverUrl: String) {
                 }else{
                     Log.d(TAG, "일반 메시지 받기")
                 }
-
-                // STOMP 메시지에서 JSON 부분만 추출
-                //val jsonBody = extractJsonFromStompMessage(text)
-                //Log.d(TAG, "추출된 JSON: $jsonBody")
                 onMessageCallback?.invoke(text)
             }
         })
-    }
-
-    private fun extractJsonFromStompMessage(stompMessage: String): String {
-        // 빈 줄을 기준으로 헤더와 바디를 분리
-        val parts = stompMessage.split("\n\n")
-        return if (parts.size >= 2) {
-            parts.last().trim() // 마지막 부분(JSON 바디) 반환
-        } else {
-            stompMessage // JSON을 찾지 못한 경우 원본 반환
-        }
     }
 
     private fun sendStompConnect() {

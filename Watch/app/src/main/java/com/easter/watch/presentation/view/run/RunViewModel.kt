@@ -1,5 +1,6 @@
 package com.easter.watch.presentation.view.run
 
+import StompWebSocketClient
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,8 +10,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.easter.watch.presentation.dataModel.RunInfo
 import com.easter.watch.presentation.service.LocationTrackingService
 import com.google.android.gms.maps.model.LatLng
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -22,11 +26,14 @@ import java.util.*
 
 class RunViewModel : ViewModel() {
 
+    // WebSocket 클라이언트
+    private lateinit var stompClient: StompWebSocketClient
+    private var webSocketJob: Job? = null
+
     private var tt = 0
     private var total = 0.0  // total 변수도 추가
     private var previousLat: Double? = null
     private var previousLong: Double? = null
-
 
     // LiveData 선언
     private val _pace = MutableLiveData<String>()
@@ -48,6 +55,62 @@ class RunViewModel : ViewModel() {
 
     //---------------
 
+    // WebSocket 연결 시작
+    fun startWebSocket(memberId: String, recordId: String) {
+        stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
+
+        // WebSocket 연결
+        CoroutineScope(Dispatchers.IO).launch {
+            stompClient.connect()
+        }
+
+        // 1초마다 데이터 전송
+        webSocketJob = viewModelScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                val data = createRunningData(memberId, recordId)
+                sendRunningData(data, recordId)
+                delay(1000L) // 1초 대기
+            }
+        }
+    }
+
+    // WebSocket 연결 종료
+    fun stopWebSocket() {
+        webSocketJob?.cancel()
+        webSocketJob = null
+        //stompClient.disconnect()
+    }
+
+
+    // RunningData 생성
+    private fun createRunningData(memberId: String, recordId: String): RunInfo {
+
+        val heartRateValue = heartRate.value ?: 0
+        val totalDistanceValue = totalDistance.value ?: 0.0
+        val paceValue = pace.value ?: "00'00''"
+        val timerTextValue = timerText.value ?: "00:00"
+
+        return RunInfo(
+            memberId = memberId,
+            recordId = recordId,
+            latitude = previousLat ?: 0.0,
+            longitude = previousLong ?: 0.0,
+            heartRate = heartRateValue,
+            pace = paceValue,
+            time = timerTextValue,
+            runningDistance = formatDistance(totalDistanceValue)
+        )
+    }
+
+    // STOMP를 사용해 데이터 전송
+    private fun sendRunningData(data: RunInfo, recordId: String) {
+        val jsonData = Gson().toJson(data)
+        stompClient.sendMessageJson("/pub/running/$recordId", jsonData)
+        Log.d("WebSocket", "Data sent: $jsonData")
+    }
+
+
+    //---------------
     // 타이머 관련
     private var timerJob: Job? = null
     private var timeInSeconds = 0
@@ -224,5 +287,8 @@ class RunViewModel : ViewModel() {
     fun formatDistance(distance: Double): String {
         return String.format("%.2f", distance)
     }
+
+
+
 
 }

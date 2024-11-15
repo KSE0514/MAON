@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-115:12
-INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-115:12
-INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-115:12
-INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-115:12
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-114:12
+INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-114:12
+INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-114:12
+INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:2:1-114:12
 MERGED from [androidx.databinding:databinding-adapters:8.6.0] C:\Users\SSAFY\.gradle\caches\transforms-4\2bf05f1a8a15f6560f0632b9247f51d2\transformed\databinding-adapters-8.6.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.databinding:databinding-ktx:8.6.0] C:\Users\SSAFY\.gradle\caches\transforms-4\802acd7b7ec2a0240e97b178bde177d6\transformed\databinding-ktx-8.6.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.databinding:databinding-runtime:8.6.0] C:\Users\SSAFY\.gradle\caches\transforms-4\71114bc5d1aec1303a5ca7544b403e9f\transformed\databinding-runtime-8.6.0\AndroidManifest.xml:2:1-7:12
@@ -224,8 +224,8 @@ ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xm
 	android:name
 		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:19:19-61
 application
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:21:5-113:19
-INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:21:5-113:19
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:21:5-112:19
+INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:21:5-112:19
 MERGED from [com.github.NaikSoftware:StompProtocolAndroid:1.6.6] C:\Users\SSAFY\.gradle\caches\transforms-4\44bfd28947f8bbed6b94b988a4aadf66\transformed\StompProtocolAndroid-1.6.6\AndroidManifest.xml:11:5-20
 MERGED from [com.github.NaikSoftware:StompProtocolAndroid:1.6.6] C:\Users\SSAFY\.gradle\caches\transforms-4\44bfd28947f8bbed6b94b988a4aadf66\transformed\StompProtocolAndroid-1.6.6\AndroidManifest.xml:11:5-20
 MERGED from [com.google.android.material:material:1.12.0] C:\Users\SSAFY\.gradle\caches\transforms-4\c09ac2fc86f95b27fe5a2f4e0d5bef31\transformed\material-1.12.0\AndroidManifest.xml:22:5-20
@@ -365,7 +365,7 @@ ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xm
 	android:allowEmbedded
 		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:46:13-41
 activity#com.easter.watch.presentation.view.run.StartActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:51:9-62:20
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:51:9-61:20
 	android:exported
 		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:53:13-36
 	android:theme
@@ -373,77 +373,77 @@ ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xm
 	android:name
 		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:52:13-64
 activity#com.easter.watch.presentation.view.intro.AuthActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:63:9-72:20
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:62:9-71:20
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:65:13-36
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:64:13-36
 	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:66:13-63
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:65:13-63
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:64:13-65
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:63:13-65
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:67:13-71:29
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:66:13-70:29
 action#android.intent.action.MAIN
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:68:17-69
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:67:17-69
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:68:25-66
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:67:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:70:17-77
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:69:17-77
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:70:27-74
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:69:27-74
 activity#com.easter.watch.presentation.view.intro.RestartActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:73:9-76:66
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:72:9-75:66
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:75:13-37
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:74:13-37
 	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:76:13-63
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:75:13-63
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:74:13-68
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:73:13-68
 activity#com.easter.watch.presentation.view.intro.SplashActivity
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:77:9-88:20
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:76:9-87:20
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:79:13-36
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:78:13-36
 	android:theme
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:80:13-46
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:79:13-46
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:78:13-67
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:77:13-67
 uses-library#com.google.android.wearable
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:90:9-92:39
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:89:9-91:39
 MERGED from [androidx.wear:wear:1.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\8cde5c87683c0b63864459ae01eeac36\transformed\wear-1.2.0\AndroidManifest.xml:25:9-27:40
 MERGED from [androidx.wear:wear:1.2.0] C:\Users\SSAFY\.gradle\caches\transforms-4\8cde5c87683c0b63864459ae01eeac36\transformed\wear-1.2.0\AndroidManifest.xml:25:9-27:40
 	android:required
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:92:13-36
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:91:13-36
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:91:13-55
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:90:13-55
 meta-data#com.google.android.wearable.standalone
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:97:9-99:36
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:96:9-98:36
 	android:value
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:99:13-33
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:98:13-33
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:98:13-66
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:97:13-66
 meta-data#com.google.android.geo.API_KEY
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:100:9-102:71
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:99:9-101:71
 	android:value
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:102:13-68
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:101:13-68
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:101:13-58
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:100:13-58
 service#com.easter.watch.presentation.service.LocationTrackingService
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:104:9-108:56
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:103:9-107:56
 	android:enabled
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:106:13-35
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:105:13-35
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:107:13-37
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:106:13-37
 	android:foregroundServiceType
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:108:13-53
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:107:13-53
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:105:13-73
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:104:13-73
 service#com.easter.watch.presentation.service.RunService
-ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:109:9-112:63
+ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:108:9-111:63
 	android:exported
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:111:13-37
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:110:13-37
 	android:foregroundServiceType
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:112:13-60
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:111:13-60
 	android:name
-		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:110:13-60
+		ADDED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:109:13-60
 uses-sdk
 INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml

@@ -57,6 +57,12 @@ class AuthActivity : AppCompatActivity() {
         val db = MemberDatabase.getDatabase(this)
         memberDao = db.memberDao()
 
+        // 모든 데이터 삭제
+        CoroutineScope(Dispatchers.IO).launch {
+            memberDao.deleteAll() // 테이블 초기화
+            Log.d(TAG, "MemberDatabase 초기화 완료")
+        }
+
         // WebSocket + STOMP 연결
         CoroutineScope(Dispatchers.IO).launch {
             stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
@@ -66,7 +72,6 @@ class AuthActivity : AppCompatActivity() {
         binding.connectBtn.setOnClickListener {
             val authCodeText = authCode.text.toString()
             subscribeToAuthTopic(authCodeText)
-
             // JSON 형식의 메시지 생성
             val messageMap = mapOf("timestamp" to LocalDateTime.now().toString())
             val messageJson = Gson().toJson(messageMap) // JSON 문자열로 변환

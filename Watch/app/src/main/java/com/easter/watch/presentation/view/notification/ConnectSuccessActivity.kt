@@ -34,7 +34,7 @@ class ConnectSuccessActivity : AppCompatActivity() {
         binding.nickNameText.text = memberNickname  // XML에 바로 적용
 
         Handler().postDelayed(Runnable { // 타이머가 끝나면 내부 실행
-            intent = Intent(this@ConnectSuccessActivity, RecordActivity::class.java)
+            intent = Intent(this@ConnectSuccessActivity, StartActivity::class.java)
             startActivity(intent)
         }, 2000) // 2초
     }

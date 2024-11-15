@@ -1,4 +1,4 @@
-#Fri Nov 15 15:31:17 KST 2024
+#Fri Nov 15 21:57:27 KST 2024
 base.0=C\:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=C\:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 base.10=C\:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\9\\classes.dex
