@@ -33,8 +33,8 @@ public class ConnectionServiceImpl implements ConnectionService {
         }
         ops.set(key + ":ID", dto.getMemberId().toString());
         ops.set(key + ":NICKNAME", dto.getMemberNickname());
-        redisTemplate.expire(key + ":id", 10, TimeUnit.MINUTES); // 코드의 유효기간은 10분
-        redisTemplate.expire(key + ":nickname", 10, TimeUnit.MINUTES); // 코드의 유효기간은 10분
+        redisTemplate.expire(key + ":ID", 10, TimeUnit.MINUTES); // 코드의 유효기간은 10분
+        redisTemplate.expire(key + ":NICKNAME", 10, TimeUnit.MINUTES); // 코드의 유효기간은 10분
     }
 
     @Override
