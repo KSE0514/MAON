@@ -91,6 +91,11 @@
             android:name="com.easter.watch.presentation.view.intro.AuthActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.easter.watch.presentation.view.intro.RestartActivity"
@@ -100,11 +105,13 @@
             android:name="com.easter.watch.presentation.view.intro.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Maon" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <uses-library
@@ -121,13 +128,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAPkUdZTFZnS2rgOugb_vPsA_KP1RMiQtc" />
 
-        <service
-            android:name="com.easter.watch.presentation.service.FCMMessageService"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
         <service
             android:name="com.easter.watch.presentation.service.LocationTrackingService"
             android:enabled="true"
