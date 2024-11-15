@@ -169,10 +169,11 @@ const SignUpScreen = ({navigation, route}) => {
       const responseUserInfo = response.data.data
       console.log("가입완료", requestBody)
       // store에 저장하기
+      console.log(1)
       setUser({
         id: responseUserInfo.id,
         name: responseUserInfo.name,
-        nickName: requestBody.nickName,
+        nickName: requestBody.nickname,
         email: responseUserInfo.email,
         accessToken: responseUserInfo.accessToken,
         refreshToken: responseUserInfo.refreshToken,
@@ -185,27 +186,40 @@ const SignUpScreen = ({navigation, route}) => {
         phoneNumber: requestBody.phoneNumber,
         imageUrl: requestBody.imageUrl,
       })
+      console.log(2)
       // navigation.navigate("Home")
 
       // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
       await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
+      console.log(3)
       await AsyncStorage.setItem("refreshToken", responseUserInfo.refreshToken);
+      console.log(4)
       await AsyncStorage.setItem("id", responseUserInfo.id);
+      console.log(5)
       await AsyncStorage.setItem("email", responseUserInfo.email);
-
+      console.log(6)
 
       await AsyncStorage.setItem("name", responseUserInfo.name);
+      console.log(7)
       await AsyncStorage.setItem("nickName", requestBody.nickname);
-
+      console.log(8)
 
       // 상세 정보까지 저장
-      await AsyncStorage.setItem("height", requestBody.height);
-      await AsyncStorage.setItem("weight", requestBody.weight);
+      await AsyncStorage.setItem("height", String(requestBody.height));
+      console.log(9)
+
+      await AsyncStorage.setItem('weight', String(requestBody.weight));
+      console.log(10)
       await AsyncStorage.setItem("birthDate", requestBody.birthDate);
+      console.log(11)
       await AsyncStorage.setItem("address", requestBody.address);
+      console.log(12)
       await AsyncStorage.setItem("gender", requestBody.gender);
+      console.log(13)
       await AsyncStorage.setItem("imageUrl", requestBody.imageUrl);
+      console.log(14)
       await AsyncStorage.setItem("phoneNumber", requestBody.phoneNumber);
+      console.log(15)
 
       navigation.reset({
         index: 0,
