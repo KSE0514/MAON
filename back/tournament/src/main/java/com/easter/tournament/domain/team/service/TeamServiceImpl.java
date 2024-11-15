@@ -50,16 +50,12 @@ public class TeamServiceImpl implements TeamService {
     @Override
     @Transactional
     public CreateTeamResponseDto createTeam(PassportDto passport, CreateTeamRequestDto dto) {
-        if (!passport.getId().equals(dto.getMemberId())) {
-            log.error("there is discrepancy between member and passport : {} - {} ", dto.getMemberId(), passport.getId());
-            throw new BusinessException(HttpStatus.UNAUTHORIZED, "자기 자신의 팀만 만들 수 있습니다.");
-        }
         Tournament tournament = tournamentRepository.findByUuid(dto.getTournamentId());
         if (tournament == null) {
             log.error("tournament not found");
             throw new BusinessException(HttpStatus.BAD_REQUEST, "경기 정보를 찾을 수 없습니다.");
         }
-        Participant participant = participantQueryRepository.findParticipant(dto.getMemberId(), tournament.getId());
+        Participant participant = participantQueryRepository.findParticipant(passport.getId(), tournament.getId());
         // 잘 참여하고 있는가를 확인
         if (participant == null || participant.getStatus() == ParticipantStatus.CANCEL) {
             log.error("participant not found or canceled");
