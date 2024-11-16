@@ -17,7 +17,7 @@ import {
 import { Image } from "react-native";
 import { useState, useEffect } from "react";
 import TeamRoundBtn from "../../components/Button/TeamRoundBtn/TeamRoundBtn";
-import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
+import NotificationModal from "../../components/Modal/NotificationModal/NotificationModal";
 import colors from "../../styles/colors";
 import { apiClient } from "../../customAxios";
 import useAuthStore from "./../../store/AuthStore"
@@ -63,7 +63,8 @@ const testUsers = [
 // const testUsers = []
 
 
-const NotificationScreen = () => {
+const NotificationScreen = ({route}) => {
+  const {reloadInviteList} = route.params
   const { user } =useAuthStore()
   const [myMarathonList, setMyMarathonList] = useState({})
   const [requestorList, setRequestorList] = useState([])
@@ -76,6 +77,7 @@ const NotificationScreen = () => {
 
   useEffect(() => {
     getInviteList() // 초대 요청 목록 조회
+    reloadInviteList()
   }, [])
 
   // 참여 불가 모달
@@ -108,7 +110,7 @@ const NotificationScreen = () => {
   const acceptRequestContent = targetUserIndex !== null && targetUserIndex >= 0 && targetUserIndex < requestorList.length
   ? {
       text: `'${requestorList[targetUserIndex].teamName}'팀에\n참여하시겠습니까?`,
-      subText: `수락할 경우\n해당 마라톤(${requestorList[targetUserIndex].tournamentName})의 다른 팀 요청은\n자동 거절됩니다.`,
+      subText: `수락 시 해당 마라톤의 다른 팀\n요청은 자동 거절됩니다.\n대회 명: ${requestorList[targetUserIndex].tournamentName}`,
       buttons: [
         {
           title: "취소",
@@ -129,7 +131,7 @@ const NotificationScreen = () => {
   // 팀 참여 요청 거절 모달 내용
   const rejectRequestContent = targetUserIndex !== null && targetUserIndex >= 0 && targetUserIndex < requestorList.length
   ? {
-      text: `'${requestorList[targetUserIndex].teamName}'팀 참여를\n거부하시겠습니까?`,
+      text: `'${requestorList[targetUserIndex].teamName}' 팀\n참여를 거부하시겠습니까?`,
       subText: `대회 명: ${requestorList[targetUserIndex].tournamentName}`,
       buttons: [
         {
@@ -261,6 +263,7 @@ const joinTeam = (index, marathonName, teamCode) => {
       setShowAcceptRequestModal(false) // 모달 닫기
       setShowRejectRequestModal(false) // 모달 닫기
       getInviteList() // 초대 요청 목록 조회
+      reloadInviteList()
 
     } catch(error) {
       console.error("팀 초대 요청 처리 에러 발생: ", error)
@@ -331,15 +334,15 @@ const joinTeam = (index, marathonName, teamCode) => {
 
       </Container>
       {showAcceptErrorModal&&(
-        <DefaultModal isVisible={showAcceptErrorModal} content={acceptErrorModalContent} />
+        <NotificationModal isVisible={showAcceptErrorModal} content={acceptErrorModalContent} />
       )}
       {/* 거절 확인 모달 */}
       {showRejectRequestModal&&
-        <DefaultModal isVisible={showRejectRequestModal} content={rejectRequestContent} />
+        <NotificationModal isVisible={showRejectRequestModal} content={rejectRequestContent} />
       }
       {/* 수락 확인 모달 */}
       {showAcceptRequestModal&&
-        <DefaultModal isVisible={showAcceptRequestModal} content={acceptRequestContent} />
+        <NotificationModal isVisible={showAcceptRequestModal} content={acceptRequestContent} />
       }
     </Wrapper>
   )
