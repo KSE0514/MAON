@@ -11,4 +11,6 @@ public interface MemberService {
     UpdateMemberResponseDto updateMember(PassportDto passport, UpdateMemberRequestDto dto);
     CheckRedundancyResponseDto checkRedundancy(CheckRedundancyRequestDto dto);
     GetMemberInfoResponseDto getMyInfo(PassportDto passport);
+    void saveFcmToken(PassportDto passport, SaveFcmTokenRequestDto dto);
+    GetFcmTokenResponseDto getFcmToken(PassportDto passport);
 }
