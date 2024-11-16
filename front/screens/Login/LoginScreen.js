@@ -140,6 +140,7 @@ const LoginScreen = () => {
 
           // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
           await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
+          await AsyncStorage.setItem("refreshToken", responseUserInfo.refreshToken);
 
           // navigation.navigate("MainTabs", { screen: "Home" });
           navigation.reset({
