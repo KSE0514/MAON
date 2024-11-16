@@ -53,4 +53,16 @@ public class RunningProducer {
             });
     }
 
+    public void sendTeamLocation(String teamId, LocationDto locationDto) {
+        String topic = "route.running.process-team-location";
+        kafkaLocationTemplate.send(topic, teamId, locationDto)
+            .whenComplete((result, ex) -> {
+                if (ex != null) {
+                    log.error("Failed to send location data: {}", locationDto, ex);
+                } else {
+                    log.info("Sending location data to topic: {}, key: {}, data: {}", topic, teamId, locationDto);
+                }
+            });
+    }
+
 }
