@@ -40,6 +40,9 @@ const Pace = ({
       calculatePace();
     }
   }, [currentDistance, elapsedTime]);
+  useEffect(() => {
+    console.log(currentDistance, "  =  ", elapsedTime);
+  });
 
   return (
     <View>

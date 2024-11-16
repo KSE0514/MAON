@@ -126,6 +126,7 @@ const RunningAlone = ({ navigation, route }) => {
         longitude: location.longitude,
         heartRate: 0,
         pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
+        // pace: "10'10\"", // 최신 페이스
         runningDistance: runningDistanceRef.current.toFixed(2),
       };
       locationDtoPrint(locationDto);
