@@ -199,10 +199,11 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void cancelInvitation(PassportDto passport, UUID invitationId) {
-        TeamInvitation inv = teamInvitationRepository.findByUuid(invitationId)
-                .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "존재하지 않는 초대 id입니다."));
-        if(!inv.getInviterId().equals(passport.getId()) || !inv.isValid()) {
+    public void cancelInvitation(PassportDto passport, CancelInvitationRequestDto dto) {
+        Team team = teamRepository.findByUuid(dto.getTeamId())
+                .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다."));
+        TeamInvitation inv = teamInvitationQueryRepository.findByInviteeAndTeamId(dto.getInviteeId(), team.getId());
+        if(inv == null || !inv.isValid()) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "유효하지 않은 값입니다.");
         }
         teamInvitationRepository.delete(inv);

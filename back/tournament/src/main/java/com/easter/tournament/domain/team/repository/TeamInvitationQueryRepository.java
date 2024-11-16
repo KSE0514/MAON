@@ -85,6 +85,12 @@ public class TeamInvitationQueryRepository {
 
         entityManager.clear(); // 영속성 컨텍스트 초기화
     }
+
+    public TeamInvitation findByInviteeAndTeamId(UUID inviteeId, long teamId) {
+        return queryFactory.selectFrom(teamInvitation)
+                .where(teamInvitation.inviteeId.eq(inviteeId).and(teamInvitation.teamId.eq(teamId)))
+                .fetchOne();
+    }
 //
 //    public List<UUID> find
 
