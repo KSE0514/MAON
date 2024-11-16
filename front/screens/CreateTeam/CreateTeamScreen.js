@@ -20,6 +20,8 @@ import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
 import {  KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView, Image, TextInput, TouchableOpacity, Text } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Dimensions } from "react-native";
+import { apiClient } from "../../customAxios";
+import useAuthStore from "./../../store/AuthStore"
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -92,31 +94,39 @@ const testUsers = [
 ]
 
 
-const CreateTeamScreen = ({navigation}) => {
+const CreateTeamScreen = ({navigation, route}) => {
+  const { user } = useAuthStore()
+  const { teamId } = route.params
+
   const [searchName, setSearchName] = useState('') // 사용자가 입력할 값을 담을 state변수
 
   const [recipientIndex, setRecipientIndex] = useState(null)  // 초기값을 null로 설정
-  const [showSendRequestModal, setShowSendRequestModal] =useState(false)
+  const [showSendRequestModal, setShowSendRequestModal] =useState(false) // 초대 신청 모달
+  const [showCancelRequestModal, setShowCancelRequestModal] =useState(false) // 초대 취소 모달
   const [members, setMembers] = useState([])
   const [filteredMembers, setFilteredMembers] = useState([]); // 필터링된 사용자 리스트
 
   useEffect(() => {
-    setMembers(testUsers)
-    setFilteredMembers(testUsers); // 초기 필터링된 사용자 리스트 설정
+    inviteableMemberLoad() // 초대 가능 멤버 전체 리스트 조회
+
+
+    // setMembers(testUsers)
+    // setFilteredMembers(testUsers); // 초기 필터링된 사용자 리스트 설정
   }, [])
 
   useEffect(() => {
     // searchName이 변경될 때마다 필터링
     const filtered = members.filter(member =>
-      member.userNickName.includes(searchName)
+      member.nickname && member.nickname.includes(searchName) // nickname 필드로 필터링
     );
     setFilteredMembers(filtered);
+    console.log('초대 가능한 멤버: ', members)
   }, [searchName, members]);
 
   // 팀 참여 요청
   const sendRequestContent = recipientIndex !== null && recipientIndex >= 0 && recipientIndex < members.length
   ? {
-      text: `'${filteredMembers[recipientIndex].userNickName}'님에게\n요청을 보내겠습니까?`,
+      text: `'${filteredMembers[recipientIndex].nickname}'님에게\n요청을 보내겠습니까?`,
       subText: "",
       buttons: [
         {
@@ -136,35 +146,154 @@ const CreateTeamScreen = ({navigation}) => {
     }
   : null;
 
+  const cancelRequestContent = recipientIndex !== null && recipientIndex >= 0 && recipientIndex < members.length
+  ? {
+      text: `'${filteredMembers[recipientIndex].nickname}'님\n초대를 취소하시겠습니까?`,
+      subText: "",
+      buttons: [
+        {
+          title: "아니오",
+          onPress: () => {
+            setRecipientIndex(null)
+            setShowCancelRequestModal(false);
+          },
+        },
+        {
+          title: "예",
+          onPress: () => {
+            cancelRequest();
+          },
+        },
+      ],
+    }
+  : null;
+
   const clickRequestBtn = (index) => {
     // 요청 받는 사람 인덱스 recipientIndex에 담고
+    console.log('요청 받은 사람 인덱스: ', index)
     setRecipientIndex(index)
     // 모달 띄우기
     setShowSendRequestModal(true)
   }
 
-  // 모달에서 신청 버튼 눌렀을 경우, 
-  const sendRequest = () => {
-    // 실제로 요청 보내기
-
-    // members에서 상태를 수락 대기 상태로 바꾸기
-    const updateMembers = [...filteredMembers]
-    updateMembers[recipientIndex].userStatus = '수락대기'
-    setFilteredMembers(updateMembers)
-
-    // 수신자 state변수 초기화
-    setRecipientIndex(null)
-
-    // 모달 닫기
-    setShowSendRequestModal(false);
+  const clickCancelRequestBtn = (index) => {
+    // 요청 취소할 사람 인덱스 recipientIndex에 담고
+    console.log('요청 취소할 사람 인덱스: ', index)
+    setRecipientIndex(index)
+    // 모달 띄우기
+    setShowCancelRequestModal(true)
   }
 
+  // 모달에서 신청 버튼 눌렀을 경우, 
+  const sendRequest = async () => {
+    // 실제로 요청 보내기
+    console.log('요청 보낼 사람 id: ', filteredMembers[recipientIndex].id, "팀 id: ", teamId)
+    try {
+      const response = await apiClient.post(
+        `/tournament/team/invite`,
+        {
+          teamId: teamId,
+          inviteeId: filteredMembers[recipientIndex].id
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log("초대 신청 성공: ", response.data)
+        // members에서 상태를 수락 대기 상태로 바꾸기
+        const updateMembers = [...filteredMembers]
+        // updateMembers[recipientIndex].userStatus = '수락대기'
+        updateMembers[recipientIndex].invited = false ////////////////////////// 여기 다시 확인하기
+        setFilteredMembers(updateMembers)
+    
+        // 수신자 state변수 초기화
+        setRecipientIndex(null)
+    
+        // 모달 닫기
+        setShowSendRequestModal(false);
+      }
+    } catch (error) {
+      console.log("초대 신청 에러 발생: ", error)
+    }
+  }
+
+  // 초대 모달-취소 버튼
   const cancelBtn = () => {
     // 수신자 state변수 초기화
     setRecipientIndex(null)
 
     // 모달 닫기
     setShowSendRequestModal(false);
+  }
+
+  // 초대 취소 버튼
+  const cancelRequest = async () => {
+    console.log("초대 취소할 사람: ", filteredMembers[recipientIndex], "내 팀 id: ", teamId)
+    console.log("내 accessToken: ", user.accessToken)
+    try {
+      const response = await apiClient.post(
+        `/tournament/team/invite/cancel`,
+        {
+          inviteeId: filteredMembers[recipientIndex].id,
+          teamId: teamId
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      );
+      console.log("초대 취소 성공: ", response)
+      if (response.status === 200) {
+      }
+      // members에서 상태를 수락 대기 상태로 바꾸기
+      const updateMembers = [...filteredMembers]
+      // updateMembers[recipientIndex].userStatus = '요청하기'
+      updateMembers[recipientIndex].invited = true ////////////////////////// 여기 다시 확인하기
+      setFilteredMembers(updateMembers)
+  
+      // 수신자 state변수 초기화
+      setRecipientIndex(null)
+  
+      // 모달 닫기
+      setShowCancelRequestModal(false);
+
+    } catch (error) {
+      console.error('초대 취소 에러 발생: ', error)
+    }
+  }
+
+  // 초대 가능한 사람 전체 조회
+  const inviteableMemberLoad = async () => {
+    console.log('팀 아이디', teamId)
+    console.log()
+    try{
+      const response = await apiClient.post(
+        `/tournament/team/invite/candidate`,
+        {
+          teamId : teamId,
+          keyword : null,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      )
+      if (response.status === 200) {
+        console.log("팀 초대 가능 목록 전체 조회 성공: ", response.data.data)
+        const candidateList = response.data.data.candidateInfoList
+        setMembers(candidateList)
+      }
+    } catch (error) {
+      console.error("팀 초대 가능 전체 목록 조회 에러: ", error)
+    }
   }
 
   return(
@@ -198,11 +327,11 @@ const CreateTeamScreen = ({navigation}) => {
                   renderItem={({ item, index }) => (
                     <UserInfoBoxView key={index}>
                       <UserInfoBox
-                        proImg={item.userProfileImg}
+                        proImg={item.imageUrl}
                         level={item.level}
-                        name={item.userNickName}
-                        status={item.userStatus}
-                        onPress={() => clickRequestBtn(index)}
+                        name={item.nickname}
+                        status={item.invited? '수락대기' : '요청하기' }
+                        onPress={item.invited? () => clickCancelRequestBtn(index) : () => clickRequestBtn(index) }
                       />
                     </UserInfoBoxView>
                   )}
@@ -233,6 +362,9 @@ const CreateTeamScreen = ({navigation}) => {
       </TouchableWithoutFeedback> */}
       {showSendRequestModal&&
         <DefaultModal isVisible={showSendRequestModal} content={sendRequestContent} />
+      }
+      {showCancelRequestModal&&
+        <DefaultModal isVisible={showCancelRequestModal} content={cancelRequestContent} />
       }
     </Wapper>
   )
