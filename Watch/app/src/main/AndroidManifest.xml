@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -25,9 +26,22 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <activity
-            android:name=".presentation.view.MemberActivity"
+            android:name=".presentation.view.TestActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".presentation.view.notification.ConnectFailedActivity"
             android:exported="false"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".presentation.view.notification.ConnectSuccessActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".presentation.view.RecordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".presentation.view.run.ResultActivity"
             android:exported="false"
@@ -55,6 +69,13 @@
             android:name=".presentation.view.intro.AuthActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".presentation.view.intro.RestartActivity"
@@ -64,13 +85,11 @@
             android:name=".presentation.view.intro.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Maon">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-
-
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <uses-library
@@ -87,13 +106,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAPkUdZTFZnS2rgOugb_vPsA_KP1RMiQtc" />
 
-        <service
-            android:name=".presentation.service.FCMMessageService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
         <service
             android:name=".presentation.service.LocationTrackingService"
             android:enabled="true"

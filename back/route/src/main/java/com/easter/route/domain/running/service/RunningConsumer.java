@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.easter.route.domain.record.entity.Record;
-import com.easter.route.domain.record.entity.dto.PointPair;
 import com.easter.route.domain.running.entity.dto.LocationDto;
 
 import com.easter.route.domain.record.entity.dto.RecordDto;
+import com.easter.route.domain.running.entity.dto.RouteValidationResult;
 import com.easter.route.domain.running.entity.dto.RunningResultDto;
 import com.easter.route.domain.record.entity.dto.UpdateRecordDto;
 import com.easter.route.domain.record.repository.RecordRepository;
@@ -21,13 +21,13 @@ import com.easter.route.domain.route.repository.RouteRepository;
 import com.easter.route.global.exception.BusinessException;
 import com.easter.route.global.utils.DistanceCalculator;
 import com.easter.route.global.utils.GoogleGeoCoding;
-import com.easter.route.global.utils.OffCourseCalculator;
 import com.easter.route.global.utils.PaceCalculator;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,38 +50,42 @@ public class RunningConsumer {
 	private final RecordService recordService;
 	private final RecordRepository recordRepository;
 	private final RouteRepository routeRepository;
+	private final RunningValidationService runningValidationService;
 	private final GoogleGeoCoding GoogleGeoCoding;
-	private final OffCourseCalculator offCourseCalculator;
 	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
-
-	// 처음에 시작점 찾기 위해 위치 정보 받는 상황(실제로 뛰고 있지 않음)
-	// @KafkaListener(topics = "route.running.find-start-point", groupId = "running.find.start-point", containerFactory = "locationKafkaListenerContainerFactory")
-	// public void listenStartPoint(PointPair pointPair, Acknowledgment acknowledgment) {
-	// 	try {
-	// 		log.info("Received location data in start point listener: {}", pointPair);
-	// 		boolean isStartPoint = DistanceCalculator.isWithinDistance(
-	// 			pointPair.getStartLatitude(),
-	// 			pointPair.getStartLongitude(),
-	// 			pointPair.getEndLatitude(),
-	// 			pointPair.getEndLongitude(),
-	// 			10);
-	// 		acknowledgment.acknowledge();
-	// 	} catch (Exception e) {
-	// 		log.error("Failed to acknowledge message: {}", pointPair, e);
-	// 	}
-	// }
-
-	// 탭 하여 시작하기 버튼을 누른 상황(실제로 뛰고 있는 경우)
+	private final SimpMessagingTemplate messagingTemplate;
+	
+	// 경로 없이 뛰기
 	@KafkaListener(topics = "route.running.process-location", groupId = "running.process.location", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
-			log.error("Received location data in listener: {}", locationDto);
+			log.info("Received location data in listener: {}", locationDto);
 			String recordId = locationDto.getRecordId();
 			runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(locationDto);
 			acknowledgment.acknowledge();
 		} catch (Exception e) {
 			log.error("Failed to acknowledge message: {}", locationDto, e);
 		}
+	}
+
+	// 경로 있이 뛰기 (경로 이탈 판정, 마지막 인덱스 시 끝점 판단)
+	@KafkaListener(topics = "route.running.process-location-with-route", groupId = "running.process.location-with-route", containerFactory = "locationKafkaListenerContainerFactory")
+	public void listenLocationWithRoute(LocationDto locationDto, Acknowledgment acknowledgment) {
+		try {
+			log.info("Received location data in listener: {}", locationDto);
+			String recordId = locationDto.getRecordId();
+			runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(locationDto);
+			RouteValidationResult result = validateLocation(locationDto);
+			String destination = "/sub/running/route/" + recordId;
+			messagingTemplate.convertAndSend(destination, result);
+			acknowledgment.acknowledge();
+		} catch (Exception e) {
+			log.error("Failed to acknowledge message: {}", locationDto, e);
+		}
+	}
+
+	public RouteValidationResult validateLocation(LocationDto locationDto) {
+		return runningValidationService.makeRouteValidationResult(locationDto);
 	}
 
 	// 러닝 종료시 결과 값 계산 후 엔티티에 저장한다.
@@ -166,7 +170,6 @@ public class RunningConsumer {
 			.orElseGet(updatedRecord::getDistance);
 		return new RunningResultDto(RecordDto.of(updatedRecord), routeDistance, "end");
 	}
-
 
 	public List<LocationDto> getRunningInfo(String recordId) {
 		return runningInfoMap.getOrDefault(recordId, new ArrayList<>());

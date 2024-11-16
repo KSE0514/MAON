@@ -2,6 +2,7 @@ package com.easter.route.domain.running.controller;
 
 import com.easter.route.domain.record.entity.dto.PointPair;
 import com.easter.route.domain.running.entity.dto.LocationDto;
+import com.easter.route.domain.running.entity.dto.RouteValidationResult;
 import com.easter.route.domain.running.entity.dto.RunningResultDto;
 import com.easter.route.domain.running.service.RunningConsumer;
 import com.easter.route.domain.running.service.RunningProducer;
@@ -37,18 +38,25 @@ public class RunningStompController {
     }
 
     // 경로 이탈 판정
-    @MessageMapping("/running/{recordId}/off-course")
-    @SendTo("/sub/running/{recordId}/off-course")
-    public boolean checkPoint(@DestinationVariable String recordId, LocationDto locationDto) {
-        log.info("Received recordId: {}, check point request: {}", recordId, locationDto);
-        return runningConsumer.checkPoint(recordId, locationDto);
-    }
+    // @MessageMapping("/running/{recordId}/off-course")
+    // @SendTo("/sub/running/{recordId}/off-course")
+    // public boolean checkPoint(@DestinationVariable String recordId, LocationDto locationDto) {
+    //     log.info("Received recordId: {}, check point request: {}", recordId, locationDto);
+    //     return runningConsumer.checkPoint(recordId, locationDto);
+    // }
 
     @MessageMapping("/running/{recordId}")
     public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
+        log.info("Received location data without route: {}", recordId);
+        log.info("Received location data without route: {}", locationDto);
+        runningProducer.sendLocation(locationDto);
+    }
+
+    @MessageMapping("/running/route/{recordId}")
+    public void sendLocationWithRoute(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data: {}", recordId);
         log.info("Received location data: {}", locationDto);
-        runningProducer.sendLocation(locationDto);
+        runningProducer.sendLocationWithRoute(locationDto);
     }
 
     @MessageMapping("/running/{recordId}/end")
