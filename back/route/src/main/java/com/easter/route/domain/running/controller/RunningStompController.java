@@ -47,9 +47,16 @@ public class RunningStompController {
 
     @MessageMapping("/running/{recordId}")
     public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
+        log.info("Received location data without route: {}", recordId);
+        log.info("Received location data without route: {}", locationDto);
+        runningProducer.sendLocation(locationDto);
+    }
+
+    @MessageMapping("/running/route/{recordId}")
+    public void sendLocationWithRoute(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data: {}", recordId);
         log.info("Received location data: {}", locationDto);
-        runningProducer.sendLocation(locationDto);
+        runningProducer.sendLocationWithRoute(locationDto);
     }
 
     @MessageMapping("/running/{recordId}/end")

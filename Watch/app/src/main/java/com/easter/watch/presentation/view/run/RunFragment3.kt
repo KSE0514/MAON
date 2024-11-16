@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RunFragment3 : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentRun3Binding? = null
@@ -64,6 +69,9 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
 
                 // 위치 업데이트 및 경로 추가
                 updateMapLocation(currentLatLng)
+                // ViewModel로 위치 데이터 전달
+                viewModel.updateDistance(latitude!!, longitude!!)
+
                 if (viewModel.isTracking.value == true && viewModel.isPaused.value == false) {
                     locationList.add(currentLatLng)
                     updatePolyline()
@@ -115,6 +123,12 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
                 stopTracking()
             }
         }
+
+        viewModel.isPaused.observe(viewLifecycleOwner) { isPaused ->
+            if (isPaused) {
+                pauseTracking() // Pause 상태로 전환
+            }
+        }
     }
 
     private fun startTracking() {
@@ -140,11 +154,23 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
     }
 
     private fun pauseTracking() {
-        stopLocationUpdates()
+        CoroutineScope(Dispatchers.Main).launch {
+            // ViewModel의 isPaused LiveData 값을 업데이트
+            viewModel.setPausedState(true)
+
+            // 서비스 호출을 IO 스레드에서 실행
+            withContext(Dispatchers.IO) {
+                serviceIntent.action = LocationTrackingService.ACTION_PAUSE_TRACKING
+                requireContext().startService(serviceIntent)
+            }
+        }
     }
 
+
     private fun resumeTracking() {
-        startLocationUpdates()
+        viewModel.setPausedState(false)
+        serviceIntent.action = LocationTrackingService.ACTION_START_TRACKING
+        requireContext().startService(serviceIntent)
     }
 
 
@@ -166,7 +192,14 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
 
     // 위치 업데이트 중지
     private fun stopLocationUpdates() {
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                fusedLocationClient.removeLocationUpdates(locationCallback)
+                Log.d("LocationService", "Location updates stopped.")
+            } catch (e: SecurityException) {
+                Log.e("LocationService", "Permission not granted to remove location updates.", e)
+            }
+        }
     }
 
     private fun updatePolyline() {

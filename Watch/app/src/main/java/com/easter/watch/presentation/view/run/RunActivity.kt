@@ -1,5 +1,6 @@
 package com.easter.watch.presentation.view.run
 
+import StompWebSocketClient
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -35,8 +36,14 @@ import com.easter.watch.R
 import com.easter.watch.databinding.ActivityAuthBinding
 import com.easter.watch.databinding.ActivityRestartBinding
 import com.easter.watch.databinding.ActivityRunBinding
+import com.easter.watch.presentation.db.MemberDatabase
+import com.easter.watch.presentation.db.dao.MemberDao
 import com.easter.watch.presentation.service.SensorPermissionService
 import com.easter.watch.presentation.view.adapter.ScreenSlidePagerAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.checkerframework.checker.units.qual.min
 import java.text.SimpleDateFormat
 import java.util.TimeZone
@@ -45,6 +52,9 @@ import java.util.TimerTask
 import kotlin.concurrent.timer
 
 class RunActivity : AppCompatActivity(), SensorEventListener {
+
+    private lateinit var stompClient: StompWebSocketClient
+
 
     val TAG : String = "RunActivity"
     private  var time =0
@@ -56,12 +66,30 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
     private val viewModel: RunViewModel by viewModels()
     private var isInitialized = false
 
+    private lateinit var memberDao: MemberDao
+    private lateinit var memberId: String
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (!isInitialized) {
             binding = ActivityRunBinding.inflate(layoutInflater)
             setContentView(binding.root)
+
+            // Room Database 초기화
+            val db = MemberDatabase.getDatabase(this)
+            memberDao = db.memberDao()
+
+            // memberId 가져오기
+            CoroutineScope(Dispatchers.IO).launch {
+                memberId = memberDao.getMemberId()
+
+                withContext(Dispatchers.Main) {
+                    // WebSocket 연결 시작
+                    viewModel.startWebSocket(memberId = memberId, recordId = "RECORD_ID")
+                }
+            }
 
             showClock()
             checkPermissions()
@@ -74,7 +102,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
             isInitialized = true
         }
     }
-
 
     private fun checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -135,12 +162,9 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
                     binding.page3.setImageDrawable(ContextCompat.getDrawable(this@RunActivity,R.drawable.round_selected_page))
                     binding.heartText.setTextColor(ContextCompat.getColor(this@RunActivity,R.color.real_black))
                 }
-
-
             }
         })
     }
-
 
     private fun setupSensors() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -148,21 +172,11 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         sensorManager.registerListener(this, heartSensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
-    //1초단위
-//    override fun onSensorChanged(event: SensorEvent?) {
-//        if(event!!.sensor.type == Sensor.TYPE_HEART_RATE){
-//            val i = event.values[0].toInt()
-//            binding.heartText.text = i.toString()
-//        }
-//    }
-
-
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
             viewModel.updateHeartRate(event.values[0].toInt())
         }
     }
-
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
 
@@ -204,5 +218,10 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
             binding.runTime.text = time
         }
     }
+
+
+
+
+
 
 }

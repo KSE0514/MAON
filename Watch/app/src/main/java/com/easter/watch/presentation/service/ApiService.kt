@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 interface ApiService {
 
-    @POST("api/auth/watch/pair")
-    suspend fun sendAuthInfo(@Body authInfo: AuthInfo): Response<Unit>
+//    @POST("api/auth/watch/pair")
+//    suspend fun sendAuthInfo(@Body authInfo: AuthInfo): Response<Unit>
 
 }

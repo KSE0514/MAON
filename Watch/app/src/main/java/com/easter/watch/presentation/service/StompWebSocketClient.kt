@@ -2,6 +2,7 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
@@ -9,12 +10,17 @@ import okhttp3.WebSocketListener
 import java.util.concurrent.TimeUnit
 
 class StompWebSocketClient(private val serverUrl: String) {
-    private lateinit var webSocket: WebSocket
+
+    private var webSocket: WebSocket? = null
+
     val TAG = "STOMP"
     private var onMessageCallback: ((String) -> Unit)? = null
     private var isStompConnected = false  // STOMP 연결 상태 플래그 추가
 
-    fun connect() {
+
+
+    fun connect(onConnected: () -> Unit = {}) {
+
         val okHttpClient = OkHttpClient.Builder()
             .pingInterval(10, TimeUnit.SECONDS)
             .build()
@@ -37,16 +43,26 @@ class StompWebSocketClient(private val serverUrl: String) {
                 Log.d(TAG, "메시지 수신: $text")
                 if (text.contains("CONNECTED")) {
                     Log.d(TAG, "STOMP 연결 성공")
-                    isStompConnected = true  // STOMP 연결 성공 시 플래그 설정
+                    isStompConnected = true
+                    onConnected() // 연결 성공 콜백 호출
                 }
                 onMessageCallback?.invoke(text)
+            }
+
+            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+                webSocket.close(1000, null)
+                Log.d(TAG, "Closing: $code / $reason")
+            }
+
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                Log.d(TAG, "Closed: $code / $reason")
             }
         })
     }
 
     private fun sendStompConnect() {
         val connectFrame = "CONNECT\naccept-version:1.2\nhost:myHost\n\n\u0000"
-        webSocket.send(connectFrame)
+        webSocket?.send(connectFrame)
     }
 
     fun subscribeToTopic(topic: String, callback: (String) -> Unit) {
@@ -57,13 +73,26 @@ class StompWebSocketClient(private val serverUrl: String) {
 
         onMessageCallback = callback
         val subscribeFrame = "SUBSCRIBE\ndestination:$topic\nid:sub-001\n\n\u0000"
-        webSocket.send(subscribeFrame)
+        webSocket?.send(subscribeFrame)
         Log.d(TAG, "구독 요청 전송: $topic")
     }
 
-    fun sendMessage(topic: String, message: String) {
+    fun sendMessageString(topic: String, message: String) {
         val sendFrame = "SEND\ndestination:$topic\ncontent-type:text/plain\n\n$message\u0000"
-        webSocket.send(sendFrame)
+        webSocket?.send(sendFrame)
         Log.d(TAG, "메시지 전송: $message to $topic")
     }
+
+    fun sendMessageJson(topic:String, message:String){
+        val sendFrame = "SEND\ndestination:$topic\ncontent-type:application/json\n\n$message\u0000"
+        webSocket?.send(sendFrame)
+        Log.d(TAG, "메시지 전송: $message to $topic")
+    }
+
+    fun disconnect() {
+        webSocket?.close(1000, "Closing connection")
+        webSocket = null
+        Log.d(TAG, "Disconnected")
+    }
+
 }
