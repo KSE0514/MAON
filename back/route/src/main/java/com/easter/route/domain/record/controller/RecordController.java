@@ -28,9 +28,7 @@ public class RecordController {
     @PostMapping("/running/createRunning")
     public ResponseEntity<ResultResponse> createRunning(@RequestAttribute("passport") PassportDto passport, @RequestBody CreateRunningRequestDto createRunningRequestDto) {
         log.info("passport : {}", passport);
-        CreateRunningResponseDto responseDto = recordService.createRunning(passport, createRunningRequestDto);
-//        log.info("Record created: {}", record);
-//        log.info("createRunningDto created: {}", createRunningRequestDto);
+        CreateRunningResponseDto responseDto = recordService.createRunning(passport.getId(), createRunningRequestDto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.CREATED, "Record를 생성했습니다.", responseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
