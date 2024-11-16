@@ -166,6 +166,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   const [marathonDate, setMarathonDate] = useState(""); // 대회 일시
   const [marathonFormatDate, setMarathonFormatDate] = useState(""); // 대회 일시 양식 변화
   const [marathonPeriod, setMarathonPeriod] = useState(""); // 접수 기간
+  const [marathonPeriodEndDate, setMarathonPeriodEndDate] = useState(""); // 접수 마감일
   const [marathonPlace, setMarathonPlace] = useState(""); // 대회 장소
   const [marathonUrl, setMarathonUrl] = useState(""); // 홈페이지
   const [marathonCourse, setMarathonCourse] = useState([]); // 종목 종류
@@ -173,6 +174,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   const [marathonCallNum, setMarathonCallNum] = useState(""); // 문의 번호
 
   const [dDay, setDDay] = useState(null); // 마라톤 시작 디데이
+  const [ entryEndDDay, setEntryEndDDay] = useState(null); // 마라톤 접수 마감일 디데이
   const [showWarning, setShowWarning] = useState(false); // 경고 메시지 표시 상태
 
   const [latitude, setLatitude] = useState(paramsLatitude); // 예: 서울의 위도 값
@@ -239,6 +241,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
       // 시작일과 마감일을 결합하여 "YYYY.MM.DD~YYYY.MM.DD" 형태로 저장
       setMarathonPeriod(`${formattedStartDate} ~ ${formattedEndDate}`);
       console.log('접수 기간:', `${formattedStartDate}~${formattedEndDate}`);
+      setMarathonPeriodEndDate(marathonInfo.receiptEnd)
     }
 
     setMarathonName(marathonInfo.title)
@@ -296,6 +299,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     // setIsActived((prev) => !prev); // 북마크 상태 토글
   };
 
+  // 마라톤 대회 시작일 디데이
   useEffect(() => {
     const calculateDDay = () => {
       // 마라톤 날짜를 Date 객체로 변환
@@ -315,6 +319,27 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
 
     calculateDDay(); // D-Day 계산 함수 호출
   }, [marathonDate]);
+
+  // 마라톤 접수 마감일 디데이
+  useEffect(() => {
+    const calculateDDay = () => {
+      // 마라톤 날짜를 Date 객체로 변환
+      const marathonDateObj = new Date(marathonPeriodEndDate); // 예시로 사용
+      const currentDate = new Date(); // 현재 날짜
+
+      // 두 날짜의 차이 (밀리초 단위)
+      const timeDifference = marathonDateObj - currentDate;
+
+      // 밀리초를 일 단위로 변환
+      const dayDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+
+      console.log('디데이 계산 확인용' , dayDifference)
+      // D-Day 값 업데이트
+      setEntryEndDDay(dayDifference);
+    };
+
+    calculateDDay(); // D-Day 계산 함수 호출
+  }, [marathonPeriodEndDate]);
 
   // useEffect(() => {
   //   setMyMarathonInfo(testMyInfo);
@@ -629,7 +654,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
               {/* 버튼 */}
               {participated ? (
                 myTeamCode ? (
-                  <BtnArea>
+                  dDay >=0 && <BtnArea>
                     <RoundBtn
                       text={dDay === 0 ? "시작하기" : `D - ${dDay}`}
                       onPress={
@@ -647,7 +672,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                     </View>
                   </BtnArea>
                 ) : (
-                  <BtnArea>
+                  dDay >=0 &&<BtnArea>
                     <HalfBtnContainer>
                       <BtnHalfArea>
                         <MarathonDetailRoundBtn
@@ -679,7 +704,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                 )
               ) : (
                 <BtnArea>
-                  {marathonName&&<RoundBtn
+                  {marathonName&& entryEndDDay >= 0 &&<RoundBtn
                     text={"참가 신청하기"}
                     // onPress={() => setShowSelectCourseModal(true)}
                     onPress={entryMarathon}
