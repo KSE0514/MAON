@@ -44,7 +44,7 @@ public class TeamInvitationQueryRepository {
         QTeam team = QTeam.team;
         QTournament tournament = QTournament.tournament;
         return queryFactory.select(Projections.constructor(SimpleInvitationDto.class,
-                        teamInvitation.uuid, teamInvitation.inviterNickname, teamInvitation.inviterImage, tournament.title))
+                        teamInvitation.uuid, teamInvitation.inviterNickname, teamInvitation.inviterImage, teamInvitation.team.name, tournament.title))
                 .from(teamInvitation)
                 .join(teamInvitation.team, team)  // team을 join
                 .join(team.tournament, tournament)  // tournament를 join
