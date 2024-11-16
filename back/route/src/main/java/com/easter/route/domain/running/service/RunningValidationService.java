@@ -1,9 +1,8 @@
 package com.easter.route.domain.running.service;
 
 import com.easter.route.domain.running.entity.dto.LocationDto;
+import com.easter.route.domain.running.entity.dto.RouteValidationResult;
 
 public interface RunningValidationService {
-	boolean validateOnRoute(LocationDto locationDto);
-	boolean validateIsEndPoint(LocationDto locationDto);
-	boolean makeRouteValidationResult(LocationDto locationDto);
+	RouteValidationResult makeRouteValidationResult(LocationDto locationDto);
 }
