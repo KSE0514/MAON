@@ -5,6 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/main"
+        android:background="@color/real_black"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".presentation.view.run.ResultActivity">
@@ -12,6 +13,7 @@
         <TextView
             android:text="결과창"
             android:gravity="center"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
