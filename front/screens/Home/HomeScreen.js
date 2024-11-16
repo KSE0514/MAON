@@ -46,6 +46,11 @@ const HomeScreen = ({ navigation }) => {
     getMyProfile()
   }, [])
 
+  useEffect(async()=> {
+    const checkStorageNickname = await AsyncStorage.getItem("nickname");
+    console.log('!!!!!!닉네임 확인용: ', checkStorageNickname)
+  }, [])
+
   // 홈 화면에 들어왔을 시 async storage에 마이페이지 데이터를 저장하기 위함
   const getMyProfile = async () => {
     try {

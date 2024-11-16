@@ -28,6 +28,7 @@ const CreateTeamInputModal = ({ isVisible, content, textValue, setTextValue }) =
           {content.text}
         </ModalText>
         <TextInput
+          maxLength={9} // 입력값 제한
           style={{
             width: 200,
             height: 40,
@@ -37,7 +38,7 @@ const CreateTeamInputModal = ({ isVisible, content, textValue, setTextValue }) =
             borderRadius: 10,
             marginVertical: 15,
           }}
-          placeholder="6자 이내로 입력해주세요."
+          placeholder="9자 이내로 입력해주세요."
           value={textValue}
           onChangeText={(text) => setTextValue(text)}
         />
