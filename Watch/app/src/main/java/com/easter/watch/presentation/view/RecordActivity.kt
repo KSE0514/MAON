@@ -89,9 +89,12 @@ class RecordActivity : AppCompatActivity() {
                 val startInfo = Gson().fromJson(jsonBody, StartInfo::class.java)
                 Log.d(TAG, "변환된 StartInfo 객체: $startInfo")
 
+                val recordId = startInfo.recordId
+
                 when(startInfo.mode){
                     "notSelectedRoute" ->{
                         val intent = Intent(this, RunActivity::class.java)
+                        intent.putExtra("recordId",recordId)
                         startActivity(intent)
                         finish()
                     }

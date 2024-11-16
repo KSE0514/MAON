@@ -48,6 +48,7 @@ class RunFragment1 : Fragment() {
         binding.stopBtn.setOnClickListener {
             viewModel.stopTimer()
             viewModel.stopTracking()
+            viewModel.stopRunning(viewModel.recordId.toString())
             val intent = Intent(requireContext(), ResultActivity::class.java)
             startActivity(intent)
         }

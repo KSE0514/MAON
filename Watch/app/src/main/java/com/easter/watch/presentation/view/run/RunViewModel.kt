@@ -6,12 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.easter.watch.presentation.dataModel.RunInfo
+import com.easter.watch.presentation.dataModel.RunResult
+import com.easter.watch.presentation.dataModel.StartInfo
 import com.easter.watch.presentation.service.LocationTrackingService
+import com.easter.watch.presentation.view.RecordActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +29,8 @@ import java.util.*
 
 
 class RunViewModel : ViewModel() {
+
+    val TAG = "RunViewModel"
 
     // WebSocket 클라이언트
     private lateinit var stompClient: StompWebSocketClient
@@ -45,6 +51,8 @@ class RunViewModel : ViewModel() {
     private val _totalDistance = MutableLiveData<Double>()
     val totalDistance: LiveData<Double> = _totalDistance
 
+    private val _recordId = MutableLiveData<String>()
+    val recordId: LiveData<String> = _recordId
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
@@ -56,13 +64,15 @@ class RunViewModel : ViewModel() {
     //---------------
 
     // WebSocket 연결 시작
-    fun startWebSocket(memberId: String, recordId: String) {
+    fun startWebSocket(memberId: String, recordId: String, context: Context) {
         stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
 
         // WebSocket 연결
         CoroutineScope(Dispatchers.IO).launch {
             stompClient.connect()
         }
+
+        subscribeToRunningEndTopic(recordId,context)
 
         // 1초마다 데이터 전송
         webSocketJob = viewModelScope.launch(Dispatchers.IO) {
@@ -74,11 +84,54 @@ class RunViewModel : ViewModel() {
         }
     }
 
+    // STOMP 메시지에서 JSON 추출
+    private fun extractJsonFromStompMessage(stompMessage: String): String {
+        val parts = stompMessage.split("\n\n")
+        val json = if (parts.size >= 2) {
+            parts.last().trim()
+        } else {
+            stompMessage.trim()
+        }
+        // 한글(AC00-D7A3)을 제외한 모든 비ASCII 유니코드 문자 제거
+        return json.replace(Regex("[^\\x20-\\x7E가-힣]"), "").trim()
+    }
+
+    //달리기 끝나는 신호 구독 -> end 받기도 하고 주기도하고
+    fun subscribeToRunningEndTopic(recordId : String, context: Context){
+        stompClient.subscribeToTopic("/sub/start/$recordId/end","sub-running-end"){ payload ->
+            try{
+                // JSON 데이터를 AuthInfo 객체로 변환
+                val jsonBody = extractJsonFromStompMessage(payload)
+                Log.d(TAG, "추출된 JSON: $jsonBody")
+
+                // Gson을 사용해 JSON을 StartInfo 객체로 변환
+                val runResult = Gson().fromJson(jsonBody, RunResult::class.java)
+
+                _recordId.value = recordId
+
+                // Intent 생성
+                val intent = Intent(context, RecordActivity::class.java).apply {
+                    putExtra("runResult", runResult)
+                }
+                context.startActivity(intent)
+
+            }catch (e : Exception){
+                Log.d(TAG, e.toString())
+            }
+        }
+    }
+
+    fun stopRunning(recordId : String){
+        stompClient.sendMessageString("/pub/start/$recordId/end","") //완료 보내기
+        stopWebSocket()
+    }
+
+
     // WebSocket 연결 종료
     fun stopWebSocket() {
         webSocketJob?.cancel()
         webSocketJob = null
-        //stompClient.disconnect()
+        stompClient.disconnect()
     }
 
 

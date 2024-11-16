@@ -81,13 +81,16 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
             val db = MemberDatabase.getDatabase(this)
             memberDao = db.memberDao()
 
+            //recordId 가져오기
+            val recordId = intent.getStringExtra("recordId") ?: ""
+
             // memberId 가져오기
             CoroutineScope(Dispatchers.IO).launch {
                 memberId = memberDao.getMemberId()
 
                 withContext(Dispatchers.Main) {
                     // WebSocket 연결 시작
-                    viewModel.startWebSocket(memberId = memberId, recordId = "RECORD_ID")
+                    viewModel.startWebSocket(memberId = memberId, recordId = recordId, context = this@RunActivity)
                 }
             }
 
