@@ -54,33 +54,29 @@ public class RunningConsumer {
 	private final GoogleGeoCoding GoogleGeoCoding;
 	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
 	private final SimpMessagingTemplate messagingTemplate;
-
-	// 처음에 시작점 찾기 위해 위치 정보 받는 상황(실제로 뛰고 있지 않음)
-	// @KafkaListener(topics = "route.running.find-start-point", groupId = "running.find.start-point", containerFactory = "locationKafkaListenerContainerFactory")
-	// public void listenStartPoint(PointPair pointPair, Acknowledgment acknowledgment) {
-	// 	try {
-	// 		log.info("Received location data in start point listener: {}", pointPair);
-	// 		boolean isStartPoint = DistanceCalculator.isWithinDistance(
-	// 			pointPair.getStartLatitude(),
-	// 			pointPair.getStartLongitude(),
-	// 			pointPair.getEndLatitude(),
-	// 			pointPair.getEndLongitude(),
-	// 			10);
-	// 		acknowledgment.acknowledge();
-	// 	} catch (Exception e) {
-	// 		log.error("Failed to acknowledge message: {}", pointPair, e);
-	// 	}
-	// }
-
-	// 탭 하여 시작하기 버튼을 누른 상황 (경로 이탈 판정, 마지막 인덱스 시 끝점 판단)
+	
+	// 경로 없이 뛰기
 	@KafkaListener(topics = "route.running.process-location", groupId = "running.process.location", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
-			log.error("Received location data in listener: {}", locationDto);
+			log.info("Received location data in listener: {}", locationDto);
+			String recordId = locationDto.getRecordId();
+			runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(locationDto);
+			acknowledgment.acknowledge();
+		} catch (Exception e) {
+			log.error("Failed to acknowledge message: {}", locationDto, e);
+		}
+	}
+
+	// 경로 있이 뛰기 (경로 이탈 판정, 마지막 인덱스 시 끝점 판단)
+	@KafkaListener(topics = "route.running.process-location-with-route", groupId = "running.process.location-with-route", containerFactory = "locationKafkaListenerContainerFactory")
+	public void listenLocationWithRoute(LocationDto locationDto, Acknowledgment acknowledgment) {
+		try {
+			log.info("Received location data in listener: {}", locationDto);
 			String recordId = locationDto.getRecordId();
 			runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(locationDto);
 			RouteValidationResult result = validateLocation(locationDto);
-			String destination = "/sub/running/" + recordId;
+			String destination = "/sub/running/route/" + recordId;
 			messagingTemplate.convertAndSend(destination, result);
 			acknowledgment.acknowledge();
 		} catch (Exception e) {
