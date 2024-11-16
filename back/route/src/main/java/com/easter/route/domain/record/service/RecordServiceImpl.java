@@ -2,6 +2,7 @@ package com.easter.route.domain.record.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import com.easter.route.domain.record.entity.dto.CreateRunningResponseDto;
 import com.easter.route.global.security.PassportDto;
@@ -32,9 +33,9 @@ public class RecordServiceImpl implements RecordService {
 	private final MongoTemplate mongoTemplate;
 
 	@Override
-	public CreateRunningResponseDto createRunning(PassportDto passport, CreateRunningRequestDto createRunningRequestDto) {
+	public CreateRunningResponseDto createRunning(UUID memberId, CreateRunningRequestDto createRunningRequestDto) {
 		Record record = Record.builder()
-			.memberId(passport.getId().toString())
+			.memberId(String.valueOf(memberId))
 			.recordType(RecordType.valueOf(createRunningRequestDto.getRecordType()))
 			.completed(false)
 			.runningTime("00:00:00")
@@ -49,7 +50,7 @@ public class RecordServiceImpl implements RecordService {
 		String id = record.getId();
 		return CreateRunningResponseDto.builder()
 				.recordId(id)
-				.memberId(passport.getId())
+				.memberId(memberId)
 				.build();
 	}
 
