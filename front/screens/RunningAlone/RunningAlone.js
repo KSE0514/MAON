@@ -154,8 +154,8 @@ const RunningAlone = ({ navigation, route }) => {
 
   //연동 여부 가져오기
   useEffect(() => {
-    // setConnectedWatch(fetchPairedWatch());
-    setConnectedWatch(false);
+    setConnectedWatch(fetchPairedWatch());
+    // setConnectedWatch(false);
   }, []);
 
   //달리기 시작을 늘렀을 경우
@@ -480,7 +480,7 @@ const RunningAlone = ({ navigation, route }) => {
             <RunInfoCol style={{ flex: 1 }}>
               <GoalDonutChart
                 connectedWatch={connectedWatch}
-                currentDistance={parseFloat(runningDistance)}
+                currentDistance={parseFloat(runningDistanceRef.current)}
                 goalDistance={0}
                 mode={mode}
               />
@@ -490,7 +490,7 @@ const RunningAlone = ({ navigation, route }) => {
                 connectedWatch={connectedWatch}
                 mode={mode}
                 elapsedTime={elapsedTime}
-                currentDistance={runningDistance}
+                currentDistance={runningDistanceRef}
                 setPace={setPace}
                 pace={pace}
               />

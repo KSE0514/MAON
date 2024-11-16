@@ -120,7 +120,7 @@ export default function Map({
    */
   const handleUserLocationChange = (location) => {
     if (runStart) {
-      console.log("트래킹한 값 기반으로 데이터 변경 예정", location);
+      // console.log("트래킹한 값 기반으로 데이터 변경 예정", location);
       const newCoordinate = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -159,12 +159,16 @@ export default function Map({
   };
 
   useEffect(() => {
-    console.log("변경된 gps: " + JSON.stringify(gps));
+    // console.log("변경된 gps: " + JSON.stringify(gps));
   }, [gps]);
 
   useEffect(() => {
+    // console.log("변경된 markers: " + JSON.stringify(markers));
+  }, [markers]);
+
+  useEffect(() => {
     const startTracking = async () => {
-      console.log("tracking 시도함");
+      // console.log("tracking 시도함");
       locationInterval.current = setInterval(async () => {
         const location = await Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.Balanced,
@@ -174,10 +178,10 @@ export default function Map({
     };
 
     if (runStart && !connectedWatch) {
-      console.log("tracking 시작");
+      // console.log("tracking 시작");
       startTracking();
     } else {
-      console.log("트래킹 멈춤");
+      // console.log("트래킹 멈춤");
       // runStart가 false로 변경되면 위치 추적 중지
       if (locationInterval.current) {
         clearInterval(locationInterval.current);
@@ -210,7 +214,7 @@ export default function Map({
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     console.log("계산한 거리 값: ", (R * c) / 1000);
-    return Math.trunc((R * c) / 1000); // 거리 (킬로미터)
+    return (R * c) / 1000; // 거리 (킬로미터)
   };
   return (
     <View style={styles.container}>
