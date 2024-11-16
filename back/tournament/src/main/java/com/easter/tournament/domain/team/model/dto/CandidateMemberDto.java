@@ -11,10 +11,11 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SimpleInvitationDto {
-    private UUID invitationId;
+public class CandidateMemberDto {
+    private UUID id;
+    private String name;
     private String nickname;
+    private String email;
     private String imageUrl;
-    private String teamName;
-    private String tournamentName;
+    boolean invited;
 }

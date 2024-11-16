@@ -35,7 +35,7 @@ public class RecordController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    @GetMapping("/record")
+    @GetMapping("/record/myRecords")
     public ResponseEntity<ResultResponse> getMyRecords(@RequestAttribute("passport") PassportDto passport) {
         List<RecordDto> recordList = recordService.getRecordListByMemberId(passport.getId().toString());
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "Record 리스트를 가져왔습니다.", recordList);

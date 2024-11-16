@@ -51,7 +51,6 @@ public class RecordServiceImpl implements RecordService {
 				.recordId(id)
 				.memberId(passport.getId())
 				.build();
-//		return recordRepository.save(record);
 	}
 
 	@Override
