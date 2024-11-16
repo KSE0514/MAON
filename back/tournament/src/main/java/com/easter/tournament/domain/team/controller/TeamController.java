@@ -99,7 +99,7 @@ public class TeamController {
      * 마라톤 팀 초대 취소
      * @return
      */
-    @DeleteMapping("/invite/cancel")
+    @PostMapping("/invite/cancel")
     public ResponseEntity<ResultResponse> cancelInvitation(@RequestAttribute("passport") PassportDto passport, @RequestBody CancelInvitationRequestDto dto) {
         log.info("cancel team invitation");
         teamService.cancelInvitation(passport, dto);
