@@ -132,7 +132,7 @@ const testUsers = [
 // ///////////////////
 
 const MarathonInfoDetailScreen = ({ navigation, route }) => {
-  const { uuid } = route.params
+  const { uuid, paramsLatitude, paramsLongitude } = route.params
   const { user } = useAuthStore()
   const [ marathonInfo, setMarathonInfo ] = useState({
     uuid: '', // 대회 uuid
@@ -175,8 +175,8 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   const [dDay, setDDay] = useState(null); // 마라톤 시작 디데이
   const [showWarning, setShowWarning] = useState(false); // 경고 메시지 표시 상태
 
-  const [latitude, setLatitude] = useState(37.5665); // 예: 서울의 위도 값
-  const [longitude, setLongitude] = useState(126.9780); // 예: 서울의 경도 값
+  const [latitude, setLatitude] = useState(paramsLatitude); // 예: 서울의 위도 값
+  const [longitude, setLongitude] = useState(paramsLongitude); // 예: 서울의 경도 값
   const [bookmarked, setBookmarked] = useState(false) // 북마크 여부
 
   const [participated, setParticipated] = useState(false) // 참가 신청 여부
@@ -247,8 +247,9 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     setMarathonUrl(marathonInfo.homepage)
     setMarathonCourse(marathonInfo.categories)
     setMarathonHost(marathonInfo.host)
-    setLatitude(marathonInfo.latitude)
-    setLongitude(marathonInfo.longitude)
+    // setLatitude(marathonInfo.latitude)
+    // setLongitude(marathonInfo.longitude)
+    console.log('마라톤 정보 조회 후 위/경도', marathonInfo.latitude, marathonInfo.longitude)
     setMarathonCallNum(marathonInfo.inquiry)
     console.log(marathonInfo.latitude, marathonInfo.longitude)
     setTeamMemberList(marathonInfo.teamMembers)
@@ -465,11 +466,11 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
           /> */}
           <MapView
                 provider={MapView.PROVIDER_GOOGLE}
-                customMapStyle={MapStyle}
+                // customMapStyle={MapStyle}
                 style={{
+                  height: 350,
                   flex: 1,
                   alignSelf: "stretch",
-                  borderRadius: 20,
                 }}
                 // scrollEnabled={false} // 지도 이동 비활성화
                 // zoomEnabled={false} // 줌인, 줌아웃 비활성화

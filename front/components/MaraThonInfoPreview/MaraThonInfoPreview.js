@@ -26,7 +26,7 @@ const MaraThonInfoPreview = ({ navigation, data, mode }) => {
   }
 
   const navigateDetailPage = () => {
-    navigation.navigate("MarathonInfoDetail", { uuid: data.uuid });
+    navigation.navigate("MarathonInfoDetail", { uuid: data.uuid, paramsLatitude: data.latitude, paramsLongitude: data.longitude });
   };
   return (
     <Wrapper
