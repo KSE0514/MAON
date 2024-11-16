@@ -136,7 +136,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     fun subscribeToMemberTopic(memberId : String){
-        stompClient.subscribeToTopic("/sub/start/$memberId"){ payload ->
+        stompClient.subscribeToTopic("/sub/start/$memberId","sub-member"){ payload ->
             try{
                 // JSON 데이터를 AuthInfo 객체로 변환
                 val jsonBody = extractJsonFromStompMessage(payload)
