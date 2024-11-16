@@ -153,8 +153,6 @@ const RunningWithRoute = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    //웹소켓 열기
-
     //웹소켓 연결
     const kafkaWs = new WebSocket(
       "wss://k11c207.p.ssafy.io/maon/route/ws/location"
@@ -173,10 +171,10 @@ const RunningWithRoute = ({ navigation, route }) => {
       if (message.data.startsWith("CONNECTED")) {
         console.log("STOMP 연결 성공!");
         // 범위내에 있는지 판단하는 api쏘기
+        //범위내에 있다면 showStartModal True로 바꾸기
+        //범위내에 있다면 getRoomId하기
       }
     };
-
-    //범위내에 있다면 showStartModal True로 바꾸기
   }, []);
 
   //연동 여부 가져오기

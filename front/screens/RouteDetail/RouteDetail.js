@@ -40,6 +40,8 @@ const RouteDetail = ({ navigation, route }) => {
 
   const [marathonInfo, setMarathonInfo] = useState({});
   const [latLongArray, setLatLongArray] = useState([]);
+  const [runRankList, setRunRankList] = useState([]);
+  const [myRankInfo, setMyRankInfo] = useState({});
 
   const fontsLoaded = useFontsLoaded();
 
@@ -49,14 +51,42 @@ const RouteDetail = ({ navigation, route }) => {
 
   // 초기 데이터 로드
   useEffect(() => {
-    try {
-      const getDetailInfo = async () => {
-        setMarathonInfo(info[0]);
-      };
-      getDetailInfo();
-    } catch (e) {
-      console.log("getDetailInfo: ", e);
-    }
+    const fetchRunRanking = async () => {
+      try {
+        if (routeId) {
+          const response = await apiClient.get(`/route/ranking/${routeId}`, {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+            },
+          });
+          setRunRankList(response.data.data.rankingInfo);
+        }
+      } catch (error) {
+        console.log("fetchRunRanking: ", error);
+      }
+    };
+    const fetchMyRanking = async () => {
+      try {
+        if (routeId) {
+          const response = await apiClient.get(`/route/ranking/${routeId}/my`, {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+            },
+          });
+          setMyRankInfo(response.data.data);
+        }
+      } catch (error) {
+        console.log("fetchRunRanking: ", error);
+      }
+    };
+
+    const getDetailInfo = async () => {
+      setMarathonInfo(info[0]);
+    };
+    getDetailInfo();
+    fetchRunRanking();
   }, []);
 
   // latLongArray 설정
@@ -76,7 +106,7 @@ const RouteDetail = ({ navigation, route }) => {
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "white" }}>
       <Wrapper>
         <Top>
           <MapView
@@ -164,6 +194,106 @@ const RouteDetail = ({ navigation, route }) => {
               </Text>
             </RunBtn>
           </View>
+          <Rank>
+            <RankTitle>
+              <FontAwesomeIcon
+                icon={faRankingStar}
+                size={35}
+                color={color.light_orange}
+              />
+              <Text
+                style={[
+                  styles.boldFont,
+                  { fontSize: 20, marginLeft: 10, color: color.light_orange },
+                ]}>
+                랭킹
+              </Text>
+            </RankTitle>
+            {runRankList.length > 0 &&
+              (!myRankInfo.memberNickname ? (
+                <Text style={[styles.boldFont, { fontSize: 16 }]}>
+                  {`해당 경로에 대한 기록이 없습니다.`}
+                </Text>
+              ) : (
+                <UserInfo>
+                  <View
+                    style={{
+                      width: 60,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}>
+                    <Text style={styles.rankNumber}>{myRankInfo.ranking}</Text>
+                  </View>
+                  <View>
+                    <Image
+                      style={styles.userProflie}
+                      source={myRankInfo.memberProfileUrl}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flex: 4,
+                      marginLeft: 20,
+                      alignSelf: "flex-start",
+                    }}>
+                    <Text
+                      style={[
+                        styles.boldFont,
+                        { fontSize: 18, marginTop: 6, marginBottom: 8 },
+                      ]}>
+                      {myRankInfo.memberNickname}
+                    </Text>
+                    <Text style={[styles.mediumFont, { fontSize: 16 }]}>
+                      {myRankInfo.runningTime}
+                    </Text>
+                  </View>
+                </UserInfo>
+              ))}
+
+            <RankList>
+              {runRankList.length > 0 ? (
+                runRankList.map((user, index) => (
+                  <UserInfo key={index}>
+                    <View
+                      style={{
+                        width: 60,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}>
+                      <Text style={styles.rankNumber}>{user.ranking}</Text>
+                    </View>
+                    <View>
+                      <Image
+                        style={styles.userProflie}
+                        source={user.memberProfileUrl}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        flex: 4,
+                        marginLeft: 20,
+                        alignSelf: "flex-start",
+                      }}>
+                      <Text
+                        style={[
+                          styles.boldFont,
+                          { fontSize: 18, marginTop: 6, marginBottom: 8 },
+                        ]}>
+                        {user.memberNickname}
+                      </Text>
+                      <Text style={[styles.mediumFont, { fontSize: 16 }]}>
+                        {user.runningTime}
+                      </Text>
+                    </View>
+                  </UserInfo>
+                ))
+              ) : (
+                <Text style={[styles.boldFont, { fontSize: 16 }]}>
+                  {`해당 경로에 대한 랭킹이 존재하지않습니다.`}
+                </Text>
+              )}
+            </RankList>
+          </Rank>
         </Bottom>
       </Wrapper>
     </ScrollView>

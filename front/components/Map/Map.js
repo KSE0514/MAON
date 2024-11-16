@@ -110,7 +110,9 @@ export default function Map({
     };
 
     getLocation();
-    setShowStartModal(true);
+    if (mode === "notSelectedRoute") {
+      setShowStartModal(true);
+    }
   }, [locationPermissionGranted]);
 
   /**
