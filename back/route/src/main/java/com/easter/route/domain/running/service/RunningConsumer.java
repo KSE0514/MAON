@@ -152,13 +152,21 @@ public class RunningConsumer {
 
 	// 러닝 종료시 계산한 값을 클라이언트에 반환한다.
 	public RunningResultDto finish(String recordId) {
+		// Record 조회 및 검증
 		Record record = recordRepository.findById(recordId)
-			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
-		log.info("record: {} 를 찾았습니다.", record.toString());
+			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
+				"레코드가 존재하지 않습니다: recordId = " + recordId));
+		log.info("Record: {} 를 찾았습니다.", record);
+
+		// Record 결과 계산
 		Record updatedRecord = calculateResult(record);
-		double routeDistance = updatedRecord.getRouteId() != null ? routeRepository.findById(updatedRecord.getRouteId()).get().getDistance() : updatedRecord.getDistance();
+		double routeDistance = Optional.ofNullable(updatedRecord.getRouteId())
+			.flatMap(routeRepository::findById)
+			.map(Route::getDistance)
+			.orElseGet(updatedRecord::getDistance);
 		return new RunningResultDto(RecordDto.of(updatedRecord), routeDistance, "end");
 	}
+
 
 	public List<LocationDto> getRunningInfo(String recordId) {
 		return runningInfoMap.getOrDefault(recordId, new ArrayList<>());

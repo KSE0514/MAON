@@ -12,7 +12,6 @@ import com.easter.member.global.security.userinfo.TokenType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,16 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -253,6 +247,21 @@ public class MemberServiceImpl implements MemberService {
                 .birthDate(birthDate)
                 .gender(member.getGender())
                 .imageUrl(member.getImageUrl())
+                .build();
+    }
+
+    @Override
+    public void saveFcmToken(PassportDto passport, SaveFcmTokenRequestDto dto) {
+        Member member = memberRepository.findByEmail(passport.getEmail()).get();
+        member = member.toBuilder().fcmToken(dto.getFcmToken()).build();
+        memberRepository.save(member);
+    }
+
+    @Override
+    public GetFcmTokenResponseDto getFcmToken(PassportDto passport) {
+        Member member = memberRepository.findByEmail(passport.getEmail()).get();
+        return GetFcmTokenResponseDto.builder()
+                .fcmToken(member.getFcmToken())
                 .build();
     }
 }

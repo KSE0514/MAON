@@ -32,10 +32,8 @@ const LoginScreen = () => {
       const id = await AsyncStorage.getItem("id");
       const email = await AsyncStorage.getItem("email");
 
-
       const name = await AsyncStorage.getItem("name");
       const nickname = await AsyncStorage.getItem("nickName");
-
 
       // 상세 정보까지 저장
       const height = await AsyncStorage.getItem("height");
@@ -48,7 +46,7 @@ const LoginScreen = () => {
 
       if (storedToken) {
         // 자동 로그인 진행
-        console.log("토큰 확인용", storedToken)
+        console.log("토큰 확인용", storedToken);
         setUser({
           accessToken: storedToken,
           id: id,
@@ -68,12 +66,11 @@ const LoginScreen = () => {
           index: 0,
           routes: [{ name: "MainTabs" }],
         });
-        // login(storedToken)
+        // login(storedToken);
       }
     };
     checkLoginStatus();
   }, []);
-
 
   // 로그인 버튼 클릭 시 웹 로그인 페이지로 이동
   const handleLogin = async () => {
@@ -139,11 +136,11 @@ const LoginScreen = () => {
             accessToken: responseUserInfo.accessToken,
             refreshToken: responseUserInfo.refreshToken,
             imageUrl: responseUserInfo.imageUrl,
-          })
+          });
 
           // // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
           // await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
-          
+
           // navigation.navigate("MainTabs", { screen: "Home" });
           navigation.reset({
             index: 0,

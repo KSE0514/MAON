@@ -24,7 +24,7 @@ const SelectRunType = ({ navigation }) => {
   }
   const buttons = [
     {
-      onPress: async () => {
+      onPress: () => {
         navigation.navigate("SelectRunRoute", {
           mode: "selectedRoute",
           searchType: "run",
@@ -36,8 +36,7 @@ const SelectRunType = ({ navigation }) => {
     },
     {
       onPress: async () => {
-        const roomId = await getPracticeRoomId(user.id, user.accessToken);
-        navigation.navigate("RunningAlone", { roomId: roomId });
+        navigation.navigate("RunningAlone", { mode: "notSelectedRoute" });
       },
       title: `지정코스없이\n달리기`,
       gradientType: "mandarin_gradient",

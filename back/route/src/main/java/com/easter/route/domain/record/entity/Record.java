@@ -40,12 +40,15 @@ public class Record {
 	private boolean completed;
 
 	@Field("running_info")
+	@Builder.Default
 	private List<LocationDto> runningInfo = new ArrayList<>();
 
 	@Field("pace_list")
+	@Builder.Default
 	private List<String> paceList = new ArrayList<>();
 
 	@Field("distance_list")
+	@Builder.Default
 	private List<Double> distanceList = new ArrayList<>();
 
 	@Field("recorded_track")

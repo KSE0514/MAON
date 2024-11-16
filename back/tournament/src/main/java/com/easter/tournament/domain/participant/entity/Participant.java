@@ -6,16 +6,14 @@ import com.easter.tournament.domain.participant.model.ParticipantStatus;
 import com.fasterxml.uuid.Generators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Getter
+@ToString
 @Builder(toBuilder = true)
 @Table(name = "participant")
 @NoArgsConstructor
@@ -36,6 +34,7 @@ public class Participant {
     private UUID memberId;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ParticipantStatus status;
 

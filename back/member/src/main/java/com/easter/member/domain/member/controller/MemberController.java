@@ -1,7 +1,6 @@
 package com.easter.member.domain.member.controller;
 
 import com.easter.member.domain.member.model.dto.*;
-import com.easter.member.domain.service.model.dto.ConfirmMemberResponseDto;
 import com.easter.member.domain.member.service.MemberService;
 import com.easter.member.global.response.ResultResponse;
 import com.easter.member.global.security.userinfo.PassportDto;
@@ -78,6 +77,22 @@ public class MemberController {
     public ResponseEntity<ResultResponse> logout(@RequestAttribute("passport") PassportDto passport) {
         memberService.logout(passport.getEmail());
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "로그아웃했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    @PostMapping("/fcm")
+    public ResponseEntity<ResultResponse> saveFcmToken(@RequestAttribute("passport") PassportDto passport, @RequestBody SaveFcmTokenRequestDto dto) {
+        log.info("save fcm token : {} - {}", passport.getEmail(), dto.getFcmToken());
+        memberService.saveFcmToken(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "FCM 토큰을 저장했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    @GetMapping("/fcm")
+    public ResponseEntity<ResultResponse> getFcmToken(@RequestAttribute("passport") PassportDto passport) {
+        log.info("get fcm token : {}", passport.getEmail());
+        GetFcmTokenResponseDto responseDto = memberService.getFcmToken(passport);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "FCM 토큰을 불러왔습니다.", responseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 

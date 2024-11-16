@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-public class SearchCandidateRequestDto {
+public class CancelInvitationRequestDto {
+    private UUID inviteeId;
     private UUID teamId;
-    private String keyword;
 }
