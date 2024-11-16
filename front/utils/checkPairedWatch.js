@@ -6,12 +6,15 @@ export const fetchPairedWatch = async () => {
     const storedPairedWatch = await AsyncStorage.getItem("pairedWatch");
     console.log("Stored Paired Watch:", storedPairedWatch);
 
-    Alert.alert("워치연동 여부: ", storedPairedWatch);
-    return storedPairedWatch;
+    const pairedWatchStatus = storedPairedWatch ? storedPairedWatch : false;
+    Alert.alert("워치연동 여부: ", pairedWatchStatus ? "연동됨" : "연동 안됨");
+    return pairedWatchStatus;
   } catch (error) {
     console.error("Error fetching paired watch:", error);
+    return false; // 에러가 발생했을 경우에도 false를 반환
   }
 };
+
 export const savePairedWatch = async () => {
   try {
     await AsyncStorage.setItem("pairedWatch", "true");
