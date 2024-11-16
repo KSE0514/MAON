@@ -19,11 +19,13 @@ import { useState, useEffect } from "react";
 import TeamRoundBtn from "../../components/Button/TeamRoundBtn/TeamRoundBtn";
 import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
 import colors from "../../styles/colors";
+import { apiClient } from "../../customAxios";
+import useAuthStore from "./../../store/AuthStore"
 
-// import testImg from "./../../assets/images/testProfile1.jpg"
+import testImg from "./../../assets/images/testProfile1.jpg"
 // import testImg2 from "./../../assets/images/testProfile.jpg"
 
-const testImg = require("./../../assets/images/testProfile1.jpg")
+// const testImg = require("./../../assets/images/testProfile1.jpg")
 const testImg2 = require("./../../assets/images/testProfile.jpg")
 
 const testMyInfo = {
@@ -62,9 +64,14 @@ const testUsers = [
 
 
 const NotificationScreen = () => {
+  const { user } =useAuthStore()
   const [myMarathonList, setMyMarathonList] = useState({})
   const [requestorList, setRequestorList] = useState([])
   const [showAcceptErrorModal, setShowAcceptErrorModal] =useState(false)
+
+  useEffect(() => {
+    getInviteList() // 초대 요청 목록 조회
+  }, [])
 
   // 참여 불가 모달
   const acceptErrorModalContent = {
@@ -80,38 +87,45 @@ const NotificationScreen = () => {
     ],
   };
   
-  useEffect(() => {
-    setRequestorList([...testUsers])
+  // useEffect(() => {
+  //   setRequestorList([...testUsers])
 
-    const marathonList = testMyInfo['marathonList']
-    console.log('마라톤 리스트예용...', marathonList)
-    setMyMarathonList({...marathonList})
-  }, [])
+  //   const marathonList = testMyInfo['marathonList']
+  //   console.log('마라톤 리스트예용...', marathonList)
+  //   setMyMarathonList({...marathonList})
+  // }, [])
 
   // [미완_백에 신청 제거 요청은 안 보냄] 거절 버튼
-  const reject = (index) => {
+  const reject = async (index) => {
+    console.log("수락 버튼 눌린 유저 정보: ", requestorList[index])
+    const rejectUser = requestorList[index]
+    await inviteConfirm(rejectUser.invitationId, false)
 
-    const newRequestorList = [...requestorList];
-    newRequestorList.splice(index, 1); // 인덱스에서 요소 하나를 제거합니다.
-    setRequestorList(newRequestorList);
+    // const newRequestorList = [...requestorList];
+    // newRequestorList.splice(index, 1); // 인덱스에서 요소 하나를 제거합니다.
+    // setRequestorList(newRequestorList);
   }
 
   // [미완] 수락 버튼
 // [미완] 수락 버튼
-const accept = (index) => {
-  const marathonName = requestorList[index].marathonName;
-  // 내 정보- 해당 마라톤에서 참여중인 팀이 있는지 확인
-  if (marathonName in myMarathonList) {
-    // teamCode가 있는지 확인
-    if (myMarathonList[marathonName].teamCode) {
-      console.log('이미 팀이 있어욤...');
-      setShowAcceptErrorModal(true)
-      reject(index); // 이미 팀이 있으면 요청 삭제
-    } else {
-      // 팀이 없으면 joinTeam으로 팀 등록
-      joinTeam(index, marathonName, requestorList[index].teamCode);
-    }
-  }
+const accept = async (index) => {
+  console.log("수락 버튼 눌린 유저 정보: ", requestorList[index])
+  const acceptUser = requestorList[index]
+  await inviteConfirm(acceptUser.invitationId, true)
+
+  // const marathonName = requestorList[index].marathonName;
+  // // 내 정보- 해당 마라톤에서 참여중인 팀이 있는지 확인
+  // if (marathonName in myMarathonList) {
+  //   // teamCode가 있는지 확인
+  //   if (myMarathonList[marathonName].teamCode) {
+  //     console.log('이미 팀이 있어욤...');
+  //     setShowAcceptErrorModal(true)
+  //     reject(index); // 이미 팀이 있으면 요청 삭제
+  //   } else {
+  //     // 팀이 없으면 joinTeam으로 팀 등록
+  //     joinTeam(index, marathonName, requestorList[index].teamCode);
+  //   }
+  // }
 };
 
 const joinTeam = (index, marathonName, teamCode) => {
@@ -125,6 +139,50 @@ const joinTeam = (index, marathonName, teamCode) => {
   console.log(myMarathonList)
   reject(index); // 요청 삭제
 };
+
+  const getInviteList = async() => {
+    try{
+      const response = await apiClient.get(
+        `/tournament/team/invite/list`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log('초대 요청 목록 조회 성공: ', response.data.data)
+        const invitationList = response.data.data.invitationList
+        setRequestorList(invitationList)
+      }
+    } catch(error) {
+      console.error("초대 요청 목록 조회 에러 발생: ", error)
+    }
+  }
+
+  const inviteConfirm = async(invitationId, confirm) => {
+    console.log("invitation id: ", invitationId, "수락 여부: ", confirm)
+    try{
+      const response = await apiClient.post(
+        `/tournament/team/invite/confirm`,
+        {
+          invitationId: invitationId,
+          accept: confirm
+        }
+        ,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      );
+      console.log("팀 초대 요청 처리 성공: ", confirm, response)
+    } catch(error) {
+      console.error("팀 초대 요청 처리 에러 발생: ", error)
+    }
+  }
 
   return(
     <Wrapper>
@@ -144,13 +202,17 @@ const joinTeam = (index, marathonName, teamCode) => {
               <UserImgView>
                 <Image
                   style={{width: '100%', height: '100%'}}
-                  source={user.userProfileImg} />
+                  source={
+                    { uri: user.imageUrl }
+                  }
+                  />
               </UserImgView>
               {/* 프로필 사진 옆 공간\ */}
               <RequestContent>
                 <RequestTextArea>
-                  <RequestText><BoldText>{user.userNickName}</BoldText>님이</RequestText>
-                  <RequestText>{user.marathonName} 팀 참여 요청을 보냈습니다.</RequestText>
+                  <RequestText><BoldText>{user.nickname}</BoldText>님이</RequestText>
+                  {/* 나중에 팀 이름 추가하기 */}
+                  <RequestText>({user.tournamentName}) 팀 참여 요청을 보냈습니다.</RequestText>
                 </RequestTextArea>
                 <RequestBtnArea>
                   <TeamRoundBtn text={'거절'} onPress={() => reject(index)} backColor={colors.black} />
