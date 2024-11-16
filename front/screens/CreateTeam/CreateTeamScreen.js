@@ -96,7 +96,7 @@ const testUsers = [
 
 const CreateTeamScreen = ({navigation, route}) => {
   const { user } = useAuthStore()
-  const { teamId } = route.params
+  const { teamId, reloadGetMarathonDetailInfo } = route.params
 
   const [searchName, setSearchName] = useState('') // 사용자가 입력할 값을 담을 state변수
 

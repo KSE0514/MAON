@@ -40,7 +40,7 @@ import { faCalendarDays } from "@fortawesome/pro-duotone-svg-icons";
 import MapView, { Marker } from "react-native-maps";
 import MapStyle from "./../../components/Map/MapStyle"
 
-import InputModal from "./../../components/Modal/InputModal/InputModal";
+import CreateTeamInputModal from "./../../components/Modal/CreateTeamInputModal/CreateTeamInputModal";
 
 import { Text, View, Image, ScrollView, Linking, Alert, TouchableOpacity } from "react-native";
 // import testImg from "./../../assets/images/testProfile2.jpg";
@@ -261,17 +261,17 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     // setParticipated(true)
 
 
-    // marathonCourse와 selectCourseModalContent를 함께 업데이트
-    const updatedCourse = marathonInfo.categories;
-    setMarathonCourse(updatedCourse);
+    // // marathonCourse와 selectCourseModalContent를 함께 업데이트
+    // const updatedCourse = marathonInfo.categories;
+    // setMarathonCourse(updatedCourse);
 
-    // 코스 데이터가 있을 경우에만 selectCourseModalContent 업데이트
-    if (updatedCourse.length > 0) {
-      setSelectCourseModalContent((prevContent) => ({
-        ...prevContent,
-        item: updatedCourse.map((course) => ({ label: course, value: course })),
-      }));
-    }
+    // // 코스 데이터가 있을 경우에만 selectCourseModalContent 업데이트
+    // if (updatedCourse.length > 0) {
+    //   setSelectCourseModalContent((prevContent) => ({
+    //     ...prevContent,
+    //     item: updatedCourse.map((course) => ({ label: course, value: course })),
+    //   }));
+    // }
   }, [marathonInfo])
 
   console.log("선택 가능한 코스:", selectCourseModalContent.item); // 디버깅용
@@ -372,8 +372,9 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
         console.log("팀 생성 성공: ", response.data.data)
         const teamId = response.data.data.teamId
         setMyTeamCode(teamId)
-
-        navigation.navigate("CreateTeam", { teamId: myTeamCode });
+        getMarathonDetailInfo() // 마라톤 정보 재조회(신청, 팀 생성 여부에 따른 즉각적인 화면 반영을 위함)
+        navigation.navigate("CreateTeam", { teamId: response.data.data.teamId, reloadGetMarathonDetailInfo: getMarathonDetailInfo });
+        setAddModal(false)
       }
     } catch (error) {
       console.error("팀 생성 에러 발생: ", error)
@@ -395,7 +396,8 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     tournamentCategory: marathonCourse,
     tournamentId: marathonUuid,
     teamId: marathonInfo.teamId,
-    marathonName: marathonInfo.title
+    marathonName: marathonInfo.title,
+    reloadGetMarathonDetailInfo: getMarathonDetailInfo
   });
 };
     // console.log('모달 신청 버튼 누름')
@@ -460,11 +462,11 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
       <ScrollView>
         {/* 지도 영역 */}
         <MapArea>
-          {/* <Image
+          <Image
             // style={{height: '100%'}}
             source={testImg}
-          /> */}
-          <MapView
+          />
+          {/* <MapView
                 provider={MapView.PROVIDER_GOOGLE}
                 // customMapStyle={MapStyle}
                 style={{
@@ -494,7 +496,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                     color={color.light_orange}
                   />
                 </Marker>
-              </MapView>
+              </MapView> */}
           <BookmarkBtnArea>
             <BookmarkBtn
               text={"대회 북마크"}
@@ -601,14 +603,14 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                   <TeamTitleArea>
                     <TeamTitleText>Team</TeamTitleText>
                     <AddUserView
-                      onPress={() => navigation.navigate("CreateTeam", {  teamId: myTeamCode })}>
+                      onPress={() => navigation.navigate("CreateTeam", {  teamId: myTeamCode, reloadGetMarathonDetailInfo: getMarathonDetailInfo })}>
                       <AddUserText>인원추가</AddUserText>
                     </AddUserView>
                   </TeamTitleArea>
                 
                   {/* 팀원들 */}
                   <TeamListArea>
-                    {teamMemberList.map((user) => (
+                    {teamMemberList&&teamMemberList.length > 0? teamMemberList.map((user) => (
                       <UserInfoBox
                         proImg={user.imageUrl}
                         level={user.level}
@@ -616,7 +618,10 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                         status={"show-detail"}
                         onPress={() => console.log("사용자 디테일창")}
                       />
-                    ))}
+                    ))
+                    :
+                    null
+                    }
                   </TeamListArea>
                 </TeamContainer>
               ) : null}
@@ -686,7 +691,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
         </ContentArea>
       </ScrollView>
       {addModal && (
-          <InputModal
+          <CreateTeamInputModal
             isVisible={addModal}
             textValue={teamName}
             setTextValue={setTeamName}
