@@ -29,6 +29,7 @@ import { locationDtoPrint } from "../../utils/console";
 import useAuthStore from "../../store/AuthStore";
 import { fetchPairedWatch } from "../../utils/checkPairedWatch";
 import { getPracticeRoomId } from "../../utils/getRoomId";
+import RunAlarm from "../../components/RunAlarm/RunAlarm";
 
 const RunningWithRoute = ({ navigation, route }) => {
   const { routeId, searchType, mode, marathonInfo, latLongArray } =
@@ -41,6 +42,10 @@ const RunningWithRoute = ({ navigation, route }) => {
 
   const { user } = useAuthStore();
 
+  const [showAlarm, setShowAlarm] = useState(true);
+  const [alarmMent, setAlarmMent] = useState(
+    `시작을 위해\n시작점으로 이동해주세요.`
+  );
   const [showStartModal, setShowStartModal] = useState(false); // 시작 모달
   const [runStart, setRunStart] = useState(false); // 달리기 시작 / 멈춤
   const [showStopModal, setShowStopModal] = useState(false); // 종료 모달
@@ -171,7 +176,7 @@ const RunningWithRoute = ({ navigation, route }) => {
       if (message.data.startsWith("CONNECTED")) {
         console.log("STOMP 연결 성공!");
         // 범위내에 있는지 판단하는 api쏘기
-        //범위내에 있다면 showStartModal True로 바꾸기
+        //범위내에 있다면 showStartModal True로 바꾸기 / setShowAlarm false
         //범위내에 있다면 getRoomId하기
       }
     };
@@ -521,6 +526,7 @@ const RunningWithRoute = ({ navigation, route }) => {
       {showStopModal && (
         <DefaultModal isVisible={showStopModal} content={StopModalContent} />
       )}
+      {showAlarm && <RunAlarm ment={alarmMent} isVisible={showAlarm} />}
     </View>
   );
 };

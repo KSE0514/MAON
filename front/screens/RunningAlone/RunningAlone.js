@@ -153,8 +153,8 @@ const RunningAlone = ({ navigation, route }) => {
 
   //연동 여부 가져오기
   useEffect(() => {
-    setConnectedWatch(fetchPairedWatch());
-    // setConnectedWatch(false);
+    // setConnectedWatch(fetchPairedWatch());
+    setConnectedWatch(false);
   }, []);
 
   //달리기 시작을 늘렀을 경우
