@@ -9,11 +9,12 @@ const UserStatusBtn = ({text, onPress}) => {
   return(
     <View style={styles.container}>
       {text === '수락대기' ?
-        <View 
+        <TouchableOpacity 
           style={styles.waitBtn}
+          onPress={onPress}
           >
           <Text style={styles.waitText}>{text}</Text>
-        </View>
+        </TouchableOpacity>
         :
         <TouchableOpacity 
           style={styles.btn}
