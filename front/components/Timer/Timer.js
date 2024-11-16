@@ -2,14 +2,20 @@ import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import fonts from "../../styles/fonts";
 
-const Timer = ({ showStopModal, runStart, onTimeUpdate }) => {
+const Timer = ({
+  showStopModal,
+  runStart,
+  onTimeUpdate,
+  elapsedTime,
+  connectedWatch,
+}) => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     let interval;
 
     // 타이머 시작 조건: runStart가 true이고 showStopModal이 false일 때만 타이머 동작
-    if (runStart && !showStopModal) {
+    if (runStart && !showStopModal & !connectedWatch) {
       interval = setInterval(() => {
         setSeconds((prev) => prev + 1);
       }, 1000);
@@ -33,9 +39,7 @@ const Timer = ({ showStopModal, runStart, onTimeUpdate }) => {
   return (
     <View style={{ marginTop: 10 }}>
       <Text style={{ fontSize: 48, fontFamily: fonts.gMarketBold }}>
-        {`${String(Math.floor(seconds / 3600)).padStart(2, "0")}:${String(
-          Math.floor((seconds % 3600) / 60)
-        ).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`}
+        {elapsedTime}
       </Text>
     </View>
   );

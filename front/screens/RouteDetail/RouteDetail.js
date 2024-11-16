@@ -155,6 +155,8 @@ const RouteDetail = ({ navigation, route }) => {
                   routeId,
                   searchType,
                   mode,
+                  marathonInfo,
+                  latLongArray,
                 });
               }}>
               <Text style={[styles.mediumFont, { color: "white" }]}>
