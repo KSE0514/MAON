@@ -89,7 +89,7 @@ const CustomCarousel = ({ navigation }) => {
         <Wrapper
           style={styles.wrapper}
           onPress={() => {
-            navigation.navigate("MarathonInfoDetail", { uuid: item.id });
+            navigation.navigate("MarathonInfoDetail", { uuid: item.id , paramsLatitude: item.latitude , paramsLongitude : item.longitude});
           }}>
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
             {item.title}
