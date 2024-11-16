@@ -24,7 +24,7 @@ const SelectRunType = ({ navigation }) => {
   }
   const buttons = [
     {
-      onPress: async () => {
+      onPress: () => {
         navigation.navigate("SelectRunRoute", {
           mode: "selectedRoute",
           searchType: "run",

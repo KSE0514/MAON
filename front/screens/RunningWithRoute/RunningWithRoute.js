@@ -30,7 +30,8 @@ import { Client } from "@stomp/stompjs";
 import { RUN_API } from "@env"; // ngrok 주소를 환경 변수로 관리
 
 const RunningWithRoute = ({ navigation, route }) => {
-  //   const { roomId } = route.params;
+  const { routeId, searchType, mode } = route.params;
+
   const fontsLoaded = useFontsLoaded();
   //시작버튼
   const [showStartModal, setShowStartModal] = useState(false);
@@ -66,7 +67,6 @@ const RunningWithRoute = ({ navigation, route }) => {
   //달린 시간
   const [elapsedTime, setElapsedTime] = useState("00:00:00");
   //달리기 모드
-  const mode = "trackingRun";
   //pace
   const [pace, setPace] = useState("");
 
@@ -184,8 +184,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}
-          >
+            }}>
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}
