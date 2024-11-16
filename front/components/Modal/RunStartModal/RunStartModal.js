@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
 import { ModalContainer } from "../DefaultModal/DefaultModalStyles";
 import { useFontsLoaded } from "../../../utils/fontContext";
@@ -16,20 +16,51 @@ const RunStartModal = ({
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
+
+  const [count, setCount] = useState(3);
+  const [startTap, setStartTap] = useState(true);
+
+  useEffect(() => {
+    if (count == -1) {
+      setShowStartModal(false);
+      setRunStart(true);
+      setRunning(true);
+    }
+  }, [count]);
+  useEffect(() => {
+    if (!startTap) {
+      const timer = setInterval(() => {
+        setCount((prevCount) => Math.max(prevCount - 1, -1)); // count가 0 이하로 내려가지 않도록 설정
+      }, 1000);
+
+      // 컴포넌트 언마운트 시 clearInterval로 타이머 정리
+      return () => clearInterval(timer);
+    }
+  }, [startTap]);
   return (
     <ModalContainer>
-      <TouchableOpacity
-        onPress={() => {
-          setShowStartModal(false);
-          setRunStart(true);
-          setRunning(true);
-        }}
-        style={styles.base}
-      >
-        <View style={[styles.whiteBorder]}>
-          <Text style={styles.whiteFont}>{`탭하여\n시작하기`}</Text>
-        </View>
-      </TouchableOpacity>
+      {startTap && (
+        <TouchableOpacity
+          onPress={() => {
+            setStartTap(false);
+          }}
+          style={styles.base}>
+          <View style={[styles.whiteBorder]}>
+            <Text style={styles.whiteFont}>{`탭하여\n시작하기`}</Text>
+          </View>
+        </TouchableOpacity>
+      )}
+      {!startTap && (
+        <TouchableOpacity onPress={() => {}} style={styles.base}>
+          <View style={[styles.whiteBorder]}>
+            {count != -1 && (
+              <Text style={styles.whiteFont}>
+                {count == 0 ? "시작" : count}
+              </Text>
+            )}
+          </View>
+        </TouchableOpacity>
+      )}
     </ModalContainer>
   );
 };

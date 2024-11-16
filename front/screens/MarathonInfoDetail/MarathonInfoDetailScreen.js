@@ -251,9 +251,11 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     setLongitude(marathonInfo.longitude)
     setMarathonCallNum(marathonInfo.inquiry)
     console.log(marathonInfo.latitude, marathonInfo.longitude)
+    setTeamMemberList(marathonInfo.teamMembers)
     
 
     setMyTeamCode(marathonInfo.teamId)
+    console.log('팀 코드 확인용', marathonInfo.teamId)
     setParticipated(marathonInfo.participated) // 나중에 주석 풀기
     // setParticipated(true)
 
@@ -365,8 +367,13 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
           },
         }
       )
-      console.log("팀 생성 성공: ", response)
-      navigation.navigate("CreateTeam");
+      if (response.status === 200) {
+        console.log("팀 생성 성공: ", response.data.data)
+        const teamId = response.data.data.teamId
+        setMyTeamCode(teamId)
+
+        navigation.navigate("CreateTeam", { teamId: myTeamCode });
+      }
     } catch (error) {
       console.error("팀 생성 에러 발생: ", error)
     }
@@ -452,11 +459,11 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
       <ScrollView>
         {/* 지도 영역 */}
         <MapArea>
-          <Image
+          {/* <Image
             // style={{height: '100%'}}
             source={testImg}
-          />
-          {/* <MapView
+          /> */}
+          <MapView
                 provider={MapView.PROVIDER_GOOGLE}
                 customMapStyle={MapStyle}
                 style={{
@@ -486,7 +493,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                     color={color.light_orange}
                   />
                 </Marker>
-              </MapView> */}
+              </MapView>
           <BookmarkBtnArea>
             <BookmarkBtn
               text={"대회 북마크"}
@@ -588,23 +595,23 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
 
               {/* 팀이 있을 경우 팀원 리스트 출력 */}
               {/* 유저가 참가 신청했다는 것도 조건으로 추가하기 */}
-              {teamMemberList.length > 0 ? (
+              {myTeamCode ? (
                 <TeamContainer>
                   <TeamTitleArea>
                     <TeamTitleText>Team</TeamTitleText>
                     <AddUserView
-                      onPress={() => navigation.navigate("CreateTeam")}>
+                      onPress={() => navigation.navigate("CreateTeam", {  teamId: myTeamCode })}>
                       <AddUserText>인원추가</AddUserText>
                     </AddUserView>
                   </TeamTitleArea>
-
+                
                   {/* 팀원들 */}
                   <TeamListArea>
                     {teamMemberList.map((user) => (
                       <UserInfoBox
-                        proImg={user.userProfileImg}
+                        proImg={user.imageUrl}
                         level={user.level}
-                        name={user.userNickName}
+                        name={user.nickname}
                         status={"show-detail"}
                         onPress={() => console.log("사용자 디테일창")}
                       />

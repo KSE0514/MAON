@@ -3,6 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
 import Svg, { Path } from 'react-native-svg'
 import UserStatusBtn from "../UserStatusBtn/UserStatusBtn";
 import color from "../../../styles/colors";
+import testImg from "./../../../assets/images/testProfile1.jpg"
 // import testProfile from "./../../../assets/images/testProfile.jpg"
 
 const UserInfoBox = ({proImg, level, name, status, onPress}) => {
@@ -11,7 +12,13 @@ const UserInfoBox = ({proImg, level, name, status, onPress}) => {
       <View style={styles.userBox}>
         <View style={styles.innerContainer}>
           <Image 
-            source={proImg} // 프로필 이미지
+            source={
+              proImg.startsWith('http') 
+                ? { uri: proImg }
+                : proImg.startsWith('file://')
+                  ? { uri: proImg }
+                  : { uri: testImg }
+            }
             style={styles.profileImg} />
           <View style={styles.profileContent}>
             <View style={styles.ProfileContentInfo}>
@@ -84,6 +91,8 @@ const styles = StyleSheet.create({
   changeArea: {
     flex: 2,
     alignItems: 'flex-end',
+    justifyContent: 'center',
+    flexDirection: 'column',
   },
   level: {
     color: '#989898',
