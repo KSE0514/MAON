@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.easter.route.domain.record.entity.Record;
+import com.easter.route.domain.record.entity.dto.GetRouteDetailsRequestDto;
 import com.easter.route.domain.record.repository.RecordRepository;
 import com.easter.route.domain.route.entity.Route;
 import com.easter.route.domain.route.entity.dto.*;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestAttribute;
 
 @Service
 @RequiredArgsConstructor
@@ -44,10 +46,12 @@ public class RouteServiceImpl implements RouteService {
 	}
 
 	@Override
-	// TODO: Route 삭제 요청이 올바른 사람인지 체크하는 로직이 필요.
-	public void deleteRoute(DeleteRouteRequestDto deleteRouteRequestDto) {
+	public void deleteRoute(PassportDto passport, DeleteRouteRequestDto deleteRouteRequestDto) {
 		Route findRoute = routeRepository.findById(deleteRouteRequestDto.getRouteId())
 				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "경로를 찾을 수 없습니다."));
+		if (!findRoute.getWriterId().equals(passport.getId().toString())) {
+			throw new BusinessException(HttpStatus.FORBIDDEN, "경로를 삭제할 권한이 없습니다.");
+		}
 		routeRepository.deleteById(findRoute.getId());
 	}
 
@@ -56,4 +60,10 @@ public class RouteServiceImpl implements RouteService {
 		List<Route> routeList = routeRepository.findAll();
 		return routeList.stream().map(RouteDto::of).toList();
 	}
+
+	@Override
+	public RouteDto getRouteDetails(String routeId, GetRouteDetailsRequestDto getRouteDetailsRequestDto) {
+		return null;
+	}
+
 }

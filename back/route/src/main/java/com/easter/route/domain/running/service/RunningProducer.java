@@ -29,7 +29,6 @@ public class RunningProducer {
             });
     }
 
-
     public void sendLocation(LocationDto locationDto) {
         String topic = "route.running.process-location";
         kafkaLocationTemplate.send(topic, locationDto.getRecordId(), locationDto)
