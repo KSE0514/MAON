@@ -8,12 +8,16 @@ import {
 } from "./ModalTestScreenStyle";
 import SelectModal from "../../components/Modal/SelectModal/SelectModal";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
+import InputModal from "../../components/Modal/InputModal/InputModal";
 const ModalTestScreen = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const openModal = () => setModalVisible(true);
+  const openModal = () => {
+    setModalVisible(true);
+  };
   const closeModal = () => setModalVisible(false);
 
+  const [addRouteName, setAddRouteName] = useState("");
   const [runType, setRunType] = useState("");
 
   const startTimer = () => {
@@ -28,24 +32,24 @@ const ModalTestScreen = ({ navigation }) => {
     // subText: "현재까지의 기록은 저장됩니다.",
     subText: "",
     buttons: [
-      // {
-      //   title: "취소",
-      //   onPress: () => {
-      //     closeModal();
-      //   },
-      // },
-      // {
-      //   title: "종료",
-      //   onPress: () => {
-      //     closeModal();
-      //   },
-      // },
       {
-        title: "확인",
+        title: "취소",
         onPress: () => {
           closeModal();
         },
       },
+      {
+        title: "종료",
+        onPress: () => {
+          closeModal();
+        },
+      },
+      // {
+      //   title: "확인",
+      //   onPress: () => {
+      //     closeModal();
+      //   },
+      // },
     ],
   };
   const SelectModalContent = {
@@ -81,7 +85,10 @@ const ModalTestScreen = ({ navigation }) => {
         >
           <OpenModalBtnText>기본 모달 열기</OpenModalBtnText>
         </OpenModalBtn> */}
-        {/* <DefaultModal isVisible={isModalVisible} content={defalutModalContent} /> */}
+        {/* <DefaultModal
+          isVisible={isModalVisible}
+          content={defalutModalContent}
+        /> */}
         {/* <OpenModalBtn
           title=""
           onPress={() => {
@@ -94,12 +101,38 @@ const ModalTestScreen = ({ navigation }) => {
           content={SelectModalContent}
           setRunType={setRunType}
         /> */}
+        <InputModal
+          isVisible={isModalVisible}
+          textValue={addRouteName}
+          setTextValue={setAddRouteName}
+          content={{
+            text: `경로 이름을 입력해주세요`,
+            subText: "",
+            buttons: [
+              {
+                title: "취소",
+                onPress: () => {
+                  closeModal();
+                },
+              },
+              {
+                title: "등록",
+                onPress: () => {
+                  closeModal();
+                },
+              },
+            ],
+          }}
+        />
         <OpenModalBtn
           title=""
           onPress={() => {
             openModal();
-          }}>
-          <OpenModalBtnText>달리기 시작 모달 열기</OpenModalBtnText>
+          }}
+        >
+          <View>
+            <OpenModalBtnText>달리기 시작 모달 열기</OpenModalBtnText>
+          </View>
         </OpenModalBtn>
         <RunStartModal isVisible={isModalVisible} startTimer={startTimer} />
       </Wrapper>

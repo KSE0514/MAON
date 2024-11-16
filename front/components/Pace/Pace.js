@@ -2,7 +2,14 @@ import React, { useEffect } from "react";
 import { View, Text } from "react-native";
 import fonts from "../../styles/fonts";
 
-const Pace = ({ currentDistance, elapsedTime, setPace, mode, pace }) => {
+const Pace = ({
+  currentDistance,
+  elapsedTime,
+  setPace,
+  mode,
+  pace,
+  connectedWatch,
+}) => {
   useEffect(() => {
     // 시간 문자열을 초 단위로 변환하는 함수
     const timeStringToSeconds = (timeString) => {
@@ -29,8 +36,9 @@ const Pace = ({ currentDistance, elapsedTime, setPace, mode, pace }) => {
         setPace("00'00''"); // 초기 값 또는 거리가 0일 때
       }
     };
-
-    calculatePace();
+    if (!connectedWatch) {
+      calculatePace();
+    }
   }, [currentDistance, elapsedTime]);
 
   return (
@@ -45,8 +53,7 @@ const Pace = ({ currentDistance, elapsedTime, setPace, mode, pace }) => {
               fontSize: 20,
               fontFamily: fonts.gMarketBold,
               paddingTop: 12,
-            }}
-          >
+            }}>
             /km
           </Text>
         </View>

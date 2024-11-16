@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class CreateRouteRequestDto {
-	private String memberId;
-	private String memberName;
 	private String routeName;
 	private String recordId;
 }

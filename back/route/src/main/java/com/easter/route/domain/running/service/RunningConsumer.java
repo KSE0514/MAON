@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.easter.route.domain.record.entity.Record;
-import com.easter.route.domain.record.entity.dto.PointPair;
 import com.easter.route.domain.running.entity.dto.LocationDto;
 
 import com.easter.route.domain.record.entity.dto.RecordDto;
+import com.easter.route.domain.running.entity.dto.RouteValidationResult;
 import com.easter.route.domain.running.entity.dto.RunningResultDto;
 import com.easter.route.domain.record.entity.dto.UpdateRecordDto;
 import com.easter.route.domain.record.repository.RecordRepository;
@@ -21,13 +21,13 @@ import com.easter.route.domain.route.repository.RouteRepository;
 import com.easter.route.global.exception.BusinessException;
 import com.easter.route.global.utils.DistanceCalculator;
 import com.easter.route.global.utils.GoogleGeoCoding;
-import com.easter.route.global.utils.OffCourseCalculator;
 import com.easter.route.global.utils.PaceCalculator;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,9 +50,10 @@ public class RunningConsumer {
 	private final RecordService recordService;
 	private final RecordRepository recordRepository;
 	private final RouteRepository routeRepository;
+	private final RunningValidationService runningValidationService;
 	private final GoogleGeoCoding GoogleGeoCoding;
-	private final OffCourseCalculator offCourseCalculator;
 	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
+	private final SimpMessagingTemplate messagingTemplate;
 
 	// 처음에 시작점 찾기 위해 위치 정보 받는 상황(실제로 뛰고 있지 않음)
 	// @KafkaListener(topics = "route.running.find-start-point", groupId = "running.find.start-point", containerFactory = "locationKafkaListenerContainerFactory")
@@ -71,17 +72,24 @@ public class RunningConsumer {
 	// 	}
 	// }
 
-	// 탭 하여 시작하기 버튼을 누른 상황(실제로 뛰고 있는 경우)
+	// 탭 하여 시작하기 버튼을 누른 상황 (경로 이탈 판정, 마지막 인덱스 시 끝점 판단)
 	@KafkaListener(topics = "route.running.process-location", groupId = "running.process.location", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
 			log.error("Received location data in listener: {}", locationDto);
 			String recordId = locationDto.getRecordId();
 			runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(locationDto);
+			RouteValidationResult result = validateLocation(locationDto);
+			String destination = "/sub/running/" + recordId;
+			messagingTemplate.convertAndSend(destination, result);
 			acknowledgment.acknowledge();
 		} catch (Exception e) {
 			log.error("Failed to acknowledge message: {}", locationDto, e);
 		}
+	}
+
+	public RouteValidationResult validateLocation(LocationDto locationDto) {
+		return runningValidationService.makeRouteValidationResult(locationDto);
 	}
 
 	// 러닝 종료시 결과 값 계산 후 엔티티에 저장한다.
@@ -152,11 +160,18 @@ public class RunningConsumer {
 
 	// 러닝 종료시 계산한 값을 클라이언트에 반환한다.
 	public RunningResultDto finish(String recordId) {
+		// Record 조회 및 검증
 		Record record = recordRepository.findById(recordId)
-			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "레코드가 존재하지 않습니다: recordId = " + recordId));
-		log.info("record: {} 를 찾았습니다.", record.toString());
+			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
+				"레코드가 존재하지 않습니다: recordId = " + recordId));
+		log.info("Record: {} 를 찾았습니다.", record);
+
+		// Record 결과 계산
 		Record updatedRecord = calculateResult(record);
-		double routeDistance = updatedRecord.getRouteId() != null ? routeRepository.findById(updatedRecord.getRouteId()).get().getDistance() : updatedRecord.getDistance();
+		double routeDistance = Optional.ofNullable(updatedRecord.getRouteId())
+			.flatMap(routeRepository::findById)
+			.map(Route::getDistance)
+			.orElseGet(updatedRecord::getDistance);
 		return new RunningResultDto(RecordDto.of(updatedRecord), routeDistance, "end");
 	}
 

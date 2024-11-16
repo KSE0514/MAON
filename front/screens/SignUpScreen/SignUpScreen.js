@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import {KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import useAuthStore from "./../../store/AuthStore"
 import * as ImagePicker from 'expo-image-picker';
 import { useFontsLoaded } from "../../utils/fontContext";
@@ -168,15 +169,58 @@ const SignUpScreen = ({navigation, route}) => {
       const responseUserInfo = response.data.data
       console.log("가입완료", requestBody)
       // store에 저장하기
+      console.log(1)
       setUser({
         id: responseUserInfo.id,
         name: responseUserInfo.name,
+        nickName: requestBody.nickname,
         email: responseUserInfo.email,
         accessToken: responseUserInfo.accessToken,
-        refreshToken: responseUserInfo.accessToken,
+        refreshToken: responseUserInfo.refreshToken,
         imageUrl: responseUserInfo.imageUrl,
+        height: requestBody.height,
+        weight: requestBody.weight,
+        birthDate: requestBody.birthDate,
+        address: requestBody.address,
+        gender: requestBody.gender,
+        phoneNumber: requestBody.phoneNumber,
+        imageUrl: requestBody.imageUrl,
       })
+      console.log(2)
       // navigation.navigate("Home")
+
+      // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
+      await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
+      console.log(3)
+      await AsyncStorage.setItem("refreshToken", responseUserInfo.refreshToken);
+      console.log(4)
+      await AsyncStorage.setItem("id", responseUserInfo.id);
+      console.log(5)
+      await AsyncStorage.setItem("email", responseUserInfo.email);
+      console.log(6)
+
+      await AsyncStorage.setItem("name", responseUserInfo.name);
+      console.log(7)
+      await AsyncStorage.setItem("nickname", requestBody.nickname);
+      console.log(8)
+
+      // 상세 정보까지 저장
+      await AsyncStorage.setItem("height", String(requestBody.height));
+      console.log(9)
+
+      await AsyncStorage.setItem('weight', String(requestBody.weight));
+      console.log(10)
+      await AsyncStorage.setItem("birthDate", requestBody.birthDate);
+      console.log(11)
+      await AsyncStorage.setItem("address", requestBody.address);
+      console.log(12)
+      await AsyncStorage.setItem("gender", requestBody.gender);
+      console.log(13)
+      await AsyncStorage.setItem("imageUrl", requestBody.imageUrl);
+      console.log(14)
+      await AsyncStorage.setItem("phoneNumber", requestBody.phoneNumber);
+      console.log(15)
+
       navigation.reset({
         index: 0,
         routes: [{ name: "MainTabs" }],
@@ -352,7 +396,7 @@ const SignUpScreen = ({navigation, route}) => {
                 {nameError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{nameError}</Text> : null}
                 <InputBox label={'전화번호'} placeholder={'010-XXXX-XXXX'} value={phoneNumber} setValue={setPhoneNumber} isEditMode={true}/>
                 {phoneError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{phoneError}</Text> : null}
-                <InputBox label={'이메일'} placeholder={'email@email.com'} value={email} setValue={setEmail} isEditMode={true} />
+                <InputBox label={'이메일'} placeholder={'email@email.com'} value={email} setValue={setEmail} isEditMode={false} />
                 {emailError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{emailError}</Text> : null}
                 <InputBox label={'생년월일'} placeholder={'YYYY/MM/DD'} value={dateOfBirth} setValue={setDateOfBirth} isEditMode={true} />
                 {birthDateError ? <Text style={{ color: colors.nav_orange, paddingLeft: 5 }}>{birthDateError}</Text> : null}

@@ -3,8 +3,7 @@ package com.easter.route.domain.record.entity.dto;
 import lombok.Data;
 
 @Data
-public class CreateRunningDto {
+public class CreateRunningRequestDto {
 	private String routeId;
-	private String memberId;
 	private String recordType;
 }

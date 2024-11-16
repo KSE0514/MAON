@@ -15,6 +15,6 @@ public interface TeamService {
     SearchCandidateResponseDto searchCandidate(PassportDto passport, SearchCandidateRequestDto dto);
     CheckInvitationResponseDto checkInvitation(PassportDto passport);
     void inviteTeam(PassportDto passport, InviteTeamRequestDto dto);
-    void cancelInvitation(PassportDto passport, UUID invitationId);
+    void cancelInvitation(PassportDto passport, CancelInvitationRequestDto dto);
     void confirmInvitation(PassportDto passport, ConfirmInvitationRequestDto dto);
 }

@@ -2,13 +2,14 @@ import React from "react";
 import { SafeAreaView, View, Text, Button, TextInput } from "react-native";
 import {
   ModalContainer,
-  ModalContent,
   ModalText,
   ModalButton,
   ButtonText,
   ButtonView,
   ModalSubText,
 } from "../DefaultModal/DefaultModalStyles";
+
+import { ModalContent } from "./InputModalStyle";
 import { useFontsLoaded } from "../../../utils/fontContext";
 const InputModal = ({ isVisible, content, textValue, setTextValue }) => {
   if (!isVisible) return null;

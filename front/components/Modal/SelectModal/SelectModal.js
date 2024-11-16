@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useReducer } from "react";
 import RNPickerSelect from "react-native-picker-select";
 import { ModalText, pickerSelectStyles } from "./SelectModalStyles";
 import {
@@ -9,7 +9,12 @@ import {
   ButtonView,
 } from "../DefaultModal/DefaultModalStyles";
 import { useFontsLoaded } from "../../../utils/fontContext";
+import { TouchableOpacity } from "react-native";
 const SelectModal = ({ isVisible, content, setRunType }) => {
+  useEffect(() => {
+    console.log("모달쪽 콘솔_content: ", content, "setRunType: ", setRunType);
+  }, []);
+
   if (!isVisible) return null;
   const fontsLoaded = useFontsLoaded();
 
@@ -20,6 +25,7 @@ const SelectModal = ({ isVisible, content, setRunType }) => {
     <ModalContainer>
       <ModalContent>
         <ModalText>{content.text}</ModalText>
+
         {/* 셀렉트 넣기 */}
         <RNPickerSelect
           onValueChange={(value) => setRunType(value)}

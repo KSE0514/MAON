@@ -104,7 +104,7 @@ public class PassportFilter implements WebFilter {
                 }
             }
             httpHeaders.add("passport", "confirmed");
-            httpHeaders.add("passport-hmac", hmacValue); // todo : hmac값 추가
+            httpHeaders.add("passport-hmac", hmacValue);
         };
         ServerWebExchange newExchange = exchange
                 .mutate()

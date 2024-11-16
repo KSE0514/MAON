@@ -99,6 +99,7 @@ export const pickerSelectStyles = StyleSheet.create({
     paddingRight: 30, // 아이콘 표시할 공간 확보
     textAlign: "center",
     width: "100%", // iOS에서 중앙 정렬 강제
+    zIndex: 10, // iOS에서 터치 우선순위를 높이기 위해 추가
   },
   inputAndroid: {
     fontSize: 12,

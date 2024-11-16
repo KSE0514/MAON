@@ -20,24 +20,26 @@ const DefaultModal = ({ isVisible, content }) => {
   return (
     <ModalContainer>
       <ModalContent>
-        <ModalText subText={content.subText.length > 1}>
-          {content.text}
-        </ModalText>
-        <ModalSubText subText={content.subText.length > 1}>
-          {content.subText}
-        </ModalSubText>
-        <ButtonView>
-          {content.buttons.map((button, index) => (
-            <ModalButton
-              title=""
-              key={index}
-              index={index}
-              onPress={button.onPress}
-            >
-              <ButtonText index={index}>{button.title}</ButtonText>
-            </ModalButton>
-          ))}
-        </ButtonView>
+        <View style={{ flex: 1 }}>
+          <ModalText subText={content.subText.length > 1}>
+            {content.text}
+          </ModalText>
+          <ModalSubText subText={content.subText.length > 1}>
+            {content.subText}
+          </ModalSubText>
+          <ButtonView>
+            {content.buttons.map((button, index) => (
+              <ModalButton
+                title=""
+                key={index}
+                index={index}
+                onPress={button.onPress}
+              >
+                <ButtonText index={index}>{button.title}</ButtonText>
+              </ModalButton>
+            ))}
+          </ButtonView>
+        </View>
       </ModalContent>
     </ModalContainer>
   );

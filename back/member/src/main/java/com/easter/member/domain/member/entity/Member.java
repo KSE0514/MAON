@@ -75,6 +75,9 @@ public class Member {
     @Column(name = "total_calories")
     private double totalCalories;
 
+    @Column(name = "fcm_token", length = 300)
+    private String fcmToken;
+
     @Column(name = "create_time")
     private LocalDateTime createTime;
 

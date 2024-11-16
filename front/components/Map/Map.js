@@ -12,6 +12,7 @@ export default function Map({
   setRunningDistance,
   mode,
   onLocationChange, // 위치 변경 콜백
+  connectedWatch,
 }) {
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
@@ -164,7 +165,7 @@ export default function Map({
       }, 1000); // 1초마다 위치 업데이트
     };
 
-    if (runStart) {
+    if (runStart && !connectedWatch) {
       startTracking();
     } else {
       // runStart가 false로 변경되면 위치 추적 중지
@@ -208,8 +209,7 @@ export default function Map({
           customMapStyle={MapStyle}
           style={{ alignSelf: "stretch", height: "100%" }}
           region={mapRegion}
-          showsUserLocation={false}
-        >
+          showsUserLocation={false}>
           {markers.map((marker) => (
             <Marker
               key={marker.id}
@@ -218,8 +218,7 @@ export default function Map({
                 longitude: marker.longitude,
               }}
               title={marker.title}
-              description={marker.description}
-            >
+              description={marker.description}>
               {/* 시작 */}
               {marker.title == "Start Point" && (
                 <View
@@ -235,8 +234,7 @@ export default function Map({
                     shadowOpacity: 1,
                     shadowRadius: 5,
                     elevation: 15, // Android 그림자 효과
-                  }}
-                ></View>
+                  }}></View>
               )}
               {/* 내 위치 */}
               {marker.title == "Current Point" && (
@@ -254,7 +252,7 @@ export default function Map({
               {/* 반환 위치 */}
             </Marker>
           ))}
-          {mode === "trackingRun" ? (
+          {mode === "selectedRoute" ? (
             <Polyline
               coordinates={baseGps}
               strokeColor={color.light_orange}

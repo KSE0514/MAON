@@ -9,6 +9,5 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CreateTeamRequestDto {
     private String name;
-    private UUID memberId;
     private UUID tournamentId;
 }

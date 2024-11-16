@@ -6,6 +6,7 @@ import {
   Button,
   TouchableOpacity,
   TextInput,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useState } from "react";
 import { useFontsLoaded } from "../../utils/fontContext";
@@ -32,7 +33,7 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
   const [routeName, setRouteName] = useState("");
   const [year, setYear] = useState(2024);
   const [month, setMonth] = useState(0);
-  const [region, setRegion] = useState(10);
+  const [region, setRegion] = useState(0);
   //루트 타입 선택 옵션
   const routeTypeOptions = [
     { label: "북마크한 코스", value: "bookmark" },
@@ -41,7 +42,7 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
     { label: "일반 코스", value: "general" },
   ];
   //신청 가능 마라톤 선택 옵션
-  const [possible, setPossible] = useState(true);
+  const [possible, setPossible] = useState(false);
   const years = [
     { label: "년도", value: new Date().getFullYear() },
     { label: "2024년", value: 2024 },
@@ -155,11 +156,12 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
                   onValueChange={(value) => setYear(value)}
                   items={years}
                   value={year}
-                  style={pickerSelectStyles} // 커스텀 스타일 적용
+                  style={pickerSelectStyles}
                   placeholder={{}}
-                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
-                ></RNPickerSelect>
+                  useNativeAndroidPickerStyle={false}
+                />
               </View>
+
               <View style={[styles.pickerContainer, { marginHorizontal: 20 }]}>
                 <RNPickerSelect
                   onValueChange={(value) => setMonth(value)}
@@ -167,9 +169,10 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
                   value={month}
                   style={pickerSelectStyles} // 커스텀 스타일 적용
                   placeholder={{}}
-                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
-                ></RNPickerSelect>
+                  useNativeAndroidPickerStyle={false}
+                />
               </View>
+
               <View style={styles.pickerContainer}>
                 <RNPickerSelect
                   onValueChange={(value) => setRegion(value)}
@@ -177,33 +180,34 @@ const MarathonInfoSearchBar = ({ mode, searchFunc, searchType }) => {
                   value={region}
                   style={pickerSelectStyles} // 커스텀 스타일 적용
                   placeholder={{}}
-                  useNativeAndroidPickerStyle={false} // Android에서 커스텀 스타일 적용
-                ></RNPickerSelect>
+                  useNativeAndroidPickerStyle={false}
+                />
               </View>
             </SelectView>
           </Middle>
+
           <Bottom>
             <View style={{ flex: 4 }}>
               <RadioButton
-                options={[{ label: "접수 가능한 마라톤", value: "possible" }]}
+                options={[{ label: "접수 가능한 마라톤", value: "true" }]}
                 selectedOption={possible}
                 setSelectedOption={setPossible}
               />
             </View>
-            <LinearGradient
-              colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={[styles.gradient]}
+            <SearchButton
+              onPress={() => {
+                searchFunc(year, month, region, possible);
+              }}
             >
-              <SearchButton
-                onPress={() => {
-                  searchFunc(year, month, region, possible);
-                }}
+              <LinearGradient
+                colors={["#FF740E", "#FFA646"]} // 시작 색상과 끝 색상 설정
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={[styles.gradient]}
               >
                 <Text style={styles.buttonText}>검색</Text>
-              </SearchButton>
-            </LinearGradient>
+              </LinearGradient>
+            </SearchButton>
           </Bottom>
         </>
       )}

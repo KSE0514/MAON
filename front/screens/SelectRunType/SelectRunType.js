@@ -13,16 +13,18 @@ import {
   getPracticeRoomId,
   getPracticeRoomIdWithRoute,
 } from "../../utils/getRoomId";
+import useAuthStore from "../../store/AuthStore";
+import { useEffect } from "react";
 
 const SelectRunType = ({ navigation }) => {
   const fontsLoaded = useFontsLoaded();
-
+  const { user } = useAuthStore();
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
   const buttons = [
     {
-      onPress: async () => {
+      onPress: () => {
         navigation.navigate("SelectRunRoute", {
           mode: "selectedRoute",
           searchType: "run",
@@ -34,8 +36,7 @@ const SelectRunType = ({ navigation }) => {
     },
     {
       onPress: async () => {
-        const roomId = await getPracticeRoomId();
-        navigation.navigate("RunningAlone", { roomId: roomId });
+        navigation.navigate("RunningAlone", { mode: "notSelectedRoute" });
       },
       title: `지정코스없이\n달리기`,
       gradientType: "mandarin_gradient",

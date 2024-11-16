@@ -30,14 +30,18 @@ const CustomCarousel = ({ navigation }) => {
             Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
           },
         });
-        console.log(response.data);
-        setMyMarathoneList(response.data);
+        console.log(response.data.data);
+        setMyMarathoneList(response.data.data.tournamentList);
       } catch (e) {
         console.log(e);
       }
     };
     getMyMarathonList();
   }, []);
+
+  useEffect(() => {
+    console.log(myMarathonList);
+  }, [myMarathonList]);
   function formatDate(dateString) {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -85,10 +89,11 @@ const CustomCarousel = ({ navigation }) => {
         <Wrapper
           style={styles.wrapper}
           onPress={() => {
-            navigation.navigate("MarathonInfoDetail", { uuid: item.uuid });
-          }}
-        >
-          <Text style={styles.title}>{item.title}</Text>
+            navigation.navigate("MarathonInfoDetail", { uuid: item.id , paramsLatitude: item.latitude , paramsLongitude : item.longitude});
+          }}>
+          <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+            {item.title}
+          </Text>
           <View style={{ flexDirection: "row", marginTop: 5, flex: 1 }}>
             <Col>
               <Row>
@@ -120,9 +125,8 @@ const CustomCarousel = ({ navigation }) => {
                 <Text
                   style={[styles.subText, { width: 130 }]}
                   numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {item.locatoin}
+                  ellipsizeMode="tail">
+                  {item.location}
                 </Text>
               </Row>
               <Row
@@ -131,12 +135,10 @@ const CustomCarousel = ({ navigation }) => {
                   justifyContent: "flex-end",
                   marginTop: 0,
                   marginBottom: 0,
-                }}
-              >
+                }}>
                 <RunBtn>
                   <Text
-                    style={{ color: "white", fontFamily: fonts.gMarketBold }}
-                  >
+                    style={{ color: "white", fontFamily: fonts.gMarketBold }}>
                     {calculateDaysLeft(item.tournamentDayStart)}
                   </Text>
                 </RunBtn>
@@ -159,14 +161,12 @@ const CustomCarousel = ({ navigation }) => {
                   longitude: item.longitude,
                   latitudeDelta: 0.003,
                   longitudeDelta: 0.003,
-                }}
-              >
+                }}>
                 <Marker
                   coordinate={{
                     latitude: item.latitude,
                     longitude: item.longitude,
-                  }}
-                >
+                  }}>
                   <FontAwesomeIcon
                     icon={faLocationDot}
                     size={34}
@@ -186,8 +186,7 @@ const CustomCarousel = ({ navigation }) => {
         fontFamily: fonts.gMarketBold,
         fontSize: 16,
         color: color.black,
-      }}
-    >
+      }}>
       참가한 마라톤이 존재하지 않아요.
     </Text>
   );

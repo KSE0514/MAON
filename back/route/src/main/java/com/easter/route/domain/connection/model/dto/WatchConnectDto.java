@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConnectionTestDto {
+public class WatchConnectDto {
     private ConnectionType type;
     private LocalDateTime timestamp;
 }

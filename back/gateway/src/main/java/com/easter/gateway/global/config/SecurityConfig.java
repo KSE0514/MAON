@@ -1,9 +1,7 @@
 package com.easter.gateway.global.config;
+
 import com.easter.gateway.global.filter.PassportFilter;
-import com.easter.gateway.global.security.CustomAuthorizationManager;
-import com.easter.gateway.global.security.HmacProvider;
-import com.easter.gateway.global.security.NotAuthorizedServerEntryPoint;
-import com.easter.gateway.global.security.TokenProvider;
+import com.easter.gateway.global.security.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +24,7 @@ public class SecurityConfig {
     private String hmacKey;
 
     private final CustomAuthorizationManager customAuthorizationManager;
+    private final RegisteredOnlyAuthorizationManager registeredOnlyAuthorizationManager;
     private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
     private final RestClient restClient;
@@ -39,11 +38,14 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable) // oauth를 위해 기본 로그인 비활성화
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/favicon.ico", "/error").permitAll()
-                        .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**","/maon/member/member/oauth2/**", "/maon/member/service/**", "/maon/member/member/logindone", "/ws/**", "/ws/location", "/pub/**", "/sub").permitAll()
-                        .pathMatchers("/maon/member/member/reissue").permitAll()
-                        .pathMatchers("/maon/member/**").access(customAuthorizationManager)
-                        .anyExchange().permitAll()
+                                .pathMatchers("/favicon.ico", "/error").permitAll()
+                                .pathMatchers("/maon/member/member/login/**", "/maon/member/login/**", "/maon/member/member/oauth2/**", "/maon/member/service/**", "/maon/member/member/logindone").permitAll()
+                                .pathMatchers("/maon/route/ws/location/**").permitAll() // websocket 관련
+                                .pathMatchers("/maon/member/member/reissue").permitAll()
+                                .pathMatchers("/maon/member/member/info", "/maon/member/member/logout", "/maon/member/member/check").access(customAuthorizationManager)
+//                        .pathMatchers("/maon/member/**").access(customAuthorizationManager)
+//                        .anyExchange().permitAll()
+                                .anyExchange().access(registeredOnlyAuthorizationManager)
                 )
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint()))

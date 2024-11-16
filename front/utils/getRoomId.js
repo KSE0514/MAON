@@ -1,13 +1,12 @@
 import { apiClient } from "../customAxios";
 import useAuthStore from "../store/AuthStore";
-export const getPracticeRoomIdWithRoute = async (routeId) => {
-  const { user } = useAuthStore();
+export const getPracticeRoomIdWithRoute = async (routeId, memberId) => {
   try {
     const response = await apiClient.post(
       `/route/running/createRunning`,
       {
         routeId: routeId,
-        memberId: user.id,
+        memberId: memberId,
         recordType: "PRACTICE",
       },
       {
@@ -17,45 +16,43 @@ export const getPracticeRoomIdWithRoute = async (routeId) => {
         },
       }
     );
-    console.log(response.data.data);
+    // console.log(response.data.data);
     return response.data.data;
   } catch (error) {
     console.error("Error:", error);
   }
 };
 
-export const getPracticeRoomId = async () => {
-  const { user } = useAuthStore();
+export const getPracticeRoomId = async (memberId, accessToken) => {
   try {
     const response = await apiClient.post(
       `/route/running/createRunning`,
       {
         routeId: "",
-        memberId: user.id,
+        memberId: memberId,
         recordType: "PRACTICE",
       },
       {
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
         },
       }
     );
-    console.log(response.data.data);
-    return response.data.data;
+    // console.log(response.data.data);
+    return response.data.data.recordId;
   } catch (error) {
     console.error("getPracticeRoomId Error:", error);
   }
 };
 
-export const getRaceRoomId = async (routeId) => {
-  const { user } = useAuthStore();
+export const getRaceRoomId = async (routeId, memberId) => {
   try {
     const response = await apiClient.post(
       `/route/running/createRunning`,
       {
         routeId: routeId,
-        memberId: user.id,
+        memberId: memberId,
         recordType: "RACE",
       },
       {
@@ -65,7 +62,7 @@ export const getRaceRoomId = async (routeId) => {
         },
       }
     );
-    console.log(response.data.data);
+    // console.log(response.data.data);
     return response.data.data;
   } catch (error) {
     console.error("Error:", error);
