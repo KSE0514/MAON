@@ -28,6 +28,7 @@ import HeartBeat from "../../components/HeartBeat/HeartBeat";
 import { locationDtoPrint } from "../../utils/console";
 import useAuthStore from "../../store/AuthStore";
 import { fetchPairedWatch } from "../../utils/checkPairedWatch";
+import { getPracticeRoomId } from "../../utils/getRoomId";
 
 const RunningAlone = ({ navigation, route }) => {
   const fontsLoaded = useFontsLoaded();
@@ -52,6 +53,7 @@ const RunningAlone = ({ navigation, route }) => {
   const elapsedTimeRef = useRef(elapsedTime);
   const paceRef = useRef(pace);
   const runningDistanceRef = useRef(runningDistance);
+  const recordIdRef = useRef(null);
 
   const [resultData, setResultData] = useState({
     id: "",
@@ -67,6 +69,7 @@ const RunningAlone = ({ navigation, route }) => {
     distanceList: [],
   });
 
+  //종료 버튼
   const StopModalContent = {
     text: "종료하시겠습니까?",
     subText: "",
@@ -110,9 +113,11 @@ const RunningAlone = ({ navigation, route }) => {
 
   // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
   const handleUserLocationChange = (location) => {
+    //워치가 없을때만 가능하다는거임
     if (!connectedWatch) {
+      console.log("recordId: ", recordIdRef.current);
       const locationDto = {
-        recordId: recordId,
+        recordId: recordIdRef.current,
         time: elapsedTimeRef.current,
         memberId: user.id,
         latitude: location.latitude,
@@ -138,6 +143,7 @@ const RunningAlone = ({ navigation, route }) => {
     }
   };
 
+  //시간 데이터 업데이트
   const handleTimeUpdate = (time) => {
     console.log(time);
     setElapsedTime(time); // Timer로부터 업데이트된 시간 받기
@@ -146,8 +152,10 @@ const RunningAlone = ({ navigation, route }) => {
   //연동 여부 가져오기
   useEffect(() => {
     setConnectedWatch(fetchPairedWatch());
+    // setConnectedWatch(false);
   }, []);
 
+  //달리기 시작을 늘렀을 경우
   useEffect(() => {
     if (running) {
       const getRoomId = async () => {
@@ -156,6 +164,8 @@ const RunningAlone = ({ navigation, route }) => {
             user.id,
             user.accessToken
           );
+          console.log("get recordId 함수 실행 결과", responseRecordId);
+          recordIdRef.current = responseRecordId; // 최신 값 저장
           setRecordId(responseRecordId);
         } catch (error) {
           console.error("Error fetching room ID:", error);
@@ -163,36 +173,107 @@ const RunningAlone = ({ navigation, route }) => {
       };
 
       getRoomId(); // 비동기 함수 호출
+    }
+  }, [running]);
 
-      console.log("가져온 recordId: ", recordId);
+  useEffect(() => {
+    if (recordIdRef.current) {
+      console.log("가져온 recordId: ", recordIdRef.current);
+
+      //웹소켓 연결
+      const kafkaWs = new WebSocket(
+        "wss://k11c207.p.ssafy.io/maon/route/ws/location"
+      );
+
+      kafkaWs.onopen = () => {
+        console.log("WebSocket 연결 성공!");
+
+        // 웹소켓이 열렸을 때 STOMP CONNECT 프레임 직접 전송
+        const connectFrame =
+          "CONNECT\naccept-version:1.2,1.1,1.0\nhost:k11c207.p.ssafy.io\n\n";
+        kafkaWs.send(connectFrame);
+      };
+
       //워치가 연동되었을 때
       if (connectedWatch) {
-      }
-      // 워치 연동이 안되었을 때
-      else {
-        const kafkaWs = new WebSocket(
-          "wss://k11c207.p.ssafy.io/maon/route/ws/location"
-        );
-
-        kafkaWs.onopen = () => {
-          console.log("WebSocket 연결 성공!");
-
-          // STOMP CONNECT 프레임 직접 전송
-          const connectFrame =
-            "CONNECT\naccept-version:1.2,1.1,1.0\nhost:k11c207.p.ssafy.io\n\n";
-          kafkaWs.send(connectFrame);
-        };
+        console.log("워치 연동된 상태로 달리기");
 
         kafkaWs.onmessage = (message) => {
           console.log("서버로부터 메시지 수신:", message.data);
 
+          //연결 응답이 올 경우 console.log에 찍기
+          if (message.data.startsWith("CONNECTED")) {
+            console.log("STOMP 연결 성공!");
+            console.log(message.data);
+            console.log("===========================================");
+            //워치와 연결된 웹 소켓으로 recordId, mode, routeID를 전달
+
+            //stomp에 연결된 경우 데이터를 받을 sub을 구독하고있기
+            const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${recordIdRef.current}\n\n\0`;
+            kafkaWs.send(getDataSubscribeFrame);
+
+            //stomp에 연결된 경우 종료 sub 구독하고 있기
+            const endSubscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${recordIdRef.current}/end\n\n\0`;
+            kafkaWs.send(endSubscribeFrame);
+          }
+          //연결 종료에 대한 응답값
+          else {
+            try {
+              // JSON 형식만 추출하기
+              const jsonStartIndex = message.data.indexOf("{");
+              const jsonEndIndex = message.data.lastIndexOf("}");
+              if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
+                const jsonString = message.data.substring(
+                  jsonStartIndex,
+                  jsonEndIndex + 1
+                );
+                const parsedData = JSON.parse(jsonString); // JSON 부분만 파싱
+
+                if (parsedData.status === "end") {
+                  console.log("종료 응답 수신:", JSON.stringify(parsedData));
+
+                  setResultData({
+                    id: parsedData.record.id,
+                    routeId: parsedData.record.routeId,
+                    paceList: parsedData.record.paceList,
+                    recordedTrack:
+                      parsedData.record.recordedTrack.coordinates || [],
+                    runningTime: parsedData.record.runningTime,
+                    averagePace: parsedData.record.averagePace,
+                    averageHeartRate: parsedData.record.averageHeartRate,
+                    distance: parsedData.record.distance,
+                    createdAt: parsedData.record.createdAt,
+                    routeDistance: parsedData.routeDistance || 0,
+                    distanceList: parsedData.record.distanceList,
+                  });
+                }
+              } else {
+                console.error("유효한 JSON 형식이 포함되지 않음.");
+              }
+            } catch (error) {
+              console.error("메시지 파싱 오류:", error);
+            }
+          }
+          //받은 데이터에 대한 세팅
+        };
+      }
+      // 워치 연동이 안되었을 때
+      else {
+        console.log("워치 연동 안된 상태로 달리기");
+
+        kafkaWs.onmessage = (message) => {
+          console.log("서버로부터 메시지 수신:", message.data);
+
+          //연결 응답이 올 경우 console.log에 찍기
           if (message.data.startsWith("CONNECTED")) {
             console.log("STOMP 연결 성공!");
 
-            //종료 sub 구독하기
-            const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${recordId}/end\n\n\0`;
+            //stomp에 연결된 경우 종료 sub 구독하고 있기
+            const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${recordIdRef.current}/end\n\n\0`;
             kafkaWs.send(subscribeFrame);
-          } else {
+          }
+          //연결 종료에 대한 응답값
+          else {
             try {
               // JSON 형식만 추출하기
               const jsonStartIndex = message.data.indexOf("{");
@@ -230,42 +311,41 @@ const RunningAlone = ({ navigation, route }) => {
             }
           }
         };
-
-        kafkaWs.onclose = () => {
-          console.log("WebSocket 연결이 종료되었습니다.");
-        };
-
-        kafkaWs.onerror = (error) => {
-          console.error("WebSocket 오류:", error);
-        };
-
-        kafkaStompClientRef.current = kafkaWs;
-
-        // 워치에 연결된 경우 워치와의 웹소켓 열고 connectedWatch = true로 변경
-        // 열린 웹 소켓으로 1초마다 값이 넘어오기에 이를 백엔드로 넘겨주면 됨.
-
-        return () => {
-          kafkaWs.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
-        };
       }
-    }
-  }, [running]);
+      kafkaWs.onclose = () => {
+        console.log("WebSocket 연결이 종료되었습니다.");
+      };
 
+      kafkaWs.onerror = (error) => {
+        console.error("WebSocket 오류:", error);
+      };
+
+      kafkaStompClientRef.current = kafkaWs;
+
+      return () => {
+        kafkaWs.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
+      };
+    }
+  }, [recordIdRef.current]);
+
+  //결과 데이터가 변경이 되면 종료를 의미하기에 종료페이지로 이동
   useEffect(() => {
     if (resultData.id) {
       navigation.navigate("RunResult", {
         resultData: resultData,
         mode: mode,
-        recordId: recordId,
+        recordId: recordIdRef.current,
       });
     }
   }, [resultData]);
 
+  //바뀐 측정값 바로 적용시켜주기
   useEffect(() => {
     elapsedTimeRef.current = elapsedTime;
     paceRef.current = pace;
     runningDistanceRef.current = runningDistance;
   }, [elapsedTime, pace, runningDistance]);
+
   return (
     <View style={{ flex: 1 }}>
       {running && (
@@ -276,8 +356,7 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}
-          >
+            }}>
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}

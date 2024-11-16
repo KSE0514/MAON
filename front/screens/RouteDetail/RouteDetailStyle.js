@@ -11,7 +11,9 @@ import fonts from "../../styles/fonts";
 import color from "../../styles/colors";
 export const Wrapper = styled.View``;
 
-export const Top = styled.View``;
+export const Top = styled.View`
+  flex: 1;
+`;
 export const RunBtn = styled(TouchableOpacity)`
   background-color: ${color.light_orange};
   border-radius: 78px;
