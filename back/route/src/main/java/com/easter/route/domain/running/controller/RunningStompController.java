@@ -45,6 +45,7 @@ public class RunningStompController {
     }
 
     @MessageMapping("/running/{recordId}")
+    @SendTo("/sub/running/{recordId}")
     public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data: {}", recordId);
         log.info("Received location data: {}", locationDto);
