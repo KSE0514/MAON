@@ -99,10 +99,10 @@ public class TeamController {
      * 마라톤 팀 초대 취소
      * @return
      */
-    @DeleteMapping("/invite/cancel/{invitationId}")
-    public ResponseEntity<ResultResponse> cancelInvitation(@RequestAttribute("passport") PassportDto passport, @PathVariable UUID invitationId) {
+    @DeleteMapping("/invite/cancel")
+    public ResponseEntity<ResultResponse> cancelInvitation(@RequestAttribute("passport") PassportDto passport, @RequestBody CancelInvitationRequestDto dto) {
         log.info("cancel team invitation");
-        teamService.cancelInvitation(passport, invitationId);
+        teamService.cancelInvitation(passport, dto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀 멤버를 초대를 취소했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
