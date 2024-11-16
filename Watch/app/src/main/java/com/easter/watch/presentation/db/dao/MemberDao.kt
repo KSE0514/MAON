@@ -12,9 +12,9 @@ interface MemberDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMember(member: Member)
 
-    // 특정 memberId가 존재하는지 확인
-    @Query("SELECT EXISTS(SELECT 1 FROM member WHERE memberId = :memberId)")
-    suspend fun isMemberExists(memberId: String): Boolean
+    // member에 데이터가 있는지 확인
+    @Query("SELECT COUNT(*) FROM member")
+    suspend fun isMemberExists(): Int
 
     @Query("DELETE FROM member")  // 테이블의 모든 데이터 삭제
     suspend fun deleteAll()

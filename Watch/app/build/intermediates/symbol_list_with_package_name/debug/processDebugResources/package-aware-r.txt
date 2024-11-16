@@ -3525,6 +3525,7 @@ id design_navigation_view
 id dialog_button
 id dimensions
 id direct
+id disConnectBtn
 id disableHome
 id disableIntraAutoTransition
 id disablePostScroll
@@ -3656,7 +3657,6 @@ id material_timepicker_ok_button
 id material_timepicker_view
 id material_value_index
 id matrix
-id memberName
 id message
 id middle
 id mini
@@ -4071,6 +4071,7 @@ layout activity_result
 layout activity_run
 layout activity_splash
 layout activity_start
+layout activity_test
 layout custom_dialog
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog

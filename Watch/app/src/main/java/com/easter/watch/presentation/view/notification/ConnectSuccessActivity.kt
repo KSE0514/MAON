@@ -36,6 +36,7 @@ class ConnectSuccessActivity : AppCompatActivity() {
         Handler().postDelayed(Runnable { // 타이머가 끝나면 내부 실행
             intent = Intent(this@ConnectSuccessActivity, StartActivity::class.java)
             startActivity(intent)
+            finish()
         }, 2000) // 2초
     }
 

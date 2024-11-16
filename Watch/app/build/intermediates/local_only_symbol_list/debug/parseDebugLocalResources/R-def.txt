@@ -38,13 +38,13 @@ font gmarketsansttfmedium
 id authCodeText
 id clockText
 id connectBtn
+id disConnectBtn
 id distanceText
 id heartImg
 id heartText
 id imageView
 id main
 id map
-id memberName
 id nickNameText
 id paceText
 id page1
@@ -73,6 +73,7 @@ layout activity_result
 layout activity_run
 layout activity_splash
 layout activity_start
+layout activity_test
 layout fragment_run1
 layout fragment_run2
 layout fragment_run3

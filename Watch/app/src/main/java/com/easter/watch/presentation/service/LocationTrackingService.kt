@@ -25,6 +25,7 @@ class LocationTrackingService : Service() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationList = mutableListOf<LatLng>()
     private var isTracking = false
+    private var isPaused = false // PAUSE 상태를 추적
 
     private var long : Double? = null
     private  var lat : Double? = null
@@ -34,6 +35,7 @@ class LocationTrackingService : Service() {
         const val NOTIFICATION_ID = 1
         const val ACTION_START_TRACKING = "START_TRACKING"
         const val ACTION_STOP_TRACKING = "STOP_TRACKING"
+        const val ACTION_PAUSE_TRACKING = "PAUSE_TRACKING"
         const val ACTION_UPDATE_LOCATION = "UPDATE_LOCATION"
     }
 
@@ -80,12 +82,14 @@ class LocationTrackingService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_START_TRACKING -> {
-                // 서비스 시작 시 5초 이내에 반드시 startForeground를 호출해야 함
                 startForegroundService()
-                startTracking()
+                startTracking() // Tracking 시작
             }
             ACTION_STOP_TRACKING -> {
-                stopTracking()
+                stopTracking() // Tracking 중지 및 Foreground 종료
+            }
+            ACTION_PAUSE_TRACKING -> { // 추가
+                pauseTracking() // Tracking 중지하지만 Foreground 유지
             }
         }
         return START_STICKY
@@ -93,6 +97,7 @@ class LocationTrackingService : Service() {
 
     private fun startTracking() {
         isTracking = true
+        isPaused = false
         locationList.clear()
         startForegroundService()
         startLocationUpdates()
@@ -100,9 +105,16 @@ class LocationTrackingService : Service() {
 
     private fun stopTracking() {
         isTracking = false
+        isPaused = false
         stopLocationUpdates()
         stopForeground(true)
         stopSelf()
+    }
+
+    private fun pauseTracking() { // 추가
+        isTracking = false
+        isPaused = true // PAUSE 상태 설정
+        stopLocationUpdates() // 위치 업데이트 중지
     }
 
     private fun createNotificationChannel() {

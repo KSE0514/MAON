@@ -156,6 +156,8 @@ class AuthActivity : AppCompatActivity() {
                         }
                     }
                 }
+                stompClient.disconnect()
+
             } catch (e: Exception) {
                 Log.e(TAG, "JSON 파싱 에러: ${e.message}", e)
                 runOnUiThread {
