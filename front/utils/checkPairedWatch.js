@@ -7,7 +7,7 @@ export const fetchPairedWatch = async () => {
     console.log("Stored Paired Watch:", storedPairedWatch);
 
     const pairedWatchStatus = storedPairedWatch ? storedPairedWatch : false;
-    Alert.alert("워치연동 여부: ", pairedWatchStatus ? "연동됨" : "연동 안됨");
+    Alert.alert("워치연동 여부: ", pairedWatchStatus);
     return pairedWatchStatus;
   } catch (error) {
     console.error("Error fetching paired watch:", error);

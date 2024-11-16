@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import {
@@ -30,6 +31,7 @@ import useAuthStore from "../../store/AuthStore";
 import { fetchPairedWatch } from "../../utils/checkPairedWatch";
 import { getPracticeRoomId } from "../../utils/getRoomId";
 import PairingWatch from "../PairingWatch/PairingWatch";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RunningAlone = ({ navigation, route }) => {
   const fontsLoaded = useFontsLoaded();
@@ -152,11 +154,27 @@ const RunningAlone = ({ navigation, route }) => {
     setElapsedTime(time); // Timer로부터 업데이트된 시간 받기
   };
 
-  //연동 여부 가져오기
+  // 연동 여부 가져오기 (비동기 함수로 상태 설정)
   useEffect(() => {
-    setConnectedWatch(fetchPairedWatch());
-    // setConnectedWatch(false);
+    const getPairedWatchStatus = async () => {
+      try {
+        const storedPairedWatch = await AsyncStorage.getItem("pairedWatch");
+        console.log("Stored Paired Watch:", storedPairedWatch);
+
+        // 비동기 함수로 상태 업데이트 시 안전한 값 사용하기
+        setConnectedWatch(storedPairedWatch === "true");
+      } catch (error) {
+        console.error("Error fetching paired watch:", error);
+      }
+    };
+
+    getPairedWatchStatus();
   }, []);
+
+  // connectedWatch의 상태가 변경될 때마다 로그 출력
+  useEffect(() => {
+    console.log("connectedWatch: ", connectedWatch);
+  }, [connectedWatch]);
 
   //달리기 시작을 늘렀을 경우
   useEffect(() => {
