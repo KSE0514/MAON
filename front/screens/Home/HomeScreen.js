@@ -21,6 +21,7 @@ const { width } = Dimensions.get("window");
 const HomeScreen = ({ navigation }) => {
   const { user } = useAuthStore();
 
+  console.log(user.nickname);
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
