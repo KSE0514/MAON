@@ -36,6 +36,7 @@ const HomeScreen = ({ navigation }) => {
     imageUrl: "",
   });
 
+  console.log(user.nickname);
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {

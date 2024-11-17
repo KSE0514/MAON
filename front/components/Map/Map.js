@@ -13,6 +13,10 @@ export default function Map({
   mode,
   onLocationChange, // 위치 변경 콜백
   connectedWatch,
+  running,
+  currentLocation,
+  startPoint, // 시작점 좌표 prop 추가
+  selectedRoute,
 }) {
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
@@ -74,6 +78,30 @@ export default function Map({
     requestLocationPermission();
   }, []);
 
+  // currentLocation이 변경될 때마다 마커 위치 업데이트
+  useEffect(() => {
+    if (currentLocation) {
+      setMarkers((prevMarkers) =>
+        prevMarkers.map((marker) =>
+          marker.id === "current-point"
+            ? {
+                ...marker,
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+              }
+            : marker
+        )
+      );
+
+      // 지도 위치도 업데이트
+      setmapRegion({
+        ...mapRegion,
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+      });
+    }
+  }, [currentLocation]);
+
   /**
    * 내 위치 받아오기
    */
@@ -89,28 +117,50 @@ export default function Map({
           latitudeDelta: 0.002,
           longitudeDelta: 0.002,
         });
-        setMarkers((prevMarkers) => [
-          ...prevMarkers,
-          {
-            id: "start-point",
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            title: "Start Point",
-            description: "This is the starting point",
-          },
-          {
+        setMarkers((prevMarkers) => {
+          // 기존 마커들 유지
+          const updatedMarkers = [...prevMarkers];
+
+          // mode가 "notSelectedRoute"일 때만 "start-point" 마커를 추가
+          if (mode === "notSelectedRoute") {
+            updatedMarkers.push({
+              id: "start-point",
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              title: "Start Point",
+              description: "This is the starting point",
+            });
+          }
+
+          // 항상 "current-point" 마커 추가 또는 업데이트
+          const currentPointIndex = updatedMarkers.findIndex(
+            (marker) => marker.id === "current-point"
+          );
+
+          const currentPointMarker = {
             id: "current-point",
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
             title: "Current Point",
-            description: "This is the starting point",
-          },
-        ]);
+            description: "This is the current point",
+          };
+
+          // "current-point"가 이미 있다면 업데이트, 없으면 추가
+          if (currentPointIndex !== -1) {
+            updatedMarkers[currentPointIndex] = currentPointMarker;
+          } else {
+            updatedMarkers.push(currentPointMarker);
+          }
+
+          return updatedMarkers;
+        });
       }
     };
 
     getLocation();
-    setShowStartModal(true);
+    if (mode === "notSelectedRoute") {
+      setShowStartModal(true);
+    }
   }, [locationPermissionGranted]);
 
   /**
@@ -118,6 +168,7 @@ export default function Map({
    */
   const handleUserLocationChange = (location) => {
     if (runStart) {
+      // console.log("트래킹한 값 기반으로 데이터 변경 예정", location);
       const newCoordinate = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -156,7 +207,16 @@ export default function Map({
   };
 
   useEffect(() => {
+    // console.log("변경된 gps: " + JSON.stringify(gps));
+  }, [gps]);
+
+  useEffect(() => {
+    // console.log("변경된 markers: " + JSON.stringify(markers));
+  }, [markers]);
+
+  useEffect(() => {
     const startTracking = async () => {
+      // console.log("tracking 시도함");
       locationInterval.current = setInterval(async () => {
         const location = await Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.Balanced,
@@ -166,8 +226,10 @@ export default function Map({
     };
 
     if (runStart && !connectedWatch) {
+      // console.log("tracking 시작");
       startTracking();
     } else {
+      // console.log("트래킹 멈춤");
       // runStart가 false로 변경되면 위치 추적 중지
       if (locationInterval.current) {
         clearInterval(locationInterval.current);
@@ -182,6 +244,36 @@ export default function Map({
       }
     };
   }, [runStart]); // runStart가 변경될 때마다 실행
+
+  // 시작점 추가 또는 업데이트
+  useEffect(() => {
+    if (startPoint) {
+      console.log("Updating start-point marker:", startPoint);
+      setMarkers((prevMarkers) => {
+        // "start-point" 마커가 이미 존재하는지 확인
+        const startPointIndex = prevMarkers.findIndex(
+          (marker) => marker.id === "start-point"
+        );
+
+        const startPointMarker = {
+          id: "start-point",
+          latitude: startPoint.latitude,
+          longitude: startPoint.longitude,
+          title: "Start Point",
+          description: "This is the starting point",
+        };
+
+        if (startPointIndex !== -1) {
+          // 기존 마커가 있으면 업데이트
+          prevMarkers[startPointIndex] = startPointMarker;
+          return [...prevMarkers];
+        } else {
+          // 없으면 새로 추가
+          return [...prevMarkers, startPointMarker];
+        }
+      });
+    }
+  }, [startPoint]);
 
   //거리계산
   const calculateDistance = (coord1, coord2) => {
@@ -199,6 +291,7 @@ export default function Map({
         Math.sin(deltaLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
+    console.log("계산한 거리 값: ", (R * c) / 1000);
     return (R * c) / 1000; // 거리 (킬로미터)
   };
   return (
@@ -241,8 +334,8 @@ export default function Map({
                 <Image
                   source={require("../../assets/images/Union.png")} // 이미지 경로
                   style={{
-                    width: 34, // 원하는 너비
-                    height: 42, // 원하는 높이
+                    width: 30, // 원하는 너비
+                    height: 38, // 원하는 높이
                     resizeMode: "contain", // 이미지를 짤리지 않게 표시
                   }}
                 />
@@ -253,11 +346,18 @@ export default function Map({
             </Marker>
           ))}
           {mode === "selectedRoute" ? (
-            <Polyline
-              coordinates={baseGps}
-              strokeColor={color.light_orange}
-              strokeWidth={6}
-            />
+            <>
+              <Polyline
+                coordinates={selectedRoute}
+                strokeColor={color.grey}
+                strokeWidth={6}
+              />
+              <Polyline
+                coordinates={gps}
+                strokeColor={color.light_orange}
+                strokeWidth={6}
+              />
+            </>
           ) : (
             <Polyline
               coordinates={gps}

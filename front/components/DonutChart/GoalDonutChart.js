@@ -5,6 +5,7 @@ import fonts from "../../styles/fonts";
 import color from "../../styles/colors";
 
 const GoalDonutChart = ({ goalDistance, currentDistance, mode }) => {
+  // console.log("GoalDonut distance:", currentDistance);
   const chartSize = 110;
   const progress =
     goalDistance == 0 ? 100 : (currentDistance / goalDistance) * 100; // 목표 대비 현재 진행률 계산
@@ -23,12 +24,13 @@ const GoalDonutChart = ({ goalDistance, currentDistance, mode }) => {
       <View style={{ position: "absolute", alignItems: "center" }}>
         {mode == "notSelectedRoute" && (
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            {currentDistance.toFixed(1)}km
+            {(Math.floor(currentDistance * 10) / 10).toFixed(1)}km
           </Text>
         )}
         {mode != "notSelectedRoute" && (
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            {currentDistance.toFixed(1)} / {goalDistance} km
+            {(Math.floor(currentDistance * 10) / 10).toFixed(1)} /{" "}
+            {goalDistance} km
           </Text>
         )}
       </View>
