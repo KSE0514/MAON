@@ -225,7 +225,7 @@ export default function Map({
           accuracy: Location.Accuracy.Balanced,
         });
         handleUserLocationChange(location);
-      }, 1000); // 1초마다 위치 업데이트
+      }, 3000); // 1초마다 위치 업데이트
     };
 
     if (runStart && !connectedWatch) {
