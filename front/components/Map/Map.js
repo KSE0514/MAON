@@ -221,7 +221,7 @@ export default function Map({
       // console.log("tracking 시도함");
       locationInterval.current = setInterval(async () => {
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
+          accuracy: Location.Accuracy.Balanced,
         });
         handleUserLocationChange(location);
       }, 3000); // 1초마다 위치 업데이트
