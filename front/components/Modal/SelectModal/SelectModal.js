@@ -12,7 +12,7 @@ import { useFontsLoaded } from "../../../utils/fontContext";
 import { TouchableOpacity } from "react-native";
 const SelectModal = ({ isVisible, content, setRunType }) => {
   useEffect(() => {
-    console.log("모달쪽 콘솔_content: ", content, "setRunType: ", setRunType);
+    // console.log("모달쪽 콘솔_content: ", content, "setRunType: ", setRunType);
   }, []);
 
   if (!isVisible) return null;
@@ -39,8 +39,7 @@ const SelectModal = ({ isVisible, content, setRunType }) => {
               title=""
               key={index}
               index={index}
-              onPress={button.onPress}
-            >
+              onPress={button.onPress}>
               <ButtonText index={index}>{button.title}</ButtonText>
             </ModalButton>
           ))}

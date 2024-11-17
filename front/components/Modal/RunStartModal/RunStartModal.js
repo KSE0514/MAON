@@ -22,7 +22,7 @@ const RunStartModal = ({
 
   useEffect(() => {
     if (count == -1) {
-      console.log("달리기 시작!");
+      // console.log("달리기 시작!");
       setShowStartModal(false);
       setRunStart(true);
       setRunning(true);
