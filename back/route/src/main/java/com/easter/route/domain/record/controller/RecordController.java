@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.record.entity.dto.CreateRunningResponseDto;
+import com.easter.route.domain.record.entity.dto.GetMyRecordsResponseDto;
 import com.easter.route.domain.record.entity.dto.RecordDto;
 import com.easter.route.domain.record.service.RecordService;
 import com.easter.route.domain.record.entity.dto.CreateRunningRequestDto;
@@ -34,7 +35,7 @@ public class RecordController {
 
     @GetMapping("/record/myRecords")
     public ResponseEntity<ResultResponse> getMyRecords(@RequestAttribute("passport") PassportDto passport) {
-        List<RecordDto> recordList = recordService.getRecordListByMemberId(passport.getId().toString());
+        List<GetMyRecordsResponseDto> recordList = recordService.getRecordListByMemberId(passport.getId().toString());
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "Record 리스트를 가져왔습니다.", recordList);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
