@@ -77,8 +77,8 @@ const PairingWatch = ({ navigation, route }) => {
           console.log(user?.nickname);
           const payload = {
             memberId: user?.id, // user 객체의 UUID 또는 기본 UUID
-            // memberNickname: user?.nickname,
-            memberNickname: "예삐",
+            memberNickname: user?.nickname,
+            // memberNickname: "예삐",
             timestamp: new Date().toISOString(), // ISO 형식의 timestamp
           };
 

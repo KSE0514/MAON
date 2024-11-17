@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import {
@@ -30,6 +31,7 @@ import useAuthStore from "../../store/AuthStore";
 import { fetchPairedWatch } from "../../utils/checkPairedWatch";
 import { getPracticeRoomId } from "../../utils/getRoomId";
 import PairingWatch from "../PairingWatch/PairingWatch";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RunningAlone = ({ navigation, route }) => {
   const fontsLoaded = useFontsLoaded();
@@ -126,6 +128,7 @@ const RunningAlone = ({ navigation, route }) => {
         longitude: location.longitude,
         heartRate: 0,
         pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
+        // pace: "10'10\"", // 최신 페이스
         runningDistance: runningDistanceRef.current.toFixed(2),
       };
       locationDtoPrint(locationDto);
@@ -145,17 +148,28 @@ const RunningAlone = ({ navigation, route }) => {
     }
   };
 
-  //시간 데이터 업데이트
-  const handleTimeUpdate = (time) => {
-    console.log(time);
-    setElapsedTime(time); // Timer로부터 업데이트된 시간 받기
-  };
-
-  //연동 여부 가져오기
+  // 연동 여부 가져오기 (비동기 함수로 상태 설정)
   useEffect(() => {
-    setConnectedWatch(fetchPairedWatch());
-    // setConnectedWatch(false);
+    const getPairedWatchStatus = async () => {
+      try {
+        const storedPairedWatch = await AsyncStorage.getItem("pairedWatch");
+        console.log("Stored Paired Watch:", storedPairedWatch);
+
+        // 비동기 함수로 상태 업데이트 시 안전한 값 사용하기
+        setConnectedWatch(storedPairedWatch === "true");
+      } catch (error) {
+        console.error("Error fetching paired watch:", error);
+      }
+    };
+
+    // getPairedWatchStatus();
+    setConnectedWatch(false);
   }, []);
+
+  // connectedWatch의 상태가 변경될 때마다 로그 출력
+  useEffect(() => {
+    console.log("connectedWatch: ", connectedWatch);
+  }, [connectedWatch]);
 
   //달리기 시작을 늘렀을 경우
   useEffect(() => {
@@ -471,6 +485,7 @@ const RunningAlone = ({ navigation, route }) => {
         runStart={runStart}
         setRunningDistance={setRunningDistance}
         mode={mode}
+        running={running}
         onLocationChange={handleUserLocationChange}
       />
       {running && (
@@ -479,7 +494,7 @@ const RunningAlone = ({ navigation, route }) => {
             <RunInfoCol style={{ flex: 1 }}>
               <GoalDonutChart
                 connectedWatch={connectedWatch}
-                currentDistance={parseFloat(runningDistance)}
+                currentDistance={parseFloat(runningDistanceRef.current)}
                 goalDistance={0}
                 mode={mode}
               />
@@ -489,7 +504,7 @@ const RunningAlone = ({ navigation, route }) => {
                 connectedWatch={connectedWatch}
                 mode={mode}
                 elapsedTime={elapsedTime}
-                currentDistance={runningDistance}
+                currentDistance={runningDistanceRef}
                 setPace={setPace}
                 pace={pace}
               />

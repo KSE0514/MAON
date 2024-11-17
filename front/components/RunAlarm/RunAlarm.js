@@ -2,19 +2,19 @@ import { StyleSheet, View, TextInput, Text } from "react-native";
 import { useState } from "react";
 import Svg, { Path } from "react-native-svg";
 import color from "../../styles/colors";
+import { ModalContainer, ModalContent } from "./RunAlarmStyle";
 
-const RunAlarm = ({ ment }) => {
+const RunAlarm = ({ ment, isVisible }) => {
+  if (!isVisible) return null;
   return (
-    <View style={styles.container}>
-      <Text>{ment}</Text>
-    </View>
+    <ModalContainer style={styles.container}>
+      <ModalContent style={styles.box}>
+        <Text>{ment}</Text>
+      </ModalContent>
+    </ModalContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-  },
-});
+const styles = StyleSheet.create({});
 
 export default RunAlarm;

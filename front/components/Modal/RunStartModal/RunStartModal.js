@@ -22,6 +22,7 @@ const RunStartModal = ({
 
   useEffect(() => {
     if (count == -1) {
+      console.log("달리기 시작!");
       setShowStartModal(false);
       setRunStart(true);
       setRunning(true);
@@ -30,7 +31,7 @@ const RunStartModal = ({
   useEffect(() => {
     if (!startTap) {
       const timer = setInterval(() => {
-        setCount((prevCount) => Math.max(prevCount - 1, -1)); // count가 0 이하로 내려가지 않도록 설정
+        setCount((prevCount) => Math.max(prevCount - 1, -2)); // count가 0 이하로 내려가지 않도록 설정
       }, 1000);
 
       // 컴포넌트 언마운트 시 clearInterval로 타이머 정리
