@@ -87,13 +87,4 @@ public class RunningStompController {
             throw e;
         }
     }
-
-
-
-    // @SendTo("/sub/running/team/{memberId}")
-    // public RouteValidationResult validateRoute(@DestinationVariable String memberId, LocationDto locationDto) {
-    //     log.info("Received route validation request: {}", memberId);
-    //     log.info("Received route validation request: {}", locationDto);
-    //     return runningConsumer.validateRoute(memberId, locationDto);
-    // }
 }

@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetRouteDetailsRequestDto {
-	private String routeId;
+	private Double routeDistance;
+	private String routeType;
+	private String keyword;
 }
