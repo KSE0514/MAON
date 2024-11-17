@@ -248,7 +248,6 @@ export default function Map({
   // 시작점 추가 또는 업데이트
   useEffect(() => {
     if (startPoint) {
-      console.log("Updating start-point marker:", startPoint);
       setMarkers((prevMarkers) => {
         // "start-point" 마커가 이미 존재하는지 확인
         const startPointIndex = prevMarkers.findIndex(

@@ -39,10 +39,11 @@ const RunningWithRoute = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
+  console.log(routeId);
   // 마라톤 시작점 좌표 추출
   const startPoint = {
-    latitude: marathonInfo.track.coordinates[0][0],
-    longitude: marathonInfo.track.coordinates[0][1],
+    latitude: marathonInfo.track.coordinates[0].coordinates[0],
+    longitude: marathonInfo.track.coordinates[0].coordinates[1],
   };
 
   const { user } = useAuthStore();
@@ -94,8 +95,9 @@ const RunningWithRoute = ({ navigation, route }) => {
       {
         title: "취소",
         onPress: () => {
-          setShowStopModal(false);
-          setRunStart(true);
+          // setShowStopModal(false);
+          // setRunStart(true);
+          navigation.navigate("Home");
         },
       },
       {
@@ -141,18 +143,19 @@ const RunningWithRoute = ({ navigation, route }) => {
         latitude: location.latitude,
         longitude: location.longitude,
         heartRate: 0,
-        routeIndex: routeIndexRef,
+        routeIndex: routeIndexRef.current,
         pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
         runningDistance: runningDistanceRef.current.toFixed(2),
       };
       locationDtoPrint(locationDto);
+      console.log("here");
       if (
         kafkaStompClientRef.current &&
         kafkaStompClientRef.current.readyState === WebSocket.OPEN
       ) {
         const sendFrame =
           `SEND\n` +
-          `destination:/pub/running/route/${recordId}\n` + // 변경된 주소
+          `destination:/pub/running/route/${recordIdRef.current}\n` + // 변경된 주소
           `content-type:application/json\n\n` +
           `${JSON.stringify(locationDto)}\0`;
 
@@ -268,7 +271,10 @@ const RunningWithRoute = ({ navigation, route }) => {
       }
     };
 
-    kafkaWs.onclose = () => {
+    kafkaWs.onclose = (event) => {
+      console.log(
+        `WebSocket 연결 종료. 코드: ${event.code}, 이유: ${event.reason}`
+      );
       console.log("WebSocket 연결이 종료되었습니다.");
     };
 
