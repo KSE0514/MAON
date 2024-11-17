@@ -61,6 +61,7 @@ const LoginScreen = () => {
           imageUrl: imageUrl,
           phoneNumber: phoneNumber,
         });
+
         navigation.reset({
           index: 0,
           routes: [{ name: "MainTabs" }],
