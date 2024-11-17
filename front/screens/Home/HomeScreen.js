@@ -36,16 +36,28 @@ const HomeScreen = ({ navigation }) => {
     imageUrl: "",
   });
 
+  console.log(user.nickname);
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  useEffect(() => {
-    getMyProfile()
-  }, [])
+  // useEffect(() => {
+  //   getMyProfile()
+  // }, [])
 
+  useEffect(() => {
+    const checkNickname = async () => {
+      const checkStorageNickname = await AsyncStorage.getItem("nickname");
+      if (!checkStorageNickname) {
+        getMyProfile()
+      }
+      console.log("!!!!!!닉네임 확인용: ", checkStorageNickname);
+    };
+    checkNickname();
+  }, []);
+  
   // 홈 화면에 들어왔을 시 async storage에 마이페이지 데이터를 저장하기 위함
   const getMyProfile = async () => {
     try {

@@ -113,6 +113,10 @@ public class MemberServiceImpl implements MemberService {
         if(!dto.getEmail().equals(passport.getEmail())) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "타 사용자의 이메일로 가입을 시도하고 있습니다.");
         }
+        String imageUrl = passport.getImageUrl();
+        if(dto.getProfileImage() != null && !dto.getProfileImage().isEmpty()) {
+            imageUrl = s3Service.uploadFile(dto.getProfileImage());
+        }
         // 주어진 정보를 기반으로 entity 구축
         LocalDate date;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -133,7 +137,7 @@ public class MemberServiceImpl implements MemberService {
                 .birthDate(date)
                 .address(dto.getAddress())
                 .phoneNumber(dto.getPhoneNumber())
-                .imageUrl(dto.getImageUrl())
+                .imageUrl(imageUrl)
                 .build();
         member = MemberRepository.save(member);
         log.info("registered new member : {} - {}", member.getUuid(), member.getNickname());
