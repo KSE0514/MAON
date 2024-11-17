@@ -9,10 +9,6 @@ import java.time.LocalDateTime
 data class RecordDto(
     val id: String,
     val routeId: String,
-    val paceList: List<String>,
-    val distanceList: List<Double>,
-    val startPoint: String,
-    //val recordedTrack: GeoJsonLineString,
     val runningTime: String,
     val averagePace: String,
     val averageHeartRate: Int,

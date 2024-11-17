@@ -3770,6 +3770,7 @@ int id right_side 0x7f0b0199
 int id round 0x7f0b019a
 int id rounded 0x7f0b019b
 int id row_index_key 0x7f0b019c
+int id runBtn 0x7f0b024b
 int id runStartBtn 0x7f0b019d
 int id runTime 0x7f0b019e
 int id runtimeText 0x7f0b019f

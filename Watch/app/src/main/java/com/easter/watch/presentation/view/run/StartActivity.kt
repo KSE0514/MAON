@@ -28,12 +28,6 @@ class StartActivity : AppCompatActivity() {
     private val viewModel: RunViewModel by viewModels()
     private lateinit var permissionService: SensorPermissionService
 
-    //val stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
-
-
-    private val sharedPreferences by lazy {
-        getSharedPreferences("watch_prefs", Context.MODE_PRIVATE)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,33 +46,6 @@ class StartActivity : AppCompatActivity() {
             finish()
         }
 
-
-//토큰 확인하고 websocket으로 서버에 전송
-//        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-//            if (task.isSuccessful) {
-//                val token = task.result
-//                Log.d("토큰 확인", "FCM 토큰: $token")
-//
-//                // 연결
-//                stompClient.connect(
-//                    onConnected = {
-//                        println("STOMP 연결 성공")
-//
-//                        // FCM 토큰을 JSON 형태로 전송
-//                        stompClient.send("pub/running/1", """{"fcmToken": "$token"}""")
-//
-//                        // 전송 완료 후 연결 종료
-//                        stompClient.disconnect()
-//                    },
-//                    onError = { error ->
-//                        println("에러 발생: $error")
-//                    }
-//                )
-//
-//            } else {
-//                Log.w("토큰 확인", "토큰 가져오기 실패", task.exception)
-//            }
-//        }
     }
 
     // 권한 요청 결과 확인

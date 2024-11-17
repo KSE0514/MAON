@@ -16,6 +16,7 @@ import com.easter.watch.presentation.db.dao.MemberDao
 import com.easter.watch.presentation.view.intro.AuthActivity
 import com.easter.watch.presentation.view.intro.SplashActivity
 import com.easter.watch.presentation.view.run.RunActivity
+import com.easter.watch.presentation.view.run.StartActivity
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +61,14 @@ class RecordActivity : AppCompatActivity() {
             }
 
             val intent = Intent(this, SplashActivity::class.java)
+            startActivity(intent)
+            finish()
+
+        }
+
+        val runStart = findViewById<Button>(R.id.runBtn)
+        runStart.setOnClickListener {
+            val intent = Intent(this, StartActivity::class.java)
             startActivity(intent)
             finish()
 

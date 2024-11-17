@@ -26,6 +26,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.log
 
 
 class RunViewModel : ViewModel() {
@@ -72,8 +73,6 @@ class RunViewModel : ViewModel() {
             stompClient.connect()
         }
 
-        subscribeToRunningEndTopic(recordId,context)
-
         // 1초마다 데이터 전송
         webSocketJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
@@ -98,7 +97,7 @@ class RunViewModel : ViewModel() {
 
     //달리기 끝나는 신호 구독 -> end 받기도 하고 주기도하고
     fun subscribeToRunningEndTopic(recordId : String, context: Context){
-        stompClient.subscribeToTopic("/sub/start/$recordId/end","sub-running-end"){ payload ->
+        stompClient.subscribeToTopic("/sub/running/$recordId/end","sub-running-end"){ payload ->
             try{
                 // JSON 데이터를 AuthInfo 객체로 변환
                 val jsonBody = extractJsonFromStompMessage(payload)
@@ -106,6 +105,7 @@ class RunViewModel : ViewModel() {
 
                 // Gson을 사용해 JSON을 StartInfo 객체로 변환
                 val runResult = Gson().fromJson(jsonBody, RunResult::class.java)
+                Log.d(TAG, "데이터에 넣은 데이터 : $runResult ")
 
                 _recordId.value = recordId
 
@@ -115,6 +115,8 @@ class RunViewModel : ViewModel() {
                 }
                 context.startActivity(intent)
 
+                stopWebSocket()
+
             }catch (e : Exception){
                 Log.d(TAG, e.toString())
             }
@@ -122,8 +124,7 @@ class RunViewModel : ViewModel() {
     }
 
     fun stopRunning(recordId : String){
-        stompClient.sendMessageString("/pub/start/$recordId/end","") //완료 보내기
-        stopWebSocket()
+        stompClient.sendMessageString("/pub/running/$recordId/end","") //완료 보내기
     }
 
 
