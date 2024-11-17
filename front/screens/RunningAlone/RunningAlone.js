@@ -49,6 +49,7 @@ const RunningAlone = ({ navigation, route }) => {
   const [runningDistance, setRunningDistance] = useState(0); // 달린 거리
   const [elapsedTime, setElapsedTime] = useState("00:00:00"); // 경과 시간
   const [pace, setPace] = useState("00'00''"); // 페이스
+  const [heartRate, setHeartRate] = useState("--");
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
   const [recordId, setRecordId] = useState();
 
@@ -162,8 +163,8 @@ const RunningAlone = ({ navigation, route }) => {
       }
     };
 
-    // getPairedWatchStatus();
-    setConnectedWatch(false);
+    getPairedWatchStatus();
+    // setConnectedWatch(false);
   }, []);
 
   // connectedWatch의 상태가 변경될 때마다 로그 출력
@@ -327,6 +328,10 @@ const RunningAlone = ({ navigation, route }) => {
                     "워치 데이터 응답 수신:",
                     JSON.stringify(parsedData)
                   );
+                  setPace(parsedData.pace);
+                  setElapsedTime(parsedData.time);
+                  setRunningDistance(parsedData.runningDistance);
+                  setHeartRate(parsedData.heartRate);
                 }
               }
             } catch (error) {
@@ -509,7 +514,7 @@ const RunningAlone = ({ navigation, route }) => {
                 setPace={setPace}
                 pace={pace}
               />
-              <HeartBeat mode={mode} />
+              <HeartBeat heartRate={heartRate} mode={mode} />
             </RunInfoCol>
           </RunInfo>
         </Bottom>
