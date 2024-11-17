@@ -17,7 +17,6 @@ public class RouteDto {
     private String writerId;
     private String writerName;
     private String routeName;
-    private String routeType;
     private String startPoint;
     private Double distance;
     private GeoJsonLineString track;
