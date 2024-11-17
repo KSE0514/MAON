@@ -139,7 +139,7 @@ const RunningAlone = ({ navigation, route }) => {
         // STOMP 프레임을 구성하여 데이터 전송
         const sendFrame =
           `SEND\n` +
-          `destination:/pub/running/${recordId}\n` +
+          `destination:/pub/running/${recordIdRef.current}\n` +
           `content-type:application/json\n\n` +
           `${JSON.stringify(locationDto)}\0`;
 
@@ -162,8 +162,8 @@ const RunningAlone = ({ navigation, route }) => {
       }
     };
 
-    // getPairedWatchStatus();
-    setConnectedWatch(false);
+    getPairedWatchStatus();
+    // setConnectedWatch(false);
   }, []);
 
   // connectedWatch의 상태가 변경될 때마다 로그 출력
@@ -239,6 +239,7 @@ const RunningAlone = ({ navigation, route }) => {
 
             // WebSocket으로 전송
             kafkaWs.send(sendFrame);
+            console.log("데이터 받을 곳 구독하기", sendFrame);
 
             //stomp에 연결된 경우 데이터를 받을 sub을 구독하고있기
             const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-running-${recordIdRef.current}\ndestination:/sub/running/${recordIdRef.current}\n\n\0`;
