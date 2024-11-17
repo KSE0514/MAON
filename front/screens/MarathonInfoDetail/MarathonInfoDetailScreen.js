@@ -487,11 +487,11 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
       <ScrollView>
         {/* 지도 영역 */}
         <MapArea>
-          <Image
+          {/* <Image
             // style={{height: '100%'}}
             source={testImg}
-          />
-          {/* <MapView
+          /> */}
+          <MapView
                 provider={MapView.PROVIDER_GOOGLE}
                 // customMapStyle={MapStyle}
                 style={{
@@ -521,7 +521,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                     color={color.light_orange}
                   />
                 </Marker>
-              </MapView> */}
+              </MapView>
           <BookmarkBtnArea>
             <BookmarkBtn
               text={"대회 북마크"}
@@ -635,8 +635,9 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
                 
                   {/* 팀원들 */}
                   <TeamListArea>
-                    {teamMemberList&&teamMemberList.length > 0? teamMemberList.map((user) => (
+                    {teamMemberList&&teamMemberList.length > 0? teamMemberList.map((user, index) => (
                       <UserInfoBox
+                        key={user.id || user.nickname || index} // 고유 key 제공
                         proImg={user.imageUrl}
                         level={user.level}
                         name={user.nickname}
