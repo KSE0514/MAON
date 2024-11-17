@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LocationDto {
 	private String memberId;
+	private String routeId;
 	private String recordId;
 	private String latitude;
 	private String longitude;
@@ -23,6 +24,7 @@ public class LocationDto {
 	private int heartRate;
 	private String pace;
 	private String time;
+	private int routeIndex;
 
 	public Point getPoint() {
 		return new Point(Double.parseDouble(latitude), Double.parseDouble(longitude));

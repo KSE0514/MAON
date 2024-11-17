@@ -2,6 +2,7 @@ package com.easter.route.domain.running.controller;
 
 import com.easter.route.domain.record.entity.dto.PointPair;
 import com.easter.route.domain.running.entity.dto.LocationDto;
+import com.easter.route.domain.running.entity.dto.RouteValidationResult;
 import com.easter.route.domain.running.entity.dto.RunningResultDto;
 import com.easter.route.domain.running.service.RunningConsumer;
 import com.easter.route.domain.running.service.RunningProducer;
@@ -36,19 +37,25 @@ public class RunningStompController {
             10);
     }
 
-    // 경로 이탈 판정
-    @MessageMapping("/running/{recordId}/off-course")
-    @SendTo("/sub/running/{recordId}/off-course")
-    public boolean checkPoint(@DestinationVariable String recordId, LocationDto locationDto) {
-        log.info("Received recordId: {}, check point request: {}", recordId, locationDto);
-        return runningConsumer.checkPoint(recordId, locationDto);
-    }
-
     @MessageMapping("/running/{recordId}")
     public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
-        log.info("Received location data: {}", recordId);
-        log.info("Received location data: {}", locationDto);
+        log.info("Received location data without route: {}", recordId);
+        log.info("Received location data without route: {}", locationDto);
         runningProducer.sendLocation(locationDto);
+    }
+
+    @MessageMapping("/running/route/{recordId}")
+    public void sendLocationWithRoute(@DestinationVariable String recordId, LocationDto locationDto) {
+        log.info("Received location data with route: {}", recordId);
+        log.info("Received location data with route: {}", locationDto);
+        runningProducer.sendLocationWithRoute(locationDto);
+    }
+
+    @MessageMapping("/running/team/{teamId}")
+    public void sendTeamLocation(@DestinationVariable String teamId, LocationDto locationDto) {
+        log.info("Received team location data: {}", teamId);
+        log.info("Received team location data: {}", locationDto);
+        runningProducer.sendTeamLocation(teamId, locationDto);
     }
 
     @MessageMapping("/running/{recordId}/end")
@@ -61,10 +68,28 @@ public class RunningStompController {
             return result;
         } catch (Exception e) {
             log.error("Error processing end record: {}", recordId, e);
-            messagingTemplate.convertAndSend(
-                "/sub/running/" + recordId + "/error",
-                "Error processing end record: " + e.getMessage());
             throw e;
         }
     }
+
+    @MessageMapping("/running/team/{teamId}/end")
+    public void finishGroup(@DestinationVariable String teamId) {
+        log.info("Team ID: request received: {}", teamId);
+        try {
+            runningConsumer.finishTeam(teamId);
+            log.info("Successfully processed end team: {}, result: {}", teamId);
+        } catch (Exception e) {
+            log.error("Error processing end team: {}", teamId, e);
+            throw e;
+        }
+    }
+
+
+
+    // @SendTo("/sub/running/team/{memberId}")
+    // public RouteValidationResult validateRoute(@DestinationVariable String memberId, LocationDto locationDto) {
+    //     log.info("Received route validation request: {}", memberId);
+    //     log.info("Received route validation request: {}", locationDto);
+    //     return runningConsumer.validateRoute(memberId, locationDto);
+    // }
 }

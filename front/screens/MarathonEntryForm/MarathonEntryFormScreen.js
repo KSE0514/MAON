@@ -45,7 +45,7 @@ const modalMessageMap = {
 
 const MarathonEntryFormScreen = ({ navigation, route }) => {
   const { user } = useAuthStore();
-  const { memberId, tournamentCategory, tournamentId, teamId, marathonName } =
+  const { memberId, tournamentCategory, tournamentId, teamId, marathonName, reloadGetMarathonDetailInfo } =
     route.params;
   console.log(memberId, tournamentCategory, tournamentId, teamId, marathonName);
   const [dateOfBirth, setDateOfBirth] = useState(""); // 생년월일 상태 관리
@@ -79,6 +79,7 @@ const MarathonEntryFormScreen = ({ navigation, route }) => {
       {
         title: "확인",
         onPress: () => {
+          reloadGetMarathonDetailInfo()
           setShowEntryModal(false);
           navigation.navigate("MarathonInfoDetail", { uuid: tournamentId });
           // navigation.navigate("Home") // 나중에 디테일 화면으로 돌아가도록 바꾸기

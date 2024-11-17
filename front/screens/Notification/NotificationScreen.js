@@ -17,7 +17,7 @@ import {
 import { Image } from "react-native";
 import { useState, useEffect } from "react";
 import TeamRoundBtn from "../../components/Button/TeamRoundBtn/TeamRoundBtn";
-import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
+import NotificationModal from "../../components/Modal/NotificationModal/NotificationModal";
 import colors from "../../styles/colors";
 import { apiClient } from "../../customAxios";
 import useAuthStore from "./../../store/AuthStore"
@@ -63,20 +63,39 @@ const testUsers = [
 // const testUsers = []
 
 
-const NotificationScreen = () => {
+const NotificationScreen = ({route}) => {
+  const {reloadInviteList} = route.params
   const { user } =useAuthStore()
   const [myMarathonList, setMyMarathonList] = useState({})
   const [requestorList, setRequestorList] = useState([])
   const [showAcceptErrorModal, setShowAcceptErrorModal] =useState(false)
 
+  const [targetUserIndex, setTargetUserIndex] = useState(null)  // 초기값을 null로 설정
+  const [showRejectRequestModal, setShowRejectRequestModal] =useState(false) // 초대 거절 모달
+  const [showAcceptRequestModal, setShowAcceptRequestModal] =useState(false) // 초대 수락 모달
+
+
   useEffect(() => {
     getInviteList() // 초대 요청 목록 조회
+    reloadInviteList()
   }, [])
 
   // 참여 불가 모달
+  // const acceptErrorModalContent = {
+  //   text: `해당 마라톤에\n이미 다른 팀으로\n참여 중입니다.`,
+  //   subText: "",
+  //   buttons: [
+  //     {
+  //       title: "확인",
+  //       onPress: () => {
+  //         setShowAcceptErrorModal(false);
+  //       },
+  //     },
+  //   ],
+  // };
   const acceptErrorModalContent = {
-    text: `해당 마라톤에\n이미 다른 팀으로\n참여 중입니다.`,
-    subText: "",
+    text: `팀 참여\n해당 마라톤의 다른 팀 요청은\n자동 거절됩니다.`,
+    subText: "수락할 경우\n해당 마라톤의 다른 팀 요청은\n자동 거절됩니다.",
     buttons: [
       {
         title: "확인",
@@ -86,6 +105,68 @@ const NotificationScreen = () => {
       },
     ],
   };
+
+  // 팀 참여 요청 수락 모달 내용
+  const acceptRequestContent = targetUserIndex !== null && targetUserIndex >= 0 && targetUserIndex < requestorList.length
+  ? {
+      text: `'${requestorList[targetUserIndex].teamName}'팀에\n참여하시겠습니까?`,
+      subText: `수락 시 해당 마라톤의 다른 팀\n요청은 자동 거절됩니다.\n대회 명: ${requestorList[targetUserIndex].tournamentName}`,
+      buttons: [
+        {
+          title: "취소",
+          onPress: () => {
+            cancelAcceptModalBtn()
+          },
+        },
+        {
+          title: "수락",
+          onPress: () => {
+            accept(targetUserIndex);
+          },
+        },
+      ],
+    }
+  : null;
+
+  // 팀 참여 요청 거절 모달 내용
+  const rejectRequestContent = targetUserIndex !== null && targetUserIndex >= 0 && targetUserIndex < requestorList.length
+  ? {
+      text: `'${requestorList[targetUserIndex].teamName}' 팀\n참여를 거부하시겠습니까?`,
+      subText: `대회 명: ${requestorList[targetUserIndex].tournamentName}`,
+      buttons: [
+        {
+          title: "취소",
+          onPress: () => {
+            cancelRejectModalBtn()
+          },
+        },
+        {
+          title: "거부",
+          onPress: () => {
+            reject(targetUserIndex);
+          },
+        },
+      ],
+    }
+  : null;
+
+  // 초대 수락 모달-취소 버튼
+  const cancelAcceptModalBtn = () => {
+    // 수신자 state변수 초기화
+    setTargetUserIndex(null)
+
+    // 모달 닫기
+    setShowAcceptRequestModal(false);
+  }
+  
+  // 초대 거절 모달-취소 버튼
+  const cancelRejectModalBtn = () => {
+    // 수신자 state변수 초기화
+    setTargetUserIndex(null)
+
+    // 모달 닫기
+    setShowRejectRequestModal(false);
+  }
   
   // useEffect(() => {
   //   setRequestorList([...testUsers])
@@ -179,9 +260,32 @@ const joinTeam = (index, marathonName, teamCode) => {
         }
       );
       console.log("팀 초대 요청 처리 성공: ", confirm, response)
+      setShowAcceptRequestModal(false) // 모달 닫기
+      setShowRejectRequestModal(false) // 모달 닫기
+      getInviteList() // 초대 요청 목록 조회
+      reloadInviteList()
+
     } catch(error) {
       console.error("팀 초대 요청 처리 에러 발생: ", error)
     }
+  }
+
+  // 거절 버튼 클릭 시
+  const onClickReject = (index) => {
+    // 타킷인 유저 인덱스 값 담고
+    setTargetUserIndex(index)
+
+    // 거절 확인용 모달 띄우기
+    setShowRejectRequestModal(true)
+  }
+
+  // 수락 버튼 클릭 시
+  const onClickAccept = (index) => {
+    // 타킷인 유저 인덱스 값 담고
+    setTargetUserIndex(index)
+
+    // 수락 확인용 모달 띄우기
+    setShowAcceptRequestModal(true)
   }
 
   return(
@@ -212,11 +316,11 @@ const joinTeam = (index, marathonName, teamCode) => {
                 <RequestTextArea>
                   <RequestText><BoldText>{user.nickname}</BoldText>님이</RequestText>
                   {/* 나중에 팀 이름 추가하기 */}
-                  <RequestText>({user.tournamentName}) 팀 참여 요청을 보냈습니다.</RequestText>
+                  <RequestText><BoldText>'{user.teamName}' 팀</BoldText> 참여 요청을 보냈습니다. (대회 명: {user.tournamentName}) </RequestText>
                 </RequestTextArea>
                 <RequestBtnArea>
-                  <TeamRoundBtn text={'거절'} onPress={() => reject(index)} backColor={colors.black} />
-                  <TeamRoundBtn text={'수락'} onPress={() => accept(index)} backColor={colors.o_btn} />
+                  <TeamRoundBtn text={'거절'} onPress={() => onClickReject(index)} backColor={colors.black} />
+                  <TeamRoundBtn text={'수락'} onPress={() => onClickAccept(index)} backColor={colors.o_btn} />
                 </RequestBtnArea>
               </RequestContent>
             </RequestBox>
@@ -230,8 +334,16 @@ const joinTeam = (index, marathonName, teamCode) => {
 
       </Container>
       {showAcceptErrorModal&&(
-        <DefaultModal isVisible={showAcceptErrorModal} content={acceptErrorModalContent} />
+        <NotificationModal isVisible={showAcceptErrorModal} content={acceptErrorModalContent} />
       )}
+      {/* 거절 확인 모달 */}
+      {showRejectRequestModal&&
+        <NotificationModal isVisible={showRejectRequestModal} content={rejectRequestContent} />
+      }
+      {/* 수락 확인 모달 */}
+      {showAcceptRequestModal&&
+        <NotificationModal isVisible={showAcceptRequestModal} content={acceptRequestContent} />
+      }
     </Wrapper>
   )
 }

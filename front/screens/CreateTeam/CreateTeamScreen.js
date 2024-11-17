@@ -96,7 +96,7 @@ const testUsers = [
 
 const CreateTeamScreen = ({navigation, route}) => {
   const { user } = useAuthStore()
-  const { teamId } = route.params
+  const { teamId, reloadGetMarathonDetailInfo } = route.params
 
   const [searchName, setSearchName] = useState('') // 사용자가 입력할 값을 담을 state변수
 
@@ -204,14 +204,7 @@ const CreateTeamScreen = ({navigation, route}) => {
       );
       if (response.status === 200) {
         console.log("초대 신청 성공: ", response.data)
-        // members에서 상태를 수락 대기 상태로 바꾸기
-        const updateMembers = [...filteredMembers]
-        // updateMembers[recipientIndex].userStatus = '수락대기'
-        updateMembers[recipientIndex].invited = false ////////////////////////// 여기 다시 확인하기
-        setFilteredMembers(updateMembers)
-    
-        // 수신자 state변수 초기화
-        setRecipientIndex(null)
+        inviteableMemberLoad() // 초대 가능 멤버 전체 리스트 조회
     
         // 모달 닫기
         setShowSendRequestModal(false);
@@ -232,8 +225,8 @@ const CreateTeamScreen = ({navigation, route}) => {
 
   // 초대 취소 버튼
   const cancelRequest = async () => {
-    console.log("초대 취소할 사람: ", filteredMembers[recipientIndex], "내 팀 id: ", teamId)
-    console.log("내 accessToken: ", user.accessToken)
+    // console.log("초대 취소할 사람: ", filteredMembers[recipientIndex], "내 팀 id: ", teamId)
+    // console.log("내 accessToken: ", user.accessToken)
     try {
       const response = await apiClient.post(
         `/tournament/team/invite/cancel`,
@@ -248,21 +241,13 @@ const CreateTeamScreen = ({navigation, route}) => {
           },
         }
       );
-      console.log("초대 취소 성공: ", response)
+      console.log("초대 취소 성공: ", response.data)
       if (response.status === 200) {
-      }
-      // members에서 상태를 수락 대기 상태로 바꾸기
-      const updateMembers = [...filteredMembers]
-      // updateMembers[recipientIndex].userStatus = '요청하기'
-      updateMembers[recipientIndex].invited = true ////////////////////////// 여기 다시 확인하기
-      setFilteredMembers(updateMembers)
-  
-      // 수신자 state변수 초기화
-      setRecipientIndex(null)
-  
-      // 모달 닫기
-      setShowCancelRequestModal(false);
+        inviteableMemberLoad() // 초대 가능 멤버 전체 리스트 재조회
 
+        // 모달 닫기
+        setShowCancelRequestModal(false);
+      }
     } catch (error) {
       console.error('초대 취소 에러 발생: ', error)
     }

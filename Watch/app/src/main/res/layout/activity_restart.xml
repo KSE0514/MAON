@@ -7,6 +7,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/real_black"
         tools:context=".presentation.view.intro.RestartActivity">
 
         <TextView
@@ -14,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/gmarketsansttfmedium"
+            android:textColor="@color/white"
             android:gravity="center"
             android:text="모바일 기기와 \n연결되지 않았습니다. \n\n 모바일 기기와 연결을\n다시 확인해주세요."
             android:textSize="15sp"
@@ -31,7 +33,7 @@
             android:background="@drawable/button_background"
             android:fontFamily="@font/gmarketsansttfbold"
             android:text="재시작"
-            android:textSize="10sp"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
