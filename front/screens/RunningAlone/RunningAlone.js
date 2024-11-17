@@ -162,8 +162,8 @@ const RunningAlone = ({ navigation, route }) => {
       }
     };
 
-    getPairedWatchStatus();
-    // setConnectedWatch(false);
+    // getPairedWatchStatus();
+    setConnectedWatch(false);
   }, []);
 
   // connectedWatch의 상태가 변경될 때마다 로그 출력
