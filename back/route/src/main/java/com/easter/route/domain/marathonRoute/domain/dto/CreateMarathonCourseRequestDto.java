@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.geo.GeoJsonLineString;
 import org.springframework.data.mongodb.core.geo.GeoJsonMultiPoint;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.easter.route.domain.marathonRoute.domain.entity.MarathonRoute;
 import com.easter.route.domain.route.entity.enums.SpecialPointType;
 
 import lombok.AllArgsConstructor;
@@ -21,18 +22,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CreateMarathonCourseRequestDto {
-	private MultipartFile gpxFile;
 	private String writerId;
 	private String writerName;
 	private String routeName;
-	private String recordType;
 	private String startPoint;
 	private Double distance;
 	private GeoJsonLineString track;
 	private HashMap<SpecialPointType, GeoJsonMultiPoint> specialPoint;
 
-	@CreatedDate
-	private LocalDateTime createdAt;
-	@LastModifiedDate
-	private LocalDateTime updatedAt;
+	public MarathonRoute toEntity() {
+		return MarathonRoute.builder()
+			.writerId(writerId)
+			.writerName(writerName)
+			.routeName(routeName)
+			.startPoint(startPoint)
+			.distance(distance)
+			.track(track)
+			.specialPoint(specialPoint)
+			.createdAt(LocalDateTime.now())
+			.build();
+	}
+
 }
