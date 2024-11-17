@@ -23,7 +23,9 @@ public class MarathonRouteServiceImpl implements MarathonRouteService {
 
 	@Override
 	public MarathonRouteDto createMarathonCourse(CreateMarathonCourseRequestDto requestDto) {
-		return null;
+		MarathonRoute newRoute = requestDto.toEntity();
+		marathonRouteRepository.save(newRoute);
+		return MarathonRouteDto.of(newRoute);
 	}
 
 	@Override
