@@ -15,6 +15,8 @@ export default function Map({
   connectedWatch,
   running,
   currentLocation,
+  startPoint, // 시작점 좌표 prop 추가
+  selectedRoute,
 }) {
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
@@ -243,6 +245,36 @@ export default function Map({
     };
   }, [runStart]); // runStart가 변경될 때마다 실행
 
+  // 시작점 추가 또는 업데이트
+  useEffect(() => {
+    if (startPoint) {
+      console.log("Updating start-point marker:", startPoint);
+      setMarkers((prevMarkers) => {
+        // "start-point" 마커가 이미 존재하는지 확인
+        const startPointIndex = prevMarkers.findIndex(
+          (marker) => marker.id === "start-point"
+        );
+
+        const startPointMarker = {
+          id: "start-point",
+          latitude: startPoint.latitude,
+          longitude: startPoint.longitude,
+          title: "Start Point",
+          description: "This is the starting point",
+        };
+
+        if (startPointIndex !== -1) {
+          // 기존 마커가 있으면 업데이트
+          prevMarkers[startPointIndex] = startPointMarker;
+          return [...prevMarkers];
+        } else {
+          // 없으면 새로 추가
+          return [...prevMarkers, startPointMarker];
+        }
+      });
+    }
+  }, [startPoint]);
+
   //거리계산
   const calculateDistance = (coord1, coord2) => {
     const R = 6371e3; // 지구의 반지름 (미터)
@@ -314,11 +346,18 @@ export default function Map({
             </Marker>
           ))}
           {mode === "selectedRoute" ? (
-            <Polyline
-              coordinates={baseGps}
-              strokeColor={color.light_orange}
-              strokeWidth={6}
-            />
+            <>
+              <Polyline
+                coordinates={selectedRoute}
+                strokeColor={color.grey}
+                strokeWidth={6}
+              />
+              <Polyline
+                coordinates={gps}
+                strokeColor={color.light_orange}
+                strokeWidth={6}
+              />
+            </>
           ) : (
             <Polyline
               coordinates={gps}

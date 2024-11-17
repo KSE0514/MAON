@@ -146,7 +146,7 @@ const RouteDetail = ({ navigation, route }) => {
                 swapOpacity={true}
               />
               <Text style={[styles.mediumFont, styles.infoText]}>
-                등록일:{" "}
+                등록일:
                 {new Date(marathonInfo.createdAt)
                   .toLocaleDateString("ko-KR", {
                     year: "numeric",

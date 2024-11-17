@@ -39,6 +39,12 @@ const RunningWithRoute = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
+  // 마라톤 시작점 좌표 추출
+  const startPoint = {
+    latitude: marathonInfo.track.coordinates[0][0],
+    longitude: marathonInfo.track.coordinates[0][1],
+  };
+
   const { user } = useAuthStore();
 
   const [showAlarm, setShowAlarm] = useState(true);
@@ -58,6 +64,7 @@ const RunningWithRoute = ({ navigation, route }) => {
   const runningDistanceRef = useRef(runningDistance);
   const recordIdRef = useRef(null);
   const locationInterval = useRef(null);
+  const routeIndexRef = useRef(0);
 
   const [currentLocation, setCurrentLocation] = useState(null);
 
@@ -130,9 +137,11 @@ const RunningWithRoute = ({ navigation, route }) => {
         recordId: recordIdRef.current,
         time: elapsedTimeRef.current,
         memberId: user.id,
+        routeId: routeId,
         latitude: location.latitude,
         longitude: location.longitude,
         heartRate: 0,
+        routeIndex: routeIndexRef,
         pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
         runningDistance: runningDistanceRef.current.toFixed(2),
       };
@@ -143,11 +152,12 @@ const RunningWithRoute = ({ navigation, route }) => {
       ) {
         const sendFrame =
           `SEND\n` +
-          `destination:/pub/running/${recordId}\n` +
+          `destination:/pub/running/route/${recordId}\n` + // 변경된 주소
           `content-type:application/json\n\n` +
           `${JSON.stringify(locationDto)}\0`;
 
         kafkaStompClientRef.current.send(sendFrame);
+        console.log("보내는 러닝 데이터", sendFrame);
       }
     }
   };
@@ -203,8 +213,8 @@ const RunningWithRoute = ({ navigation, route }) => {
         console.log("STOMP 연결 성공!");
 
         // STOMP SUBSCRIBE frame을 보냅니다.
-        const subscribeFrame = `SUBSCRIBE\nid:sub-find-start-point\ndestination:/sub/running/${user.id}/find-start-point\n\n\0`;
-        kafkaWs.send(subscribeFrame);
+        const subscribeStartFrame = `SUBSCRIBE\nid:sub-find-start-point\ndestination:/sub/running/${user.id}/find-start-point\n\n\0`;
+        kafkaWs.send(subscribeStartFrame);
         console.log("시작점 체킹 구독 완료");
 
         // 사용자의 위치를 트래킹하고 주기적으로 서버로 보냅니다.
@@ -302,6 +312,8 @@ const RunningWithRoute = ({ navigation, route }) => {
         </Top>
       )}
       <Map
+        selectedRoute={latLongArray}
+        startPoint={startPoint} // 시작점 전달
         currentLocation={currentLocation}
         connectedWatch={connectedWatch}
         showStartModal={showStartModal}
