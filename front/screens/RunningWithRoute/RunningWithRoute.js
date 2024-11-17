@@ -74,6 +74,9 @@ const RunningWithRoute = ({ navigation, route }) => {
   const [inStartPoint, setInStartPoint] = useState(false);
   const [checkingRoute, setCheckingRoute] = useState({});
 
+  const totalIndex = useRef(latLongArray.length);
+  const currentIndex = useRef(0);
+
   const [resultData, setResultData] = useState({
     id: "",
     routeId: "",
@@ -293,6 +296,33 @@ const RunningWithRoute = ({ navigation, route }) => {
                 const parsedObject = JSON.parse(bodyContent);
                 console.log(parsedObject);
                 setCheckingRoute(parsedObject);
+                //종료
+                if (parsedObject.endPoint) {
+                  setRunStart(false);
+                  setRunning(false);
+                  const sendEndSession = (recordId) => {
+                    console.log("End session request for recordId:", recordId);
+
+                    const sendFrame =
+                      `SEND\n` +
+                      `destination:/pub/running/${recordId}/end\n` +
+                      `content-type:application/json\n\n\0`;
+
+                    if (
+                      kafkaStompClientRef.current &&
+                      kafkaStompClientRef.current.readyState === WebSocket.OPEN
+                    ) {
+                      kafkaStompClientRef.current.send(sendFrame);
+                      console.log(
+                        `End session message sent for recordId: ${recordId}`
+                      );
+                    } else {
+                      console.error("WebSocket connection is not open.");
+                    }
+                  };
+
+                  sendEndSession(recordId); // 종료 요청 전송
+                }
               }
             }
           }
@@ -336,6 +366,21 @@ const RunningWithRoute = ({ navigation, route }) => {
       setMent(`경로에서 벗어났습니다.\n원래 경로로 돌아가세요`);
     } else {
       setShowAlarm(false);
+      //현재 인덱스 값 바꿔주기
+      currentIndex.current = checkingRoute.nextRouteIndex - 1;
+      //거리 값 바꿔주가
+      runningDistanceRef.current = parseFloat(
+        (
+          marathonInfo.distance /
+          (totalIndex.current / currentIndex.current)
+        ).toFixed(2)
+      );
+
+      if (isNaN(runningDistanceRef.current)) {
+        runningDistanceRef.current = 0;
+      }
+
+      console.log("거리: ", runningDistanceRef);
     }
   }, [checkingRoute]);
 

@@ -179,13 +179,15 @@ export default function Map({
       setGps((prevGps) => {
         if (prevGps.length > 0) {
           const lastPosition = prevGps[prevGps.length - 1];
-          const distanceIncrement = calculateDistance(
-            lastPosition,
-            newCoordinate
-          );
-          setRunningDistance(
-            (prevDistance) => prevDistance + distanceIncrement
-          );
+          if (mode === "notSelectedRoute") {
+            const distanceIncrement = calculateDistance(
+              lastPosition,
+              newCoordinate
+            );
+            setRunningDistance(
+              (prevDistance) => prevDistance + distanceIncrement
+            );
+          }
         }
         return [...prevGps, newCoordinate];
       });
