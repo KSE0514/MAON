@@ -67,7 +67,7 @@ const RunningWithRoute = ({ navigation, route }) => {
   const recordIdRef = useRef(null);
   const locationInterval = useRef(null);
   const routeIndexRef = useRef(0);
-  const runRoute = useRef([]);
+  const [runRoute, setRunRoute] = useState([]);
 
   const [currentLocation, setCurrentLocation] = useState(null);
 
@@ -395,7 +395,7 @@ const RunningWithRoute = ({ navigation, route }) => {
       setShowAlarm(false);
       //현재 인덱스 값 바꿔주기
       currentIndex.current = checkingRoute.nextRouteIndex - 1;
-      //거리 값 바꿔주가
+      //거리 값 바꿔주기
       runningDistanceRef.current = parseFloat(
         (
           marathonInfo.distance /
@@ -404,11 +404,10 @@ const RunningWithRoute = ({ navigation, route }) => {
       );
 
       //러닝 인덱스 바꿔주기
-      //runRoute에 latLongArray 0번부터 checkingRoute.nextRouteIndex - 1까지 넣기
-      runRoute.current = latLongArray.slice(
-        0,
-        checkingRoute.nextRouteIndex - 1
-      );
+      // runRoute에 latLongArray 0번부터 checkingRoute.nextRouteIndex - 1까지 넣기
+
+      //러닝 인덱스 바꿔주기
+      setRunRoute(latLongArray.slice(0, checkingRoute.nextRouteIndex - 1));
 
       if (isNaN(runningDistanceRef.current)) {
         runningDistanceRef.current = 0;
