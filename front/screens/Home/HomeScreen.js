@@ -36,7 +36,7 @@ const HomeScreen = ({ navigation }) => {
     imageUrl: "",
   });
 
-  console.log(user.nickname);
+  console.log(user);
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
@@ -51,13 +51,13 @@ const HomeScreen = ({ navigation }) => {
     const checkNickname = async () => {
       const checkStorageNickname = await AsyncStorage.getItem("nickname");
       if (!checkStorageNickname) {
-        getMyProfile()
+        getMyProfile();
       }
       console.log("!!!!!!닉네임 확인용: ", checkStorageNickname);
     };
     checkNickname();
   }, []);
-  
+
   // 홈 화면에 들어왔을 시 async storage에 마이페이지 데이터를 저장하기 위함
   const getMyProfile = async () => {
     try {
@@ -76,32 +76,30 @@ const HomeScreen = ({ navigation }) => {
 
         // async storage에 마이페이지 값이 비워져 있을 때만 저장하도록
         if (!checkStorageNickname) {
-          
           await AsyncStorage.setItem("email", getUserInfo.email);
-          console.log(6)
-  
+          console.log(6);
+
           await AsyncStorage.setItem("name", getUserInfo.name);
-          console.log(7)
+          console.log(7);
           await AsyncStorage.setItem("nickname", getUserInfo.nickname);
-          console.log(8)
-  
+          console.log(8);
+
           // 상세 정보까지 저장
           await AsyncStorage.setItem("height", String(getUserInfo.height));
-          console.log(9)
-  
-          await AsyncStorage.setItem('weight', String(getUserInfo.weight));
-          console.log(10)
+          console.log(9);
+
+          await AsyncStorage.setItem("weight", String(getUserInfo.weight));
+          console.log(10);
           await AsyncStorage.setItem("birthDate", getUserInfo.birthDate);
-          console.log(11)
+          console.log(11);
           await AsyncStorage.setItem("address", getUserInfo.address);
-          console.log(12)
+          console.log(12);
           await AsyncStorage.setItem("gender", getUserInfo.gender);
-          console.log(13)
+          console.log(13);
           await AsyncStorage.setItem("imageUrl", getUserInfo.imageUrl);
-          console.log(14)
+          console.log(14);
           await AsyncStorage.setItem("phoneNumber", getUserInfo.phoneNumber);
         }
-
       }
     } catch (error) {
       console.error("마이페이지 조회 에러 발생: ", error);

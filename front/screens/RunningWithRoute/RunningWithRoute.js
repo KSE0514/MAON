@@ -39,7 +39,6 @@ const RunningWithRoute = ({ navigation, route }) => {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  console.log(routeId);
   // 마라톤 시작점 좌표 추출
   const startPoint = {
     latitude: marathonInfo.track.coordinates[0].coordinates[0],
@@ -58,6 +57,7 @@ const RunningWithRoute = ({ navigation, route }) => {
   const [pace, setPace] = useState("00'00''"); // 페이스
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
   const [recordId, setRecordId] = useState();
+  const [ment, setMent] = useState(`시작을 위해\n시작점으로 이동하세요`);
 
   const kafkaStompClientRef = useRef(null);
   const elapsedTimeRef = useRef(elapsedTime);
@@ -72,6 +72,7 @@ const RunningWithRoute = ({ navigation, route }) => {
   const [locationPermissionGranted, setLocationPermissionGranted] =
     useState(false);
   const [inStartPoint, setInStartPoint] = useState(false);
+  const [checkingRoute, setCheckingRoute] = useState({});
 
   const [resultData, setResultData] = useState({
     id: "",
@@ -186,6 +187,23 @@ const RunningWithRoute = ({ navigation, route }) => {
     }
   }, [running]);
 
+  useEffect(() => {
+    if (recordId) {
+      // recordId가 설정된 이후에만 구독 요청을 시도합니다.
+      const subscribeCheckRouteFrame = `SUBSCRIBE\nid:sub-check-route\ndestination:/sub/running/route/${recordId}\n\n\0`;
+
+      if (
+        kafkaStompClientRef.current &&
+        kafkaStompClientRef.current.readyState === WebSocket.OPEN
+      ) {
+        kafkaStompClientRef.current.send(subscribeCheckRouteFrame);
+        console.log("경로 이탈 판단 구독 완료");
+      } else {
+        console.error("WebSocket 연결이 아직 열려 있지 않습니다.");
+      }
+    }
+  }, [recordId]);
+
   //결과 데이터가 변경이 되면 종료를 의미하기에 종료페이지로 이동
   useEffect(() => {
     if (resultData.id) {
@@ -247,22 +265,35 @@ const RunningWithRoute = ({ navigation, route }) => {
           }
         }, 1000); // 1초마다 위치 정보를 전송합니다.
       } else {
-        console.log("무언가 응답이 옴", message.data);
         try {
           // 메시지의 본문을 추출합니다 (본문은 헤더와 본문 사이에 위치).
           const bodyMatch = message.data.match(/\n\n(.*)\0/);
           if (bodyMatch && bodyMatch[1]) {
             const bodyContent = bodyMatch[1].trim(); // 본문에서 공백 제거
-            console.log("시작점 판단 응답: ", bodyContent);
+            console.log("응답 본문: ", bodyContent);
 
-            // 만약 본문이 'true'인 경우, 특정 행동을 수행합니다.
-            if (bodyContent === "true") {
-              setInStartPoint(true);
-              setShowStartModal(true);
-              setShowAlarm(false);
-              clearInterval(locationInterval.current);
-            } else if (bodyContent === "false") {
-              console.log("시작점 판단: false");
+            // 메시지의 destination을 추출합니다.
+            const destinationMatch = message.data.match(/destination:(.*)\n/);
+            if (destinationMatch && destinationMatch[1]) {
+              const destination = destinationMatch[1].trim();
+
+              // 시작점 판단에 대한 응답 처리
+              if (destination.endsWith("/find-start-point")) {
+                if (bodyContent === "true") {
+                  setInStartPoint(true);
+                  setShowStartModal(true);
+                  setShowAlarm(false);
+                  clearInterval(locationInterval.current);
+                } else if (bodyContent === "false") {
+                }
+              }
+              // 경로 체크에 대한 응답 처리
+              else if (destination.includes("/route/")) {
+                console.log("경로 체크 응답: ");
+                const parsedObject = JSON.parse(bodyContent);
+                console.log(parsedObject);
+                setCheckingRoute(parsedObject);
+              }
             }
           }
         } catch (error) {
@@ -289,6 +320,24 @@ const RunningWithRoute = ({ navigation, route }) => {
       kafkaWs.close();
     };
   }, []);
+
+  //바뀐 측정값 바로 적용시켜주기
+  useEffect(() => {
+    elapsedTimeRef.current = elapsedTime;
+    paceRef.current = pace;
+    runningDistanceRef.current = runningDistance;
+  }, [elapsedTime, pace, runningDistance]);
+
+  useEffect(() => {
+    console.log(checkingRoute.nextRouteIndex, checkingRoute.onRoute);
+    routeIndexRef.current = checkingRoute.nextRouteIndex;
+    if (checkingRoute.onRoute) {
+      setShowAlarm(true);
+      setMent(`경로에서 벗어났습니다.\n원래 경로로 돌아가세요`);
+    } else {
+      setShowAlarm(false);
+    }
+  }, [checkingRoute]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -337,7 +386,7 @@ const RunningWithRoute = ({ navigation, route }) => {
               <GoalDonutChart
                 connectedWatch={connectedWatch}
                 currentDistance={parseFloat(runningDistanceRef.current)}
-                goalDistance={0}
+                goalDistance={marathonInfo.distance}
                 mode={mode}
               />
             </RunInfoCol>
@@ -366,12 +415,7 @@ const RunningWithRoute = ({ navigation, route }) => {
       {showStopModal && (
         <DefaultModal isVisible={showStopModal} content={StopModalContent} />
       )}
-      {showAlarm && (
-        <RunAlarm
-          isVisible={showAlarm}
-          ment={`시작을 위해\n시작점으로 이동하세요`}
-        />
-      )}
+      {showAlarm && <RunAlarm isVisible={showAlarm} ment={ment} />}
     </View>
   );
 };

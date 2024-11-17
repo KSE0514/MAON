@@ -74,11 +74,15 @@ const PairingWatch = ({ navigation, route }) => {
 
           // CONNECTED 후, 지정된 경로로 데이터 전송
           const destination = `/pub/connection/info/${generatedNumber}`;
-          console.log(user?.nickname);
+
+          const checkNickname = async () => {
+            const checkStorageNickname = await AsyncStorage.getItem("nickname");
+            return checkStorageNickname;
+          };
+
           const payload = {
             memberId: user?.id, // user 객체의 UUID 또는 기본 UUID
-            memberNickname: user?.nickname,
-            // memberNickname: "예삐",
+            memberNickname: checkNickname(),
             timestamp: new Date().toISOString(), // ISO 형식의 timestamp
           };
 
