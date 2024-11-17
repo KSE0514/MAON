@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.easter.route.domain.record.entity.dto.CreateRunningResponseDto;
-import com.easter.route.global.security.PassportDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -46,8 +45,9 @@ public class RecordServiceImpl implements RecordService {
 			.routeId(createRunningRequestDto.getRouteId())
 			.build();
 		log.error("레코드: {}", record);
-		recordRepository.save(record);
-		String id = record.getId();
+
+		Record savedRecord = recordRepository.save(record);
+		String id = savedRecord.getId();
 		return CreateRunningResponseDto.builder()
 				.recordId(id)
 				.memberId(memberId)

@@ -24,7 +24,6 @@ public class RecordController {
 
     private final RecordService recordService;
 
-    //TODO: routeType 구분하기?
     @PostMapping("/running/createRunning")
     public ResponseEntity<ResultResponse> createRunning(@RequestAttribute("passport") PassportDto passport, @RequestBody CreateRunningRequestDto createRunningRequestDto) {
         log.info("passport : {}", passport);
