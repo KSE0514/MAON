@@ -101,11 +101,11 @@ public class RunningConsumer {
 				CreateRunningResponseDto result =
 					recordService.createRunning(UUID.fromString(locationDto.getMemberId()),
 						new CreateRunningRequestDto(locationDto.getRouteId(), "RACE"));
-				groupRunningInfoMap.get(teamId).getRunningInfoMap().put(result.getRecordId(), new ArrayList<>()).add(locationDto);
-
+				locationDto.setRecordId(result.getRecordId());
+				groupRunningInfoMap.get(teamId).getRunningInfoMap().put(String.valueOf(result.getMemberId()), new ArrayList<>()).add(locationDto);
 			}
-			if (groupRunningInfoMap.get(teamId).getRunningInfoMap().containsKey(locationDto.getRecordId())) {
-				groupRunningInfoMap.get(teamId).getRunningInfoMap().get(locationDto.getRecordId()).add(locationDto);
+			if (groupRunningInfoMap.get(teamId).getRunningInfoMap().containsKey(locationDto.getMemberId())) {
+				groupRunningInfoMap.get(teamId).getRunningInfoMap().get(locationDto.getMemberId()).add(locationDto);
 			}
 			messagingTemplate.convertAndSend("/sub/running/team/" + teamId, groupRunningInfoMap.get(teamId).getRunningInfoMap());
 			RouteValidationResult result = validateLocation(locationDto);
@@ -176,7 +176,6 @@ public class RunningConsumer {
 			.build();
 
 		Record updatedRecord = recordService.updateRecord(updateRecordDto);
-		clearRunningInfo(recordId, runningInfoMap);
 		return updatedRecord;
 	}
 
@@ -197,22 +196,20 @@ public class RunningConsumer {
 	}
 
 	// 러닝 종료시 계산한 값을 클라이언트에 반환한다.
-	public void finishTeam(String teamId) {
+	public RunningResultDto finishTeam(String teamId, String memberId) {
 		GroupRunningSession groupRunningSession = groupRunningInfoMap.get(teamId);
-		for (String recordId : groupRunningSession.getRunningInfoMap().keySet()) {
-			Record record = recordRepository.findById(recordId)
-				.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
-					"레코드가 존재하지 않습니다: recordId = " + recordId));
-			log.info("Record: {} 를 찾았습니다.", record);
-			// Record 결과 계산
-			Record updatedRecord = calculateResult(record, groupRunningSession.getRunningInfoMap());
-			double routeDistance = Optional.ofNullable(updatedRecord.getRouteId())
-				.flatMap(routeRepository::findById)
-				.map(Route::getDistance)
-				.orElseGet(updatedRecord::getDistance);
-			groupRunningSession.getRunningInfoMap().put(recordId, new ArrayList<>());
-			messagingTemplate.convertAndSend("/sub/running/team/" + recordId, new RunningResultDto(RecordDto.of(updatedRecord), routeDistance, "end"));
-		}
+		String recordId = groupRunningSession.getRunningInfoMap().get(memberId).get(0).getRecordId();
+		Record record = recordRepository.findById(recordId)
+			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
+				"레코드가 존재하지 않습니다: recordId = " + recordId));
+		log.info("Record: {} 를 찾았습니다.", record);
+		// Record 결과 계산
+		Record updatedRecord = calculateResult(record, groupRunningSession.getRunningInfoMap());
+		double routeDistance = Optional.ofNullable(updatedRecord.getRouteId())
+			.flatMap(routeRepository::findById)
+			.map(Route::getDistance)
+			.orElseGet(updatedRecord::getDistance);
+		return new RunningResultDto(RecordDto.of(updatedRecord), routeDistance, "end");
 	}
 
 
@@ -220,8 +217,12 @@ public class RunningConsumer {
 		return runningInfoMap.getOrDefault(recordId, new ArrayList<>());
 	}
 
-	public void clearRunningInfo(String recordId, ConcurrentHashMap<String, List<LocationDto>> runningInfoMap) {
+	public void clearRunningInfo(String recordId) {
 		runningInfoMap.remove(recordId);
+	}
+
+	public void clearRunningInfo(String teamId, String recordId) {
+		groupRunningInfoMap.get(teamId).getRunningInfoMap().remove(recordId);
 	}
 
 	public List<String> getPaceList(String recordId, ConcurrentHashMap<String, List<LocationDto>> runningInfoMap) {

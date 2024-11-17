@@ -64,6 +64,7 @@ public class RunningStompController {
         log.info("End record request received: {}", recordId);
         try {
             RunningResultDto result = runningConsumer.finish(recordId);
+            runningConsumer.clearRunningInfo(recordId);
             log.info("Successfully processed end record: {}, result: {}", recordId, result);
             return result;
         } catch (Exception e) {
@@ -72,12 +73,15 @@ public class RunningStompController {
         }
     }
 
-    @MessageMapping("/running/team/{teamId}/end")
-    public void finishGroup(@DestinationVariable String teamId) {
+    @MessageMapping("/running/team/{teamId}/{memberId}/end")
+    @SendTo("/sub/running/team/{teamId}/{memberId}/end")
+    public RunningResultDto finishGroup(@DestinationVariable String teamId, @DestinationVariable String memberId) {
         log.info("Team ID: request received: {}", teamId);
         try {
-            runningConsumer.finishTeam(teamId);
-            log.info("Successfully processed end team: {}, result: {}", teamId);
+            RunningResultDto result =  runningConsumer.finishTeam(teamId, memberId);
+            runningConsumer.clearRunningInfo(teamId, memberId);
+            log.info("Successfully processed end record: {}, result: {}", memberId, result);
+            return result;
         } catch (Exception e) {
             log.error("Error processing end team: {}", teamId, e);
             throw e;
