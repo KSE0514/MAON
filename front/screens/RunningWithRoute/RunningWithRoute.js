@@ -194,6 +194,7 @@ const RunningWithRoute = ({ navigation, route }) => {
     if (recordId) {
       // recordId가 설정된 이후에만 구독 요청을 시도합니다.
       const subscribeCheckRouteFrame = `SUBSCRIBE\nid:sub-check-route\ndestination:/sub/running/route/${recordId}\n\n\0`;
+      const subscribeEndFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${recordId}/end\n\n\0`;
 
       if (
         kafkaStompClientRef.current &&
@@ -201,6 +202,8 @@ const RunningWithRoute = ({ navigation, route }) => {
       ) {
         kafkaStompClientRef.current.send(subscribeCheckRouteFrame);
         console.log("경로 이탈 판단 구독 완료");
+        kafkaStompClientRef.current.send(subscribeEndFrame);
+        console.log("끝 체킹 구독 완료", subscribeEndFrame);
       } else {
         console.error("WebSocket 연결이 아직 열려 있지 않습니다.");
       }
@@ -239,7 +242,7 @@ const RunningWithRoute = ({ navigation, route }) => {
         // STOMP SUBSCRIBE frame을 보냅니다.
         const subscribeStartFrame = `SUBSCRIBE\nid:sub-find-start-point\ndestination:/sub/running/${user.id}/find-start-point\n\n\0`;
         kafkaWs.send(subscribeStartFrame);
-        console.log("시작점 체킹 구독 완료");
+        console.log("시작점 체킹 구독 완료", subscribeStartFrame);
 
         // 사용자의 위치를 트래킹하고 주기적으로 서버로 보냅니다.
         locationInterval.current = setInterval(async () => {
@@ -288,6 +291,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                   setShowAlarm(false);
                   clearInterval(locationInterval.current);
                 } else if (bodyContent === "false") {
+                  setShowAlarm(true);
                 }
               }
               // 경로 체크에 대한 응답 처리
@@ -300,6 +304,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                 if (parsedObject.endPoint) {
                   setRunStart(false);
                   setRunning(false);
+                  setShowAlarm(false);
                   const sendEndSession = (recordId) => {
                     console.log("End session request for recordId:", recordId);
 
@@ -314,15 +319,35 @@ const RunningWithRoute = ({ navigation, route }) => {
                     ) {
                       kafkaStompClientRef.current.send(sendFrame);
                       console.log(
-                        `End session message sent for recordId: ${recordId}`
+                        `End session message sent for recordId:`,
+                        sendFrame
                       );
                     } else {
                       console.error("WebSocket connection is not open.");
                     }
                   };
 
-                  sendEndSession(recordId); // 종료 요청 전송
+                  sendEndSession(recordIdRef.current); // 종료 요청 전송
                 }
+              } else if (destination.endsWith("/end")) {
+                console.log("끝 체킹 응답: ", bodyContent);
+                const parsedData = JSON.parse(bodyContent);
+                setResultData({
+                  id: parsedData.record.id,
+                  routeId: parsedData.record.routeId,
+                  paceList: parsedData.record.paceList,
+                  recordedTrack:
+                    parsedData.record.recordedTrack.coordinates || [],
+                  runningTime: parsedData.record.runningTime,
+                  averagePace: parsedData.record.averagePace,
+                  averageHeartRate: parsedData.record.averageHeartRate,
+                  distance: parsedData.record.distance,
+                  createdAt: parsedData.record.createdAt,
+                  routeDistance: parsedData.routeDistance || 0,
+                  distanceList: parsedData.record.distanceList,
+                });
+              } else {
+                console.warn("Unknown destination received:", destination);
               }
             }
           }
