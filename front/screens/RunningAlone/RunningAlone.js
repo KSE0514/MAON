@@ -148,12 +148,6 @@ const RunningAlone = ({ navigation, route }) => {
     }
   };
 
-  //시간 데이터 업데이트
-  const handleTimeUpdate = (time) => {
-    console.log(time);
-    setElapsedTime(time); // Timer로부터 업데이트된 시간 받기
-  };
-
   // 연동 여부 가져오기 (비동기 함수로 상태 설정)
   useEffect(() => {
     const getPairedWatchStatus = async () => {
@@ -168,7 +162,8 @@ const RunningAlone = ({ navigation, route }) => {
       }
     };
 
-    getPairedWatchStatus();
+    // getPairedWatchStatus();
+    setConnectedWatch(false);
   }, []);
 
   // connectedWatch의 상태가 변경될 때마다 로그 출력
@@ -490,6 +485,7 @@ const RunningAlone = ({ navigation, route }) => {
         runStart={runStart}
         setRunningDistance={setRunningDistance}
         mode={mode}
+        running={running}
         onLocationChange={handleUserLocationChange}
       />
       {running && (

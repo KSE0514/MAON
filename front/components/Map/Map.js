@@ -13,6 +13,8 @@ export default function Map({
   mode,
   onLocationChange, // 위치 변경 콜백
   connectedWatch,
+  running,
+  currentLocation,
 }) {
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
@@ -74,6 +76,30 @@ export default function Map({
     requestLocationPermission();
   }, []);
 
+  // currentLocation이 변경될 때마다 마커 위치 업데이트
+  useEffect(() => {
+    if (currentLocation) {
+      setMarkers((prevMarkers) =>
+        prevMarkers.map((marker) =>
+          marker.id === "current-point"
+            ? {
+                ...marker,
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+              }
+            : marker
+        )
+      );
+
+      // 지도 위치도 업데이트
+      setmapRegion({
+        ...mapRegion,
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+      });
+    }
+  }, [currentLocation]);
+
   /**
    * 내 위치 받아오기
    */
@@ -89,23 +115,43 @@ export default function Map({
           latitudeDelta: 0.002,
           longitudeDelta: 0.002,
         });
-        setMarkers((prevMarkers) => [
-          ...prevMarkers,
-          {
-            id: "start-point",
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            title: "Start Point",
-            description: "This is the starting point",
-          },
-          {
+        setMarkers((prevMarkers) => {
+          // 기존 마커들 유지
+          const updatedMarkers = [...prevMarkers];
+
+          // mode가 "notSelectedRoute"일 때만 "start-point" 마커를 추가
+          if (mode === "notSelectedRoute") {
+            updatedMarkers.push({
+              id: "start-point",
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              title: "Start Point",
+              description: "This is the starting point",
+            });
+          }
+
+          // 항상 "current-point" 마커 추가 또는 업데이트
+          const currentPointIndex = updatedMarkers.findIndex(
+            (marker) => marker.id === "current-point"
+          );
+
+          const currentPointMarker = {
             id: "current-point",
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
             title: "Current Point",
-            description: "This is the starting point",
-          },
-        ]);
+            description: "This is the current point",
+          };
+
+          // "current-point"가 이미 있다면 업데이트, 없으면 추가
+          if (currentPointIndex !== -1) {
+            updatedMarkers[currentPointIndex] = currentPointMarker;
+          } else {
+            updatedMarkers.push(currentPointMarker);
+          }
+
+          return updatedMarkers;
+        });
       }
     };
 
@@ -256,8 +302,8 @@ export default function Map({
                 <Image
                   source={require("../../assets/images/Union.png")} // 이미지 경로
                   style={{
-                    width: 34, // 원하는 너비
-                    height: 42, // 원하는 높이
+                    width: 30, // 원하는 너비
+                    height: 38, // 원하는 높이
                     resizeMode: "contain", // 이미지를 짤리지 않게 표시
                   }}
                 />

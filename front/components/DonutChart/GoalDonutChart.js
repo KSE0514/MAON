@@ -5,7 +5,7 @@ import fonts from "../../styles/fonts";
 import color from "../../styles/colors";
 
 const GoalDonutChart = ({ goalDistance, currentDistance, mode }) => {
-  console.log("GoalDonut distance:", currentDistance);
+  // console.log("GoalDonut distance:", currentDistance);
   const chartSize = 110;
   const progress =
     goalDistance == 0 ? 100 : (currentDistance / goalDistance) * 100; // 목표 대비 현재 진행률 계산

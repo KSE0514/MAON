@@ -83,7 +83,7 @@ const RouteDetail = ({ navigation, route }) => {
     };
 
     const getDetailInfo = async () => {
-      setMarathonInfo(info[0]);
+      setMarathonInfo(info);
     };
     getDetailInfo();
     fetchRunRanking();
