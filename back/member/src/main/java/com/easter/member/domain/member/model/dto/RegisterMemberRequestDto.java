@@ -1,15 +1,15 @@
 package com.easter.member.domain.member.model.dto;
 
 import com.easter.member.domain.member.model.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class RegisterMemberRequestDto {
     private String name;
     private String nickname;
@@ -19,6 +19,6 @@ public class RegisterMemberRequestDto {
     private String birthDate;
     private String address;
     private Gender gender;
-    private String imageUrl;
+    private MultipartFile profileImage;
     private String phoneNumber;
 }
