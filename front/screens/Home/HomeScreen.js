@@ -36,7 +36,6 @@ const HomeScreen = ({ navigation }) => {
     imageUrl: "",
   });
 
-  console.log(user);
   const fontsLoaded = useFontsLoaded();
 
   if (!fontsLoaded) {
@@ -53,7 +52,7 @@ const HomeScreen = ({ navigation }) => {
       if (!checkStorageNickname) {
         getMyProfile();
       }
-      console.log("!!!!!!닉네임 확인용: ", checkStorageNickname);
+      // console.log("!!!!!!닉네임 확인용: ", checkStorageNickname);
     };
     checkNickname();
   }, []);
@@ -68,7 +67,7 @@ const HomeScreen = ({ navigation }) => {
         },
       });
       if (response.status === 200) {
-        console.log("마이페이지 조회 성공: ", response.data.data);
+        // console.log("마이페이지 조회 성공: ", response.data.data);
         const getUserInfo = response.data.data;
         setUserInfo({ ...getUserInfo });
 
@@ -77,27 +76,27 @@ const HomeScreen = ({ navigation }) => {
         // async storage에 마이페이지 값이 비워져 있을 때만 저장하도록
         if (!checkStorageNickname) {
           await AsyncStorage.setItem("email", getUserInfo.email);
-          console.log(6);
+          // console.log(6);
 
           await AsyncStorage.setItem("name", getUserInfo.name);
-          console.log(7);
+          // console.log(7);
           await AsyncStorage.setItem("nickname", getUserInfo.nickname);
-          console.log(8);
+          // console.log(8);
 
           // 상세 정보까지 저장
           await AsyncStorage.setItem("height", String(getUserInfo.height));
-          console.log(9);
+          // console.log(9);
 
           await AsyncStorage.setItem("weight", String(getUserInfo.weight));
-          console.log(10);
+          // console.log(10);
           await AsyncStorage.setItem("birthDate", getUserInfo.birthDate);
-          console.log(11);
+          // console.log(11);
           await AsyncStorage.setItem("address", getUserInfo.address);
-          console.log(12);
+          // console.log(12);
           await AsyncStorage.setItem("gender", getUserInfo.gender);
-          console.log(13);
+          // console.log(13);
           await AsyncStorage.setItem("imageUrl", getUserInfo.imageUrl);
-          console.log(14);
+          // console.log(14);
           await AsyncStorage.setItem("phoneNumber", getUserInfo.phoneNumber);
         }
       }
