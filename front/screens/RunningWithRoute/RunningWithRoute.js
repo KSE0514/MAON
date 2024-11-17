@@ -38,6 +38,7 @@ const RunningWithRoute = ({ navigation, route }) => {
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
+  console.log("latlon: ", latLongArray);
 
   // 마라톤 시작점 좌표 추출
   const startPoint = {
@@ -66,6 +67,7 @@ const RunningWithRoute = ({ navigation, route }) => {
   const recordIdRef = useRef(null);
   const locationInterval = useRef(null);
   const routeIndexRef = useRef(0);
+  const runRoute = useRef([]);
 
   const [currentLocation, setCurrentLocation] = useState(null);
 
@@ -401,6 +403,13 @@ const RunningWithRoute = ({ navigation, route }) => {
         ).toFixed(2)
       );
 
+      //러닝 인덱스 바꿔주기
+      //runRoute에 latLongArray 0번부터 checkingRoute.nextRouteIndex - 1까지 넣기
+      runRoute.current = latLongArray.slice(
+        0,
+        checkingRoute.nextRouteIndex - 1
+      );
+
       if (isNaN(runningDistanceRef.current)) {
         runningDistanceRef.current = 0;
       }
@@ -437,6 +446,7 @@ const RunningWithRoute = ({ navigation, route }) => {
         </Top>
       )}
       <Map
+        runRoute={runRoute}
         selectedRoute={latLongArray}
         startPoint={startPoint} // 시작점 전달
         currentLocation={currentLocation}

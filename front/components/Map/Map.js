@@ -17,6 +17,7 @@ export default function Map({
   currentLocation,
   startPoint, // 시작점 좌표 prop 추가
   selectedRoute,
+  runRoute,
 }) {
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
@@ -354,7 +355,7 @@ export default function Map({
                 strokeWidth={6}
               />
               <Polyline
-                coordinates={gps}
+                coordinates={runRoute}
                 strokeColor={color.light_orange}
                 strokeWidth={6}
               />
