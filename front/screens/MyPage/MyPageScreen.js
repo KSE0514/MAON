@@ -306,6 +306,19 @@ const MyPageScreen = ({ navigation }) => {
     console.log("바뀐 이미지: " + image);
   }, [image]);
 
+
+    // 데이터 배열 생성 (InputBox를 FlatList에 넣을 수 있도록 구성)
+    const userDetails = [
+      { key: "name", label: "이름", placeholder: "이름을 입력해주세요.", value: name, setValue: setName, editable: editMode },
+      { key: "phoneNumber", label: "전화번호", placeholder: "010-XXXX-XXXX", value: phoneNumber, setValue: setPhoneNumber, editable: editMode },
+      { key: "email", label: "이메일", placeholder: "email@email.com", value: email, setValue: setEmail, editable: false },
+      { key: "dateOfBirth", label: "생년월일", placeholder: "YYYY/MM/DD", value: dateOfBirth, setValue: setDateOfBirth, editable: editMode },
+      { key: "address", label: "주소", placeholder: "주소를 입력해주세요.", value: address, setValue: setAddress, editable: editMode },
+      { key: "gender", label: "성별", placeholder: "", value: selectedGender, setValue: setSelectedGender, editable: false },
+    ];
+
+    
+    
   
   return (
     <Wapper  style={{ flex: 1 }}>
@@ -314,10 +327,10 @@ const MyPageScreen = ({ navigation }) => {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <ScrollView
+          {/* <ScrollView
             contentContainerStyle={{ flexGrow: 1 , paddingBottom: 20}}
             keyboardShouldPersistTaps="handled" // 스크롤 중에도 키보드가 사라지지 않도록 설정
-          >
+          > */}
             {editMode ? (
               <BackBtn onPress={() => setEditMode(false)}>
                 <Svg
@@ -346,7 +359,7 @@ const MyPageScreen = ({ navigation }) => {
               </EditBtn>
             )}
 
-            <Top>
+            {/* <Top>
               {editMode ? (
                 <ProfileImg as={TouchableOpacity} onPress={selectProfileImage}>
                   {image ? (
@@ -497,8 +510,133 @@ const MyPageScreen = ({ navigation }) => {
                   />
                 </BtnArea>
               )}
-            </Content>
-          </ScrollView>
+            </Content> */}
+            <FlatList
+                style={{ paddingHorizontal: 40}}
+                data={userDetails}
+                keyExtractor={(item) => item.key} // 고유 키로 구분
+                contentContainerStyle={{ paddingBottom: 20 }}
+                keyboardShouldPersistTaps="handled"
+                renderItem={({ item }) => (
+                  <InputBox
+                    label={item.label}
+                    placeholder={item.placeholder}
+                    value={item.value}
+                    setValue={item.setValue}
+                    isEditMode={item.editable}
+                  />
+                )}
+                ListHeaderComponent={() => (
+                  <Top>
+                    {editMode ? (
+                      <ProfileImg as={TouchableOpacity} onPress={selectProfileImage}>
+                        {image ? (
+                          <Image
+                            style={{ width: "100%", height: "100%" }}
+                            source={
+                              typeof image === "string" && image
+                                ? { uri: image }
+                                : testImg
+                            }
+                          />
+                        ) : (
+                          <Svg
+                            width={100}
+                            height={100}
+                            fill={colors.grape_fruit}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"
+                            onPress={() => navigation.navigate("MyPage")}
+                          >
+                            <Path
+                              class="fa-secondary"
+                              opacity=".4"
+                              d="M96 128a128 128 0 1 0 256 0A128 128 0 1 0 96 128z"
+                            />
+                            <Path
+                              class="fa-primary"
+                              d="M0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"
+                            />
+                          </Svg>
+                        )}
+                      </ProfileImg>
+                    ) : (
+                      <ProfileImg>
+                        {image ? (
+                          <Image
+                            style={{ width: "100%", height: "100%" }}
+                            source={
+                              typeof image === "string" && image
+                                ? { uri: image }
+                                : testImg
+                            }
+                          />
+                        ) : (
+                          <Svg
+                            width={100}
+                            height={100}
+                            fill={colors.grape_fruit}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"
+                            onPress={() => navigation.navigate("MyPage")}
+                          >
+                            <Path
+                              class="fa-secondary"
+                              opacity=".4"
+                              d="M96 128a128 128 0 1 0 256 0A128 128 0 1 0 96 128z"
+                            />
+                            <Path
+                              class="fa-primary"
+                              d="M0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"
+                            />
+                          </Svg>
+                        )}
+                      </ProfileImg>
+                    )}
+                                  <TopInfoContainer>
+                <NickNameText>{nickName}</NickNameText>
+                {editMode ? (
+                  <BodyInfoEditView>
+                    <BodyInfoEditTextInput
+                      value={String(heightInfo)}
+                      placeholder="키"
+                      keyboardType="numeric"
+                      onChangeText={(text) => setHeightInfo(text)}
+                    />
+                    <Text>cm / </Text>
+                    <BodyInfoEditTextInput
+                      value={String(weightInfo)}
+                      placeholder="몸무게"
+                      keyboardType="numeric"
+                      onChangeText={(text) => setWeightInfo(text)}
+                    />
+                    <Text>kg</Text>
+                  </BodyInfoEditView>
+                ) : (
+                  // <BodyinfoText>{heightInfo}cm / {weightInfo}kg</BodyinfoText>
+                  <BodyinfoText>
+                    {heightInfo}cm / {weightInfo}kg
+                  </BodyinfoText>
+                )}
+              </TopInfoContainer>
+                  </Top>
+                )}
+                ListFooterComponent={() => (
+                  <BtnArea>
+                    {editMode ? (
+                      <SquareBtn text={"수정하기"} onPress={editComplete} />
+                    ) : (
+                      <SquareBtn
+                        text={"로그아웃"}
+                        onPress={() => {
+                          clearAccessToken();
+                        }}
+                      />
+                    )}
+                  </BtnArea>
+                )}
+          />
+          {/* </ScrollView> */}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </Wapper>
