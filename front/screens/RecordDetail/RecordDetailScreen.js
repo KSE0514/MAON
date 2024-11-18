@@ -262,8 +262,8 @@ const RecordDetailScreen = ({ navigation, route }) => {
                 }}
                 showsUserLocation={false}
                 initialRegion={{
-                  latitude: routeList[0]?.x || 37.6, // 위도 설정
-                  longitude: routeList[0]?.y || 127,
+                  latitude: routeList[0]?.x || 35.205409, // 위도 설정
+                  longitude: routeList[0]?.y || 126.811489,
                   latitudeDelta: 0.005, // 줌 레벨 설정 (작을수록 줌 인)
                   longitudeDelta: 0.005,
                 }}
