@@ -442,7 +442,7 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
         const teamId = response.data.data.teamId
         setMyTeamCode(teamId)
         getMarathonDetailInfo() // 마라톤 정보 재조회(신청, 팀 생성 여부에 따른 즉각적인 화면 반영을 위함)
-        navigation.navigate("CreateTeam", { teamId: response.data.data.teamId, reloadGetMarathonDetailInfo: getMarathonDetailInfo });
+        navigation.navigate("CreateTeam", { teamId: response.data.data.teamId, reloadGetMarathonDetailInfo: getMarathonDetailInfo, tournamentId: uuid, paramsLatitude: paramsLatitude, paramsLongitude: paramsLongitude });
         setAddModal(false)
       }
     } catch (error) {
