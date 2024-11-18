@@ -1,6 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import * as Font from "expo-font";
 import React from "react";
+import { StatusBar } from "expo-status-bar";
+import { BackHandler } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { Alert, StyleSheet, Text, View, sta } from "react-native";
+import ChallengeScreen from "./screens/Challenge/ChallengeScreen.js";
+import MarathonInfo from "./screens/MarathonInfo/MarathonInfoScreen.js";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -78,6 +84,9 @@ export default function App() {
             <Stack.Screen name="MyPage" component={MyPageScreen} />
             <Stack.Screen name="Notification" component={NotificationScreen} />
             <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
+            <Stack.Screen name="MarathonInfo" component={MarathonInfo} />
+            <Stack.Screen name="RecordDetail" component={RecordDetailScreen} />
+            <Stack.Screen name="Challenge" component={ChallengeScreen} />
             <Stack.Screen
               name="MarathonEntryForm"
               component={MarathonEntryFormScreen}

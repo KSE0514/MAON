@@ -17,6 +17,8 @@ import com.easter.route.domain.route.service.MemberClient;
 import com.easter.route.global.exception.BusinessException;
 import com.easter.route.global.response.ResultResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -102,6 +104,7 @@ public class RankingServiceImpl implements RankingService {
 		String routeId = ranking.getRouteId();
 		Query query = new Query(Criteria.where("routeId").is(routeId).and("completed").is(true));
 		List<Record> findRecords = mongoTemplate.find(query, Record.class);
+		log.info("기록 수: {}", findRecords.size());
 		List<RankedRecord> rankedRecords = findRecords.stream()
 				.map(RankedRecord::of)
 				.sorted((a, b) -> a.getRunningTime().compareTo(b.getRunningTime()))
@@ -109,15 +112,20 @@ public class RankingServiceImpl implements RankingService {
 
 		// 멤버 정보 가져오기
 		List<UUID> memberIds = rankedRecords.stream().map((rankedRecord -> UUID.fromString(rankedRecord.getMemberId()))).toList();
+		log.info("멤버 수: {}", memberIds.size());
 		GetMemberListRequestFeignDto getMemberListRequestFeignDto = GetMemberListRequestFeignDto.builder().idList(memberIds).build();
 		ResponseEntity<ResultResponse> res = memberClient.getMemberInfoList(getMemberListRequestFeignDto);
+		log.info("res: {}", res);
 		if (res.getStatusCode() != HttpStatus.OK) {
 			throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "멤버 서비스에서 정보를 가져오는데 실패했습니다.");
 		}
-
 		// 멤버 정보 최신화
 		List<MemberInfo> memberList =
 				objectMapper.convertValue(Objects.requireNonNull(res.getBody()).getData(), GetMemberListResponseFeignDto.class).getMemberInfoList();
+		for (int i = 0; i < memberList.size(); i++) {
+			log.info("멤버 {}", memberList.get(i).toString());
+		}
+		log.info("멤버 정보 수: {}", memberList.size());
 		MemberInfo memberInfo;
 		for (int i = 0; i < rankedRecords.size(); i++) {
 			memberInfo = memberList.get(i);
@@ -134,8 +142,11 @@ public class RankingServiceImpl implements RankingService {
 		// MongoTemplate으로 모든 route_id 가져오기
 		List<String> allRouteIds = mongoTemplate.query(Route.class)
 			.distinct("_id")
-			.as(String.class)
-			.all();
+			.as(ObjectId.class) // 먼저 ObjectId로 받기
+			.all()
+			.stream()
+			.map(ObjectId::toString) // ObjectId를 String으로 변환
+			.toList();
 
 		// 모든 route_id를 확인하여 Ranking 생성
 		allRouteIds.forEach(routeId -> {
