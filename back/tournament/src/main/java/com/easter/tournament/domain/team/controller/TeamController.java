@@ -48,14 +48,21 @@ public class TeamController {
      * 마라톤 팀 탈퇴
      * @return
      */
-    @DeleteMapping("/leave/{teamId}")
+//    @DeleteMapping("/leave/{teamId}")
+//    public ResponseEntity<ResultResponse> leave(@RequestAttribute("passport") PassportDto passport, @PathVariable("teamId") UUID teamId){
+//        log.info("leave team [{}]", teamId);
+//        teamService.leaveTeam(passport, teamId);
+//        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀을 탈퇴했습니다.");
+//        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+//    }
+
+    @PostMapping("/leave/{teamId}")
     public ResponseEntity<ResultResponse> leave(@RequestAttribute("passport") PassportDto passport, @PathVariable("teamId") UUID teamId){
         log.info("leave team [{}]", teamId);
         teamService.leaveTeam(passport, teamId);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "팀을 탈퇴했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
-
     /* 팀 초대 관련 */
 
     /**
