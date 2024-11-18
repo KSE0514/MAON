@@ -158,24 +158,24 @@ const RecordDetailScreen = ({ navigation, route }) => {
   };
 
   return (
-    <Wrapper>
-        <Text>기록 디테일 화면</Text>
-        {/* <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    // <Wrapper>
+    //     <Text>기록 디테일 화면</Text>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Wrapper>
         <View style={[styles.routeAddView]}>
-          <AddRouteBtn
+          {/* <AddRouteBtn
             onPress={() => {
               setAddModal(true);
             }}
           >
             <Text style={[styles.boldFont]}>경로 추가하기</Text>
-          </AddRouteBtn>
+          </AddRouteBtn> */}
         </View>
         <View>
           <ResultDonutChart
             mode={mode}
-            routeDistance={resultData.routeDistance}
-            distance={resultData.distance}
+            routeDistance={resultData.routeDistance || resultData.distance || 1}
+            distance={resultData.distance || 0}
           />
         </View>
         <View style={styles.infoList}>
@@ -262,8 +262,8 @@ const RecordDetailScreen = ({ navigation, route }) => {
                 }}
                 showsUserLocation={false}
                 initialRegion={{
-                  latitude: routeList[0]?.x, // 위도 설정
-                  longitude: routeList[0]?.y,
+                  latitude: routeList[0]?.x || 37.6, // 위도 설정
+                  longitude: routeList[0]?.y || 127,
                   latitudeDelta: 0.005, // 줌 레벨 설정 (작을수록 줌 인)
                   longitudeDelta: 0.005,
                 }}
@@ -282,56 +282,14 @@ const RecordDetailScreen = ({ navigation, route }) => {
           )}
         </View>
         <SquareBtn
-          text="완료"
+          text="뒤로가기"
           onPress={() => {
-            navigation.navigate("Home");
+            navigation.navigate("Record");
           }}
         />
-        {addModal && (
-          <InputModal
-            isVisible={addModal}
-            textValue={addRouteName}
-            setTextValue={setAddRouteName}
-            content={{
-              text: `경로 이름을 입력해주세요`,
-              subText: "",
-              buttons: [
-                {
-                  title: "취소",
-                  onPress: () => {
-                    setAddModal(false);
-                  },
-                },
-                {
-                  title: "등록",
-                  onPress: () => {
-                    addRoute();
-                  },
-                },
-              ],
-            }}
-          />
-        )}
-        {addEndModal && (
-          <DefaultModal
-            isVisible={addEndModal}
-            content={{
-              text: `경로가 등록되었습니다.`,
-              subText: "",
-              buttons: [
-                {
-                  title: "확인",
-                  onPress: () => {
-                    setAddEndModal(false);
-                  },
-                },
-              ],
-            }}
-          />
-        )}
       </Wrapper>
-    </SafeAreaView> */}
-    </Wrapper>
+    </SafeAreaView>
+    // </Wrapper>
   );
 };
 export default RecordDetailScreen;
