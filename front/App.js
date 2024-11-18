@@ -17,6 +17,9 @@ import CreateTeamScreen from "./screens/CreateTeam/CreateTeamScreen.js";
 import NotificationScreen from "./screens/Notification/NotificationScreen.js";
 import MarathonEntryFormScreen from "./screens/MarathonEntryForm/MarathonEntryFormScreen.js";
 import MarathonInfoDetailScreen from "./screens/MarathonInfoDetail/MarathonInfoDetailScreen.js";
+import RecordDetailScreen from "./screens/RecordDetail/RecordDetailScreen.js";
+import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
+import { FontContext } from "./utils/fontContext.js";
 import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
 import SelectRunRoute from "./screens/SelectRunRoute/SelectRunRoute.js";
 import RunningAlone from "./screens/RunningAlone/RunningAlone.js";
@@ -64,8 +67,7 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName={isLoggedIn ? "MainTabs" : "Login"}
-          >
+            initialRouteName={isLoggedIn ? "MainTabs" : "Login"}>
             {/* 로그인 여부에 따른 화면 설정 */}
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="MainTabs" component={MainTabs} />
@@ -111,8 +113,7 @@ const MainTabs = () => {
       screenOptions={{
         headerShown: false,
         animationEnabled: false,
-      }}
-    >
+      }}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="MarathonInfo" component={MarathonInfoScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />

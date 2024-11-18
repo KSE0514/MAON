@@ -156,75 +156,117 @@ const SignUpScreen = ({navigation, route}) => {
       phoneNumber: formattedPhoneNumber
     };
     try {
+
+      // FormData 객체 생성
+      const formData = new FormData();
+
+      formData.append("name", name || ""); // 이름 추가 또는 ''
+      formData.append("nickname", nickName || "") // 닉네임 추가 또는 ''
+      formData.append("email", email || "") // 이메일 추가 또는 ''
+      formData.append("phoneNumber", formattedPhoneNumber || ""); // 전화번호 추가 또는 ''
+      formData.append("birthDate",  formattedDate || ""); // 생년월일 추가 또는 ''
+      formData.append("height", heightInfo || ""); // 키 추가 또는 ''
+      formData.append("weight", weightInfo || ""); // 몸무게 추가 또는 ''
+      formData.append("address", address || ""); // 주소 추가 또는 ''
+      formData.append("gender", selectedGender || ""); // 성별 추가 또는 ''
+
+      // 이미지 파일이 있는 경우 처리
+      if (image) {
+        // 이미지 URI를 Blob으로 변환
+        const response = await fetch(image);
+        const blob = await response.blob();
+        const randomName = `profile_${Date.now()}_${Math.floor(
+          Math.random() * 1000
+        )}.jpg`;
+        formData.append("profileImage", {
+          name: randomName,
+          type: "image/jpeg",
+          uri: image,
+        });
+      } else {
+        // 이미지가 없는 경우 빈 Blob 추가 (Optional)
+        const emptyFile = new Blob([""], { type: "image/jpeg" });
+        formData.append("profileImage", emptyFile, "empty.jpg");
+      }
+
+      console.log("보낼 이미지: " + image);
+
       const response = await apiClient.post(
         `/member/member/info`,
-        requestBody,
+        formData,
         {
           withCredentials: true,
           headers: {
             Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+            "Content-Type": "multipart/form-data", // multipart 형식 명시
+          },
+          transformRequest: (data, headers) => {
+            return data;
           },
         }
       );
-      const responseUserInfo = response.data.data
-      console.log("가입완료", requestBody)
-      // store에 저장하기
-      console.log(1)
-      setUser({
-        id: responseUserInfo.id,
-        name: responseUserInfo.name,
-        nickName: requestBody.nickname,
-        email: responseUserInfo.email,
-        accessToken: responseUserInfo.accessToken,
-        refreshToken: responseUserInfo.refreshToken,
-        imageUrl: responseUserInfo.imageUrl,
-        height: requestBody.height,
-        weight: requestBody.weight,
-        birthDate: requestBody.birthDate,
-        address: requestBody.address,
-        gender: requestBody.gender,
-        phoneNumber: requestBody.phoneNumber,
-        imageUrl: requestBody.imageUrl,
-      })
-      console.log(2)
-      // navigation.navigate("Home")
-
-      // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
-      await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
-      console.log(3)
-      await AsyncStorage.setItem("refreshToken", responseUserInfo.refreshToken);
-      console.log(4)
-      await AsyncStorage.setItem("id", responseUserInfo.id);
-      console.log(5)
-      await AsyncStorage.setItem("email", responseUserInfo.email);
-      console.log(6)
-
-      await AsyncStorage.setItem("name", responseUserInfo.name);
-      console.log(7)
-      await AsyncStorage.setItem("nickname", requestBody.nickname);
-      console.log(8)
-
-      // 상세 정보까지 저장
-      await AsyncStorage.setItem("height", String(requestBody.height));
-      console.log(9)
-
-      await AsyncStorage.setItem('weight', String(requestBody.weight));
-      console.log(10)
-      await AsyncStorage.setItem("birthDate", requestBody.birthDate);
-      console.log(11)
-      await AsyncStorage.setItem("address", requestBody.address);
-      console.log(12)
-      await AsyncStorage.setItem("gender", requestBody.gender);
-      console.log(13)
-      await AsyncStorage.setItem("imageUrl", requestBody.imageUrl);
-      console.log(14)
-      await AsyncStorage.setItem("phoneNumber", requestBody.phoneNumber);
-      console.log(15)
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "MainTabs" }],
-      });
+      if (response.status === 200) {
+        const responseUserInfo = response.data.data
+        console.log("가입완료", requestBody)
+        // store에 저장하기
+        console.log(1)
+        setUser({
+          id: responseUserInfo.id,
+          name: responseUserInfo.name,
+          nickName: requestBody.nickname,
+          email: responseUserInfo.email,
+          accessToken: responseUserInfo.accessToken,
+          refreshToken: responseUserInfo.refreshToken,
+          imageUrl: responseUserInfo.imageUrl,
+          height: requestBody.height,
+          weight: requestBody.weight,
+          birthDate: requestBody.birthDate,
+          address: requestBody.address,
+          gender: requestBody.gender,
+          phoneNumber: requestBody.phoneNumber,
+          imageUrl: requestBody.imageUrl,
+        })
+        console.log(2)
+        // navigation.navigate("Home")
+  
+        // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
+        await AsyncStorage.setItem("accessToken", responseUserInfo.accessToken);
+        console.log(3)
+        await AsyncStorage.setItem("refreshToken", responseUserInfo.refreshToken);
+        console.log(4)
+        await AsyncStorage.setItem("id", responseUserInfo.id);
+        console.log(5)
+        await AsyncStorage.setItem("email", responseUserInfo.email);
+        console.log(6)
+  
+        await AsyncStorage.setItem("name", responseUserInfo.name);
+        console.log(7)
+        await AsyncStorage.setItem("nickname", requestBody.nickname);
+        console.log(8)
+  
+        // 상세 정보까지 저장
+        await AsyncStorage.setItem("height", String(requestBody.height));
+        console.log(9)
+  
+        await AsyncStorage.setItem('weight', String(requestBody.weight));
+        console.log(10)
+        await AsyncStorage.setItem("birthDate", requestBody.birthDate);
+        console.log(11)
+        await AsyncStorage.setItem("address", requestBody.address);
+        console.log(12)
+        await AsyncStorage.setItem("gender", requestBody.gender);
+        console.log(13)
+        await AsyncStorage.setItem("imageUrl", requestBody.imageUrl);
+        console.log(14)
+        await AsyncStorage.setItem("phoneNumber", requestBody.phoneNumber);
+        console.log(15)
+  
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "MainTabs" }],
+        });
+        
+      }
 
     } catch (error) {
       console.error("로그인 에러 발생: ", error, requestBody);

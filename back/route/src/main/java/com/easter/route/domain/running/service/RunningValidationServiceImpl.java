@@ -50,54 +50,54 @@ public class RunningValidationServiceImpl implements RunningValidationService {
 	// 경로 계산
 	private DistanceResult calculateDistances(LocationDto locationDto, List<Point> coordinates) {
 		DistanceResult result = new DistanceResult();
+		// Validate input to prevent potential index out of bounds
+		int currentIndex = locationDto.getRouteIndex();
+		if (currentIndex < 0 || currentIndex >= coordinates.size()) {
+			result.isOnRoute = false;
+			result.nextRouteIndex = -1;
+			result.distanceToNextRouteIndex = Double.MAX_VALUE; // 유효하지 않은 값으로 초기화
+			result.isEndPoint = false;
+			return result;
+		}
+		// 현재 위치 가져오기
 		Point current = new Point(
 			Double.parseDouble(locationDto.getLatitude()),
 			Double.parseDouble(locationDto.getLongitude())
 		);
-
-		int currentIndex = locationDto.getRouteIndex();
 		Point currentIndexPoint = coordinates.get(currentIndex);
-
+		// 현재 경로점과의 거리 계산
 		double currentDist = DistanceCalculator.calculateDistance(
 			currentIndexPoint.getX(), currentIndexPoint.getY(),
 			current.getX(), current.getY()
 		);
-
+		// 초기 상태 설정
 		result.isOnRoute = currentDist <= MAX_ALLOWED_DEVIATION;
-
-		int nextIndex = currentIndex + 1;
-		while (nextIndex < coordinates.size()) {
+		result.nextRouteIndex = currentIndex;
+		result.distanceToNextRouteIndex = currentDist;
+		// 다음 경로점 확인
+		for (int nextIndex = currentIndex + 1; nextIndex < coordinates.size(); nextIndex++) {
 			Point nextIndexPoint = coordinates.get(nextIndex);
 			double nextDist = DistanceCalculator.calculateDistance(
 				current.getX(), current.getY(),
 				nextIndexPoint.getX(), nextIndexPoint.getY()
 			);
-
 			if (nextDist > MAX_ALLOWED_DEVIATION) {
-				break;
+				break; // 경로를 벗어난 경우 루프 종료
 			}
-
+			// 경로 위에 있을 경우 상태 업데이트
 			result.isOnRoute = true;
 			result.nextRouteIndex = nextIndex;
 			result.distanceToNextRouteIndex = nextDist;
-			nextIndex++;
 		}
-
-		// index가 마지막까지 도달했을때 끝점 판단.
-		if (nextIndex == coordinates.size()) {
-			Point endPoint = coordinates.get(coordinates.size() - 1);
-			result.isEndPoint = DistanceCalculator.isWithinDistance(
-				endPoint.getX(), endPoint.getY(),
-				current.getX(), current.getY(),
-				MAX_ALLOWED_DEVIATION
-			);
-		} else {
-			result.isEndPoint = false;
-		}
-
+		// 마지막 경로점 도달 여부 확인
+		Point endPoint = coordinates.get(coordinates.size() - 1); // 중복 호출 제거
+		result.isEndPoint = DistanceCalculator.isWithinDistance(
+			endPoint.getX(), endPoint.getY(),
+			current.getX(), current.getY(),
+			MAX_ALLOWED_DEVIATION
+		);
 		return result;
 	}
-
 
 	// // 경로 이탈 로직
 	// public boolean validateOnRoute(LocationDto locationDto) {
