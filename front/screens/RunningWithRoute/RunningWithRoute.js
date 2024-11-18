@@ -523,6 +523,7 @@ const RunningWithRoute = ({ navigation, route }) => {
       {showStopModal && (
         <DefaultModal isVisible={showStopModal} content={StopModalContent} />
       )}
+
       {showAlarm && <RunAlarm isVisible={showAlarm} ment={ment} />}
     </View>
   );
