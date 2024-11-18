@@ -133,7 +133,7 @@ public class RankingServiceImpl implements RankingService {
 		log.info("모든 루트의 랭킹을 생성합니다.");
 		// MongoTemplate으로 모든 route_id 가져오기
 		List<String> allRouteIds = mongoTemplate.query(Route.class)
-			.distinct("route_id")
+			.distinct("_id")
 			.as(String.class)
 			.all();
 
