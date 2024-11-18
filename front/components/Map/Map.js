@@ -110,7 +110,7 @@ export default function Map({
     const getLocation = async () => {
       if (locationPermissionGranted) {
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Balanced,
+          accuracy: Location.Accuracy.High,
         });
         setmapRegion({
           latitude: location.coords.latitude,
