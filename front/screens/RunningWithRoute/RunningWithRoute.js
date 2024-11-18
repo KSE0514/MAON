@@ -15,7 +15,7 @@ import {
   Top,
   Wrapper,
 } from "../RunningAlone/RunningAloneStyle";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Map from "../../components/Map/Map";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 import Timer from "../../components/Timer/Timer";
@@ -30,15 +30,17 @@ import useAuthStore from "../../store/AuthStore";
 import { getPracticeRoomId } from "../../utils/getRoomId";
 import RunAlarm from "../../components/RunAlarm/RunAlarm";
 import * as Location from "expo-location";
+import { LocationContext } from "../../utils/LocationProvider";
 
 const RunningWithRoute = ({ navigation, route }) => {
+  const location = useContext(LocationContext);
+
   const { routeId, searchType, mode, marathonInfo, latLongArray } =
     route.params;
   const fontsLoaded = useFontsLoaded();
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
-  console.log("latlon: ", latLongArray);
 
   // 마라톤 시작점 좌표 추출
   const startPoint = {
@@ -70,6 +72,10 @@ const RunningWithRoute = ({ navigation, route }) => {
   const [runRoute, setRunRoute] = useState([]);
 
   const [currentLocation, setCurrentLocation] = useState(null);
+  const [currentTrackingLocation, setCurrenTrackingtLocation] = useState({
+    latitude: location.latitude,
+    longitude: location.longitude,
+  });
 
   const [locationPermissionGranted, setLocationPermissionGranted] =
     useState(false);
@@ -171,6 +177,12 @@ const RunningWithRoute = ({ navigation, route }) => {
     }
   };
 
+  //바뀐 값에 따라 현재 위치 변경
+  useEffect(() => {
+    setCurrenTrackingtLocation(location);
+    console.log("변경된 CurrenTrackingtLocation: ", location);
+  }, [location]);
+
   //달리기 시작을 눌렀을 경우
   useEffect(() => {
     if (running) {
@@ -249,11 +261,8 @@ const RunningWithRoute = ({ navigation, route }) => {
         // 사용자의 위치를 트래킹하고 주기적으로 서버로 보냅니다.
         locationInterval.current = setInterval(async () => {
           try {
-            const position = await Location.getCurrentPositionAsync({
-              accuracy: Location.Accuracy.Balanced,
-            });
-
-            const { latitude, longitude } = position.coords;
+            const { latitude, longitude } = currentTrackingLocation;
+            console.log("쓸 데이터 : ", latitude, " ", longitude);
             setCurrentLocation({
               latitude: latitude,
               longitude: longitude,
@@ -427,7 +436,8 @@ const RunningWithRoute = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}>
+            }}
+          >
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}

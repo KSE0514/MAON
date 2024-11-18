@@ -20,8 +20,10 @@ export default function Map({
   selectedRoute,
   runRoute,
 }) {
+  //현재 위치를 받아옴
   const location = useContext(LocationContext);
 
+  //내 위치
   const [mapRegion, setmapRegion] = useState({
     latitude: location.latitude,
     longitude: location.longitude,
@@ -29,12 +31,10 @@ export default function Map({
     longitudeDelta: 0.002,
   });
 
+  //polyline
   const [gps, setGps] = useState([]);
 
-  const [locationPermissionGranted, setLocationPermissionGranted] =
-    useState(false);
-  const locationInterval = useRef(null);
-
+  //마커
   const [markers, setMarkers] = useState([]);
 
   // currentLocation이 변경될 때마다 마커 위치 업데이트
@@ -62,7 +62,7 @@ export default function Map({
   }, [currentLocation]);
 
   /**
-   * 내 위치 받아오기
+   * 내 위치 첫 위치 설정
    */
   useEffect(() => {
     const getLocation = async () => {
@@ -119,7 +119,7 @@ export default function Map({
   }, []);
 
   /**
-   * 1초마다 위치 변경하기
+   * 1초마다 위치 변경하기 -> 전달하는 함수 실행
    */
   const handleUserLocationChange = () => {
     console.log("위치변경 함수 실행 ", runStart);
@@ -179,19 +179,13 @@ export default function Map({
       handleUserLocationChange();
     };
 
+    //시작이 되었고 워치 연동이 안된 경우
     if (runStart && !connectedWatch) {
       console.log("tracking 시도함");
       startTracking();
     } else {
       console.log("트래킹 멈춤");
     }
-
-    // 컴포넌트 언마운트 시 위치 추적 중지
-    return () => {
-      if (locationInterval.current) {
-        clearInterval(locationInterval.current);
-      }
-    };
   }, [runStart, location]); // runStart가 변경될 때마다 실행
 
   // 시작점 추가 또는 업데이트
@@ -222,14 +216,6 @@ export default function Map({
       });
     }
   }, [startPoint]);
-
-  // useEffect(() => {
-  //   console.log("변경된 gps: " + JSON.stringify(gps));
-  // }, [gps]);
-
-  // useEffect(() => {
-  //   console.log("변경된 markers: " + JSON.stringify(markers));
-  // }, [markers]);
 
   //거리계산
   const calculateDistance = (coord1, coord2) => {

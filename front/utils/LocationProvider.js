@@ -38,7 +38,7 @@ export const LocationProvider = ({ children }) => {
           setLocation({ latitude, longitude }); // 위치 데이터 저장
 
           // 상태를 직접 사용해 로그 출력
-          console.log("변경된 값: ", { latitude, longitude, timestamp });
+          // console.log("변경된 값: ", { latitude, longitude, timestamp });
         } catch (error) {
           console.log("위치 요청 실패:", error);
         }
