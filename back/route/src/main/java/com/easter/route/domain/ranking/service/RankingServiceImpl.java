@@ -102,7 +102,7 @@ public class RankingServiceImpl implements RankingService {
 	public void updateRanking(Ranking ranking) {
 		log.info("랭킹을 업데이트합니다. routeId: {}", ranking.getRouteId());
 		String routeId = ranking.getRouteId();
-		Query query = new Query(Criteria.where("routeId").is(routeId).and("completed").is(true));
+		Query query = new Query(Criteria.where("route_id").is(routeId).and("completed").is(true));
 		List<Record> findRecords = mongoTemplate.find(query, Record.class);
 		log.info("기록 수: {}", findRecords.size());
 		List<RankedRecord> rankedRecords = findRecords.stream()
@@ -115,7 +115,7 @@ public class RankingServiceImpl implements RankingService {
 		log.info("멤버 수: {}", memberIds.size());
 		GetMemberListRequestFeignDto getMemberListRequestFeignDto = GetMemberListRequestFeignDto.builder().idList(memberIds).build();
 		ResponseEntity<ResultResponse> res = memberClient.getMemberInfoList(getMemberListRequestFeignDto);
-		log.info("res: {}", res);
+		log.info("res: {}", res.getBody().getData());
 		if (res.getStatusCode() != HttpStatus.OK) {
 			throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "멤버 서비스에서 정보를 가져오는데 실패했습니다.");
 		}

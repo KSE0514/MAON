@@ -1,9 +1,13 @@
 package com.easter.route.domain.route.service;
 
+import java.util.UUID;
+
 import com.easter.route.domain.route.entity.dto.GetMemberListRequestFeignDto;
 import com.easter.route.global.response.ResultResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -12,4 +16,7 @@ public interface MemberClient {
 
     @PostMapping("/maon/member/service/search")
     ResponseEntity<ResultResponse> getMemberInfoList(@RequestBody GetMemberListRequestFeignDto requestFeignDto);
+
+    @GetMapping("/maon/member/service/search/{memberId}")
+    ResponseEntity<ResultResponse> searchMemberByUuid(@PathVariable UUID memberId);
 }
