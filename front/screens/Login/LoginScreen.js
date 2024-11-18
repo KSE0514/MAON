@@ -147,7 +147,8 @@ const LoginScreen = () => {
             "refreshToken",
             responseUserInfo.refreshToken
           );
-
+          await AsyncStorage.setItem("id", responseUserInfo.id);
+          
           // navigation.navigate("MainTabs", { screen: "Home" });
 
           navigation.reset({

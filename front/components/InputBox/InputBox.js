@@ -156,12 +156,17 @@ const handleDateOfBirthChange = (text) => {
             style={{
               inputIOS: styles.input,
               inputAndroid: styles.input,
+              iconContainer: {
+                top: '50%', // 아이콘의 수직 위치를 가운데로 조정
+                transform: [{ translateY: -12.5 }], // 아이콘의 높이에 따라 조정
+                right: 10, // 오른쪽에 여백 추가
+              },
             }}
             placeholder={{ label: placeholder, value: null }}
             value={value}
             useNativeAndroidPickerStyle={false} // 안드로이드에서 네이티브 스타일을 사용하지 않도록 설정
             disabled={!isEditMode}
-            Icon={() => <Text style={{ color: colors.gray }}>▼</Text>} // 드롭다운 아이콘 추가
+            Icon={() => <Text style={{ color: colors.black, fontSize: 20, textAlignVertical: 'center'}}>▼</Text>} // 드롭다운 아이콘 추가
           />
           ) 
           :
