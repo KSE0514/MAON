@@ -69,6 +69,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var memberDao: MemberDao
     private lateinit var memberId: String
 
+    var recordId : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +81,9 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
             // Room Database 초기화
             val db = MemberDatabase.getDatabase(this)
             memberDao = db.memberDao()
+
+            //recordId 가져오기
+            recordId = intent.getStringExtra("recordId") ?: ""
 
             // memberId 가져오기
             CoroutineScope(Dispatchers.IO).launch {

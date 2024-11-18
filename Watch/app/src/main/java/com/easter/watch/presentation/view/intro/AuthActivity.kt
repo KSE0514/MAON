@@ -94,7 +94,7 @@ class AuthActivity : AppCompatActivity() {
 
     // Auth 토픽 구독 함수
     fun subscribeToAuthTopic(authCode: String) {
-        stompClient.subscribeToTopic("/sub/connection/$authCode") { payload ->
+        stompClient.subscribeToTopic("/sub/connection/$authCode","sub-auth") { payload ->
             try {
                 // JSON 데이터를 AuthInfo 객체로 변환
                 val jsonBody = extractJsonFromStompMessage(payload)

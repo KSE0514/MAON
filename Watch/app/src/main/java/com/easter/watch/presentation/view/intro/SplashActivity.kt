@@ -128,31 +128,6 @@ class SplashActivity : AppCompatActivity() {
         return json.replace(Regex("[^\\x20-\\x7E가-힣]"), "").trim()
     }
 
-    fun subscribeToMemberTopic(memberId : String){
-        stompClient.subscribeToTopic("/sub/start/$memberId"){ payload ->
-            try{
-                // JSON 데이터를 AuthInfo 객체로 변환
-                val jsonBody = extractJsonFromStompMessage(payload)
-                Log.d(TAG, "추출된 JSON: $jsonBody")
-
-                // Gson을 사용해 JSON을 StartInfo 객체로 변환
-                val startInfo = Gson().fromJson(jsonBody, StartInfo::class.java)
-                Log.d(TAG, "변환된 StartInfo 객체: $startInfo")
-
-                when(startInfo.mode){
-                    "notSelectedRoute" ->{
-                        val intent = Intent(this, RunActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
-                }
-
-            }catch (e : Exception){
-                Log.d(TAG, e.toString())
-            }
-        }
-    }
-
 
     //비동기 -> callback
     fun checkConnectionToPhone(callback: (Boolean) -> Unit) {
