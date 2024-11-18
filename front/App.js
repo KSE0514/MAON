@@ -18,7 +18,6 @@ import NotificationScreen from "./screens/Notification/NotificationScreen.js";
 import MarathonEntryFormScreen from "./screens/MarathonEntryForm/MarathonEntryFormScreen.js";
 import MarathonInfoDetailScreen from "./screens/MarathonInfoDetail/MarathonInfoDetailScreen.js";
 import RecordDetailScreen from "./screens/RecordDetail/RecordDetailScreen.js";
-import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
 import { FontContext } from "./utils/fontContext.js";
 import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
 import SelectRunRoute from "./screens/SelectRunRoute/SelectRunRoute.js";
@@ -27,7 +26,6 @@ import RunResult from "./screens/RunResult/RunResult.js";
 import RouteDetail from "./screens/RouteDetail/RouteDetail.js";
 import RunningWithRoute from "./screens/RunningWithRoute/RunningWithRoute.js";
 import PairingWatch from "./screens/PairingWatch/PairingWatch.js";
-import { FontContext } from "./utils/fontContext.js";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

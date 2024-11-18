@@ -412,7 +412,7 @@ const RunningWithRoute = ({ navigation, route }) => {
     routeIndexRef.current = checkingRoute.nextRouteIndex;
     if (!checkingRoute.onRoute) {
       setShowAlarm(true);
-      setMent(`경로에서 벗어났습니다.\n원래 경로로 돌아가세요`);
+      setMent(`경로를 이탈했습니다.\n정상 경로로 이동하세요`);
     } else {
       setShowAlarm(false);
       //현재 인덱스 값 바꿔주기
@@ -523,6 +523,7 @@ const RunningWithRoute = ({ navigation, route }) => {
       {showStopModal && (
         <DefaultModal isVisible={showStopModal} content={StopModalContent} />
       )}
+
       {showAlarm && <RunAlarm isVisible={showAlarm} ment={ment} />}
     </View>
   );

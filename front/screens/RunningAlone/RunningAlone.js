@@ -165,8 +165,8 @@ const RunningAlone = ({ navigation, route }) => {
       }
     };
 
-    // getPairedWatchStatus();
-    setConnectedWatch(false);
+    getPairedWatchStatus();
+    // setConnectedWatch(false);
   }, []);
 
   // connectedWatch의 상태가 변경될 때마다 로그 출력
@@ -475,8 +475,7 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}
-          >
+            }}>
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}

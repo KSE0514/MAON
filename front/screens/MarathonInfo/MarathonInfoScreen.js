@@ -25,12 +25,13 @@ const MarathonInfo = ({ navigation, route }) => {
 
   const getMarathonInfo = async (
     year = new Date().getFullYear(),
-    month = new Date().getMonth + 1,
+    month = new Date().getMonth() + 1,
     area = 0,
     closed = false
   ) => {
     setIsLoading(true);
     try {
+      console.log(year, month, area, closed);
       const response = await apiClient.post(
         `/tournament/tournament/getMarathon`,
         {
