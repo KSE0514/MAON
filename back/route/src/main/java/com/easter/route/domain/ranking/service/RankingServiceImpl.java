@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.easter.route.domain.ranking.entity.Ranking;
 import com.easter.route.domain.ranking.entity.dto.*;
 import com.easter.route.domain.record.entity.Record;
+import com.easter.route.domain.route.entity.Route;
 import com.easter.route.domain.route.entity.dto.GetMemberListRequestFeignDto;
 import com.easter.route.domain.route.entity.dto.GetMemberListResponseFeignDto;
 import com.easter.route.domain.route.entity.dto.MemberInfo;
@@ -125,6 +126,27 @@ public class RankingServiceImpl implements RankingService {
 		// 랭킹 업데이트
 		ranking.updateRankingRecords(rankedRecords);
 		rankingRepository.save(ranking);
+	}
+
+	public void createRankingsForAllRoutes() {
+		// MongoTemplate으로 모든 route_id 가져오기
+		List<String> allRouteIds = mongoTemplate.query(Route.class)
+			.distinct("route_id")
+			.as(String.class)
+			.all();
+
+		// 모든 route_id를 확인하여 Ranking 생성
+		allRouteIds.forEach(routeId -> {
+			rankingRepository.findByRouteId(routeId)
+				.orElseGet(() -> {
+					// Ranking이 없는 경우 새로 생성
+					Ranking newRanking = Ranking.builder()
+						.routeId(routeId)
+						.rankedRecords(new ArrayList<>())
+						.build();
+					return rankingRepository.save(newRanking);
+				});
+		});
 	}
 
 	public void feignTest() {

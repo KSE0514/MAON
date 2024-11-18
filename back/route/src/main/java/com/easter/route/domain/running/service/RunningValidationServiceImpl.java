@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RunningValidationServiceImpl implements RunningValidationService {
 	private final RouteRepository routeRepository;
-	private static final double MAX_ALLOWED_DEVIATION = 10.0;
+	private static final double MAX_ALLOWED_DEVIATION = 5.0;
 
 	private static class DistanceResult {
 		private boolean isOnRoute;
