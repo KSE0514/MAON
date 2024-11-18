@@ -122,7 +122,7 @@ class RecordActivity : AppCompatActivity() {
                 Log.d(TAG, "변환된 StartInfo 객체: $startInfo")
 
                 val recordId = startInfo.recordId
-                
+
                 when(startInfo.mode){
                     "notSelectedRoute" ->{
                         val intent = Intent(this, RunActivity::class.java)

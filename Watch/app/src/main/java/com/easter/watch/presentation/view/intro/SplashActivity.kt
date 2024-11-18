@@ -45,13 +45,12 @@ class SplashActivity : AppCompatActivity() {
         memberDao = db.memberDao()
 
         // 모든 데이터 삭제
-        CoroutineScope(Dispatchers.IO).launch {
-            memberDao.deleteAll() // 테이블 초기화
-            Log.d(TAG, "MemberDatabase 초기화 완료")
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            memberDao.deleteAll() // 테이블 초기화
+//            Log.d(TAG, "MemberDatabase 초기화 완료")
+//        }
 
         nodeClient = Wearable.getNodeClient(this)
-
 
         Handler().postDelayed(Runnable { // 타이머가 끝나면 내부 실행
 

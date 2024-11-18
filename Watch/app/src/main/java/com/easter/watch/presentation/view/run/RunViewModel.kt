@@ -101,14 +101,14 @@ class RunViewModel : ViewModel() {
                 val jsonBody = extractJsonFromStompMessage(payload)
                 Log.d(TAG, "추출된 JSON: $jsonBody")
 
-                // Gson을 사용해 JSON을 StartInfo 객체로 변환
+                // Gson을 사용해 JSON을 RunResult 객체로 변환
                 val runResult = Gson().fromJson(jsonBody, RunResult::class.java)
-                Log.d(TAG, "데이터에 넣은 데이터 : $runResult ")
+                Log.d(TAG, "runResult에 넣은 데이터 : $runResult ")
 
                 _recordId.value = recordId
 
                 // Intent 생성
-                val intent = Intent(context, RecordActivity::class.java).apply {
+                val intent = Intent(context, ResultActivity::class.java).apply {
                     putExtra("runResult", runResult)
                 }
                 context.startActivity(intent)

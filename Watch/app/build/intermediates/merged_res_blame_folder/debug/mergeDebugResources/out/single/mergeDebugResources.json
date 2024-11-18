@@ -44,10 +44,6 @@
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\mipmap-xxhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.easter.watch.app-debug-5:/layout_activity_run.xml.flat",
-        "source": "com.easter.watch.app-main-7:/layout/activity_run.xml"
-    },
-    {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\layout_activity_connect_success.xml.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\layout\\activity_connect_success.xml"
     },
@@ -98,6 +94,10 @@
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\anim_pulse_animation.xml.flat",
         "source": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-main-7:\\anim\\pulse_animation.xml"
+    },
+    {
+        "merged": "com.easter.watch.app-debug-5:/layout_activity_record.xml.flat",
+        "source": "com.easter.watch.app-main-7:/layout/activity_record.xml"
     },
     {
         "merged": "C:\\Users\\SSAFY\\.gradle\\daemon\\8.7\\com.easter.watch.app-debug-5:\\layout_activity_main.xml.flat",

@@ -91,7 +91,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
 
                 withContext(Dispatchers.Main) {
                     // WebSocket 연결 시작
-                    viewModel.startWebSocket(memberId = memberId, recordId = "RECORD_ID")
+                    viewModel.startWebSocket(memberId = memberId, recordId = recordId)
                 }
             }
 
