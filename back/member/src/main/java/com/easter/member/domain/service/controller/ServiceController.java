@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -31,6 +33,10 @@ public class ServiceController {
     @PostMapping("/search")
     public ResponseEntity<ResultResponse> search(@RequestBody SearchMemberRequestDto dto) {
         log.debug("service request received");
+        for(UUID uuid : dto.getIdList()) {
+            log.info(uuid.toString());
+        }
+        log.info("--------------");
         SearchMemberResponseDto responseDto = service.searchMember(dto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "멤버 정보 조회 완료", responseDto);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
