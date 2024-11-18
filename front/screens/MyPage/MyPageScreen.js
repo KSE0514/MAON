@@ -34,6 +34,7 @@ import {
   Content,
   BtnArea,
 } from "./MyPageScreenStyles";
+import { FlatList } from "react-native";
 import colors from "../../styles/colors";
 import InputBox from "../../components/InputBox/InputBox";
 import SquareBtn from "../../components/Button/SquareBtn/SquareBtn";
@@ -304,14 +305,16 @@ const MyPageScreen = ({ navigation }) => {
   useEffect(() => {
     console.log("바뀐 이미지: " + image);
   }, [image]);
+
+  
   return (
-    <Wapper>
+    <Wapper  style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}>
           <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={{ flexGrow: 1 , paddingBottom: 20}}
             keyboardShouldPersistTaps="handled" // 스크롤 중에도 키보드가 사라지지 않도록 설정
           >
             {editMode ? (

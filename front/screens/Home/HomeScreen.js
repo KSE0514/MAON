@@ -50,9 +50,9 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     const checkNickname = async () => {
       const checkStorageNickname = await AsyncStorage.getItem("nickname");
-      if (!checkStorageNickname) {
+      // if (!checkStorageNickname) {
         getMyProfile()
-      }
+      // }
       console.log("!!!!!!닉네임 확인용: ", checkStorageNickname);
     };
     checkNickname();
@@ -75,7 +75,7 @@ const HomeScreen = ({ navigation }) => {
         const checkStorageNickname = await AsyncStorage.getItem("nickname");
 
         // async storage에 마이페이지 값이 비워져 있을 때만 저장하도록
-        if (!checkStorageNickname) {
+        if (!checkStorageNickname || checkStorageNickname !== getUserInfo.nickname) {
           
           await AsyncStorage.setItem("email", getUserInfo.email);
           console.log(6)

@@ -20,6 +20,7 @@ import CreateTeamScreen from "./screens/CreateTeam/CreateTeamScreen.js";
 import NotificationScreen from "./screens/Notification/NotificationScreen.js";
 import MarathonEntryFormScreen from "./screens/MarathonEntryForm/MarathonEntryFormScreen.js";
 import MarathonInfoDetailScreen from "./screens/MarathonInfoDetail/MarathonInfoDetailScreen.js";
+import RecordDetailScreen from "./screens/RecordDetail/RecordDetailScreen.js";
 import FooterNavigation from "./components/FooterNavigation/FooterNavigation.js";
 import { FontContext } from "./utils/fontContext.js";
 import SelectRunType from "./screens/SelectRunType/SelectRunType.js";
@@ -86,6 +87,7 @@ export default function App() {
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="MyPage" component={MyPageScreen} />
           <Stack.Screen name="Notification" component={NotificationScreen} />
+          <Stack.Screen name="RecordDetail" component={RecordDetailScreen} />
           <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
           <Stack.Screen name="Challenge" component={ChallengeScreen} />
           <Stack.Screen name="PairingWatch" component={PairingWatch} />
