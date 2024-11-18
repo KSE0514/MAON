@@ -195,13 +195,13 @@ const LoginScreen = () => {
       <Wrap>
         <Logo>MA:ON</Logo>
         <RoundBtn text={"Google로 로그인"} onPress={handleLogin} />
-        {userInfo && (
+        {/* {userInfo && (
           <View>
             <Text style={{ color: "white" }}>Welcome, {userInfo.name}</Text>
             <Text style={{ color: "white" }}>Email: {userInfo.email}</Text>
             <Text style={{ color: "white" }}>Token: {userInfo.token}</Text>
           </View>
-        )}
+        )} */}
       </Wrap>
     </Container>
   );
