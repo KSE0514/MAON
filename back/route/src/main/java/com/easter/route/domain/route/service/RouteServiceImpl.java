@@ -7,6 +7,8 @@ import java.util.List;
 import com.easter.route.domain.marathonRoute.domain.dto.MarathonRouteDto;
 import com.easter.route.domain.marathonRoute.domain.entity.MarathonRoute;
 import com.easter.route.domain.marathonRoute.repository.MarathonRouteRepository;
+import com.easter.route.domain.ranking.entity.Ranking;
+import com.easter.route.domain.ranking.repository.RankingRepository;
 import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.record.entity.dto.GetRouteDetailsRequestDto;
 import com.easter.route.domain.record.repository.RecordRepository;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 public class RouteServiceImpl implements RouteService {
 	private final RouteRepository routeRepository;
 	private final RecordRepository recordRepository;
+	private final RankingRepository rankingRepository;
 	private final MongoTemplate mongoTemplate;
 
 	@Override
@@ -52,6 +55,10 @@ public class RouteServiceImpl implements RouteService {
 				.build();
 
 		routeRepository.save(route);
+		rankingRepository.save(Ranking.builder()
+				.routeId(route.getId())
+				.rankedRecords(new ArrayList<>())
+				.build());
 	}
 
 	@Override
