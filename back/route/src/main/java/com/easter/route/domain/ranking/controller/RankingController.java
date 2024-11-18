@@ -40,6 +40,13 @@ public class RankingController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
+    @GetMapping("/ranking/init")
+    public ResponseEntity<ResultResponse> rankingInit() {
+        rankingService.createRankingsForAllRoutes();
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "랭킹 초기화");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
     // test용, 삭제 할 것
     @GetMapping("/ranking/openFeignTest")
     public ResponseEntity<ResultResponse> openFeignTest() {
