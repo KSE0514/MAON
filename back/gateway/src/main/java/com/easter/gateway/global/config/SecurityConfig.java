@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -29,6 +30,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final RestClient restClient;
     private final HmacProvider hmacProvider;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Bean
     public SecurityWebFilterChain filterChain(ServerHttpSecurity http) throws Exception {
@@ -49,7 +51,7 @@ public class SecurityConfig {
                 )
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(new NotAuthorizedServerEntryPoint()))
-                .addFilterBefore(new PassportFilter(tokenProvider, objectMapper, restClient, hmacProvider), SecurityWebFiltersOrder.AUTHORIZATION)
+                .addFilterBefore(new PassportFilter(tokenProvider, objectMapper, restClient, hmacProvider, redisTemplate), SecurityWebFiltersOrder.AUTHORIZATION)
         ;
         return http.build();
     }
