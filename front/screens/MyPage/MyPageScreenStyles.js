@@ -39,7 +39,7 @@ export const Top = styled.View`
 `
 
 export const ProfileImg = styled.View`
-  width: 40%;
+  width: 50%;
   aspect-ratio: 1;
   border: 3px solid ${colors.grape_fruit};
   border-radius: 35px;
