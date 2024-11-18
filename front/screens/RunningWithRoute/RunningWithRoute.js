@@ -72,10 +72,8 @@ const RunningWithRoute = ({ navigation, route }) => {
   const [runRoute, setRunRoute] = useState([]);
 
   const [currentLocation, setCurrentLocation] = useState(null);
-  const [currentTrackingLocation, setCurrenTrackingtLocation] = useState({
-    latitude: location.latitude,
-    longitude: location.longitude,
-  });
+
+  const currentTrackingLocationRef = useRef(location);
 
   const [locationPermissionGranted, setLocationPermissionGranted] =
     useState(false);
@@ -137,7 +135,7 @@ const RunningWithRoute = ({ navigation, route }) => {
             }
           };
 
-          sendEndSession(recordId); // 종료 요청 전송
+          sendEndSession(recordIdRef.current); // 종료 요청 전송
         },
       },
     ],
@@ -179,8 +177,11 @@ const RunningWithRoute = ({ navigation, route }) => {
 
   //바뀐 값에 따라 현재 위치 변경
   useEffect(() => {
-    setCurrenTrackingtLocation(location);
-    console.log("변경된 CurrenTrackingtLocation: ", location);
+    currentTrackingLocationRef.current = location;
+    // console.log(
+    //   "변경된 currentTrackingLocationRef: ",
+    //   currentTrackingLocationRef.current
+    // );
   }, [location]);
 
   //달리기 시작을 눌렀을 경우
@@ -219,7 +220,7 @@ const RunningWithRoute = ({ navigation, route }) => {
         kafkaStompClientRef.current.send(subscribeEndFrame);
         console.log("끝 체킹 구독 완료", subscribeEndFrame);
       } else {
-        console.error("WebSocket 연결이 아직 열려 있지 않습니다.");
+        console.error("WebSocket이 끊겼습니다...");
       }
     }
   }, [recordId]);
@@ -261,7 +262,7 @@ const RunningWithRoute = ({ navigation, route }) => {
         // 사용자의 위치를 트래킹하고 주기적으로 서버로 보냅니다.
         locationInterval.current = setInterval(async () => {
           try {
-            const { latitude, longitude } = currentTrackingLocation;
+            const { latitude, longitude } = currentTrackingLocationRef.current;
             console.log("쓸 데이터 : ", latitude, " ", longitude);
             setCurrentLocation({
               latitude: latitude,
@@ -287,7 +288,6 @@ const RunningWithRoute = ({ navigation, route }) => {
           const bodyMatch = message.data.match(/\n\n(.*)\0/);
           if (bodyMatch && bodyMatch[1]) {
             const bodyContent = bodyMatch[1].trim(); // 본문에서 공백 제거
-            console.log("응답 본문: ", bodyContent);
 
             // 메시지의 destination을 추출합니다.
             const destinationMatch = message.data.match(/destination:(.*)\n/);
@@ -401,9 +401,16 @@ const RunningWithRoute = ({ navigation, route }) => {
       setShowAlarm(true);
       setMent(`경로에서 벗어났습니다.\n원래 경로로 돌아가세요`);
     } else {
+      console.log(
+        "알맞은 경로로 진행 중 , 현재 인덱스 값 ",
+        checkingRoute.nextRouteIndex - 1
+      );
       setShowAlarm(false);
       //현재 인덱스 값 바꿔주기
-      currentIndex.current = checkingRoute.nextRouteIndex - 1;
+      currentIndex.current =
+        checkingRoute.nextRouteIndex - 1 < 0
+          ? 0
+          : checkingRoute.nextRouteIndex - 1;
       //거리 값 바꿔주기
       runningDistanceRef.current = parseFloat(
         (
@@ -411,6 +418,7 @@ const RunningWithRoute = ({ navigation, route }) => {
           (totalIndex.current / currentIndex.current)
         ).toFixed(2)
       );
+      console.log("변경된 거리 ", runningDistanceRef.current);
 
       //러닝 인덱스 바꿔주기
       // runRoute에 latLongArray 0번부터 checkingRoute.nextRouteIndex - 1까지 넣기
@@ -421,8 +429,6 @@ const RunningWithRoute = ({ navigation, route }) => {
       if (isNaN(runningDistanceRef.current)) {
         runningDistanceRef.current = 0;
       }
-
-      console.log("거리: ", runningDistanceRef);
     }
   }, [checkingRoute]);
 
@@ -467,6 +473,7 @@ const RunningWithRoute = ({ navigation, route }) => {
         setRunningDistance={setRunningDistance}
         mode={mode}
         onLocationChange={handleUserLocationChange}
+        recordId={recordId}
       />
       {running && (
         <Bottom>
