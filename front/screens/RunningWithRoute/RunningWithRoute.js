@@ -68,7 +68,7 @@ const RunningWithRoute = ({ navigation, route }) => {
   const runningDistanceRef = useRef(runningDistance);
   const recordIdRef = useRef(null);
   const locationInterval = useRef(null);
-  const routeIndexRef = useRef(0);
+  const routeIndexRef = useRef(100);
   const [runRoute, setRunRoute] = useState([]);
 
   const [currentLocation, setCurrentLocation] = useState(null);
