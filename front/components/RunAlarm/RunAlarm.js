@@ -17,7 +17,7 @@ const RunAlarm = ({ ment, isVisible }) => {
         <Text
           key={index}
           style={isHighlighted ? styles.highlight : styles.normal}>
-          {part}
+          {part}{" "}
         </Text>
       );
     });

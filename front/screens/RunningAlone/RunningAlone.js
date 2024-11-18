@@ -148,10 +148,52 @@ const RunningAlone = ({ navigation, route }) => {
 
         kafkaStompClientRef.current.send(sendFrame);
       }
+    } else if (connectedWatch) {
+      console.log("recordId: ", recordIdRef.current);
+      const locationDto = {
+        recordId: recordIdRef.current,
+        time: elapsedTimeRef.current,
+        memberId: user.id,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        heartRate: heartRate,
+        pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
+        // pace: "10'10\"", // 최신 페이스
+        runningDistance: runningDistanceRef.current.toFixed(2),
+      };
+      // locationDtoPrint(locationDto);
+      if (
+        kafkaStompClientRef.current &&
+        kafkaStompClientRef.current.readyState === WebSocket.OPEN
+      ) {
+        // 서버로 데이터 전송 STOMP 프레임을 구성하여 데이터 전송
+        const sendFrame =
+          `SEND\n` +
+          `destination:/pub/running/${recordIdRef.current}\n` +
+          `content-type:application/json\n\n` +
+          `${JSON.stringify(locationDto)}\0`;
+
+        kafkaStompClientRef.current.send(sendFrame);
+        console.log("서버로 전달하는 데이터 ", sendFrame);
+
+        const paceData = {
+          pace: paceRef.current == undefined ? 0 : paceRef.current,
+          distance: runningDistanceRef.current.toFixed(2),
+        };
+
+        // STOMP 프로토콜에 맞춘 메시지 작성
+        const sendWatchFrame =
+          `SEND\n` +
+          `destination:/pub/pace/${recordId}\n` +
+          `content-type:application/json\n\n` +
+          `${JSON.stringify(paceData)}\0`;
+        kafkaStompClientRef.current.send(sendWatchFrame);
+        console.log("워치로 전달하는 데이터 ", sendWatchFrame);
+      }
     }
   };
 
-  // 연동 여부 가져오기 (비동기 함수로 상태 설정)
+  // 1. 연동 여부 가져오기 (비동기 함수로 상태 설정)
   useEffect(() => {
     const getPairedWatchStatus = async () => {
       try {
@@ -188,13 +230,14 @@ const RunningAlone = ({ navigation, route }) => {
     }
   };
 
-  //달리기 시작을 늘렀을 경우
+  //2. 달리기 시작을 늘렀을 경우
   useEffect(() => {
     if (running && !connectedWatch) {
       getRoomId(); // 비동기 함수 호출
     }
   }, [running]);
 
+  //3. 레코드 아이디 받아왔을때
   useEffect(() => {
     if (recordIdRef.current) {
       console.log("가져온 recordId: ", recordIdRef.current);
@@ -242,10 +285,14 @@ const RunningAlone = ({ navigation, route }) => {
 
             // WebSocket으로 전송
             kafkaWs.send(sendFrame);
-            console.log("데이터 받을 곳 구독하기", sendFrame);
 
             //stomp에 연결된 경우 데이터를 받을 sub을 구독하고있기
-            const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-running-${recordIdRef.current}\ndestination:/sub/running/${recordIdRef.current}\n\n\0`;
+            // const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-running-${recordIdRef.current}\ndestination:/sub/running/${recordIdRef.current}\n\n\0`;
+            // kafkaWs.send(getDataSubscribeFrame);
+            // console.log("데이터 받을 곳 구독하기", getDataSubscribeFrame);
+
+            //심박수 받을 곳
+            const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-heartrate-${recordIdRef.current}\ndestination:/sub/heartRate/${recordIdRef.current}\n\n\0`;
             kafkaWs.send(getDataSubscribeFrame);
             console.log("데이터 받을 곳 구독하기", getDataSubscribeFrame);
 
@@ -330,17 +377,17 @@ const RunningAlone = ({ navigation, route }) => {
                     "워치 데이터 응답 수신:",
                     JSON.stringify(parsedData)
                   );
-                  setPace(parsedData.pace);
-                  setElapsedTime(parsedData.time);
-                  setRunningDistance(parsedData.runningDistance);
+                  // setPace(parsedData.pace);
+                  // setElapsedTime(parsedData.time);
+                  // setRunningDistance(parsedData.runningDistance);
                   setHeartRate(parsedData.heartRate);
-                  setWatchData((prev) => [
-                    ...prev,
-                    {
-                      latitude: parsedData.latitude,
-                      longitude: parsedData.longitude,
-                    },
-                  ]);
+                  // setWatchData((prev) => [
+                  //   ...prev,
+                  //   {
+                  //     latitude: parsedData.latitude,
+                  //     longitude: parsedData.longitude,
+                  //   },
+                  // ]);
                 }
               }
             } catch (error) {
@@ -447,7 +494,7 @@ const RunningAlone = ({ navigation, route }) => {
     }
   }, [recordIdRef.current]);
 
-  //결과 데이터가 변경이 되면 종료를 의미하기에 종료페이지로 이동
+  //4.결과 데이터가 변경이 되면 종료를 의미하기에 종료페이지로 이동
   useEffect(() => {
     if (resultData.id) {
       navigation.navigate("RunResult", {
@@ -493,6 +540,7 @@ const RunningAlone = ({ navigation, route }) => {
         </Top>
       )}
       <Map
+        heartRate={heartRate}
         connectedWatch={connectedWatch}
         showStartModal={showStartModal}
         setShowStartModal={setShowStartModal}

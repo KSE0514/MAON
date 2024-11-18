@@ -33,4 +33,10 @@ public class ConnectionStompController {
 //        messagingTemplate.convertAndSend(SUB_PATH + code, sendDto);
     }
 
+    @MessageMapping("/heartRate/{recordId}")
+    public void sendHeartRate(@DestinationVariable String recordId, HeartRateDto dto) {
+        log.info("received heart rate data : {}", dto.getHeartRate());
+        messagingTemplate.convertAndSend("/sub/heartRate/" + recordId, dto); // 단순 전달만 시행
+    }
+
 }
