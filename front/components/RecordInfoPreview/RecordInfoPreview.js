@@ -53,8 +53,8 @@ const RecordInfoPreview = ({ navigation, data, mode, moveDetail }) => {
             zoomEnabled={false} // 줌인, 줌아웃 비활성화
             showsUserLocation={false}
             initialRegion={{
-              latitude: latLongArray[0]?.latitude,
-              longitude: latLongArray[0]?.longitude,
+              latitude: latLongArray[0]?.latitude ||  35.205409,
+              longitude: latLongArray[0]?.longitude || 126.811489,
               latitudeDelta: 0.003, // 줌 레벨 설정 (작을수록 줌 인)
               longitudeDelta: 0.003,
             }}>

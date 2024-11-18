@@ -11,7 +11,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.easter.watch.presentation.dataModel.RunInfo
+import com.easter.watch.presentation.dataModel.RunResult
 import com.easter.watch.presentation.service.LocationTrackingService
+import com.easter.watch.presentation.view.RecordActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +27,8 @@ import java.util.*
 
 
 class RunViewModel : ViewModel() {
+
+    val TAG = "RunViewModel"
 
     // WebSocket 클라이언트
     private lateinit var stompClient: StompWebSocketClient
@@ -44,6 +48,9 @@ class RunViewModel : ViewModel() {
 
     private val _totalDistance = MutableLiveData<Double>()
     val totalDistance: LiveData<Double> = _totalDistance
+
+    private val _recordId = MutableLiveData<String>()
+    val recordId: LiveData<String> = _recordId
 
 
     init {
@@ -74,13 +81,57 @@ class RunViewModel : ViewModel() {
         }
     }
 
+    // STOMP 메시지에서 JSON 추출
+    private fun extractJsonFromStompMessage(stompMessage: String): String {
+        val parts = stompMessage.split("\n\n")
+        val json = if (parts.size >= 2) {
+            parts.last().trim()
+        } else {
+            stompMessage.trim()
+        }
+        // 한글(AC00-D7A3)을 제외한 모든 비ASCII 유니코드 문자 제거
+        return json.replace(Regex("[^\\x20-\\x7E가-힣]"), "").trim()
+    }
+
+    //달리기 끝나는 신호 구독 -> end 받기도 하고 주기도하고
+    fun subscribeToRunningEndTopic(recordId : String, context: Context){
+        stompClient.subscribeToTopic("/sub/running/$recordId/end","sub-running-end"){ payload ->
+            try{
+                // JSON 데이터를 AuthInfo 객체로 변환
+                val jsonBody = extractJsonFromStompMessage(payload)
+                Log.d(TAG, "추출된 JSON: $jsonBody")
+
+                // Gson을 사용해 JSON을 RunResult 객체로 변환
+                val runResult = Gson().fromJson(jsonBody, RunResult::class.java)
+                Log.d(TAG, "runResult에 넣은 데이터 : $runResult ")
+
+                _recordId.value = recordId
+
+                // Intent 생성
+                val intent = Intent(context, ResultActivity::class.java).apply {
+                    putExtra("runResult", runResult)
+                }
+                context.startActivity(intent)
+
+                stopWebSocket()
+
+            }catch (e : Exception){
+                Log.d(TAG, e.toString())
+            }
+        }
+    }
+
+    fun stopRunning(recordId : String){
+        stompClient.sendMessageString("/pub/running/$recordId/end","") //완료 보내기
+    }
+
+
     // WebSocket 연결 종료
     fun stopWebSocket() {
         webSocketJob?.cancel()
         webSocketJob = null
-        //stompClient.disconnect()
+        stompClient.disconnect()
     }
-
 
     // RunningData 생성
     private fun createRunningData(memberId: String, recordId: String): RunInfo {
@@ -88,7 +139,7 @@ class RunViewModel : ViewModel() {
         val heartRateValue = heartRate.value ?: 0
         val totalDistanceValue = totalDistance.value ?: 0.0
         val paceValue = pace.value ?: "00'00''"
-        val timerTextValue = timerText.value ?: "00:00"
+        val timerTextValue = timerText.value ?: "00:00:00"
 
         return RunInfo(
             memberId = memberId,
@@ -114,7 +165,7 @@ class RunViewModel : ViewModel() {
     // 타이머 관련
     private var timerJob: Job? = null
     private var timeInSeconds = 0
-    private val _timerText = MutableLiveData("00:00")
+    private val _timerText = MutableLiveData("00:00:00")
     val timerText: LiveData<String> = _timerText
 
     // 달린 거리 관련
@@ -214,11 +265,13 @@ class RunViewModel : ViewModel() {
         val minutes = (timeInSeconds % 3600) / 60
         val seconds = timeInSeconds % 60
 
-        _timerText.value = if (hours > 0) {
-            String.format(" %02d:%02d:%02d ", hours, minutes, seconds)
-        } else {
-            String.format(" %02d:%02d ", minutes, seconds)
-        }
+        _timerText.value =String.format(" %02d:%02d:%02d ", hours, minutes, seconds)
+
+//        _timerText.value = if (hours > 0) {
+//            String.format(" %02d:%02d:%02d ", hours, minutes, seconds)
+//        } else {
+//            String.format(" %02d:%02d ", minutes, seconds)
+//        }
     }
 
     private fun calculatePace(distance: Double, tt: Int) {
@@ -287,6 +340,8 @@ class RunViewModel : ViewModel() {
     fun formatDistance(distance: Double): String {
         return String.format("%.2f", distance)
     }
+
+
 
 
 

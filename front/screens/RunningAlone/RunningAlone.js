@@ -134,7 +134,7 @@ const RunningAlone = ({ navigation, route }) => {
         // pace: "10'10\"", // 최신 페이스
         runningDistance: runningDistanceRef.current.toFixed(2),
       };
-      locationDtoPrint(locationDto);
+      // locationDtoPrint(locationDto);
       if (
         kafkaStompClientRef.current &&
         kafkaStompClientRef.current.readyState === WebSocket.OPEN
@@ -475,8 +475,7 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}
-          >
+            }}>
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}

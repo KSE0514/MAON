@@ -54,9 +54,11 @@ const RecordScreen = ({ navigation }) => {
     <Wrapper>
         {/* <Text>기록 화면</Text> */}
           <Bottom>
+              { info.length >0 ?
             <List>
-              {info.map((data) => (
+              {info.map((data, index) => (
                 <RecordInfoPreview
+                  key={index}
                   data={data}
                   mode="searchInfo"
                   moveDetail={() => {
@@ -73,6 +75,9 @@ const RecordScreen = ({ navigation }) => {
                 />
               ))}
             </List>
+            :
+            <Text>러닝 기록이 없습니다.</Text>
+            }
           </Bottom>
     </Wrapper>
     </ScrollView>
