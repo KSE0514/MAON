@@ -60,7 +60,7 @@ const RunningWithRoute = ({ navigation, route }) => {
   const [pace, setPace] = useState("00'00''"); // 페이스
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
   const [recordId, setRecordId] = useState();
-  const [ment, setMent] = useState(`시작을 위해\n시작점으로 이동하세요`);
+  const [ment, setMent] = useState(`시작을 위해 \n시작점으로 이동하세요`);
 
   const kafkaStompClientRef = useRef(null);
   const elapsedTimeRef = useRef(elapsedTime);
@@ -307,7 +307,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                 } else if (bodyContent === "false") {
                   console.log("Here!!!!!!!!!");
                   setShowAlarm(true);
-                  setMent(`시작을 위해\n시작점으로 이동하세요`);
+                  setMent(`시작을 위해 \n시작점으로 이동하세요`);
                 }
               }
               // 경로 체크에 대한 응답 처리
@@ -412,7 +412,7 @@ const RunningWithRoute = ({ navigation, route }) => {
     routeIndexRef.current = checkingRoute.nextRouteIndex;
     if (!checkingRoute.onRoute) {
       setShowAlarm(true);
-      setMent(`경로를 이탈했습니다.\n정상 경로로 이동하세요`);
+      setMent(`경로를 이탈했습니다. \n정상 경로로 이동하세요`);
     } else {
       setShowAlarm(false);
       //현재 인덱스 값 바꿔주기
