@@ -147,12 +147,12 @@ public class RunningConsumer {
 			List<Point> coordinates =  findRoute.getTrack().getCoordinates();
 			Point endPoint = coordinates.get(coordinates.size() - 1);
 			// 사용자가 달린 거리가 등록된 경로의 총 길이 이상이고, 도착지점과 10m 이내라면 완주로 처리한다.
-			if (findRoute.getDistance() <= distance && DistanceCalculator.isWithinDistance(
+			if (DistanceCalculator.isWithinDistance(
 				endPoint.getX(),
 				endPoint.getY(),
 				Double.parseDouble(list.get(list.size() - 1).getLatitude()),
 				Double.parseDouble(list.get(list.size() - 1).getLongitude()),
-				10)) {
+				5)) {
 				isCompleted = true;
 			}
 			startPoint = findRoute.getStartPoint();

@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.easter.route.domain.ranking.entity.Ranking;
 import com.easter.route.domain.ranking.entity.dto.*;
 import com.easter.route.domain.record.entity.Record;
+import com.easter.route.domain.route.entity.Route;
 import com.easter.route.domain.route.entity.dto.GetMemberListRequestFeignDto;
 import com.easter.route.domain.route.entity.dto.GetMemberListResponseFeignDto;
 import com.easter.route.domain.route.entity.dto.MemberInfo;
@@ -97,6 +98,7 @@ public class RankingServiceImpl implements RankingService {
 	}
 
 	public void updateRanking(Ranking ranking) {
+		log.info("랭킹을 업데이트합니다. routeId: {}", ranking.getRouteId());
 		String routeId = ranking.getRouteId();
 		Query query = new Query(Criteria.where("routeId").is(routeId).and("completed").is(true));
 		List<Record> findRecords = mongoTemplate.find(query, Record.class);
@@ -125,6 +127,28 @@ public class RankingServiceImpl implements RankingService {
 		// 랭킹 업데이트
 		ranking.updateRankingRecords(rankedRecords);
 		rankingRepository.save(ranking);
+	}
+
+	public void createRankingsForAllRoutes() {
+		log.info("모든 루트의 랭킹을 생성합니다.");
+		// MongoTemplate으로 모든 route_id 가져오기
+		List<String> allRouteIds = mongoTemplate.query(Route.class)
+			.distinct("_id")
+			.as(String.class)
+			.all();
+
+		// 모든 route_id를 확인하여 Ranking 생성
+		allRouteIds.forEach(routeId -> {
+			rankingRepository.findByRouteId(routeId)
+				.orElseGet(() -> {
+					// Ranking이 없는 경우 새로 생성
+					Ranking newRanking = Ranking.builder()
+						.routeId(routeId)
+						.rankedRecords(new ArrayList<>())
+						.build();
+					return rankingRepository.save(newRanking);
+				});
+		});
 	}
 
 	public void feignTest() {
