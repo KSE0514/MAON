@@ -72,33 +72,33 @@ const RecordDetailScreen = ({ navigation, route }) => {
     return () => backHandler.remove();
   }, []);
 
-  // useEffect(() => {
-  //   if (!routeList || !Array.isArray(routeList)) {
-  //     console.warn("routeList is invalid or not an array:", routeList);
-  //     setCoordinates([]); // 빈 배열로 설정하여 에러 방지
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!routeList || !Array.isArray(routeList)) {
+      console.warn("routeList is invalid or not an array:", routeList);
+      setCoordinates([]); // 빈 배열로 설정하여 에러 방지
+      return;
+    }
 
-  //   // 유효한 routeList가 있을 경우 좌표 변환
-  //   const transformedCoordinates = routeList.map((point) => ({
-  //     latitude: point.x, // 위도
-  //     longitude: point.y, // 경도
-  //   }));
+    // 유효한 routeList가 있을 경우 좌표 변환
+    const transformedCoordinates = routeList.map((point) => ({
+      latitude: point.x, // 위도
+      longitude: point.y, // 경도
+    }));
 
-  //   setCoordinates(transformedCoordinates); // 변환된 좌표 설정
+    setCoordinates(transformedCoordinates); // 변환된 좌표 설정
 
-  //   const resultX = [0.0];
-  //   const resultY = [0];
-  //   const resultLabel = ["0'0\""];
-  //   for (let i = 1; i < resultData.distanceList.length; i++) {
-  //     const pace = resultData.paceList[i];
-  //     if (resultData.distanceList[i] !== resultData.distanceList[i - 1] && pace) {
-  //       const parsedPace = parsePaceToSeconds(pace);
-  //       resultX.push(resultData.distanceList[i]);
-  //       resultY.push(parsedPace); // 초 단위로 변환된 yData 추가
-  //       resultLabel.push(pace);
-  //     }
-  //   }
+    const resultX = [0.0];
+    const resultY = [0];
+    const resultLabel = ["0'0\""];
+    for (let i = 1; i < resultData.distanceList.length; i++) {
+      const pace = resultData.paceList[i];
+      if (resultData.distanceList[i] !== resultData.distanceList[i - 1] && pace) {
+        const parsedPace = parsePaceToSeconds(pace);
+        resultX.push(resultData.distanceList[i]);
+        resultY.push(parsedPace); // 초 단위로 변환된 yData 추가
+        resultLabel.push(pace);
+      }
+    }
   //   // useRef로 xData와 yData를 업데이트
   //   chartDataRef.current = {
   //     xData: resultX,
@@ -114,7 +114,7 @@ const RecordDetailScreen = ({ navigation, route }) => {
   //     value <= 0 || !isFinite(value) ? 0 : value
   //   );
   // }
-  // }, [resultData]);
+  }, [resultData]);
 
   useEffect(() => {
     setPolyLineLoading(false); // 로딩 완료
@@ -215,16 +215,16 @@ const RecordDetailScreen = ({ navigation, route }) => {
                 setSeePaceChart(false);
               }}
             >
-              <Text
+              {/* <Text
                 style={[
                   styles.boldFont,
                   { color: !seePaceChart ? color.light_orange : "black" },
                 ]}
               >
                 달리기 경로
-              </Text>
+              </Text> */}
             </ViewTypeChangeBtn>
-            <View style={[styles.bar]}></View>
+            {/* <View style={[styles.bar]}></View>
             <ViewTypeChangeBtn
               onPress={() => {
                 setSeePaceChart(true);
@@ -238,7 +238,7 @@ const RecordDetailScreen = ({ navigation, route }) => {
               >
                 페이스 그래프
               </Text>
-            </ViewTypeChangeBtn>
+            </ViewTypeChangeBtn> */}
           </View>
         </View>
         <View style={{ marginBottom: 20, flex: 1 }}>
