@@ -49,7 +49,7 @@ public class MemberController {
     }
 
     @PostMapping("/info")
-    public ResponseEntity<ResultResponse> register(@RequestAttribute("passport") PassportDto passport, @RequestBody RegisterMemberRequestDto requestDto) {
+    public ResponseEntity<ResultResponse> register(@RequestAttribute("passport") PassportDto passport, @ModelAttribute RegisterMemberRequestDto requestDto) {
         log.info("register new member info");
         RegisterMemberResponseDto responseDto = memberService.registerMember(passport, requestDto);
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "회원 가입을 완료했습니다.", responseDto);

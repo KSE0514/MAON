@@ -66,7 +66,7 @@ const SelectRunRoute = ({ navigation, route }) => {
                     // routeId랑 같이 보내기
 
                     navigation.navigate("RouteDetail", {
-                      routeId: route.routeId,
+                      routeId: data.routeId,
                       searchType: searchType,
                       mode: mode,
                       info: data,

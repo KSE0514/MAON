@@ -17,6 +17,7 @@ export default function Map({
   currentLocation,
   startPoint, // 시작점 좌표 prop 추가
   selectedRoute,
+  runRoute,
 }) {
   const [mapRegion, setmapRegion] = useState({
     latitude: 36.7987869,
@@ -179,13 +180,15 @@ export default function Map({
       setGps((prevGps) => {
         if (prevGps.length > 0) {
           const lastPosition = prevGps[prevGps.length - 1];
-          const distanceIncrement = calculateDistance(
-            lastPosition,
-            newCoordinate
-          );
-          setRunningDistance(
-            (prevDistance) => prevDistance + distanceIncrement
-          );
+          if (mode === "notSelectedRoute") {
+            const distanceIncrement = calculateDistance(
+              lastPosition,
+              newCoordinate
+            );
+            setRunningDistance(
+              (prevDistance) => prevDistance + distanceIncrement
+            );
+          }
         }
         return [...prevGps, newCoordinate];
       });
@@ -207,7 +210,7 @@ export default function Map({
   };
 
   useEffect(() => {
-    // console.log("변경된 gps: " + JSON.stringify(gps));
+    console.log("변경된 gps: " + JSON.stringify(gps));
   }, [gps]);
 
   useEffect(() => {
@@ -222,7 +225,7 @@ export default function Map({
           accuracy: Location.Accuracy.Balanced,
         });
         handleUserLocationChange(location);
-      }, 1000); // 1초마다 위치 업데이트
+      }, 3000); // 1초마다 위치 업데이트
     };
 
     if (runStart && !connectedWatch) {
@@ -248,7 +251,6 @@ export default function Map({
   // 시작점 추가 또는 업데이트
   useEffect(() => {
     if (startPoint) {
-      console.log("Updating start-point marker:", startPoint);
       setMarkers((prevMarkers) => {
         // "start-point" 마커가 이미 존재하는지 확인
         const startPointIndex = prevMarkers.findIndex(
@@ -302,7 +304,8 @@ export default function Map({
           customMapStyle={MapStyle}
           style={{ alignSelf: "stretch", height: "100%" }}
           region={mapRegion}
-          showsUserLocation={false}>
+          showsUserLocation={false}
+        >
           {markers.map((marker) => (
             <Marker
               key={marker.id}
@@ -311,7 +314,8 @@ export default function Map({
                 longitude: marker.longitude,
               }}
               title={marker.title}
-              description={marker.description}>
+              description={marker.description}
+            >
               {/* 시작 */}
               {marker.title == "Start Point" && (
                 <View
@@ -327,7 +331,8 @@ export default function Map({
                     shadowOpacity: 1,
                     shadowRadius: 5,
                     elevation: 15, // Android 그림자 효과
-                  }}></View>
+                  }}
+                ></View>
               )}
               {/* 내 위치 */}
               {marker.title == "Current Point" && (
@@ -353,7 +358,7 @@ export default function Map({
                 strokeWidth={6}
               />
               <Polyline
-                coordinates={gps}
+                coordinates={runRoute}
                 strokeColor={color.light_orange}
                 strokeWidth={6}
               />

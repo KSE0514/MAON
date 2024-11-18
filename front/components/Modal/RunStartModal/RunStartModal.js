@@ -9,6 +9,8 @@ const RunStartModal = ({
   setShowStartModal,
   setRunStart,
   setRunning,
+  getRoomId,
+  connectedWatch,
 }) => {
   if (!showStartModal) return null;
   const fontsLoaded = useFontsLoaded();
@@ -22,7 +24,7 @@ const RunStartModal = ({
 
   useEffect(() => {
     if (count == -1) {
-      console.log("달리기 시작!");
+      // console.log("달리기 시작!");
       setShowStartModal(false);
       setRunStart(true);
       setRunning(true);
@@ -30,6 +32,9 @@ const RunStartModal = ({
   }, [count]);
   useEffect(() => {
     if (!startTap) {
+      if (connectedWatch) {
+        getRoomId();
+      }
       const timer = setInterval(() => {
         setCount((prevCount) => Math.max(prevCount - 1, -2)); // count가 0 이하로 내려가지 않도록 설정
       }, 1000);
@@ -45,7 +50,8 @@ const RunStartModal = ({
           onPress={() => {
             setStartTap(false);
           }}
-          style={styles.base}>
+          style={styles.base}
+        >
           <View style={[styles.whiteBorder]}>
             <Text style={styles.whiteFont}>{`탭하여\n시작하기`}</Text>
           </View>

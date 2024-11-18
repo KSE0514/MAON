@@ -38,10 +38,12 @@ public class RunningStompController {
     }
 
     @MessageMapping("/running/{recordId}")
-    public void sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
+    @SendTo("/sub/running/{recordId}")
+    public LocationDto sendLocation(@DestinationVariable String recordId, LocationDto locationDto) {
         log.info("Received location data without route: {}", recordId);
         log.info("Received location data without route: {}", locationDto);
         runningProducer.sendLocation(locationDto);
+        return locationDto;
     }
 
     @MessageMapping("/running/route/{recordId}")
@@ -64,6 +66,7 @@ public class RunningStompController {
         log.info("End record request received: {}", recordId);
         try {
             RunningResultDto result = runningConsumer.finish(recordId);
+            runningConsumer.clearRunningInfo(recordId);
             log.info("Successfully processed end record: {}, result: {}", recordId, result);
             return result;
         } catch (Exception e) {
@@ -72,24 +75,18 @@ public class RunningStompController {
         }
     }
 
-    @MessageMapping("/running/team/{teamId}/end")
-    public void finishGroup(@DestinationVariable String teamId) {
+    @MessageMapping("/running/team/{teamId}/{memberId}/end")
+    @SendTo("/sub/running/team/{teamId}/{memberId}/end")
+    public RunningResultDto finishGroup(@DestinationVariable String teamId, @DestinationVariable String memberId) {
         log.info("Team ID: request received: {}", teamId);
         try {
-            runningConsumer.finishTeam(teamId);
-            log.info("Successfully processed end team: {}, result: {}", teamId);
+            RunningResultDto result =  runningConsumer.finishTeam(teamId, memberId);
+            runningConsumer.clearRunningInfo(teamId, memberId);
+            log.info("Successfully processed end record: {}, result: {}", memberId, result);
+            return result;
         } catch (Exception e) {
             log.error("Error processing end team: {}", teamId, e);
             throw e;
         }
     }
-
-
-
-    // @SendTo("/sub/running/team/{memberId}")
-    // public RouteValidationResult validateRoute(@DestinationVariable String memberId, LocationDto locationDto) {
-    //     log.info("Received route validation request: {}", memberId);
-    //     log.info("Received route validation request: {}", locationDto);
-    //     return runningConsumer.validateRoute(memberId, locationDto);
-    // }
 }

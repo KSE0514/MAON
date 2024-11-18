@@ -158,9 +158,9 @@ const RecordDetailScreen = ({ navigation, route }) => {
   };
 
   return (
-    // <Wrapper>
-    //     <Text>기록 디테일 화면</Text>
-        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <Wrapper>
+        <Text>기록 디테일 화면</Text>
+        {/* <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Wrapper>
         <View style={[styles.routeAddView]}>
           <AddRouteBtn
@@ -330,8 +330,8 @@ const RecordDetailScreen = ({ navigation, route }) => {
           />
         )}
       </Wrapper>
-    </SafeAreaView>
-    // {/* </Wrapper> */}
+    </SafeAreaView> */}
+    </Wrapper>
   );
 };
 export default RecordDetailScreen;
