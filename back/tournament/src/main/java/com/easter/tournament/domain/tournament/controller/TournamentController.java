@@ -91,4 +91,12 @@ public class TournamentController {
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "마라톤을 북마크를 취소했습니다.");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
+
+    @PostMapping("/bookmark/delete")
+    public ResponseEntity<ResultResponse> bookmarkDelete(@RequestAttribute("passport") PassportDto passport, @RequestBody BookmarkRequestDto dto) {
+        log.info("remove tournament bookmark : {}", dto.getTournamentId());
+        tournamentService.unbookmark(passport, dto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "마라톤을 북마크를 취소했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
 }

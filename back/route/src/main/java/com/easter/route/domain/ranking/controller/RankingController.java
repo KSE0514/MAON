@@ -35,8 +35,16 @@ public class RankingController {
     // test용, 삭제 할 것
     @GetMapping("/ranking/updateAllRankingList")
     public ResponseEntity<ResultResponse> updateAllRankingList() {
+        rankingService.createRankingsForAllRoutes();
         rankingService.updateAllRankingList();
         ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "모든 랭킹 정보를 업데이트했습니다.");
+        return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
+    }
+
+    @GetMapping("/ranking/init")
+    public ResponseEntity<ResultResponse> rankingInit() {
+        rankingService.createRankingsForAllRoutes();
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "랭킹 초기화");
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 

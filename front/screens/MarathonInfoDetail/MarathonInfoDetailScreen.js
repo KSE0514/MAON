@@ -280,6 +280,8 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
     setParticipated(marathonInfo.participated); // 나중에 주석 풀기
     // setParticipated(true)
 
+    setIsActived(marathonInfo.bookmarked); // 북마크 여부
+
     // // marathonCourse와 selectCourseModalContent를 함께 업데이트
     // const updatedCourse = marathonInfo.categories;
     // setMarathonCourse(updatedCourse);
@@ -298,7 +300,49 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
   // console.log('북마크 활성화 여부:',isActivated, myMarathonInfo)
 
   // 북마크 버튼 토글
-  const toggleBookmark = () => {
+  const toggleBookmark = async () => {
+    console.log("북마크 api 요청 전 대회 아이디 확인용: ", marathonUuid);
+    if (!isActivated) {
+      try {
+        const response = await apiClient.post(
+          `/tournament/tournament/bookmark`,
+          {
+            tournamentId: marathonUuid,
+          },
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+            },
+          }
+        );
+        console.log("북마크 성공: ", response.status);
+        setIsActived(true);
+        getMarathonDetailInfo();
+      } catch (error) {
+        console.error("북마크 에러 발생: ", error);
+      }
+    } else {
+      try {
+        const response = await apiClient.post(
+          `/tournament/tournament/bookmark/delete`,
+          {
+            tournamentId: marathonUuid,
+          },
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+            },
+          }
+        );
+        console.log("북마크 해제 성공: ", response.status);
+        setIsActived(false);
+        getMarathonDetailInfo();
+      } catch (error) {
+        console.error("북마크 해제 에러 발생: ", error);
+      }
+    }
     // const marathonName = testMarathonInfo.name;
     // setMyMarathonInfo((prevState) => {
     //   const isBookmarked = prevState.bookmarkList.includes(marathonName);
@@ -414,6 +458,9 @@ const MarathonInfoDetailScreen = ({ navigation, route }) => {
         navigation.navigate("CreateTeam", {
           teamId: response.data.data.teamId,
           reloadGetMarathonDetailInfo: getMarathonDetailInfo,
+          tournamentId: uuid,
+          paramsLatitude: paramsLatitude,
+          paramsLongitude: paramsLongitude,
         });
         setAddModal(false);
       }

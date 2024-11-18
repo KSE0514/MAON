@@ -11,4 +11,6 @@ public interface RankingService {
     void updateAllRankingList();
 
     void feignTest();
+
+    void createRankingsForAllRoutes();
 }
