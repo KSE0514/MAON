@@ -31,7 +31,6 @@ const MarathonInfo = ({ navigation, route }) => {
   ) => {
     setIsLoading(true);
     try {
-      console.log(year, month, area, closed);
       const response = await apiClient.post(
         `/tournament/tournament/getMarathon`,
         {

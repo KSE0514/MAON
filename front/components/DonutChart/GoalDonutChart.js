@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, Alert } from "react-native";
 import PieChart from "react-native-pie-chart";
 import fonts from "../../styles/fonts";
 import color from "../../styles/colors";

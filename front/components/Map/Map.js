@@ -19,10 +19,12 @@ export default function Map({
   startPoint, // 시작점 좌표 prop 추가
   selectedRoute,
   runRoute,
+  heartRate,
 }) {
   //현재 위치를 받아옴
   const location = useContext(LocationContext);
-
+  // 지도 준비 상태
+  const [isMapReady, setIsMapReady] = useState(false);
   //내 위치
   const [mapRegion, setmapRegion] = useState({
     latitude: location.latitude,
@@ -61,6 +63,17 @@ export default function Map({
     }
   }, [currentLocation]);
 
+  useEffect(() => {
+    console.log("여기까진옴?");
+    const startTracking = async () => {
+      console.log("트래킹 시작");
+      handleUserLocationChange();
+    };
+    console.log("심박수 받아옴 ");
+    if (runStart && connectedWatch) {
+      startTracking();
+    }
+  }, [heartRate]);
   /**
    * 내 위치 첫 위치 설정
    */
@@ -110,6 +123,7 @@ export default function Map({
 
         return updatedMarkers;
       });
+      setIsMapReady(true);
     };
 
     getLocation();
@@ -139,15 +153,14 @@ export default function Map({
       setGps((prevGps) => {
         if (prevGps.length > 0) {
           const lastPosition = prevGps[prevGps.length - 1];
-          if (mode === "notSelectedRoute") {
-            const distanceIncrement = calculateDistance(
-              lastPosition,
-              newCoordinate
-            );
-            setRunningDistance(
-              (prevDistance) => prevDistance + distanceIncrement
-            );
-          }
+
+          const distanceIncrement = calculateDistance(
+            lastPosition,
+            newCoordinate
+          );
+          setRunningDistance(
+            (prevDistance) => prevDistance + distanceIncrement
+          );
         }
         return [
           ...prevGps,
@@ -239,78 +252,77 @@ export default function Map({
   return (
     <View style={styles.container}>
       <View style={styles.map}>
-        <MapView
-          provider={MapView.PROVIDER_GOOGLE}
-          customMapStyle={MapStyle}
-          style={{ alignSelf: "stretch", height: "100%" }}
-          region={mapRegion}
-          showsUserLocation={false}
-        >
-          {markers.map((marker) => (
-            <Marker
-              key={marker.id}
-              coordinate={{
-                latitude: marker.latitude,
-                longitude: marker.longitude,
-              }}
-              title={marker.title}
-              description={marker.description}
-            >
-              {/* 시작 */}
-              {marker.title == "Start Point" && (
-                <View
-                  style={{
-                    backgroundColor: "white",
-                    padding: 7.5,
-                    borderRadius: 10,
-                    shadowColor: "#FFC700",
-                    shadowOffset: {
-                      width: 0,
-                      height: 0,
-                    },
-                    shadowOpacity: 1,
-                    shadowRadius: 5,
-                    elevation: 15, // Android 그림자 효과
-                  }}
-                ></View>
-              )}
-              {/* 내 위치 */}
-              {marker.title == "Current Point" && (
-                <Image
-                  source={require("../../assets/images/Union.png")} // 이미지 경로
-                  style={{
-                    width: 30, // 원하는 너비
-                    height: 38, // 원하는 높이
-                    resizeMode: "contain", // 이미지를 짤리지 않게 표시
-                  }}
+        {isMapReady && (
+          <MapView
+            provider={MapView.PROVIDER_GOOGLE}
+            customMapStyle={MapStyle}
+            style={{ alignSelf: "stretch", height: "100%" }}
+            region={mapRegion}
+            showsUserLocation={false}>
+            {markers.map((marker) => (
+              <Marker
+                key={marker.id}
+                coordinate={{
+                  latitude: marker.latitude,
+                  longitude: marker.longitude,
+                }}
+                title={marker.title}
+                description={marker.description}>
+                {/* 시작 */}
+                {marker.title == "Start Point" && (
+                  <View
+                    style={{
+                      backgroundColor: "white",
+                      padding: 7.5,
+                      borderRadius: 10,
+                      shadowColor: "#FFC700",
+                      shadowOffset: {
+                        width: 0,
+                        height: 0,
+                      },
+                      shadowOpacity: 1,
+                      shadowRadius: 5,
+                      elevation: 15, // Android 그림자 효과
+                    }}></View>
+                )}
+                {/* 내 위치 */}
+                {marker.title == "Current Point" && (
+                  <Image
+                    source={require("../../assets/images/Union.png")} // 이미지 경로
+                    style={{
+                      width: 30, // 원하는 너비
+                      height: 38, // 원하는 높이
+                      resizeMode: "contain", // 이미지를 짤리지 않게 표시
+                    }}
+                  />
+                )}
+                {/*고스트 위치 */}
+                {/* 물 위치 */}
+                {/* 반환 위치 */}
+              </Marker>
+            ))}
+            {mode === "selectedRoute" ? (
+              <>
+                <Polyline
+                  coordinates={selectedRoute}
+                  strokeColor={color.grey}
+                  strokeWidth={6}
                 />
-              )}
-              {/*고스트 위치 */}
-              {/* 물 위치 */}
-              {/* 반환 위치 */}
-            </Marker>
-          ))}
-          {mode === "selectedRoute" ? (
-            <>
+                <Polyline
+                  coordinates={runRoute}
+                  strokeColor={color.light_orange}
+                  strokeWidth={6}
+                />
+              </>
+            ) : (
               <Polyline
-                coordinates={selectedRoute}
-                strokeColor={color.grey}
-                strokeWidth={6}
-              />
-              <Polyline
-                coordinates={runRoute}
+                coordinates={gps}
                 strokeColor={color.light_orange}
                 strokeWidth={6}
               />
-            </>
-          ) : (
-            <Polyline
-              coordinates={gps}
-              strokeColor={color.light_orange}
-              strokeWidth={6}
-            />
-          )}
-        </MapView>
+            )}
+          </MapView>
+        )}
       </View>
     </View>
   );

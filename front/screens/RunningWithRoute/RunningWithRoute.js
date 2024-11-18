@@ -60,28 +60,29 @@ const RunningWithRoute = ({ navigation, route }) => {
   const [pace, setPace] = useState("00'00''"); // 페이스
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
   const [recordId, setRecordId] = useState();
-  const [ment, setMent] = useState(`시작을 위해\n시작점으로 이동하세요`);
+  const [ment, setMent] = useState(`시작을 위해 \n시작점으로 이동하세요`);
 
-  const kafkaStompClientRef = useRef(null);
-  const elapsedTimeRef = useRef(elapsedTime);
-  const paceRef = useRef(pace);
-  const runningDistanceRef = useRef(runningDistance);
-  const recordIdRef = useRef(null);
+  const kafkaStompClientRef = useRef(null); // 스톰프
+  const elapsedTimeRef = useRef(elapsedTime); // 달린 시간
+  const paceRef = useRef(pace); //페이스 값
+  const runningDistanceRef = useRef(runningDistance); //달린 거리
+  const recordIdRef = useRef(null); // 기록아이디
   const locationInterval = useRef(null);
-  const routeIndexRef = useRef(100);
-  const [runRoute, setRunRoute] = useState([]);
+  const routeIndexRef = useRef(0); // 루트 인덱스
+  const [runRoute, setRunRoute] = useState([]); // 달리기 경로
 
-  const [currentLocation, setCurrentLocation] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState(null); // 현재 위치
 
-  const currentTrackingLocationRef = useRef(location);
+  const currentTrackingLocationRef = useRef(location); // 현재 위치 값
 
   const [locationPermissionGranted, setLocationPermissionGranted] =
     useState(false);
-  const [inStartPoint, setInStartPoint] = useState(false);
-  const [checkingRoute, setCheckingRoute] = useState({});
+  const [inStartPoint, setInStartPoint] = useState(false); //시작점
+  const [checkingRoute, setCheckingRoute] = useState({}); // 경로 이탈 응답 데이타
 
-  const totalIndex = useRef(latLongArray.length);
-  const currentIndex = useRef(0);
+  const totalIndex = useRef(latLongArray.length); //총 거리 인덱스
+  const currentIndex = useRef(0); //현재 거리 인덱스
+  const matchingDistance = useRef(0); // 총거리 값 / ( 총거리 인덱스 / 현재 거리 인덱스 )
 
   const [resultData, setResultData] = useState({
     id: "",
@@ -307,7 +308,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                 } else if (bodyContent === "false") {
                   console.log("Here!!!!!!!!!");
                   setShowAlarm(true);
-                  setMent(`시작을 위해\n시작점으로 이동하세요`);
+                  setMent(`시작을 위해 \n시작점으로 이동하세요`);
                 }
               }
               // 경로 체크에 대한 응답 처리
@@ -412,7 +413,7 @@ const RunningWithRoute = ({ navigation, route }) => {
     routeIndexRef.current = checkingRoute.nextRouteIndex;
     if (!checkingRoute.onRoute) {
       setShowAlarm(true);
-      setMent(`경로를 이탈했습니다.\n정상 경로로 이동하세요`);
+      setMent(`경로를 이탈했습니다. \n정상 경로로 이동하세요`);
     } else {
       setShowAlarm(false);
       //현재 인덱스 값 바꿔주기
@@ -421,7 +422,7 @@ const RunningWithRoute = ({ navigation, route }) => {
           ? 0
           : checkingRoute.nextRouteIndex - 1;
       //거리 값 바꿔주기
-      runningDistanceRef.current = parseFloat(
+      matchingDistance.current = parseFloat(
         (
           marathonInfo.distance /
           (totalIndex.current / currentIndex.current)
@@ -431,7 +432,7 @@ const RunningWithRoute = ({ navigation, route }) => {
         "알맞은 경로로 진행 중 , 현재 인덱스 값 ",
         currentIndex.current
       );
-      console.log("변경된 거리 ", runningDistanceRef.current);
+      console.log("변경된 거리 ", matchingDistance.current);
 
       //러닝 인덱스 바꿔주기
       // runRoute에 latLongArray 0번부터 checkingRoute.nextRouteIndex - 1까지 넣기
@@ -439,8 +440,8 @@ const RunningWithRoute = ({ navigation, route }) => {
       //러닝 인덱스 바꿔주기
       setRunRoute(latLongArray.slice(0, checkingRoute.nextRouteIndex - 1));
 
-      if (isNaN(runningDistanceRef.current)) {
-        runningDistanceRef.current = 0;
+      if (isNaN(matchingDistance.current)) {
+        matchingDistance.current = 0;
       }
     }
   }, [checkingRoute]);
@@ -493,7 +494,7 @@ const RunningWithRoute = ({ navigation, route }) => {
             <RunInfoCol style={{ flex: 1 }}>
               <GoalDonutChart
                 connectedWatch={connectedWatch}
-                currentDistance={parseFloat(runningDistanceRef.current)}
+                currentDistance={parseFloat(matchingDistance.current)}
                 goalDistance={marathonInfo.distance}
                 mode={mode}
               />
@@ -507,7 +508,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                 setPace={setPace}
                 pace={pace}
               />
-              <HeartBeat mode={mode} />
+              <HeartBeat mode={mode} heartRate={"--"} />
             </RunInfoCol>
           </RunInfo>
         </Bottom>
