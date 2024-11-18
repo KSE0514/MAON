@@ -105,9 +105,8 @@ const RunningWithRoute = ({ navigation, route }) => {
       {
         title: "취소",
         onPress: () => {
-          // setShowStopModal(false);
-          // setRunStart(true);
-          navigation.navigate("Home");
+          setShowStopModal(false);
+          setRunStart(true);
         },
       },
       {
@@ -157,8 +156,8 @@ const RunningWithRoute = ({ navigation, route }) => {
         pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
         runningDistance: runningDistanceRef.current.toFixed(2),
       };
-      locationDtoPrint(locationDto);
-      console.log("here");
+      // locationDtoPrint(locationDto);
+      // console.log("here");
       if (
         kafkaStompClientRef.current &&
         kafkaStompClientRef.current.readyState === WebSocket.OPEN
@@ -310,6 +309,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                 console.log("경로 체크 응답: ");
                 const parsedObject = JSON.parse(bodyContent);
                 console.log(parsedObject);
+                //데이터 변경
                 setCheckingRoute(parsedObject);
                 //종료
                 if (parsedObject.endPoint) {
@@ -381,6 +381,8 @@ const RunningWithRoute = ({ navigation, route }) => {
 
     kafkaStompClientRef.current = kafkaWs;
 
+    console.log("array:", latLongArray);
+
     return () => {
       clearInterval(locationInterval.current);
       kafkaWs.close();
@@ -395,16 +397,17 @@ const RunningWithRoute = ({ navigation, route }) => {
   }, [elapsedTime, pace, runningDistance]);
 
   useEffect(() => {
-    console.log(checkingRoute.nextRouteIndex, checkingRoute.onRoute);
+    console.log(
+      "응답인덱스 : ",
+      checkingRoute.nextRouteIndex,
+      "응답 경로 이탈 판정 : ",
+      checkingRoute.onRoute
+    );
     routeIndexRef.current = checkingRoute.nextRouteIndex;
-    if (checkingRoute.onRoute) {
+    if (!checkingRoute.onRoute) {
       setShowAlarm(true);
       setMent(`경로에서 벗어났습니다.\n원래 경로로 돌아가세요`);
     } else {
-      console.log(
-        "알맞은 경로로 진행 중 , 현재 인덱스 값 ",
-        checkingRoute.nextRouteIndex - 1
-      );
       setShowAlarm(false);
       //현재 인덱스 값 바꿔주기
       currentIndex.current =
@@ -417,6 +420,10 @@ const RunningWithRoute = ({ navigation, route }) => {
           marathonInfo.distance /
           (totalIndex.current / currentIndex.current)
         ).toFixed(2)
+      );
+      console.log(
+        "알맞은 경로로 진행 중 , 현재 인덱스 값 ",
+        currentIndex.current
       );
       console.log("변경된 거리 ", runningDistanceRef.current);
 
