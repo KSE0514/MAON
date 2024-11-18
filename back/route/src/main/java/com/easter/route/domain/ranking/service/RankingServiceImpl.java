@@ -1,10 +1,6 @@
 package com.easter.route.domain.ranking.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import com.easter.route.domain.ranking.entity.Ranking;
 import com.easter.route.domain.ranking.entity.dto.*;
@@ -19,10 +15,13 @@ import com.easter.route.global.response.ResultResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -32,16 +31,21 @@ import com.easter.route.domain.ranking.repository.RankingRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.client.RestClient;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class RankingServiceImpl implements RankingService {
 
+	@Value("${external-url.member}")
+	private String memberUrl;
+
 	private final RankingRepository rankingRepository;
 	private final MongoTemplate mongoTemplate;
 	private final MemberClient memberClient;
 	private final ObjectMapper objectMapper;
+	private final RestClient restClient;
 
 	@Override
 	public GetRankingListDto getRankingList(String routeId) {
@@ -113,15 +117,17 @@ public class RankingServiceImpl implements RankingService {
 		// 멤버 정보 가져오기
 		List<UUID> memberIds = rankedRecords.stream().map((rankedRecord -> UUID.fromString(rankedRecord.getMemberId()))).toList();
 		log.info("멤버 수: {}", memberIds.size());
-		GetMemberListRequestFeignDto getMemberListRequestFeignDto = GetMemberListRequestFeignDto.builder().idList(memberIds).build();
-		ResponseEntity<ResultResponse> res = memberClient.getMemberInfoList(getMemberListRequestFeignDto);
-		log.info("res: {}", res);
-		if (res.getStatusCode() != HttpStatus.OK) {
-			throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "멤버 서비스에서 정보를 가져오는데 실패했습니다.");
-		}
+//		GetMemberListRequestFeignDto getMemberListRequestFeignDto = GetMemberListRequestFeignDto.builder().idList(memberIds).build();
+		List<MemberInfo> memberList = getMemberInfo(memberIds, null).getMemberInfoList();
+
+//		ResponseEntity<ResultResponse> res = memberClient.getMemberInfoList(getMemberListRequestFeignDto);
+//		log.info("res: {}", res);
+//		if (res.getStatusCode() != HttpStatus.OK) {
+//			throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "멤버 서비스에서 정보를 가져오는데 실패했습니다.");
+//		}
 		// 멤버 정보 최신화
-		List<MemberInfo> memberList =
-				objectMapper.convertValue(Objects.requireNonNull(res.getBody()).getData(), GetMemberListResponseFeignDto.class).getMemberInfoList();
+//		List<MemberInfo> memberList =
+//				objectMapper.convertValue(Objects.requireNonNull(res.getBody()).getData(), GetMemberListResponseFeignDto.class).getMemberInfoList();
 		for (int i = 0; i < memberList.size(); i++) {
 			log.info("멤버 {}", memberList.get(i).toString());
 		}
@@ -223,5 +229,22 @@ public class RankingServiceImpl implements RankingService {
 			throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR,
 				"멤버 서비스 호출 중 예상치 못한 오류가 발생했습니다.");
 		}
+	}
+
+	private GetMemberListResponseFeignDto getMemberInfo(List<UUID> memberIdList, String nicknameKeyword) {
+		if(memberIdList == null || memberIdList.size() == 0) {
+			return GetMemberListResponseFeignDto.builder().memberInfoList(new ArrayList<>()).build();
+		}
+		ResponseEntity<Map> memberResponse = restClient.post().uri(memberUrl + "/service/search").contentType(MediaType.APPLICATION_JSON)
+				.body(GetMemberListRequestFeignDto.builder().idList(memberIdList).nicknameKeyword(nicknameKeyword).build())
+				.retrieve()
+				.onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
+					throw new BusinessException(HttpStatus.BAD_REQUEST, "멤버 서비스와 통신 실패");
+				})
+				.onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+					throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "멤버 서비스와 통신 실패");
+				})
+				.toEntity(Map.class);
+		return objectMapper.convertValue(memberResponse.getBody().get("data"), GetMemberListResponseFeignDto.class);
 	}
 }
