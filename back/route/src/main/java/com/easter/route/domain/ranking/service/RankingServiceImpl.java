@@ -98,6 +98,7 @@ public class RankingServiceImpl implements RankingService {
 	}
 
 	public void updateRanking(Ranking ranking) {
+		log.info("랭킹을 업데이트합니다. routeId: {}", ranking.getRouteId());
 		String routeId = ranking.getRouteId();
 		Query query = new Query(Criteria.where("routeId").is(routeId).and("completed").is(true));
 		List<Record> findRecords = mongoTemplate.find(query, Record.class);
@@ -129,6 +130,7 @@ public class RankingServiceImpl implements RankingService {
 	}
 
 	public void createRankingsForAllRoutes() {
+		log.info("모든 루트의 랭킹을 생성합니다.");
 		// MongoTemplate으로 모든 route_id 가져오기
 		List<String> allRouteIds = mongoTemplate.query(Route.class)
 			.distinct("route_id")
