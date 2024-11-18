@@ -140,6 +140,10 @@ const RunningWithRoute = ({ navigation, route }) => {
     ],
   };
 
+  useEffect(() => {
+    console.log(ment);
+  }, [ment]);
+
   // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
   const handleUserLocationChange = (location) => {
     if (!connectedWatch) {
@@ -301,7 +305,9 @@ const RunningWithRoute = ({ navigation, route }) => {
                   setShowAlarm(false);
                   clearInterval(locationInterval.current);
                 } else if (bodyContent === "false") {
+                  console.log("Here!!!!!!!!!");
                   setShowAlarm(true);
+                  setMent(`시작을 위해\n시작점으로 이동하세요`);
                 }
               }
               // 경로 체크에 대한 응답 처리
@@ -449,8 +455,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}
-          >
+            }}>
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}
