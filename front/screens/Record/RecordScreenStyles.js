@@ -23,3 +23,14 @@ export const Bottom = styled.View`
 export const List = styled.View`
   flex: 1;
 `;
+
+export const EmptyRequest = styled.View`
+  align-items: center;
+  justify-content: center;
+  height: ${screenHeight * 0.75}px;
+`;
+
+export const EmptyRequestText = styled.Text`
+  font-family: ${fonts.gMarketLight};
+  font-size: 19px;
+`;

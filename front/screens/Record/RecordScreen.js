@@ -2,6 +2,8 @@ import {
   Wrapper,
   Bottom, 
   List,
+  EmptyRequest,
+  EmptyRequestText
 } from './RecordScreenStyles'
 import useAuthStore from "./../../store/AuthStore"
 import { useState, useEffect } from 'react';
@@ -76,7 +78,10 @@ const RecordScreen = ({ navigation }) => {
               ))}
             </List>
             :
-            <Text>러닝 기록이 없습니다.</Text>
+            <EmptyRequest>
+              <EmptyRequestText>러닝 기록이 없습니다.</EmptyRequestText>
+            </EmptyRequest>
+            // <Text>러닝 기록이 없습니다.</Text>
             }
           </Bottom>
     </Wrapper>

@@ -27,11 +27,14 @@ import {
   TextInput,
   TouchableOpacity,
   Text,
+  View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions } from "react-native";
 import { apiClient } from "../../customAxios";
 import useAuthStore from "./../../store/AuthStore";
+import color from "../../styles/colors";
+import fonts from "../../styles/fonts";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -105,13 +108,14 @@ const testUsers = [
 
 const CreateTeamScreen = ({ navigation, route }) => {
   const { user } = useAuthStore();
-  const { teamId, reloadGetMarathonDetailInfo } = route.params;
+  const { teamId, reloadGetMarathonDetailInfo, tournamentId, paramsLatitude, paramsLongitude } = route.params;
 
   const [searchName, setSearchName] = useState(""); // 사용자가 입력할 값을 담을 state변수
 
   const [recipientIndex, setRecipientIndex] = useState(null); // 초기값을 null로 설정
   const [showSendRequestModal, setShowSendRequestModal] = useState(false); // 초대 신청 모달
   const [showCancelRequestModal, setShowCancelRequestModal] = useState(false); // 초대 취소 모달
+  const [showLeaveTeamModal, setShowLeaveTeamModal] = useState(false); // 팀 탈퇴 모달
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]); // 필터링된 사용자 리스트
 
@@ -175,12 +179,31 @@ const CreateTeamScreen = ({ navigation, route }) => {
             {
               title: "예",
               onPress: () => {
-                cancelRequest();
+                leaveTeam();
               },
             },
           ],
         }
       : null;
+
+  const leaveTeamContent = {
+          text: `팀을 탈퇴하시겠습니까?`,
+          subText: "",
+          buttons: [
+            {
+              title: "아니오",
+              onPress: () => {
+                setShowLeaveTeamModal(false);
+              },
+            },
+            {
+              title: "예",
+              onPress: () => {
+                leaveTeam();
+              },
+            },
+          ],
+        }
 
   const clickRequestBtn = (index) => {
     // 요청 받는 사람 인덱스 recipientIndex에 담고
@@ -300,6 +323,29 @@ const CreateTeamScreen = ({ navigation, route }) => {
     }
   };
 
+  const leaveTeam = async () => {
+    try{
+      const response = await apiClient.post(
+        `/tournament/team/leave/${teamId}`,
+        {
+          teamId: teamId
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+          },
+        }
+      );
+      console.log("팀 탈퇴 성공: ", response.status)
+      setShowLeaveTeamModal(false)
+      reloadGetMarathonDetailInfo()
+      navigation.navigate("MarathonInfoDetail", {uuid: tournamentId, paramsLatitude: paramsLatitude,paramsLongitude: paramsLongitude})
+    } catch (error) {
+      console.error("팀 탈퇴 에러 발생: ", error);
+    }
+  }
+
   return (
     <Wapper>
       {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -313,7 +359,14 @@ const CreateTeamScreen = ({ navigation, route }) => {
           > */}
       <Container>
         <TitleArea>
-          <TitleText>Team</TitleText>
+          <View style={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between'}}>
+            <TitleText>Team</TitleText>
+            <TouchableOpacity
+              onPress={() => setShowLeaveTeamModal(true)}
+            >
+              <Text style={{color: color.nav_orange, fontSize: 16, fontFamily: fonts.gMarketMedium}}>탈퇴하기</Text>
+            </TouchableOpacity>
+          </View>
         </TitleArea>
         <SearchBarArea>
           <SearchBar searchName={searchName} setSearchName={setSearchName} />
@@ -378,6 +431,12 @@ const CreateTeamScreen = ({ navigation, route }) => {
         <DefaultModal
           isVisible={showCancelRequestModal}
           content={cancelRequestContent}
+        />
+      )}
+      {showLeaveTeamModal && (
+        <DefaultModal
+          isVisible={showLeaveTeamModal}
+          content={leaveTeamContent}
         />
       )}
     </Wapper>
