@@ -686,7 +686,10 @@ const MyPageScreen = ({ navigation }) => {
                         clearAccessToken();
                       }}
                     />
-                    <TouchableOpacity onPress={() => {}}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        clearWatch();
+                      }}>
                       <Text>워치연동 끊기</Text>
                     </TouchableOpacity>
                   </>
