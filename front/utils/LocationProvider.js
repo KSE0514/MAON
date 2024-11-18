@@ -27,14 +27,21 @@ export const LocationProvider = ({ children }) => {
 
     const startTracking = async () => {
       interval = setInterval(async () => {
-        const newLocation = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-        });
-        const coords = newLocation.coords;
-        const timestamp = new Date(newLocation.timestamp); // 타임스탬프 변환
-        setLocation({ ...coords, timestamp }); // 위치 데이터와 타임스탬프 저장
-        console.log("시간: ", timestamp.toLocaleString());
-        console.log("현재 위치: ", coords);
+        try {
+          const newLocation = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.High,
+          });
+
+          const { latitude, longitude } = newLocation.coords; // 좌표 추출
+          const timestamp = new Date(newLocation.timestamp); // 타임스탬프 변환
+
+          setLocation({ latitude, longitude }); // 위치 데이터 저장
+
+          // 상태를 직접 사용해 로그 출력
+          console.log("변경된 값: ", { latitude, longitude, timestamp });
+        } catch (error) {
+          console.log("위치 요청 실패:", error);
+        }
       }, 1000); // 1초 간격으로 위치 요청
     };
 
