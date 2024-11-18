@@ -19,18 +19,56 @@ const InfoPreviewLoading = ({}) => {
   }
 
   return (
-    <Wrapper>
-      <Col>
-        <ImageLoading></ImageLoading>
-      </Col>
-      <Col style={[styles.secondCol]}>
-        <Row style={[loadingStyles.smallRow]} />
-        <Row style={[loadingStyles.bigRow]} />
-        <Row style={[loadingStyles.bigRow]} />
-        <Row style={[loadingStyles.smallRow]} />
-        <Row style={[loadingStyles.smallRow]} />
-      </Col>
-    </Wrapper>
+    <View>
+      <Wrapper>
+        <Col>
+          <ImageLoading></ImageLoading>
+        </Col>
+        <Col style={[styles.secondCol]}>
+          <Row style={[loadingStyles.smallRow]} />
+          <Row style={[loadingStyles.bigRow]} />
+          <Row style={[loadingStyles.bigRow]} />
+          <Row style={[loadingStyles.smallRow]} />
+          <Row style={[loadingStyles.smallRow]} />
+        </Col>
+      </Wrapper>
+      <Wrapper>
+        <Col>
+          <ImageLoading></ImageLoading>
+        </Col>
+        <Col style={[styles.secondCol]}>
+          <Row style={[loadingStyles.smallRow]} />
+          <Row style={[loadingStyles.bigRow]} />
+          <Row style={[loadingStyles.bigRow]} />
+          <Row style={[loadingStyles.smallRow]} />
+          <Row style={[loadingStyles.smallRow]} />
+        </Col>
+      </Wrapper>
+      <Wrapper>
+        <Col>
+          <ImageLoading></ImageLoading>
+        </Col>
+        <Col style={[styles.secondCol]}>
+          <Row style={[loadingStyles.smallRow]} />
+          <Row style={[loadingStyles.bigRow]} />
+          <Row style={[loadingStyles.bigRow]} />
+          <Row style={[loadingStyles.smallRow]} />
+          <Row style={[loadingStyles.smallRow]} />
+        </Col>
+      </Wrapper>
+      <Wrapper>
+        <Col>
+          <ImageLoading></ImageLoading>
+        </Col>
+        <Col style={[styles.secondCol]}>
+          <Row style={[loadingStyles.smallRow]} />
+          <Row style={[loadingStyles.bigRow]} />
+          <Row style={[loadingStyles.bigRow]} />
+          <Row style={[loadingStyles.smallRow]} />
+          <Row style={[loadingStyles.smallRow]} />
+        </Col>
+      </Wrapper>
+    </View>
   );
 };
 

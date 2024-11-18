@@ -72,49 +72,49 @@ const RecordDetailScreen = ({ navigation, route }) => {
     return () => backHandler.remove();
   }, []);
 
-  useEffect(() => {
-    if (!routeList || !Array.isArray(routeList)) {
-      console.warn("routeList is invalid or not an array:", routeList);
-      setCoordinates([]); // 빈 배열로 설정하여 에러 방지
-      return;
-    }
+  // useEffect(() => {
+  //   if (!routeList || !Array.isArray(routeList)) {
+  //     console.warn("routeList is invalid or not an array:", routeList);
+  //     setCoordinates([]); // 빈 배열로 설정하여 에러 방지
+  //     return;
+  //   }
 
-    // 유효한 routeList가 있을 경우 좌표 변환
-    const transformedCoordinates = routeList.map((point) => ({
-      latitude: point.x, // 위도
-      longitude: point.y, // 경도
-    }));
+  //   // 유효한 routeList가 있을 경우 좌표 변환
+  //   const transformedCoordinates = routeList.map((point) => ({
+  //     latitude: point.x, // 위도
+  //     longitude: point.y, // 경도
+  //   }));
 
-    setCoordinates(transformedCoordinates); // 변환된 좌표 설정
+  //   setCoordinates(transformedCoordinates); // 변환된 좌표 설정
 
-    const resultX = [0.0];
-    const resultY = [0];
-    const resultLabel = ["0'0\""];
-    for (let i = 1; i < resultData.distanceList.length; i++) {
-      const pace = resultData.paceList[i];
-      if (resultData.distanceList[i] !== resultData.distanceList[i - 1] && pace) {
-        const parsedPace = parsePaceToSeconds(pace);
-        resultX.push(resultData.distanceList[i]);
-        resultY.push(parsedPace); // 초 단위로 변환된 yData 추가
-        resultLabel.push(pace);
-      }
-    }
-    // useRef로 xData와 yData를 업데이트
-    chartDataRef.current = {
-      xData: resultX,
-      yData: resultY,
-      yLabel: resultLabel,
-    };
-    console.log("Updated chartData:", chartDataRef.current);
+  //   const resultX = [0.0];
+  //   const resultY = [0];
+  //   const resultLabel = ["0'0\""];
+  //   for (let i = 1; i < resultData.distanceList.length; i++) {
+  //     const pace = resultData.paceList[i];
+  //     if (resultData.distanceList[i] !== resultData.distanceList[i - 1] && pace) {
+  //       const parsedPace = parsePaceToSeconds(pace);
+  //       resultX.push(resultData.distanceList[i]);
+  //       resultY.push(parsedPace); // 초 단위로 변환된 yData 추가
+  //       resultLabel.push(pace);
+  //     }
+  //   }
+  //   // useRef로 xData와 yData를 업데이트
+  //   chartDataRef.current = {
+  //     xData: resultX,
+  //     yData: resultY,
+  //     yLabel: resultLabel,
+  //   };
+  //   console.log("Updated chartData:", chartDataRef.current);
 
-    // yData 검증
-  if (chartDataRef.current.yData.some((value) => value <= 0 || !isFinite(value))) {
-    console.error("Invalid yData detected:", chartDataRef.current.yData);
-    chartDataRef.current.yData = chartDataRef.current.yData.map((value) =>
-      value <= 0 || !isFinite(value) ? 0 : value
-    );
-  }
-  }, [resultData]);
+  //   // yData 검증
+  // if (chartDataRef.current.yData.some((value) => value <= 0 || !isFinite(value))) {
+  //   console.error("Invalid yData detected:", chartDataRef.current.yData);
+  //   chartDataRef.current.yData = chartDataRef.current.yData.map((value) =>
+  //     value <= 0 || !isFinite(value) ? 0 : value
+  //   );
+  // }
+  // }, [resultData]);
 
   useEffect(() => {
     setPolyLineLoading(false); // 로딩 완료
@@ -244,11 +244,11 @@ const RecordDetailScreen = ({ navigation, route }) => {
         <View style={{ marginBottom: 20, flex: 1 }}>
           {seePaceChart ? (
             <>
-              <PaceChart
+              {/* <PaceChart
                 xData={chartDataRef.current.xData}
                 yData={chartDataRef.current.yData}
                 yLabel={chartDataRef.current.yLabel}
-              />
+              /> */}
             </>
           ) : (
             <View style={{ flex: 1 }}>
