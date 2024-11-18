@@ -141,15 +141,14 @@ export default function Map({
       setGps((prevGps) => {
         if (prevGps.length > 0) {
           const lastPosition = prevGps[prevGps.length - 1];
-          if (mode === "notSelectedRoute") {
-            const distanceIncrement = calculateDistance(
-              lastPosition,
-              newCoordinate
-            );
-            setRunningDistance(
-              (prevDistance) => prevDistance + distanceIncrement
-            );
-          }
+
+          const distanceIncrement = calculateDistance(
+            lastPosition,
+            newCoordinate
+          );
+          setRunningDistance(
+            (prevDistance) => prevDistance + distanceIncrement
+          );
         }
         return [
           ...prevGps,
