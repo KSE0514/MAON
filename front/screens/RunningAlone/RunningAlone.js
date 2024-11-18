@@ -176,19 +176,19 @@ const RunningAlone = ({ navigation, route }) => {
         kafkaStompClientRef.current.send(sendFrame);
         console.log("서버로 전달하는 데이터 ", sendFrame);
 
-        const paceData = {
-          pace: paceRef.current == undefined ? 0 : paceRef.current,
-          distance: runningDistanceRef.current.toFixed(2),
-        };
+        // const paceData = {
+        //   pace: paceRef.current == undefined ? 0 : paceRef.current,
+        //   distance: runningDistanceRef.current.toFixed(2),
+        // };
 
-        // STOMP 프로토콜에 맞춘 메시지 작성
-        const sendWatchFrame =
-          `SEND\n` +
-          `destination:/pub/pace/${recordId}\n` +
-          `content-type:application/json\n\n` +
-          `${JSON.stringify(paceData)}\0`;
-        kafkaStompClientRef.current.send(sendWatchFrame);
-        console.log("워치로 전달하는 데이터 ", sendWatchFrame);
+        // // STOMP 프로토콜에 맞춘 메시지 작성
+        // const sendWatchFrame =
+        //   `SEND\n` +
+        //   `destination:/pub/pace/${recordId}\n` +
+        //   `content-type:application/json\n\n` +
+        //   `${JSON.stringify(paceData)}\0`;
+        // kafkaStompClientRef.current.send(sendWatchFrame);
+        // console.log("워치로 전달하는 데이터 ", sendWatchFrame);
       }
     }
   };
@@ -522,7 +522,8 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}>
+            }}
+          >
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}

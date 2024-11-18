@@ -36,9 +36,8 @@ const Pace = ({
         setPace("00'00''"); // 초기 값 또는 거리가 0일 때
       }
     };
-    if (!connectedWatch) {
-      calculatePace();
-    }
+
+    calculatePace();
   }, [currentDistance.current, elapsedTime]);
   useEffect(() => {
     // console.log(currentDistance.current, "  =  ", elapsedTime);
@@ -56,7 +55,8 @@ const Pace = ({
               fontSize: 20,
               fontFamily: fonts.gMarketBold,
               paddingTop: 12,
-            }}>
+            }}
+          >
             /km
           </Text>
         </View>

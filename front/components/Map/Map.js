@@ -193,7 +193,7 @@ export default function Map({
     };
 
     //시작이 되었고 워치 연동이 안된 경우
-    if (runStart && !connectedWatch) {
+    if (runStart) {
       console.log("tracking 시도함");
       startTracking();
     } else {
@@ -258,7 +258,8 @@ export default function Map({
             customMapStyle={MapStyle}
             style={{ alignSelf: "stretch", height: "100%" }}
             region={mapRegion}
-            showsUserLocation={false}>
+            showsUserLocation={false}
+          >
             {markers.map((marker) => (
               <Marker
                 key={marker.id}
@@ -267,7 +268,8 @@ export default function Map({
                   longitude: marker.longitude,
                 }}
                 title={marker.title}
-                description={marker.description}>
+                description={marker.description}
+              >
                 {/* 시작 */}
                 {marker.title == "Start Point" && (
                   <View
@@ -283,7 +285,8 @@ export default function Map({
                       shadowOpacity: 1,
                       shadowRadius: 5,
                       elevation: 15, // Android 그림자 효과
-                    }}></View>
+                    }}
+                  ></View>
                 )}
                 {/* 내 위치 */}
                 {marker.title == "Current Point" && (

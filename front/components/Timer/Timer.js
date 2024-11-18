@@ -15,7 +15,7 @@ const Timer = ({
     let interval;
 
     // 타이머 시작 조건: runStart가 true이고 showStopModal이 false일 때만 타이머 동작
-    if (runStart && !showStopModal & !connectedWatch) {
+    if (runStart && !showStopModal) {
       interval = setInterval(() => {
         setSeconds((prev) => prev + 1);
       }, 1000);
