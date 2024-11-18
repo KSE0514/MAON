@@ -65,14 +65,14 @@ class StompWebSocketClient(private val serverUrl: String) {
         webSocket?.send(connectFrame)
     }
 
-    fun subscribeToTopic(topic: String, callback: (String) -> Unit) {
+    fun subscribeToTopic(topic: String, id: String, callback: (String) -> Unit) {
         if (!isStompConnected) {
             Log.d(TAG, "STOMP가 아직 연결되지 않았습니다. 구독 대기 중: $topic")
             return
         }
 
         onMessageCallback = callback
-        val subscribeFrame = "SUBSCRIBE\ndestination:$topic\nid:sub-001\n\n\u0000"
+        val subscribeFrame = "SUBSCRIBE\ndestination:$topic\nid:$id\n\n\u0000"
         webSocket?.send(subscribeFrame)
         Log.d(TAG, "구독 요청 전송: $topic")
     }

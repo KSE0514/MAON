@@ -1,4 +1,4 @@
-package com.easter.member.global.exception;
+package com.easter.tournament.global.exception;
 
 import lombok.Builder;
 import lombok.Getter;

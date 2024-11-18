@@ -15,7 +15,7 @@ import {
 } from "react-native";
 // import {PermissionsAndroid} 'react-native';
 // import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import useAuthStore from "./../../store/AuthStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiClient } from "../../customAxios";
@@ -38,7 +38,7 @@ import { FlatList } from "react-native";
 import colors from "../../styles/colors";
 import InputBox from "../../components/InputBox/InputBox";
 import SquareBtn from "../../components/Button/SquareBtn/SquareBtn";
-
+import { LocationContext } from "../../utils/LocationProvider";
 // import testImg from './../../assets/images/testProfile.jpg'
 
 const testImg = require("./../../assets/images/testProfile.jpg");
@@ -84,7 +84,8 @@ const MyPageScreen = ({ navigation }) => {
     gender: "",
     imageUrl: "",
   });
-
+  // const location = useContext(LocationContext);
+  // console.log("MyPage: ", location.latitude, "   ", location.longitude);
   // Async Storage accessToken 갱신
   const updateAccessToken = async (newAccessToken) => {
     try {
@@ -104,6 +105,18 @@ const MyPageScreen = ({ navigation }) => {
     } catch (error) {
       console.error("로그아웃 중 오류 발생:", error);
       Alert.alert("오류", "로그아웃에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+  const clearWatch = async () => {
+    try {
+      // AsyncStorage에서 accessToken 제거
+      await AsyncStorage.removeItem("pairedWatch");
+      Alert.alert("연동해제");
+      // 로그아웃 후, 로그인 페이지로 이동 (필요 시 추가)
+      navigation.navigate("Login"); // 'LoginScreen' 경로는 실제 화면 이름으로 변경
+    } catch (error) {
+      console.error("연동해제 중 오류 발생:", error);
+      Alert.alert("오류", "연동해제 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -501,14 +514,19 @@ const MyPageScreen = ({ navigation }) => {
                 </BtnArea>
               )}
               {!editMode && (
-                <BtnArea>
-                  <SquareBtn
-                    text={"로그아웃"}
-                    onPress={() => {
-                      clearAccessToken();
-                    }}
-                  />
-                </BtnArea>
+                <>
+                  <BtnArea>
+                    <SquareBtn
+                      text={"로그아웃"}
+                      onPress={() => {
+                        clearAccessToken();
+                      }}
+                    />
+                  </BtnArea>
+                  <TouchableOpacity onPress={() => {}}>
+                    <Text>워치연동 끊기</Text>
+                  </TouchableOpacity>
+                </>
               )}
             </Content> */}
             <FlatList
