@@ -508,7 +508,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                 setPace={setPace}
                 pace={pace}
               />
-              <HeartBeat mode={mode} />
+              <HeartBeat mode={mode} heartRate={"--"} />
             </RunInfoCol>
           </RunInfo>
         </Bottom>

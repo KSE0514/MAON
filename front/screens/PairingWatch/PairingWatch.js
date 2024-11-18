@@ -28,7 +28,7 @@ const PairingWatch = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    console.log("hello");
+    // console.log("hello");
     const checkWatch = async () => {
       try {
         const storedPairedWatch = await fetchPairedWatch();
@@ -165,20 +165,19 @@ const PairingWatch = ({ navigation, route }) => {
           justifyContent: "center",
           alignItems: "center",
           marginHorizontal: 50,
-        }}
-      >
+        }}>
         {step === 1 &&
           (pairedWatch ? (
             <View>
               <Title
-                style={[styles.BoldFont]}
-              >{`연동된 워치가 존재합니다.\n새 워치를 연동하시겠습니까?`}</Title>
+                style={[
+                  styles.BoldFont,
+                ]}>{`연동된 워치가 존재합니다.\n새 워치를 연동하시겠습니까?`}</Title>
               <ButtonView>
                 <Button
                   onPress={() => {
                     goHome();
-                  }}
-                >
+                  }}>
                   <View>
                     <Text style={[styles.buttonText]}>취소</Text>
                   </View>
@@ -186,8 +185,7 @@ const PairingWatch = ({ navigation, route }) => {
                 <Button
                   onPress={() => {
                     changeStep();
-                  }}
-                >
+                  }}>
                   <View>
                     <Text style={[styles.buttonText]}>확인</Text>
                   </View>
@@ -201,8 +199,7 @@ const PairingWatch = ({ navigation, route }) => {
                 <Button
                   onPress={() => {
                     goHome();
-                  }}
-                >
+                  }}>
                   <View>
                     <Text style={[styles.buttonText]}>취소</Text>
                   </View>
@@ -213,8 +210,7 @@ const PairingWatch = ({ navigation, route }) => {
                       style={[styles.buttonText]}
                       onPress={() => {
                         changeStep();
-                      }}
-                    >
+                      }}>
                       확인
                     </Text>
                   </View>
@@ -237,8 +233,7 @@ const PairingWatch = ({ navigation, route }) => {
               <Button
                 onPress={() => {
                   goHome();
-                }}
-              >
+                }}>
                 <View>
                   <Text style={[styles.buttonText]}>확인</Text>
                 </View>

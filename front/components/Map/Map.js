@@ -19,6 +19,7 @@ export default function Map({
   startPoint, // 시작점 좌표 prop 추가
   selectedRoute,
   runRoute,
+  heartRate,
 }) {
   //현재 위치를 받아옴
   const location = useContext(LocationContext);
@@ -62,6 +63,17 @@ export default function Map({
     }
   }, [currentLocation]);
 
+  useEffect(() => {
+    console.log("여기까진옴?");
+    const startTracking = async () => {
+      console.log("트래킹 시작");
+      handleUserLocationChange();
+    };
+    console.log("심박수 받아옴 ");
+    if (runStart && connectedWatch) {
+      startTracking();
+    }
+  }, [heartRate]);
   /**
    * 내 위치 첫 위치 설정
    */
