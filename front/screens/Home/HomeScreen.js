@@ -16,7 +16,7 @@ import CustomCarousel from "../../components/CustomCarousel/CustomCarousel";
 import useAuthStore from "./../../store/AuthStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import color from "../../styles/colors";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { apiClient } from "../../customAxios";
 
 const { width } = Dimensions.get("window");

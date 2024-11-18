@@ -134,7 +134,7 @@ const RunningAlone = ({ navigation, route }) => {
         // pace: "10'10\"", // 최신 페이스
         runningDistance: runningDistanceRef.current.toFixed(2),
       };
-      locationDtoPrint(locationDto);
+      // locationDtoPrint(locationDto);
       if (
         kafkaStompClientRef.current &&
         kafkaStompClientRef.current.readyState === WebSocket.OPEN
@@ -165,8 +165,8 @@ const RunningAlone = ({ navigation, route }) => {
       }
     };
 
-    getPairedWatchStatus();
-    // setConnectedWatch(false);
+    // getPairedWatchStatus();
+    setConnectedWatch(false);
   }, []);
 
   // connectedWatch의 상태가 변경될 때마다 로그 출력

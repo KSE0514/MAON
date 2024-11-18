@@ -15,7 +15,7 @@ import {
   Top,
   Wrapper,
 } from "../RunningAlone/RunningAloneStyle";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Map from "../../components/Map/Map";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 import Timer from "../../components/Timer/Timer";
@@ -30,15 +30,17 @@ import useAuthStore from "../../store/AuthStore";
 import { getPracticeRoomId } from "../../utils/getRoomId";
 import RunAlarm from "../../components/RunAlarm/RunAlarm";
 import * as Location from "expo-location";
+import { LocationContext } from "../../utils/LocationProvider";
 
 const RunningWithRoute = ({ navigation, route }) => {
+  const location = useContext(LocationContext);
+
   const { routeId, searchType, mode, marathonInfo, latLongArray } =
     route.params;
   const fontsLoaded = useFontsLoaded();
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
-  console.log("latlon: ", latLongArray);
 
   // 마라톤 시작점 좌표 추출
   const startPoint = {
@@ -66,10 +68,12 @@ const RunningWithRoute = ({ navigation, route }) => {
   const runningDistanceRef = useRef(runningDistance);
   const recordIdRef = useRef(null);
   const locationInterval = useRef(null);
-  const routeIndexRef = useRef(0);
+  const routeIndexRef = useRef(100);
   const [runRoute, setRunRoute] = useState([]);
 
   const [currentLocation, setCurrentLocation] = useState(null);
+
+  const currentTrackingLocationRef = useRef(location);
 
   const [locationPermissionGranted, setLocationPermissionGranted] =
     useState(false);
@@ -101,9 +105,8 @@ const RunningWithRoute = ({ navigation, route }) => {
       {
         title: "취소",
         onPress: () => {
-          // setShowStopModal(false);
-          // setRunStart(true);
-          navigation.navigate("Home");
+          setShowStopModal(false);
+          setRunStart(true);
         },
       },
       {
@@ -131,11 +134,15 @@ const RunningWithRoute = ({ navigation, route }) => {
             }
           };
 
-          sendEndSession(recordId); // 종료 요청 전송
+          sendEndSession(recordIdRef.current); // 종료 요청 전송
         },
       },
     ],
   };
+
+  useEffect(() => {
+    console.log(ment);
+  }, [ment]);
 
   // 위치가 변경될 때마다 서버로 위치와 페이스 정보 전송
   const handleUserLocationChange = (location) => {
@@ -153,8 +160,8 @@ const RunningWithRoute = ({ navigation, route }) => {
         pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
         runningDistance: runningDistanceRef.current.toFixed(2),
       };
-      locationDtoPrint(locationDto);
-      console.log("here");
+      // locationDtoPrint(locationDto);
+      // console.log("here");
       if (
         kafkaStompClientRef.current &&
         kafkaStompClientRef.current.readyState === WebSocket.OPEN
@@ -170,6 +177,15 @@ const RunningWithRoute = ({ navigation, route }) => {
       }
     }
   };
+
+  //바뀐 값에 따라 현재 위치 변경
+  useEffect(() => {
+    currentTrackingLocationRef.current = location;
+    // console.log(
+    //   "변경된 currentTrackingLocationRef: ",
+    //   currentTrackingLocationRef.current
+    // );
+  }, [location]);
 
   //달리기 시작을 눌렀을 경우
   useEffect(() => {
@@ -207,7 +223,7 @@ const RunningWithRoute = ({ navigation, route }) => {
         kafkaStompClientRef.current.send(subscribeEndFrame);
         console.log("끝 체킹 구독 완료", subscribeEndFrame);
       } else {
-        console.error("WebSocket 연결이 아직 열려 있지 않습니다.");
+        console.error("WebSocket이 끊겼습니다...");
       }
     }
   }, [recordId]);
@@ -249,11 +265,8 @@ const RunningWithRoute = ({ navigation, route }) => {
         // 사용자의 위치를 트래킹하고 주기적으로 서버로 보냅니다.
         locationInterval.current = setInterval(async () => {
           try {
-            const position = await Location.getCurrentPositionAsync({
-              accuracy: Location.Accuracy.Balanced,
-            });
-
-            const { latitude, longitude } = position.coords;
+            const { latitude, longitude } = currentTrackingLocationRef.current;
+            console.log("쓸 데이터 : ", latitude, " ", longitude);
             setCurrentLocation({
               latitude: latitude,
               longitude: longitude,
@@ -278,7 +291,6 @@ const RunningWithRoute = ({ navigation, route }) => {
           const bodyMatch = message.data.match(/\n\n(.*)\0/);
           if (bodyMatch && bodyMatch[1]) {
             const bodyContent = bodyMatch[1].trim(); // 본문에서 공백 제거
-            console.log("응답 본문: ", bodyContent);
 
             // 메시지의 destination을 추출합니다.
             const destinationMatch = message.data.match(/destination:(.*)\n/);
@@ -293,7 +305,9 @@ const RunningWithRoute = ({ navigation, route }) => {
                   setShowAlarm(false);
                   clearInterval(locationInterval.current);
                 } else if (bodyContent === "false") {
+                  console.log("Here!!!!!!!!!");
                   setShowAlarm(true);
+                  setMent(`시작을 위해\n시작점으로 이동하세요`);
                 }
               }
               // 경로 체크에 대한 응답 처리
@@ -301,6 +315,7 @@ const RunningWithRoute = ({ navigation, route }) => {
                 console.log("경로 체크 응답: ");
                 const parsedObject = JSON.parse(bodyContent);
                 console.log(parsedObject);
+                //데이터 변경
                 setCheckingRoute(parsedObject);
                 //종료
                 if (parsedObject.endPoint) {
@@ -372,6 +387,8 @@ const RunningWithRoute = ({ navigation, route }) => {
 
     kafkaStompClientRef.current = kafkaWs;
 
+    console.log("array:", latLongArray);
+
     return () => {
       clearInterval(locationInterval.current);
       kafkaWs.close();
@@ -386,15 +403,23 @@ const RunningWithRoute = ({ navigation, route }) => {
   }, [elapsedTime, pace, runningDistance]);
 
   useEffect(() => {
-    console.log(checkingRoute.nextRouteIndex, checkingRoute.onRoute);
+    console.log(
+      "응답인덱스 : ",
+      checkingRoute.nextRouteIndex,
+      "응답 경로 이탈 판정 : ",
+      checkingRoute.onRoute
+    );
     routeIndexRef.current = checkingRoute.nextRouteIndex;
-    if (checkingRoute.onRoute) {
+    if (!checkingRoute.onRoute) {
       setShowAlarm(true);
       setMent(`경로에서 벗어났습니다.\n원래 경로로 돌아가세요`);
     } else {
       setShowAlarm(false);
       //현재 인덱스 값 바꿔주기
-      currentIndex.current = checkingRoute.nextRouteIndex - 1;
+      currentIndex.current =
+        checkingRoute.nextRouteIndex - 1 < 0
+          ? 0
+          : checkingRoute.nextRouteIndex - 1;
       //거리 값 바꿔주기
       runningDistanceRef.current = parseFloat(
         (
@@ -402,6 +427,11 @@ const RunningWithRoute = ({ navigation, route }) => {
           (totalIndex.current / currentIndex.current)
         ).toFixed(2)
       );
+      console.log(
+        "알맞은 경로로 진행 중 , 현재 인덱스 값 ",
+        currentIndex.current
+      );
+      console.log("변경된 거리 ", runningDistanceRef.current);
 
       //러닝 인덱스 바꿔주기
       // runRoute에 latLongArray 0번부터 checkingRoute.nextRouteIndex - 1까지 넣기
@@ -412,8 +442,6 @@ const RunningWithRoute = ({ navigation, route }) => {
       if (isNaN(runningDistanceRef.current)) {
         runningDistanceRef.current = 0;
       }
-
-      console.log("거리: ", runningDistanceRef);
     }
   }, [checkingRoute]);
 
@@ -457,6 +485,7 @@ const RunningWithRoute = ({ navigation, route }) => {
         setRunningDistance={setRunningDistance}
         mode={mode}
         onLocationChange={handleUserLocationChange}
+        recordId={recordId}
       />
       {running && (
         <Bottom>
