@@ -53,6 +53,8 @@ const RunningAlone = ({ navigation, route }) => {
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
   const [recordId, setRecordId] = useState();
 
+  const [watchData, setWatchData] = useState([]);
+
   const kafkaStompClientRef = useRef(null);
   const elapsedTimeRef = useRef(elapsedTime);
   const paceRef = useRef(pace);
@@ -172,23 +174,23 @@ const RunningAlone = ({ navigation, route }) => {
     console.log("connectedWatch: ", connectedWatch);
   }, [connectedWatch]);
 
+  const getRoomId = async () => {
+    try {
+      const responseRecordId = await getPracticeRoomId(
+        user.id,
+        user.accessToken
+      );
+      console.log("get recordId 함수 실행 결과", responseRecordId);
+      recordIdRef.current = responseRecordId; // 최신 값 저장
+      setRecordId(responseRecordId);
+    } catch (error) {
+      console.error("Error fetching room ID:", error);
+    }
+  };
+
   //달리기 시작을 늘렀을 경우
   useEffect(() => {
-    if (running) {
-      const getRoomId = async () => {
-        try {
-          const responseRecordId = await getPracticeRoomId(
-            user.id,
-            user.accessToken
-          );
-          console.log("get recordId 함수 실행 결과", responseRecordId);
-          recordIdRef.current = responseRecordId; // 최신 값 저장
-          setRecordId(responseRecordId);
-        } catch (error) {
-          console.error("Error fetching room ID:", error);
-        }
-      };
-
+    if (running && !connectedWatch) {
       getRoomId(); // 비동기 함수 호출
     }
   }, [running]);
@@ -332,6 +334,13 @@ const RunningAlone = ({ navigation, route }) => {
                   setElapsedTime(parsedData.time);
                   setRunningDistance(parsedData.runningDistance);
                   setHeartRate(parsedData.heartRate);
+                  setWatchData((prev) => [
+                    ...prev,
+                    {
+                      latitude: parsedData.latitude,
+                      longitude: parsedData.longitude,
+                    },
+                  ]);
                 }
               }
             } catch (error) {
@@ -466,7 +475,8 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}>
+            }}
+          >
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}
@@ -521,6 +531,8 @@ const RunningAlone = ({ navigation, route }) => {
       )}
       {showStartModal && (
         <RunStartModal
+          getRoomId={getRoomId}
+          connectedWatch={connectedWatch}
           showStartModal={showStartModal}
           setShowStartModal={setShowStartModal}
           setRunStart={setRunStart}
