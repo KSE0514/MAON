@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
 import {
@@ -30,6 +31,7 @@ import useAuthStore from "../../store/AuthStore";
 import { fetchPairedWatch } from "../../utils/checkPairedWatch";
 import { getPracticeRoomId } from "../../utils/getRoomId";
 import PairingWatch from "../PairingWatch/PairingWatch";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RunningAlone = ({ navigation, route }) => {
   const fontsLoaded = useFontsLoaded();
@@ -47,8 +49,11 @@ const RunningAlone = ({ navigation, route }) => {
   const [runningDistance, setRunningDistance] = useState(0); // 달린 거리
   const [elapsedTime, setElapsedTime] = useState("00:00:00"); // 경과 시간
   const [pace, setPace] = useState("00'00''"); // 페이스
+  const [heartRate, setHeartRate] = useState("--");
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
   const [recordId, setRecordId] = useState();
+
+  const [watchData, setWatchData] = useState([]);
 
   const kafkaStompClientRef = useRef(null);
   const elapsedTimeRef = useRef(elapsedTime);
@@ -126,6 +131,7 @@ const RunningAlone = ({ navigation, route }) => {
         longitude: location.longitude,
         heartRate: 0,
         pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
+        // pace: "10'10\"", // 최신 페이스
         runningDistance: runningDistanceRef.current.toFixed(2),
       };
       locationDtoPrint(locationDto);
@@ -136,7 +142,7 @@ const RunningAlone = ({ navigation, route }) => {
         // STOMP 프레임을 구성하여 데이터 전송
         const sendFrame =
           `SEND\n` +
-          `destination:/pub/running/${recordId}\n` +
+          `destination:/pub/running/${recordIdRef.current}\n` +
           `content-type:application/json\n\n` +
           `${JSON.stringify(locationDto)}\0`;
 
@@ -145,35 +151,46 @@ const RunningAlone = ({ navigation, route }) => {
     }
   };
 
-  //시간 데이터 업데이트
-  const handleTimeUpdate = (time) => {
-    console.log(time);
-    setElapsedTime(time); // Timer로부터 업데이트된 시간 받기
-  };
-
-  //연동 여부 가져오기
+  // 연동 여부 가져오기 (비동기 함수로 상태 설정)
   useEffect(() => {
-    setConnectedWatch(fetchPairedWatch());
+    const getPairedWatchStatus = async () => {
+      try {
+        const storedPairedWatch = await AsyncStorage.getItem("pairedWatch");
+        console.log("Stored Paired Watch:", storedPairedWatch);
+
+        // 비동기 함수로 상태 업데이트 시 안전한 값 사용하기
+        setConnectedWatch(storedPairedWatch === "true");
+      } catch (error) {
+        console.error("Error fetching paired watch:", error);
+      }
+    };
+
+    getPairedWatchStatus();
     // setConnectedWatch(false);
   }, []);
 
+  // connectedWatch의 상태가 변경될 때마다 로그 출력
+  useEffect(() => {
+    console.log("connectedWatch: ", connectedWatch);
+  }, [connectedWatch]);
+
+  const getRoomId = async () => {
+    try {
+      const responseRecordId = await getPracticeRoomId(
+        user.id,
+        user.accessToken
+      );
+      console.log("get recordId 함수 실행 결과", responseRecordId);
+      recordIdRef.current = responseRecordId; // 최신 값 저장
+      setRecordId(responseRecordId);
+    } catch (error) {
+      console.error("Error fetching room ID:", error);
+    }
+  };
+
   //달리기 시작을 늘렀을 경우
   useEffect(() => {
-    if (running) {
-      const getRoomId = async () => {
-        try {
-          const responseRecordId = await getPracticeRoomId(
-            user.id,
-            user.accessToken
-          );
-          console.log("get recordId 함수 실행 결과", responseRecordId);
-          recordIdRef.current = responseRecordId; // 최신 값 저장
-          setRecordId(responseRecordId);
-        } catch (error) {
-          console.error("Error fetching room ID:", error);
-        }
-      };
-
+    if (running && !connectedWatch) {
       getRoomId(); // 비동기 함수 호출
     }
   }, [running]);
@@ -225,16 +242,17 @@ const RunningAlone = ({ navigation, route }) => {
 
             // WebSocket으로 전송
             kafkaWs.send(sendFrame);
+            console.log("데이터 받을 곳 구독하기", sendFrame);
 
             //stomp에 연결된 경우 데이터를 받을 sub을 구독하고있기
             const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-running-${recordIdRef.current}\ndestination:/sub/running/${recordIdRef.current}\n\n\0`;
             kafkaWs.send(getDataSubscribeFrame);
-            console.log("데이터 받을 곳 구독하기");
+            console.log("데이터 받을 곳 구독하기", getDataSubscribeFrame);
 
             //stomp에 연결된 경우 종료 sub 구독하고 있기
             const endSubscribeFrame = `SUBSCRIBE\nid:sub-end-${recordIdRef.current}\ndestination:/sub/running/${recordIdRef.current}/end\n\n\0`;
             kafkaWs.send(endSubscribeFrame);
-            console.log("종료 데이터 받을 곳 구독하기");
+            console.log("종료 데이터 받을 곳 구독하기", endSubscribeFrame);
           }
           //연결 종료에 대한 응답값
           else {
@@ -312,6 +330,17 @@ const RunningAlone = ({ navigation, route }) => {
                     "워치 데이터 응답 수신:",
                     JSON.stringify(parsedData)
                   );
+                  setPace(parsedData.pace);
+                  setElapsedTime(parsedData.time);
+                  setRunningDistance(parsedData.runningDistance);
+                  setHeartRate(parsedData.heartRate);
+                  setWatchData((prev) => [
+                    ...prev,
+                    {
+                      latitude: parsedData.latitude,
+                      longitude: parsedData.longitude,
+                    },
+                  ]);
                 }
               }
             } catch (error) {
@@ -446,7 +475,8 @@ const RunningAlone = ({ navigation, route }) => {
                 setShowStopModal(true);
                 setRunStart(false);
               }
-            }}>
+            }}
+          >
             {!showStopModal && (
               <FontAwesomeIcon icon={faPause} color="white" size={25} />
             )}
@@ -471,6 +501,7 @@ const RunningAlone = ({ navigation, route }) => {
         runStart={runStart}
         setRunningDistance={setRunningDistance}
         mode={mode}
+        running={running}
         onLocationChange={handleUserLocationChange}
       />
       {running && (
@@ -479,7 +510,7 @@ const RunningAlone = ({ navigation, route }) => {
             <RunInfoCol style={{ flex: 1 }}>
               <GoalDonutChart
                 connectedWatch={connectedWatch}
-                currentDistance={parseFloat(runningDistance)}
+                currentDistance={parseFloat(runningDistanceRef.current)}
                 goalDistance={0}
                 mode={mode}
               />
@@ -489,17 +520,19 @@ const RunningAlone = ({ navigation, route }) => {
                 connectedWatch={connectedWatch}
                 mode={mode}
                 elapsedTime={elapsedTime}
-                currentDistance={runningDistance}
+                currentDistance={runningDistanceRef}
                 setPace={setPace}
                 pace={pace}
               />
-              <HeartBeat mode={mode} />
+              <HeartBeat heartRate={heartRate} mode={mode} />
             </RunInfoCol>
           </RunInfo>
         </Bottom>
       )}
       {showStartModal && (
         <RunStartModal
+          getRoomId={getRoomId}
+          connectedWatch={connectedWatch}
           showStartModal={showStartModal}
           setShowStartModal={setShowStartModal}
           setRunStart={setRunStart}

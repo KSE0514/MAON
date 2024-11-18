@@ -23,13 +23,11 @@ public class MarathonRouteDto {
 	private String writerId;
 	private String writerName;
 	private String routeName;
-	private String routeType;
+	private String recordType;
 	private String startPoint;
 	private Double distance;
 	private GeoJsonLineString track;
-	private String routeImageUrl;
 	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
 	private HashMap<SpecialPointType, GeoJsonMultiPoint> specialPoint;
 
 	public static MarathonRouteDto of(MarathonRoute route) {
@@ -43,6 +41,7 @@ public class MarathonRouteDto {
 			.track(route.getTrack())
 			.createdAt(route.getCreatedAt())
 			.specialPoint(route.getSpecialPoint())
+			.createdAt(route.getCreatedAt())
 			.build();
 	}
 }

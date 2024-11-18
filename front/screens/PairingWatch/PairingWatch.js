@@ -13,6 +13,9 @@ import {
 const PairingWatch = ({ navigation, route }) => {
   const { user } = useAuthStore();
 
+  const [nickname, setNickname] = useState();
+  const [id, setId] = useState();
+
   const [step, setStep] = useState(1);
   const [pairedWatch, setPairedWatch] = useState(false);
   const [pairingNumber, setPairingNumber] = useState(0);
@@ -38,6 +41,13 @@ const PairingWatch = ({ navigation, route }) => {
     };
 
     checkWatch(); // 비동기 함수 호출
+    const checkNickname = async () => {
+      const checkStorageNickname = await AsyncStorage.getItem("nickname");
+      setNickname(checkStorageNickname);
+      const checkStorageId = await AsyncStorage.getItem("id");
+      setId(checkStorageId);
+    };
+    checkNickname();
   }, []);
 
   const changeStep = async () => {
@@ -74,11 +84,11 @@ const PairingWatch = ({ navigation, route }) => {
 
           // CONNECTED 후, 지정된 경로로 데이터 전송
           const destination = `/pub/connection/info/${generatedNumber}`;
-          console.log(user?.nickname);
+
+          console.log("hello this is a id! : ", id);
           const payload = {
-            memberId: user?.id, // user 객체의 UUID 또는 기본 UUID
-            // memberNickname: user?.nickname,
-            memberNickname: "예삐",
+            memberId: id, // user 객체의 UUID 또는 기본 UUID
+            memberNickname: nickname,
             timestamp: new Date().toISOString(), // ISO 형식의 timestamp
           };
 
@@ -155,19 +165,20 @@ const PairingWatch = ({ navigation, route }) => {
           justifyContent: "center",
           alignItems: "center",
           marginHorizontal: 50,
-        }}>
+        }}
+      >
         {step === 1 &&
           (pairedWatch ? (
             <View>
               <Title
-                style={[
-                  styles.BoldFont,
-                ]}>{`연동된 워치가 존재합니다.\n새 워치를 연동하시겠습니까?`}</Title>
+                style={[styles.BoldFont]}
+              >{`연동된 워치가 존재합니다.\n새 워치를 연동하시겠습니까?`}</Title>
               <ButtonView>
                 <Button
                   onPress={() => {
                     goHome();
-                  }}>
+                  }}
+                >
                   <View>
                     <Text style={[styles.buttonText]}>취소</Text>
                   </View>
@@ -175,7 +186,8 @@ const PairingWatch = ({ navigation, route }) => {
                 <Button
                   onPress={() => {
                     changeStep();
-                  }}>
+                  }}
+                >
                   <View>
                     <Text style={[styles.buttonText]}>확인</Text>
                   </View>
@@ -189,7 +201,8 @@ const PairingWatch = ({ navigation, route }) => {
                 <Button
                   onPress={() => {
                     goHome();
-                  }}>
+                  }}
+                >
                   <View>
                     <Text style={[styles.buttonText]}>취소</Text>
                   </View>
@@ -200,7 +213,8 @@ const PairingWatch = ({ navigation, route }) => {
                       style={[styles.buttonText]}
                       onPress={() => {
                         changeStep();
-                      }}>
+                      }}
+                    >
                       확인
                     </Text>
                   </View>
@@ -223,7 +237,8 @@ const PairingWatch = ({ navigation, route }) => {
               <Button
                 onPress={() => {
                   goHome();
-                }}>
+                }}
+              >
                 <View>
                   <Text style={[styles.buttonText]}>확인</Text>
                 </View>

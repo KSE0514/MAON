@@ -40,10 +40,11 @@ public class RouteController {
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 
-    @GetMapping("/course/details/{routeId}")
-    public ResponseEntity<ResultResponse> getRouteDetails(@RequestParam String routeId, @RequestBody GetRouteDetailsRequestDto getRouteDetailsRequestDto) {
-        RouteDto routeDto = routeService.getRouteDetails(routeId, getRouteDetailsRequestDto);
-        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "경로 상세정보를 조회했습니다.", routeDto);
+    @GetMapping("/course/details")
+    public ResponseEntity<ResultResponse> searchRouteByConditions(@RequestAttribute("passport") PassportDto passport,
+        @RequestBody GetRouteDetailsRequestDto getRouteDetailsRequestDto) {
+        List<?> routes = routeService.searchRouteByConditions(passport, getRouteDetailsRequestDto);
+        ResultResponse resultResponse = ResultResponse.of(HttpStatus.OK, "경로 상세 정보를 조회했습니다.", routes);
         return ResponseEntity.status(resultResponse.getStatus()).body(resultResponse);
     }
 }

@@ -5,10 +5,17 @@ import fonts from "../../styles/fonts";
 import color from "../../styles/colors";
 
 const GoalDonutChart = ({ goalDistance, currentDistance, mode }) => {
+  // console.log("GoalDonut distance:", currentDistance);
   const chartSize = 110;
+  // 목표 대비 현재 진행률 계산 (최소값은 0, 최대값은 100)
   const progress =
-    goalDistance == 0 ? 100 : (currentDistance / goalDistance) * 100; // 목표 대비 현재 진행률 계산
-  const series = [progress, 100 - progress]; // 채운 비율과 남은 비율
+    goalDistance === 0
+      ? 100
+      : Math.min(100, Math.max(0, (currentDistance / goalDistance) * 100));
+
+  // 채운 비율과 남은 비율 계산 (모든 값이 양수여야 함)
+  const series = [Math.max(0, progress), Math.max(0, 100 - progress)];
+
   const sliceColor = [color.light_orange, "#D9D9D9"]; // 채워진 부분과 남은 부분 색상
 
   return (
@@ -23,13 +30,18 @@ const GoalDonutChart = ({ goalDistance, currentDistance, mode }) => {
       <View style={{ position: "absolute", alignItems: "center" }}>
         {mode == "notSelectedRoute" && (
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            {currentDistance.toFixed(1)}km
+            {(Math.floor(currentDistance * 10) / 10).toFixed(1)}km
           </Text>
         )}
         {mode != "notSelectedRoute" && (
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            {currentDistance.toFixed(1)} / {goalDistance} km
-          </Text>
+          <>
+            <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+              {(Math.floor(currentDistance * 10) / 10).toFixed(1)} /
+            </Text>
+            <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+              {goalDistance} km
+            </Text>
+          </>
         )}
       </View>
       {/* 예제 버튼으로 거리 증가 */}

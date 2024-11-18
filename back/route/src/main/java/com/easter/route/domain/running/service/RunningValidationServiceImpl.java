@@ -64,6 +64,8 @@ public class RunningValidationServiceImpl implements RunningValidationService {
 		);
 
 		result.isOnRoute = currentDist <= MAX_ALLOWED_DEVIATION;
+		result.nextRouteIndex = currentIndex + 1;
+		result.distanceToNextRouteIndex = currentDist;
 
 		int nextIndex = currentIndex + 1;
 		while (nextIndex < coordinates.size()) {
@@ -97,7 +99,6 @@ public class RunningValidationServiceImpl implements RunningValidationService {
 
 		return result;
 	}
-
 
 	// // 경로 이탈 로직
 	// public boolean validateOnRoute(LocationDto locationDto) {

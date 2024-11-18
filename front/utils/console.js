@@ -15,6 +15,8 @@ export const locationDtoPrint = async (locationDto) => {
     " time: ",
     locationDto.time,
     " runningDistance: ",
-    locationDto.runningDistance
+    locationDto.runningDistance,
+    " routeId",
+    locationDto.routeID
   );
 };

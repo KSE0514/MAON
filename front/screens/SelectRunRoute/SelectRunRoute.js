@@ -58,17 +58,18 @@ const SelectRunRoute = ({ navigation, route }) => {
 
           <Bottom>
             <List>
-              {info.map((route) => (
+              {info.map((data) => (
                 <RouteInfoPreview
-                  data={route}
+                  data={data}
                   mode="searchInfo"
                   moveDetail={() => {
                     // routeId랑 같이 보내기
+
                     navigation.navigate("RouteDetail", {
-                      routeId: route.routeId,
+                      routeId: data.routeId,
                       searchType: searchType,
                       mode: mode,
-                      info: info,
+                      info: data,
                     });
                   }}
                 />
