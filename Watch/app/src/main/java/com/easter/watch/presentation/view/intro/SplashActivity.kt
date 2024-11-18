@@ -52,7 +52,6 @@ class SplashActivity : AppCompatActivity() {
 
         nodeClient = Wearable.getNodeClient(this)
 
-
         Handler().postDelayed(Runnable { // 타이머가 끝나면 내부 실행
 
             //test용 - 후에 주석 쳐주기
@@ -64,61 +63,54 @@ class SplashActivity : AppCompatActivity() {
 //            anyMemberExists 값은 CoroutineScope가 완료되기 전에 평가될 수 있습니다.
 //            이를 해결하려면 suspend 함수나 runBlocking을 활용하여 데이터를 가져온 뒤, 조건을 평가해야 합니다.
 
-//            CoroutineScope(Dispatchers.Main).launch {
-//                // Room 쿼리 실행 및 결과 확인
-//                val anyMemberExists = withContext(Dispatchers.IO) {
-//                    memberDao.isMemberExists() > 0
-//                }
+            //핸드폰 연결 여부 따른 페이지 이동
+//            checkConnectionToPhone{isConnected ->
+//                if(isConnected){
+//                    // 전체 테이블에 memberId가 하나라도 있는지 확인
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        // Room 쿼리 실행 및 결과 확인
+//                        val anyMemberExists = withContext(Dispatchers.IO) {
+//                            memberDao.isMemberExists() > 0
+//                        }
 //
-//                val intent = if (anyMemberExists) {
-//                    val memberId = memberDao.getMemberId()
-//                    stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
-//                    CoroutineScope(Dispatchers.IO).launch {
-//                        stompClient.connect()
+//                        val intent = if (anyMemberExists) {
+////                            CoroutineScope(Dispatchers.Main).launch {
+////                                val memberId = memberDao.getMemberId()
+////                                stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
+////
+////                                stompClient.connect {
+////                                    Log.d(TAG, "STOMP 연결 후 구독 요청 실행")
+////                                    subscribeToMemberTopic(memberId) // 연결 후에 구독
+////                                }
+////                            }
+//                            Intent(this@SplashActivity, RecordActivity::class.java)
+//                        } else {
+//                            Intent(this@SplashActivity, AuthActivity::class.java)
+//                        }
+//                        startActivity(intent)
+//                        finish()
 //                    }
-//                    subscribeToMemberTopic(memberId)
-//
-//                    Intent(this@SplashActivity, StartActivity::class.java)
-//                } else {
-//                    Intent(this@SplashActivity, AuthActivity::class.java)
+//                }else{
+//                    intent = Intent(this@SplashActivity,RestartActivity::class.java)
+//                    startActivity(intent)
+//                    finish() // 현재 액티비티 닫기
 //                }
-//                startActivity(intent)
-//                finish()
 //            }
 
-            //핸드폰 연결 여부 따른 페이지 이동
-            checkConnectionToPhone{isConnected ->
-                if(isConnected){
-                    // 전체 테이블에 memberId가 하나라도 있는지 확인
-                    CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Main).launch {
                         // Room 쿼리 실행 및 결과 확인
                         val anyMemberExists = withContext(Dispatchers.IO) {
                             memberDao.isMemberExists() > 0
                         }
 
-                        val intent = if (anyMemberExists) {
-//                            CoroutineScope(Dispatchers.Main).launch {
-//                                val memberId = memberDao.getMemberId()
-//                                stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
-//
-//                                stompClient.connect {
-//                                    Log.d(TAG, "STOMP 연결 후 구독 요청 실행")
-//                                    subscribeToMemberTopic(memberId) // 연결 후에 구독
-//                                }
-//                            }
+                        val intent = if (anyMemberExists) { //멤버 존재하면 Record로 이동
                             Intent(this@SplashActivity, RecordActivity::class.java)
-                        } else {
+                        } else { //멤버 없으면 연동
                             Intent(this@SplashActivity, AuthActivity::class.java)
                         }
                         startActivity(intent)
                         finish()
                     }
-                }else{
-                    intent = Intent(this@SplashActivity,RestartActivity::class.java)
-                    startActivity(intent)
-                    finish() // 현재 액티비티 닫기
-                }
-            }
 
         }, 2000) // 2초
     }
@@ -133,31 +125,6 @@ class SplashActivity : AppCompatActivity() {
         }
         // 한글(AC00-D7A3)을 제외한 모든 비ASCII 유니코드 문자 제거
         return json.replace(Regex("[^\\x20-\\x7E가-힣]"), "").trim()
-    }
-
-    fun subscribeToMemberTopic(memberId : String){
-        stompClient.subscribeToTopic("/sub/start/$memberId"){ payload ->
-            try{
-                // JSON 데이터를 AuthInfo 객체로 변환
-                val jsonBody = extractJsonFromStompMessage(payload)
-                Log.d(TAG, "추출된 JSON: $jsonBody")
-
-                // Gson을 사용해 JSON을 StartInfo 객체로 변환
-                val startInfo = Gson().fromJson(jsonBody, StartInfo::class.java)
-                Log.d(TAG, "변환된 StartInfo 객체: $startInfo")
-
-                when(startInfo.mode){
-                    "notSelectedRoute" ->{
-                        val intent = Intent(this, RunActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
-                }
-
-            }catch (e : Exception){
-                Log.d(TAG, e.toString())
-            }
-        }
     }
 
 
