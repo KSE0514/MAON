@@ -45,8 +45,6 @@ class RunFragment1 : Fragment() {
 
     private fun setButtons() {
 
-
-
         binding.stopBtn.setOnClickListener {
             val activity = requireActivity() as RunActivity
             val recordId = activity.recordId
