@@ -60,6 +60,7 @@ const RouteDetail = ({ navigation, route }) => {
               Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
             },
           });
+          console.log("전체 랭킹 : ", response);
           setRunRankList(response.data.data.rankingInfo);
         }
       } catch (error) {
@@ -75,6 +76,7 @@ const RouteDetail = ({ navigation, route }) => {
               Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
             },
           });
+          console.log("내 랭킹 : ", response);
           setMyRankInfo(response.data.data);
         }
       } catch (error) {
@@ -86,6 +88,7 @@ const RouteDetail = ({ navigation, route }) => {
       setMarathonInfo(info);
     };
     getDetailInfo();
+    fetchMyRanking();
     fetchRunRanking();
   }, []);
 
@@ -123,7 +126,8 @@ const RouteDetail = ({ navigation, route }) => {
               longitude: latLongArray[0].longitude,
               latitudeDelta: 0.005, // 줌 레벨 설정 (작을수록 줌 인)
               longitudeDelta: 0.005,
-            }}>
+            }}
+          >
             <Polyline
               coordinates={latLongArray}
               strokeColor={color.light_orange}
@@ -188,7 +192,8 @@ const RouteDetail = ({ navigation, route }) => {
                   marathonInfo,
                   latLongArray,
                 });
-              }}>
+              }}
+            >
               <Text style={[styles.mediumFont, { color: "white" }]}>
                 달리기
               </Text>
@@ -205,7 +210,8 @@ const RouteDetail = ({ navigation, route }) => {
                 style={[
                   styles.boldFont,
                   { fontSize: 20, marginLeft: 10, color: color.light_orange },
-                ]}>
+                ]}
+              >
                 랭킹
               </Text>
             </RankTitle>
@@ -221,7 +227,8 @@ const RouteDetail = ({ navigation, route }) => {
                       width: 60,
                       justifyContent: "center",
                       alignItems: "center",
-                    }}>
+                    }}
+                  >
                     <Text style={styles.rankNumber}>{myRankInfo.ranking}</Text>
                   </View>
                   <View>
@@ -235,12 +242,14 @@ const RouteDetail = ({ navigation, route }) => {
                       flex: 4,
                       marginLeft: 20,
                       alignSelf: "flex-start",
-                    }}>
+                    }}
+                  >
                     <Text
                       style={[
                         styles.boldFont,
                         { fontSize: 18, marginTop: 6, marginBottom: 8 },
-                      ]}>
+                      ]}
+                    >
                       {myRankInfo.memberNickname}
                     </Text>
                     <Text style={[styles.mediumFont, { fontSize: 16 }]}>
@@ -259,7 +268,8 @@ const RouteDetail = ({ navigation, route }) => {
                         width: 60,
                         justifyContent: "center",
                         alignItems: "center",
-                      }}>
+                      }}
+                    >
                       <Text style={styles.rankNumber}>{user.ranking}</Text>
                     </View>
                     <View>
@@ -273,12 +283,14 @@ const RouteDetail = ({ navigation, route }) => {
                         flex: 4,
                         marginLeft: 20,
                         alignSelf: "flex-start",
-                      }}>
+                      }}
+                    >
                       <Text
                         style={[
                           styles.boldFont,
                           { fontSize: 18, marginTop: 6, marginBottom: 8 },
-                        ]}>
+                        ]}
+                      >
                         {user.memberNickname}
                       </Text>
                       <Text style={[styles.mediumFont, { fontSize: 16 }]}>

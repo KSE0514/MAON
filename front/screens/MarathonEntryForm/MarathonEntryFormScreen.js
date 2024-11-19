@@ -45,8 +45,14 @@ const modalMessageMap = {
 
 const MarathonEntryFormScreen = ({ navigation, route }) => {
   const { user } = useAuthStore();
-  const { memberId, tournamentCategory, tournamentId, teamId, marathonName, reloadGetMarathonDetailInfo } =
-    route.params;
+  const {
+    memberId,
+    tournamentCategory,
+    tournamentId,
+    teamId,
+    marathonName,
+    reloadGetMarathonDetailInfo,
+  } = route.params;
   console.log(memberId, tournamentCategory, tournamentId, teamId, marathonName);
   const [dateOfBirth, setDateOfBirth] = useState(""); // 생년월일 상태 관리
   const [phoneNumber, setPhoneNumber] = useState(""); // 전화번호 상태 관리
@@ -79,8 +85,9 @@ const MarathonEntryFormScreen = ({ navigation, route }) => {
       {
         title: "확인",
         onPress: () => {
-          reloadGetMarathonDetailInfo()
+          reloadGetMarathonDetailInfo();
           setShowEntryModal(false);
+          getMyMarathonList();
           navigation.navigate("MarathonInfoDetail", { uuid: tournamentId });
           // navigation.navigate("Home") // 나중에 디테일 화면으로 돌아가도록 바꾸기
         },
@@ -96,13 +103,29 @@ const MarathonEntryFormScreen = ({ navigation, route }) => {
     value: item,
   }));
 
+  const getMyMarathonList = async () => {
+    // console.log("getMyMarathonList");
+    try {
+      const response = await apiClient.get(`/tournament/tournament/my`, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
+        },
+      });
+      // console.log(response.data.data);
+      setMyMarathoneList(response.data.data.tournamentList);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const clickEntryBtn = async () => {
     const requestBody = {
       memberId: user.uuid,
-      tournamentCategory : selectRunType,
-      tournamentId : tournamentId,
-      teamId: teamId
-    }
+      tournamentCategory: selectRunType,
+      tournamentId: tournamentId,
+      teamId: teamId,
+    };
 
     console.log("마라톤 신청 요청값", requestBody);
     try {
