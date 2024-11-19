@@ -67,6 +67,10 @@ public class ServiceServiceImpl implements ServiceService{
     @Override
     public SearchMemberResponseDto searchMember(SearchMemberRequestDto dto) {
         List<MemberDto> memberInfoList = memberQueryRepository.findMemberInfoByUuid(dto.getIdList(), dto.getNicknameKeyword());
+        log.info("got member info : {}", memberInfoList.size());
+        for(MemberDto memberDto : memberInfoList) {
+            log.info(memberDto.toString());
+        }
         return SearchMemberResponseDto.builder()
                 .memberInfoList(memberInfoList)
                 .build();
