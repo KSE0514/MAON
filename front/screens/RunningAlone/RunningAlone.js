@@ -49,7 +49,7 @@ const RunningAlone = ({ navigation, route }) => {
   const [runningDistance, setRunningDistance] = useState(0); // 달린 거리
   const [elapsedTime, setElapsedTime] = useState("00:00:00"); // 경과 시간
   const [pace, setPace] = useState("00'00''"); // 페이스
-  const [heartRate, setHeartRate] = useState("0");
+  const [heartRate, setHeartRate] = useState(0);
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
   const [recordId, setRecordId] = useState();
 
