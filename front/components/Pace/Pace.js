@@ -20,9 +20,9 @@ const Pace = ({
     // 거리와 시간으로 페이스 계산
     const calculatePace = () => {
       const timeInSeconds = timeStringToSeconds(elapsedTime);
-      if (currentDistance > 0) {
+      if (currentDistance.current > 0) {
         const timeInMinutes = timeInSeconds / 60;
-        const paceInMinutes = timeInMinutes / currentDistance;
+        const paceInMinutes = timeInMinutes / currentDistance.current;
 
         // 분과 초로 변환
         const minutes = Math.floor(paceInMinutes);
@@ -39,7 +39,10 @@ const Pace = ({
     if (!connectedWatch) {
       calculatePace();
     }
-  }, [currentDistance, elapsedTime]);
+  }, [currentDistance.current, elapsedTime]);
+  useEffect(() => {
+    // console.log(currentDistance.current, "  =  ", elapsedTime);
+  });
 
   return (
     <View>

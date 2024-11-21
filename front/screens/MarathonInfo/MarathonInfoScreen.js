@@ -25,7 +25,7 @@ const MarathonInfo = ({ navigation, route }) => {
 
   const getMarathonInfo = async (
     year = new Date().getFullYear(),
-    month = 0,
+    month = new Date().getMonth() + 1,
     area = 0,
     closed = false
   ) => {

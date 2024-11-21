@@ -22,7 +22,7 @@ const CustomCarousel = ({ navigation }) => {
   const { user } = useAuthStore();
   useEffect(() => {
     const getMyMarathonList = async () => {
-      console.log("getMyMarathonList");
+      // console.log("getMyMarathonList");
       try {
         const response = await apiClient.get(`/tournament/tournament/my`, {
           withCredentials: true,
@@ -30,7 +30,7 @@ const CustomCarousel = ({ navigation }) => {
             Authorization: `Bearer ${user.accessToken}`, // Authorization 헤더에 Bearer 토큰 추가
           },
         });
-        console.log(response.data.data);
+        // console.log(response.data.data);
         setMyMarathoneList(response.data.data.tournamentList);
       } catch (e) {
         console.log(e);
@@ -40,7 +40,7 @@ const CustomCarousel = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    console.log(myMarathonList);
+    // console.log(myMarathonList);
   }, [myMarathonList]);
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -70,8 +70,8 @@ const CustomCarousel = ({ navigation }) => {
       parseInt(minutes), // 분
       parseInt(seconds) // 초
     );
-    console.log(localToday);
-    console.log(target);
+    // console.log(localToday);
+    // console.log(target);
 
     // 두 날짜 간의 차이를 계산 (밀리초 단위)
     const difference = target - localToday;
@@ -89,7 +89,11 @@ const CustomCarousel = ({ navigation }) => {
         <Wrapper
           style={styles.wrapper}
           onPress={() => {
-            navigation.navigate("MarathonInfoDetail", { uuid: item.id , paramsLatitude: item.latitude , paramsLongitude : item.longitude});
+            navigation.navigate("MarathonInfoDetail", {
+              uuid: item.id,
+              paramsLatitude: item.latitude,
+              paramsLongitude: item.longitude,
+            });
           }}>
           <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
             {item.title}

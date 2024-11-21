@@ -62,6 +62,7 @@ id textView
 id textView2
 id textView3
 id textView4
+id textView6
 id textView9
 id viewPager
 layout activity_auth

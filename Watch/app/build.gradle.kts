@@ -121,17 +121,9 @@ dependencies {
     // ROOM
     val roomVersion = "2.6.1"
 
-//    implementation("androidx.room:room-runtime:$roomVersion")
-//    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-//    kapt ("android.arch.persistence.room:compiler:$roomVersion")
-//    implementation("androidx.room:room-ktx:$roomVersion")
-
     implementation ("androidx.room:room-runtime:$roomVersion")
     kapt ("androidx.room:room-compiler:$roomVersion")
     implementation ("androidx.room:room-ktx:$roomVersion")
-
-    // livedata
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
 
     // Coroutine WorkManager
     implementation("androidx.work:work-runtime-ktx:2.7.1")

@@ -5,9 +5,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.easter.route.domain.record.entity.Record;
+import com.easter.route.domain.record.entity.dto.CreateRunningRequestDto;
+import com.easter.route.domain.record.entity.dto.CreateRunningResponseDto;
+import com.easter.route.domain.running.entity.dto.GroupRunningSession;
 import com.easter.route.domain.running.entity.dto.LocationDto;
 
 import com.easter.route.domain.record.entity.dto.RecordDto;
@@ -53,34 +57,31 @@ public class RunningConsumer {
 	private final RunningValidationService runningValidationService;
 	private final GoogleGeoCoding GoogleGeoCoding;
 	private final ConcurrentHashMap<String, List<LocationDto>> runningInfoMap= new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, GroupRunningSession> groupRunningInfoMap = new ConcurrentHashMap<>();
 	private final SimpMessagingTemplate messagingTemplate;
-
-	// 처음에 시작점 찾기 위해 위치 정보 받는 상황(실제로 뛰고 있지 않음)
-	// @KafkaListener(topics = "route.running.find-start-point", groupId = "running.find.start-point", containerFactory = "locationKafkaListenerContainerFactory")
-	// public void listenStartPoint(PointPair pointPair, Acknowledgment acknowledgment) {
-	// 	try {
-	// 		log.info("Received location data in start point listener: {}", pointPair);
-	// 		boolean isStartPoint = DistanceCalculator.isWithinDistance(
-	// 			pointPair.getStartLatitude(),
-	// 			pointPair.getStartLongitude(),
-	// 			pointPair.getEndLatitude(),
-	// 			pointPair.getEndLongitude(),
-	// 			10);
-	// 		acknowledgment.acknowledge();
-	// 	} catch (Exception e) {
-	// 		log.error("Failed to acknowledge message: {}", pointPair, e);
-	// 	}
-	// }
-
-	// 탭 하여 시작하기 버튼을 누른 상황 (경로 이탈 판정, 마지막 인덱스 시 끝점 판단)
+	
+	// 경로 없이 뛰기
 	@KafkaListener(topics = "route.running.process-location", groupId = "running.process.location", containerFactory = "locationKafkaListenerContainerFactory")
 	public void listenLocation(LocationDto locationDto, Acknowledgment acknowledgment) {
 		try {
-			log.error("Received location data in listener: {}", locationDto);
+			log.info("Received location data in listener: {}", locationDto);
+			String recordId = locationDto.getRecordId();
+			runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(locationDto);
+			acknowledgment.acknowledge();
+		} catch (Exception e) {
+			log.error("Failed to acknowledge message: {}", locationDto, e);
+		}
+	}
+
+	//혼자 경로 있이 뛰기 (경로 이탈 판정, 마지막 인덱스 시 끝점 판단)
+	@KafkaListener(topics = "route.running.process-location-with-route", groupId = "running.process.location-with-route", containerFactory = "locationKafkaListenerContainerFactory")
+	public void listenLocationWithRoute(LocationDto locationDto, Acknowledgment acknowledgment) {
+		try {
+			log.info("Received location data in listener: {}", locationDto);
 			String recordId = locationDto.getRecordId();
 			runningInfoMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(locationDto);
 			RouteValidationResult result = validateLocation(locationDto);
-			String destination = "/sub/running/" + recordId;
+			String destination = "/sub/running/route/" + recordId;
 			messagingTemplate.convertAndSend(destination, result);
 			acknowledgment.acknowledge();
 		} catch (Exception e) {
@@ -88,22 +89,50 @@ public class RunningConsumer {
 		}
 	}
 
+	// 팀으로 뛰기 (경로 이탈  판정, 마지막 인덱스 시 끝점 판단)
+	@KafkaListener(topics = "route.running.process-team-location", groupId = "running.process.team-location", containerFactory = "locationKafkaListenerContainerFactory")
+	public void listenTeamLocation(String teamId, LocationDto locationDto, Acknowledgment acknowledgment) {
+		try {
+			log.info("Received location teamId: {}, location: {}", teamId, locationDto);
+			groupRunningInfoMap.computeIfAbsent(teamId, k -> GroupRunningSession.builder()
+				.runningInfoMap(new ConcurrentHashMap<>())
+				.build());
+			if (locationDto.getRecordId() == null) {
+				CreateRunningResponseDto result =
+					recordService.createRunning(UUID.fromString(locationDto.getMemberId()),
+						new CreateRunningRequestDto(locationDto.getRouteId(), "RACE"));
+				locationDto.setRecordId(result.getRecordId());
+				groupRunningInfoMap.get(teamId).getRunningInfoMap().put(String.valueOf(result.getMemberId()), new ArrayList<>()).add(locationDto);
+			}
+			if (groupRunningInfoMap.get(teamId).getRunningInfoMap().containsKey(locationDto.getMemberId())) {
+				groupRunningInfoMap.get(teamId).getRunningInfoMap().get(locationDto.getMemberId()).add(locationDto);
+			}
+			messagingTemplate.convertAndSend("/sub/running/team/" + teamId, groupRunningInfoMap.get(teamId).getRunningInfoMap());
+			RouteValidationResult result = validateLocation(locationDto);
+			String destination = "/sub/running/team/" + locationDto.getMemberId();
+			messagingTemplate.convertAndSend(destination, result);
+			acknowledgment.acknowledge();
+		} catch (Exception e) {
+			log.error("Failed to acknowledge. teamId: {}, message: {}", teamId, locationDto, e);
+		}
+	}
+
+
 	public RouteValidationResult validateLocation(LocationDto locationDto) {
 		return runningValidationService.makeRouteValidationResult(locationDto);
 	}
 
 	// 러닝 종료시 결과 값 계산 후 엔티티에 저장한다.
-	public Record calculateResult(Record record) {
+	public Record calculateResult(Record record, ConcurrentHashMap<String, List<LocationDto>> runningInfoMap) {
 		String recordId = record.getId();
 		// 시간 순서로 정렬
 		runningInfoMap.get(recordId).sort((a, b) -> a.getTime().compareTo(b.getTime()));
-
 		// 계산
-		List<LocationDto> list = getRunningInfo(recordId);
-		List<String> paceList = getPaceList(recordId);
-		List<Double> distanceList = getDistanceList(recordId);
-		int averageHeartRate = getAverageHeartRate(recordId);
-		GeoJsonLineString recordedTrack = getRecordedTrack(recordId);
+		List<LocationDto> list = getRunningInfo(recordId, runningInfoMap);
+		List<String> paceList = getPaceList(recordId, runningInfoMap);
+		List<Double> distanceList = getDistanceList(recordId, runningInfoMap);
+		int averageHeartRate = getAverageHeartRate(recordId, runningInfoMap);
+		GeoJsonLineString recordedTrack = getRecordedTrack(recordId, runningInfoMap);
 		String runningTime = list.size() > 1 ? list.get(list.size() - 1).getTime() : "00:00:00";
 		double distance = !list.isEmpty() ? list.get(list.size() - 1).getRunningDistance() : 0;
 		String averagePace = PaceCalculator.calculateAveragePace(paceList);
@@ -118,12 +147,12 @@ public class RunningConsumer {
 			List<Point> coordinates =  findRoute.getTrack().getCoordinates();
 			Point endPoint = coordinates.get(coordinates.size() - 1);
 			// 사용자가 달린 거리가 등록된 경로의 총 길이 이상이고, 도착지점과 10m 이내라면 완주로 처리한다.
-			if (findRoute.getDistance() <= distance && DistanceCalculator.isWithinDistance(
+			if (DistanceCalculator.isWithinDistance(
 				endPoint.getX(),
 				endPoint.getY(),
 				Double.parseDouble(list.get(list.size() - 1).getLatitude()),
 				Double.parseDouble(list.get(list.size() - 1).getLongitude()),
-				10)) {
+				5)) {
 				isCompleted = true;
 			}
 			startPoint = findRoute.getStartPoint();
@@ -147,15 +176,7 @@ public class RunningConsumer {
 			.build();
 
 		Record updatedRecord = recordService.updateRecord(updateRecordDto);
-		clearRunningInfo(recordId);
 		return updatedRecord;
-	}
-
-	// 현재 위치가 경로에 이탈했는지 체크한다.
-	// TODO: 로직 구현하기
-	public boolean checkPoint(String recordId, LocationDto locationDto) {
-		List<LocationDto> list = getRunningInfo(recordId);
-		return false;
 	}
 
 	// 러닝 종료시 계산한 값을 클라이언트에 반환한다.
@@ -165,9 +186,8 @@ public class RunningConsumer {
 			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
 				"레코드가 존재하지 않습니다: recordId = " + recordId));
 		log.info("Record: {} 를 찾았습니다.", record);
-
 		// Record 결과 계산
-		Record updatedRecord = calculateResult(record);
+		Record updatedRecord = calculateResult(record, runningInfoMap);
 		double routeDistance = Optional.ofNullable(updatedRecord.getRouteId())
 			.flatMap(routeRepository::findById)
 			.map(Route::getDistance)
@@ -175,7 +195,25 @@ public class RunningConsumer {
 		return new RunningResultDto(RecordDto.of(updatedRecord), routeDistance, "end");
 	}
 
-	public List<LocationDto> getRunningInfo(String recordId) {
+	// 러닝 종료시 계산한 값을 클라이언트에 반환한다.
+	public RunningResultDto finishTeam(String teamId, String memberId) {
+		GroupRunningSession groupRunningSession = groupRunningInfoMap.get(teamId);
+		String recordId = groupRunningSession.getRunningInfoMap().get(memberId).get(0).getRecordId();
+		Record record = recordRepository.findById(recordId)
+			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND,
+				"레코드가 존재하지 않습니다: recordId = " + recordId));
+		log.info("Record: {} 를 찾았습니다.", record);
+		// Record 결과 계산
+		Record updatedRecord = calculateResult(record, groupRunningSession.getRunningInfoMap());
+		double routeDistance = Optional.ofNullable(updatedRecord.getRouteId())
+			.flatMap(routeRepository::findById)
+			.map(Route::getDistance)
+			.orElseGet(updatedRecord::getDistance);
+		return new RunningResultDto(RecordDto.of(updatedRecord), routeDistance, "end");
+	}
+
+
+	public List<LocationDto> getRunningInfo(String recordId, ConcurrentHashMap<String, List<LocationDto>> runningInfoMap) {
 		return runningInfoMap.getOrDefault(recordId, new ArrayList<>());
 	}
 
@@ -183,23 +221,27 @@ public class RunningConsumer {
 		runningInfoMap.remove(recordId);
 	}
 
-	public List<String> getPaceList(String recordId) {
-		List<LocationDto> list = getRunningInfo(recordId);
+	public void clearRunningInfo(String teamId, String recordId) {
+		groupRunningInfoMap.get(teamId).getRunningInfoMap().remove(recordId);
+	}
+
+	public List<String> getPaceList(String recordId, ConcurrentHashMap<String, List<LocationDto>> runningInfoMap) {
+		List<LocationDto> list = getRunningInfo(recordId, runningInfoMap);
 		return list.stream().map(LocationDto::getPace).toList();
 	}
 
-	public List<Double> getDistanceList(String recordId) {
-		List<LocationDto> list = getRunningInfo(recordId);
+	public List<Double> getDistanceList(String recordId, ConcurrentHashMap<String, List<LocationDto>> runningInfoMap) {
+		List<LocationDto> list = getRunningInfo(recordId, runningInfoMap);
 		return list.stream().map(LocationDto::getRunningDistance).toList();
 	}
 
-	public int getAverageHeartRate(String recordId) {
-		List<LocationDto> list = getRunningInfo(recordId);
+	public int getAverageHeartRate(String recordId, ConcurrentHashMap<String, List<LocationDto>> runningInfoMap) {
+		List<LocationDto> list = getRunningInfo(recordId, runningInfoMap);
 		return list.stream().mapToInt(LocationDto::getHeartRate).sum() / list.size();
 	}
 
-	public GeoJsonLineString getRecordedTrack(String recordId) {
-		List<LocationDto> list = getRunningInfo(recordId);
+	public GeoJsonLineString getRecordedTrack(String recordId, ConcurrentHashMap<String, List<LocationDto>> runningInfoMap) {
+		List<LocationDto> list = getRunningInfo(recordId, runningInfoMap);
 		return new GeoJsonLineString(list.stream().map(LocationDto::getPoint).toList());
 	}
 

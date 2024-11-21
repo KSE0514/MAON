@@ -45,7 +45,7 @@ const LoginScreen = () => {
 
       if (storedToken) {
         // 자동 로그인 진행
-        console.log("토큰 확인용", storedToken);
+        // console.log("토큰 확인용", storedToken);
         setUser({
           accessToken: storedToken,
           id: id,
@@ -61,6 +61,7 @@ const LoginScreen = () => {
           imageUrl: imageUrl,
           phoneNumber: phoneNumber,
         });
+
         navigation.reset({
           index: 0,
           routes: [{ name: "MainTabs" }],
@@ -77,14 +78,14 @@ const LoginScreen = () => {
     const redirectUri = Linking.createURL("redirect");
     // const redirectUri = `https://auth.expo.io/@maon/maon`;
     // const authUrl = `https://k11c207.p.ssafy.io/web?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경
-    const authUrl = `https://maon--login.web.app?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경(firebase)
+    const authUrl = `https://maon--login.web.app/?redirect_uri=${redirectUri}`;// 또는 ngrok 주소로 변경(firebase)
 
     // 웹 브라우저에서 로그인 페이지 열기
     const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
     if (result.type === "success" && result.url) {
       const { token, name, email } = Linking.parse(result.url).queryParams;
       setUserInfo({ token, name, email });
-      console.log("토큰 확인용: ", token);
+      // console.log("토큰 확인용: ", token);
 
       // 가입한 적이 있는 회원이면 어떻게 처리할지 생각해보기(회원가입 과정 안 거치고 바로 홈으로 넘어가야 함)
       login(token);
@@ -121,12 +122,12 @@ const LoginScreen = () => {
       // console.log(response.status)
       // console.log("로그인 성공_if문 밖")
       if (response.status === 200) {
-        console.log("로그인 성공");
-        console.log(response.data.data);
+        // console.log("로그인 성공");
+        // console.log(response.data.data);
         const responseUserInfo = response.data.data;
         // 만약 가입한적 있는 회원이면 불러온 정보를 AuthStore에 저장하고 home으로 이동
         if (responseUserInfo.registered) {
-          console.log("이미 회원입니다.");
+          // console.log("이미 회원입니다.");
           // AuthStore에 응답값 저장
           setUser({
             id: responseUserInfo.id,
@@ -137,7 +138,7 @@ const LoginScreen = () => {
             imageUrl: responseUserInfo.imageUrl,
           });
 
-          // 토큰을 AsyncStorage에 저장하여 ß자동 로그인 활성화
+          // 토큰을 AsyncStorage에 저장하여 자동 로그인 활성화
           await AsyncStorage.setItem(
             "accessToken",
             responseUserInfo.accessToken
@@ -146,7 +147,8 @@ const LoginScreen = () => {
             "refreshToken",
             responseUserInfo.refreshToken
           );
-
+          await AsyncStorage.setItem("id", responseUserInfo.id);
+          
           // navigation.navigate("MainTabs", { screen: "Home" });
 
           navigation.reset({
@@ -155,7 +157,7 @@ const LoginScreen = () => {
           });
         } else {
           // 가입한 적이 없는 회원일 경우에는 회원가입으로 이동 후, 회원가입 완료했을 시 AuthStore에 정보를 저장하고 home으로 이동
-          console.log("비회원이므로 회원가입 페이지로 이동합니다.");
+          // console.log("비회원이므로 회원가입 페이지로 이동합니다.");
           navigation.navigate("SignUp", {
             paramsName: responseUserInfo.name,
             paramsEmail: responseUserInfo.email,
@@ -193,13 +195,13 @@ const LoginScreen = () => {
       <Wrap>
         <Logo>MA:ON</Logo>
         <RoundBtn text={"Google로 로그인"} onPress={handleLogin} />
-        {userInfo && (
+        {/* {userInfo && (
           <View>
             <Text style={{ color: "white" }}>Welcome, {userInfo.name}</Text>
             <Text style={{ color: "white" }}>Email: {userInfo.email}</Text>
             <Text style={{ color: "white" }}>Token: {userInfo.token}</Text>
           </View>
-        )}
+        )} */}
       </Wrap>
     </Container>
   );

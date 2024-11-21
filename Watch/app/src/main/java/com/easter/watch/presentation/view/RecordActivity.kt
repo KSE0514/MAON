@@ -2,9 +2,11 @@ package com.easter.watch.presentation.view
 
 import StompWebSocketClient
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,6 +15,7 @@ import com.easter.watch.R
 import com.easter.watch.presentation.dataModel.StartInfo
 import com.easter.watch.presentation.db.MemberDatabase
 import com.easter.watch.presentation.db.dao.MemberDao
+import com.easter.watch.presentation.service.SensorPermissionService
 import com.easter.watch.presentation.view.intro.AuthActivity
 import com.easter.watch.presentation.view.intro.SplashActivity
 import com.easter.watch.presentation.view.run.RunActivity
@@ -26,6 +29,7 @@ class RecordActivity : AppCompatActivity() {
 
     private lateinit var memberDao: MemberDao
     private lateinit var stompClient: StompWebSocketClient
+    private lateinit var permissionService: SensorPermissionService
     val TAG =  "RecordActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +41,11 @@ class RecordActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // SensorPermissionService 초기화
+        permissionService = SensorPermissionService()
+        // 권한 확인 및 요청
+        permissionService.checkAndRequestPermissions(this)
 
         // Database 초기화
         val db = MemberDatabase.getDatabase(this)
@@ -72,6 +81,26 @@ class RecordActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
 
+        }
+    }
+
+    // 권한 요청 결과 확인
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == SensorPermissionService.PERMISSION_REQUEST_CODE) {
+            // 권한이 모두 허용되었는지 확인
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+
+            } else {
+                // 권한이 하나라도 허용되지 않은 경우 사용자에게 안내
+                Toast.makeText(this, "권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, StartActivity::class.java))
+            }
         }
     }
 

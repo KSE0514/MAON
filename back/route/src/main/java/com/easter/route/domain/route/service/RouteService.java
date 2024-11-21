@@ -13,5 +13,5 @@ public interface RouteService {
     void createRoute(PassportDto passport, CreateRouteRequestDto createRouteRequestDto);
     void deleteRoute(PassportDto passport, DeleteRouteRequestDto deleteRouteRequestDto);
     List<RouteDto> getRouteList();
-    RouteDto getRouteDetails(String routeId, GetRouteDetailsRequestDto getRouteDetailsRequestDto);
+    List<?> searchRouteByConditions(PassportDto passport, GetRouteDetailsRequestDto getRouteDetailsRequestDto);
 }
