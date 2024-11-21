@@ -78,7 +78,7 @@ const LoginScreen = () => {
     const redirectUri = Linking.createURL("redirect");
     // const redirectUri = `https://auth.expo.io/@maon/maon`;
     // const authUrl = `https://k11c207.p.ssafy.io/web?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경
-    const authUrl = `https://maon--login.web.app?redirect_uri=${redirectUri}`; // 또는 ngrok 주소로 변경(firebase)
+    const authUrl = `https://maon--login.web.app/?redirect_uri=${redirectUri}`;// 또는 ngrok 주소로 변경(firebase)
 
     // 웹 브라우저에서 로그인 페이지 열기
     const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
@@ -147,7 +147,8 @@ const LoginScreen = () => {
             "refreshToken",
             responseUserInfo.refreshToken
           );
-
+          await AsyncStorage.setItem("id", responseUserInfo.id);
+          
           // navigation.navigate("MainTabs", { screen: "Home" });
 
           navigation.reset({
@@ -194,13 +195,13 @@ const LoginScreen = () => {
       <Wrap>
         <Logo>MA:ON</Logo>
         <RoundBtn text={"Google로 로그인"} onPress={handleLogin} />
-        {userInfo && (
+        {/* {userInfo && (
           <View>
             <Text style={{ color: "white" }}>Welcome, {userInfo.name}</Text>
             <Text style={{ color: "white" }}>Email: {userInfo.email}</Text>
             <Text style={{ color: "white" }}>Token: {userInfo.token}</Text>
           </View>
-        )}
+        )} */}
       </Wrap>
     </Container>
   );

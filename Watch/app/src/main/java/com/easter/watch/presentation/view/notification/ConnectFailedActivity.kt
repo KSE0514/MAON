@@ -26,6 +26,7 @@ class ConnectFailedActivity : AppCompatActivity() {
         connectBtn.setOnClickListener {
             val intent = Intent(this, AuthActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
     }

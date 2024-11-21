@@ -14,6 +14,7 @@ const PairingWatch = ({ navigation, route }) => {
   const { user } = useAuthStore();
 
   const [nickname, setNickname] = useState();
+  const [id, setId] = useState();
 
   const [step, setStep] = useState(1);
   const [pairedWatch, setPairedWatch] = useState(false);
@@ -27,7 +28,7 @@ const PairingWatch = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    console.log("hello");
+    // console.log("hello");
     const checkWatch = async () => {
       try {
         const storedPairedWatch = await fetchPairedWatch();
@@ -43,6 +44,8 @@ const PairingWatch = ({ navigation, route }) => {
     const checkNickname = async () => {
       const checkStorageNickname = await AsyncStorage.getItem("nickname");
       setNickname(checkStorageNickname);
+      const checkStorageId = await AsyncStorage.getItem("id");
+      setId(checkStorageId);
     };
     checkNickname();
   }, []);
@@ -82,8 +85,9 @@ const PairingWatch = ({ navigation, route }) => {
           // CONNECTED 후, 지정된 경로로 데이터 전송
           const destination = `/pub/connection/info/${generatedNumber}`;
 
+          console.log("hello this is a id! : ", id);
           const payload = {
-            memberId: user?.id, // user 객체의 UUID 또는 기본 UUID
+            memberId: id, // user 객체의 UUID 또는 기본 UUID
             memberNickname: nickname,
             timestamp: new Date().toISOString(), // ISO 형식의 timestamp
           };

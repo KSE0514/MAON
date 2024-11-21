@@ -1,6 +1,8 @@
 package com.easter.route.domain.running.controller;
 
+import com.easter.route.domain.record.entity.Record;
 import com.easter.route.domain.record.entity.dto.PointPair;
+import com.easter.route.domain.record.repository.RecordRepository;
 import com.easter.route.domain.running.entity.dto.LocationDto;
 import com.easter.route.domain.running.entity.dto.RouteValidationResult;
 import com.easter.route.domain.running.entity.dto.RunningResultDto;
@@ -23,6 +25,7 @@ public class RunningStompController {
     private final RunningProducer runningProducer;
     private final RunningConsumer runningConsumer;
     private final SimpMessageSendingOperations messagingTemplate;
+    private final RecordRepository recordRepository;
 
     // 시작점 판정
     @MessageMapping("/running/{memberId}/find-start-point")
@@ -66,6 +69,9 @@ public class RunningStompController {
         log.info("End record request received: {}", recordId);
         try {
             RunningResultDto result = runningConsumer.finish(recordId);
+            Record record = recordRepository.findById(recordId).orElseThrow(() -> new IllegalArgumentException("Record not found"));
+            record.updateCompleted();
+            recordRepository.save(record);
             runningConsumer.clearRunningInfo(recordId);
             log.info("Successfully processed end record: {}, result: {}", recordId, result);
             return result;

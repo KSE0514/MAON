@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, Alert } from "react-native";
 import PieChart from "react-native-pie-chart";
 import fonts from "../../styles/fonts";
 import color from "../../styles/colors";
@@ -30,13 +30,13 @@ const GoalDonutChart = ({ goalDistance, currentDistance, mode }) => {
       <View style={{ position: "absolute", alignItems: "center" }}>
         {mode == "notSelectedRoute" && (
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            {(Math.floor(currentDistance * 10) / 10).toFixed(1)}km
+            {(Math.floor(currentDistance * 10) / 10).toFixed(2)}km
           </Text>
         )}
         {mode != "notSelectedRoute" && (
           <>
             <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-              {(Math.floor(currentDistance * 10) / 10).toFixed(1)} /
+              {(Math.floor(currentDistance * 10) / 10).toFixed(2)} /
             </Text>
             <Text style={{ fontSize: 15, fontWeight: "bold" }}>
               {goalDistance} km

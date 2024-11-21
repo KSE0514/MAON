@@ -88,7 +88,7 @@ const HeaderNavigation = () => {
             />
           </Svg> */}
 
-          <Svg
+          {/* <Svg
             width={35}
             height={35}
             fill={color.grape_fruit}
@@ -104,7 +104,7 @@ const HeaderNavigation = () => {
               class="fa-primary"
               d="M0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"
             />
-          </Svg>
+          </Svg> */}
         </View>
       </View>
     </View>

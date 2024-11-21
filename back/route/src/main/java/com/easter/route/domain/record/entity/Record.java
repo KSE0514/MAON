@@ -75,6 +75,10 @@ public class Record {
 	@CreatedDate
 	private LocalDateTime createdAt;
 
+	public void updateCompleted() {
+		this.completed = true;
+	}
+
 	public void updateRecord(UpdateRecordDto updateRecordDto) {
 		this.id = updateRecordDto.getRecordId();
 		this.runningInfo = updateRecordDto.getRunningInfo();
