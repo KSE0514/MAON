@@ -91,7 +91,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
 
                 withContext(Dispatchers.Main) {
                     // WebSocket 연결 시작
-                    viewModel.startWebSocket(memberId = memberId, recordId = recordId)
+                    viewModel.startWebSocket(memberId = memberId, recordId = recordId, context = this@RunActivity)
                 }
             }
 
@@ -120,14 +120,23 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         // ViewPager2와 어댑터 설정
         val viewPager: ViewPager2 = findViewById(R.id.viewPager)
 
-        val pagerAdapter = ScreenSlidePagerAdapter(this)
+        // 먼저 ViewPager 캐싱 설정
+        viewPager.apply {
+            offscreenPageLimit = 2
+        }
+
+        // 어댑터 설정
+        val pagerAdapter = ScreenSlidePagerAdapter(this@RunActivity)
         viewPager.adapter = pagerAdapter
 
-        // 페이지 캐싱 설정 - 맵 fragment의 상태 유지를 위해
-        viewPager.offscreenPageLimit = 2
+        // 어댑터 설정 후 초기 페이지 설정
+        viewPager.setCurrentItem(1, false)  // 또는 viewPager.currentItem = 1
 
-        // 기본 페이지를 가운데 Fragment(1번 인덱스)로 설정
-        viewPager.currentItem = 1
+//        // 페이지 캐싱 설정 - 맵 fragment의 상태 유지를 위해
+//        viewPager.offscreenPageLimit = 2
+//
+//        // 기본 페이지를 가운데 Fragment(1번 인덱스)로 설정
+        //viewPager.currentItem = 1
 
         //하트 뛰는 애니메이션
         val pulseAnimation = AnimationUtils.loadAnimation(this@RunActivity, R.anim.pulse_animation)

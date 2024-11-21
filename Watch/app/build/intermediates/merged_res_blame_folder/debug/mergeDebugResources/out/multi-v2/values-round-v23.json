@@ -4,7 +4,7 @@
             "outputFile": "com.easter.watch.app-mergeDebugResources-3:/values-round-v23/values-round-v23.xml",
             "map": [
                 {
-                    "source": "C:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\src\\main\\res\\values-round\\strings.xml",
+                    "source": "C:\\SSAFY\\ProjectMaon\\TestMAON\\S11P31C207\\Watch\\app\\src\\main\\res\\values-round\\strings.xml",
                     "from": {
                         "startLines": "1",
                         "startColumns": "4",

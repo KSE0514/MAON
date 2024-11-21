@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.easter.watch.R
 import com.easter.watch.databinding.ActivityStartBinding
+import com.easter.watch.presentation.WebSocketManager
 import com.easter.watch.presentation.dataModel.MemberInfo
 import com.easter.watch.presentation.service.SensorPermissionService
 import com.google.firebase.messaging.FirebaseMessaging
@@ -22,16 +23,11 @@ import com.google.firebase.messaging.FirebaseMessaging
 class StartActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityStartBinding
-    //private val webSocketManager = WebSocketManager.getInstance()
+    private val webSocketManager = WebSocketManager.getInstance()
     private var memberId: String? = null
     private val viewModel: RunViewModel by viewModels()
     private lateinit var permissionService: SensorPermissionService
 
-    //val stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
-
-    private val sharedPreferences by lazy {
-        getSharedPreferences("watch_prefs", Context.MODE_PRIVATE)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +45,7 @@ class StartActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
     }
 
     // 권한 요청 결과 확인
@@ -71,9 +68,9 @@ class StartActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        webSocketManager.disconnect()
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        webSocketManager.disconnect()
+    }
 
 }

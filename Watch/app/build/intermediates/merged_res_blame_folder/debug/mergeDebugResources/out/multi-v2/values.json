@@ -21,25 +21,6 @@
                     }
                 },
                 {
-                    "source": "C:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\src\\main\\res\\values\\themes.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "57",
-                        "endLines": "4",
-                        "endColumns": "12",
-                        "endOffsets": "175"
-                    },
-                    "to": {
-                        "startLines": "6588",
-                        "startColumns": "4",
-                        "startOffsets": "461128",
-                        "endLines": "6590",
-                        "endColumns": "12",
-                        "endOffsets": "461244"
-                    }
-                },
-                {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\9dc870e38d26fc4c845be6c92af5650d\\transformed\\work-runtime-2.7.1\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5",
@@ -218,6 +199,23 @@
                     }
                 },
                 {
+                    "source": "C:\\SSAFY\\ProjectMaon\\TestMAON\\S11P31C207\\Watch\\app\\build\\generated\\res\\processDebugGoogleServices\\values\\values.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "55,137,241,350,470,572",
+                        "endColumns": "81,103,108,119,101,70",
+                        "endOffsets": "132,236,345,465,567,638"
+                    },
+                    "to": {
+                        "startLines": "2149,2150,2151,2152,2153,2276",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "144388,144470,144574,144683,144803,162031",
+                        "endColumns": "81,103,108,119,101,70",
+                        "endOffsets": "144465,144569,144678,144798,144900,162097"
+                    }
+                },
+                {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\d93afa56afed30c4f667d34a31502a28\\transformed\\drawerlayout-1.1.1\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5",
@@ -234,6 +232,23 @@
                         "endLines": "151,154,1108,11715",
                         "endColumns": "55,47,51,24",
                         "endOffsets": "7632,7788,65951,742081"
+                    }
+                },
+                {
+                    "source": "C:\\SSAFY\\ProjectMaon\\TestMAON\\S11P31C207\\Watch\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "1,8,6",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "17,343,206",
+                        "endColumns": "42,69,76",
+                        "endOffsets": "55,408,278"
+                    },
+                    "to": {
+                        "startLines": "2095,2154,2155",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "138506,144905,144975",
+                        "endColumns": "42,69,76",
+                        "endOffsets": "138544,144970,145047"
                     }
                 },
                 {
@@ -271,6 +286,25 @@
                     }
                 },
                 {
+                    "source": "C:\\SSAFY\\ProjectMaon\\TestMAON\\S11P31C207\\Watch\\app\\src\\main\\res\\values\\themes.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "57",
+                        "endLines": "4",
+                        "endColumns": "12",
+                        "endOffsets": "175"
+                    },
+                    "to": {
+                        "startLines": "6588",
+                        "startColumns": "4",
+                        "startOffsets": "461128",
+                        "endLines": "6590",
+                        "endColumns": "12",
+                        "endOffsets": "461244"
+                    }
+                },
+                {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\37726cd38e49db785bc4d0becdb91ce9\\transformed\\recyclerview-1.1.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
@@ -304,23 +338,6 @@
                         "startOffsets": "131200",
                         "endColumns": "42",
                         "endOffsets": "131238"
-                    }
-                },
-                {
-                    "source": "C:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\build\\generated\\res\\processDebugGoogleServices\\values\\values.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7",
-                        "startColumns": "4,4,4,4,4,4",
-                        "startOffsets": "55,137,241,350,470,572",
-                        "endColumns": "81,103,108,119,101,70",
-                        "endOffsets": "132,236,345,465,567,638"
-                    },
-                    "to": {
-                        "startLines": "2149,2150,2151,2152,2153,2276",
-                        "startColumns": "4,4,4,4,4,4",
-                        "startOffsets": "144388,144470,144574,144683,144803,162031",
-                        "endColumns": "81,103,108,119,101,70",
-                        "endOffsets": "144465,144569,144678,144798,144900,162097"
                     }
                 },
                 {
@@ -362,22 +379,20 @@
                     }
                 },
                 {
-                    "source": "C:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\src\\main\\res\\values\\styles.xml",
+                    "source": "C:\\SSAFY\\ProjectMaon\\TestMAON\\S11P31C207\\Watch\\app\\src\\main\\res\\values\\colors.xml",
                     "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "19",
-                        "endLines": "6",
-                        "endColumns": "12",
-                        "endOffsets": "349"
+                        "startLines": "14,4,8,12,17,15,13,11,6,9,7,10,3,16,5",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "729,135,341,607,874,795,666,539,217,408,283,472,89,835,176",
+                        "endColumns": "39,39,47,45,39,38,45,51,48,46,42,44,44,37,39",
+                        "endOffsets": "764,170,384,648,909,829,707,586,261,450,321,512,129,868,211"
                     },
                     "to": {
-                        "startLines": "5728",
-                        "startColumns": "4",
-                        "startOffsets": "402811",
-                        "endLines": "5732",
-                        "endColumns": "12",
-                        "endOffsets": "403137"
+                        "startLines": "666,667,695,739,740,741,744,745,746,747,919,986,997,998,1011",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "34177,34217,36293,39310,39356,39396,39570,39616,39668,39717,52857,57778,58543,58588,59444",
+                        "endColumns": "39,39,47,45,39,38,45,51,48,46,42,44,44,37,39",
+                        "endOffsets": "34212,34252,36336,39351,39391,39430,39611,39663,39712,39759,52895,57818,58583,58621,59479"
                     }
                 },
                 {
@@ -474,6 +489,25 @@
                     }
                 },
                 {
+                    "source": "C:\\SSAFY\\ProjectMaon\\TestMAON\\S11P31C207\\Watch\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "19",
+                        "endLines": "6",
+                        "endColumns": "12",
+                        "endOffsets": "349"
+                    },
+                    "to": {
+                        "startLines": "5728",
+                        "startColumns": "4",
+                        "startOffsets": "402811",
+                        "endLines": "5732",
+                        "endColumns": "12",
+                        "endOffsets": "403137"
+                    }
+                },
+                {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\bd8b4cc11be8b622e80f845f1709c292\\transformed\\ui-release\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,60,63",
@@ -531,23 +565,6 @@
                     }
                 },
                 {
-                    "source": "C:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\src\\main\\res\\values\\colors.xml",
-                    "from": {
-                        "startLines": "14,4,8,12,17,15,13,11,6,9,7,10,3,16,5",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "729,135,341,607,874,795,666,539,217,408,283,472,89,835,176",
-                        "endColumns": "39,39,47,45,39,38,45,51,48,46,42,44,44,37,39",
-                        "endOffsets": "764,170,384,648,909,829,707,586,261,450,321,512,129,868,211"
-                    },
-                    "to": {
-                        "startLines": "666,667,695,739,740,741,744,745,746,747,919,986,997,998,1011",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "34177,34217,36293,39310,39356,39396,39570,39616,39668,39717,52857,57778,58543,58588,59444",
-                        "endColumns": "39,39,47,45,39,38,45,51,48,46,42,44,44,37,39",
-                        "endOffsets": "34212,34252,36336,39351,39391,39430,39611,39663,39712,39759,52895,57818,58583,58621,59479"
-                    }
-                },
-                {
                     "source": "C:\\Users\\SSAFY\\.gradle\\caches\\transforms-4\\78f95193994f411409a76804c73f4cb5\\transformed\\foundation-release\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3",
@@ -562,23 +579,6 @@
                         "startOffsets": "163405,163461",
                         "endColumns": "55,54",
                         "endOffsets": "163456,163511"
-                    }
-                },
-                {
-                    "source": "C:\\SSAFY\\ProjectMaon\\S11P31C207\\Watch\\app\\src\\main\\res\\values\\strings.xml",
-                    "from": {
-                        "startLines": "1,8,6",
-                        "startColumns": "4,4,4",
-                        "startOffsets": "16,335,200",
-                        "endColumns": "42,69,76",
-                        "endOffsets": "54,400,272"
-                    },
-                    "to": {
-                        "startLines": "2095,2154,2155",
-                        "startColumns": "4,4,4",
-                        "startOffsets": "138506,144905,144975",
-                        "endColumns": "42,69,76",
-                        "endOffsets": "138544,144970,145047"
                     }
                 },
                 {

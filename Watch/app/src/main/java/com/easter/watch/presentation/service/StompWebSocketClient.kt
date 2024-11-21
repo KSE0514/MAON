@@ -65,7 +65,7 @@ class StompWebSocketClient(private val serverUrl: String) {
         webSocket?.send(connectFrame)
     }
 
-    fun subscribeToTopic(topic: String, id: String, callback: (String) -> Unit) {
+    fun subscribeToTopic(topic: String, id : String,callback: (String) -> Unit) {
         if (!isStompConnected) {
             Log.d(TAG, "STOMP가 아직 연결되지 않았습니다. 구독 대기 중: $topic")
             return

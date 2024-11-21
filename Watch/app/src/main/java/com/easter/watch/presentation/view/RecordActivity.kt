@@ -61,8 +61,6 @@ class RecordActivity : AppCompatActivity() {
             }
         }
 
-
-
         //연동해제
         val disconnectBtn = findViewById<Button>(R.id.disConnectBtn)
         disconnectBtn.setOnClickListener {
@@ -72,6 +70,14 @@ class RecordActivity : AppCompatActivity() {
             }
 
             val intent = Intent(this, SplashActivity::class.java)
+            startActivity(intent)
+            finish()
+
+        }
+
+        val runStart = findViewById<Button>(R.id.runBtn)
+        runStart.setOnClickListener {
+            val intent = Intent(this, StartActivity::class.java)
             startActivity(intent)
             finish()
 
