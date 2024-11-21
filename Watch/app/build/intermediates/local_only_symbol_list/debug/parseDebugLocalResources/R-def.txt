@@ -53,6 +53,7 @@ id page3
 id pauseBtn
 id playBtn
 id restartBtn
+id runBtn
 id runStartBtn
 id runTime
 id runtimeText

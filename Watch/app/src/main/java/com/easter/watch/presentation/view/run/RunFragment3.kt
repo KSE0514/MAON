@@ -50,6 +50,9 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val LOCATION_PERMISSION_REQUEST = 1
 
+    private var initialLocation: LatLng? = null
+
+
     // 경로 추적 관련 변수
     private val locationList = mutableListOf<LatLng>()
     private var polyline: Polyline? = null
@@ -94,14 +97,16 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
+        // 위치 권한 확인 후 초기 위치 가져오기
+        if (checkLocationPermission()) {
+            getInitialLocation()
+        }
+
         // 지도 초기화
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
         setupObservers()
-
-        // 위치 권한 확인
-        checkLocationPermission()
 
         // BroadcastReceiver 등록
         requireActivity().registerReceiver(
@@ -109,6 +114,23 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
             IntentFilter(LocationTrackingService.ACTION_UPDATE_LOCATION),
             Context.RECEIVER_NOT_EXPORTED
         )
+    }
+
+    private fun getInitialLocation() {
+        try {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    location?.let {
+                        initialLocation = LatLng(it.latitude, it.longitude)
+                        // 지도가 이미 준비되어 있다면 카메라 이동
+                        mMap?.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(initialLocation!!, 18f)
+                        )
+                    }
+                }
+        } catch (e: SecurityException) {
+            Log.e("LocationError", "Location permission not granted", e)
+        }
     }
 
     private fun setupObservers() {
@@ -234,7 +256,7 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun checkLocationPermission() {
+    private fun checkLocationPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -244,9 +266,9 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST
             )
-        } else {
-            enableMyLocation()
+            return false
         }
+        return true
     }
 
     private fun enableMyLocation() {
@@ -263,7 +285,18 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         enableMyLocation()
+
+        // 초기 위치가 있다면 해당 위치로 카메라 이동
+        initialLocation?.let { location ->
+            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18f))
+        } ?: run {
+            // 초기 위치가 없다면 다시 가져오기 시도
+            if (checkLocationPermission()) {
+                getInitialLocation()
+            }
+        }
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -273,8 +306,10 @@ class RunFragment3 : Fragment(), OnMapReadyCallback {
         when (requestCode) {
             LOCATION_PERMISSION_REQUEST -> {
                 if (grantResults.isNotEmpty() &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
                     enableMyLocation()
+                    getInitialLocation() // 권한을 받은 후 초기 위치 가져오기
                 }
             }
         }

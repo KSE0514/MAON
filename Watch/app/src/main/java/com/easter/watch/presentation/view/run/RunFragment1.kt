@@ -2,7 +2,6 @@ package com.easter.watch.presentation.view.run
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.easter.watch.R
 import com.easter.watch.databinding.ActivityAuthBinding
 import com.easter.watch.databinding.FragmentRun1Binding
@@ -48,17 +46,13 @@ class RunFragment1 : Fragment() {
     private fun setButtons() {
 
         binding.stopBtn.setOnClickListener {
-
             val activity = requireActivity() as RunActivity
             val recordId = activity.recordId
-
-            Log.d("레코드 아이디 잘 오니??", recordId)
 
             viewModel.stopTimer()
             viewModel.stopTracking()
             viewModel.subscribeToRunningEndTopic(recordId,requireContext())
             viewModel.stopRunning(recordId)
-            viewModel.stopWebSocket()
             val intent = Intent(requireContext(), ResultActivity::class.java)
             startActivity(intent)
         }

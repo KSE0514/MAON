@@ -9,51 +9,51 @@
 9        android:targetSdkVersion="34" />
 10
 11    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-11-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:4:5-77
-11-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:4:22-74
+11-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:4:5-77
+11-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:4:22-74
 12    <uses-permission android:name="android.permission.WAKE_LOCK" />
-12-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:5:5-68
-12-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:5:22-65
+12-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:5:5-68
+12-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:5:22-65
 13    <uses-permission android:name="android.permission.BODY_SENSORS" />
-13-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:6:5-71
-13-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:6:22-68
+13-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:6:5-71
+13-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:6:22-68
 14    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-14-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:7:5-79
-14-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:7:22-76
+14-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:7:5-79
+14-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:7:22-76
 15    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-15-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:8:5-79
-15-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:8:22-76
+15-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:8:5-79
+15-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:8:22-76
 16    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-16-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:9:5-81
-16-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:9:22-78
+16-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:9:5-81
+16-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:9:22-78
 17    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-17-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:10:5-77
-17-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:10:22-74
+17-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:10:5-77
+17-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:10:22-74
 18    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-18-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:11:5-86
-18-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:11:22-83
+18-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:11:5-86
+18-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:11:22-83
 19    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
-19-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:12:5-84
-19-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:12:22-81
+19-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:12:5-84
+19-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:12:22-81
 20    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
-20-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:13:5-87
-20-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:13:22-84
+20-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:13:5-87
+20-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:13:22-84
 21    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
-21-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:14:5-94
-21-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:14:22-91
+21-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:14:5-94
+21-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:14:22-91
 22    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-22-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:4:5-77
-22-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:4:22-74
+22-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:4:5-77
+22-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:4:22-74
 23    <uses-permission android:name="android.permission.INTERNET" />
-23-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:16:5-67
-23-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:16:22-64
+23-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:16:5-67
+23-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:16:22-64
 24    <uses-permission android:name="android.permission.VIBRATE" />
-24-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:17:5-66
-24-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:17:22-63
+24-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:17:5-66
+24-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:17:22-63
 25
 26    <uses-feature android:name="android.hardware.type.watch" />
-26-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:19:5-64
-26-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:19:19-61
+26-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:19:5-64
+26-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:19:19-61
 27
 28    <!-- Include required permissions for Google Maps API to run. -->
 29    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -106,87 +106,87 @@
 51-->[androidx.core:core:1.13.0] C:\Users\SSAFY\.gradle\caches\transforms-4\87548bcbaba2958a51200938454c12bb\transformed\core-1.13.0\AndroidManifest.xml:26:22-94
 52
 53    <application
-53-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:21:5-118:19
+53-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:21:5-118:19
 54        android:name="com.easter.watch.presentation.RunApplication"
-54-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:22:9-52
+54-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:22:9-52
 55        android:allowBackup="true"
-55-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:23:9-35
+55-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:23:9-35
 56        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 56-->[androidx.core:core:1.13.0] C:\Users\SSAFY\.gradle\caches\transforms-4\87548bcbaba2958a51200938454c12bb\transformed\core-1.13.0\AndroidManifest.xml:28:18-86
 57        android:debuggable="true"
 58        android:extractNativeLibs="false"
 59        android:icon="@mipmap/ic_launcher"
-59-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:24:9-43
+59-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:24:9-43
 60        android:label="@string/app_name"
-60-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:25:9-41
+60-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:25:9-41
 61        android:supportsRtl="true"
-61-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:26:9-35
+61-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:26:9-35
 62        android:testOnly="true"
 63        android:theme="@android:style/Theme.DeviceDefault" >
-63-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:27:9-59
+63-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:27:9-59
 64        <activity
-64-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:28:9-32:20
+64-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:28:9-32:20
 65            android:name="com.easter.watch.presentation.view.TestActivity"
-65-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:29:13-59
+65-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:29:13-59
 66            android:exported="true"
-66-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:30:13-36
+66-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:30:13-36
 67            android:theme="@style/Theme.AppCompat.NoActionBar" >
-67-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:31:13-63
+67-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:31:13-63
 68        </activity>
 69        <activity
-69-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:33:9-36:66
+69-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:33:9-36:66
 70            android:name="com.easter.watch.presentation.view.notification.ConnectFailedActivity"
-70-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:34:13-81
+70-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:34:13-81
 71            android:exported="false"
-71-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:35:13-37
+71-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:35:13-37
 72            android:theme="@style/Theme.AppCompat.NoActionBar" />
-72-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:36:13-63
+72-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:36:13-63
 73        <activity
-73-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:37:9-40:66
+73-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:37:9-40:66
 74            android:name="com.easter.watch.presentation.view.notification.ConnectSuccessActivity"
-74-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:38:13-82
+74-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:38:13-82
 75            android:exported="false"
-75-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:39:13-37
+75-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:39:13-37
 76            android:theme="@style/Theme.AppCompat.NoActionBar" />
-76-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:40:13-63
+76-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:40:13-63
 77        <activity
-77-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:41:9-44:66
+77-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:41:9-44:66
 78            android:name="com.easter.watch.presentation.view.RecordActivity"
-78-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:42:13-61
+78-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:42:13-61
 79            android:exported="false"
-79-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:43:13-37
+79-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:43:13-37
 80            android:theme="@style/Theme.AppCompat.NoActionBar" />
-80-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:44:13-63
+80-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:44:13-63
 81        <activity
-81-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:45:9-48:66
+81-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:45:9-48:66
 82            android:name="com.easter.watch.presentation.view.run.ResultActivity"
-82-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:46:13-65
+82-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:46:13-65
 83            android:exported="false"
-83-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:47:13-37
+83-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:47:13-37
 84            android:theme="@style/Theme.AppCompat.NoActionBar" />
-84-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:48:13-63
+84-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:48:13-63
 85        <activity
-85-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:49:9-55:66
+85-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:49:9-55:66
 86            android:name="com.easter.watch.presentation.view.run.RunActivity"
-86-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:50:13-62
+86-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:50:13-62
 87            android:allowEmbedded="true"
-87-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:51:13-41
+87-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:51:13-41
 88            android:exported="true"
-88-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:52:13-36
+88-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:52:13-36
 89            android:launchMode="singleInstance"
-89-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:53:13-48
+89-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:53:13-48
 90            android:taskAffinity=""
-90-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:54:13-36
+90-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:54:13-36
 91            android:theme="@style/Theme.AppCompat.NoActionBar" />
-91-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:55:13-63
+91-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:55:13-63
 92        <activity
-92-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:56:9-67:20
+92-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:56:9-67:20
 93            android:name="com.easter.watch.presentation.view.run.StartActivity"
-93-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:57:13-64
+93-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:57:13-64
 94            android:exported="true"
-94-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:58:13-36
+94-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:58:13-36
 95            android:theme="@style/Theme.AppCompat.NoActionBar" >
-95-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:59:13-63
+95-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:59:13-63
 96
 97            <!-- <intent-filter> -->
 98            <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -196,13 +196,13 @@
 102            <!-- </intent-filter> -->
 103        </activity>
 104        <activity
-104-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:68:9-79:20
+104-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:68:9-79:20
 105            android:name="com.easter.watch.presentation.view.intro.AuthActivity"
-105-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:69:13-65
+105-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:69:13-65
 106            android:exported="true"
-106-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:70:13-36
+106-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:70:13-36
 107            android:theme="@style/Theme.AppCompat.NoActionBar" >
-107-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:71:13-63
+107-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:71:13-63
 108
 109            <!-- <intent-filter> -->
 110            <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -212,74 +212,74 @@
 114            <!-- </intent-filter> -->
 115        </activity>
 116        <activity
-116-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:80:9-83:66
+116-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:80:9-83:66
 117            android:name="com.easter.watch.presentation.view.intro.RestartActivity"
-117-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:81:13-68
+117-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:81:13-68
 118            android:exported="false"
-118-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:82:13-37
+118-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:82:13-37
 119            android:theme="@style/Theme.AppCompat.NoActionBar" />
-119-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:83:13-63
+119-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:83:13-63
 120        <activity
-120-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:84:9-93:20
+120-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:84:9-93:20
 121            android:name="com.easter.watch.presentation.view.intro.SplashActivity"
-121-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:85:13-67
+121-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:85:13-67
 122            android:exported="true"
-122-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:86:13-36
+122-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:86:13-36
 123            android:theme="@style/Theme.Maon" >
-123-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:87:13-46
+123-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:87:13-46
 124            <intent-filter>
-124-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:88:13-92:29
+124-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:88:13-92:29
 125                <action android:name="android.intent.action.MAIN" />
-125-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:89:17-69
-125-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:89:25-66
+125-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:89:17-69
+125-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:89:25-66
 126
 127                <category android:name="android.intent.category.LAUNCHER" />
-127-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:91:17-77
-127-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:91:27-74
+127-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:91:17-77
+127-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:91:27-74
 128            </intent-filter>
 129        </activity>
 130
 131        <uses-library
-131-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:95:9-97:39
+131-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:95:9-97:39
 132            android:name="com.google.android.wearable"
-132-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:96:13-55
+132-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:96:13-55
 133            android:required="true" />
-133-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:97:13-36
+133-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:97:13-36
 134        <!--
 135               Set to true if your app is Standalone, that is, it does not require the handheld
 136               app to run.
 137        -->
 138        <meta-data
-138-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:102:9-104:36
+138-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:102:9-104:36
 139            android:name="com.google.android.wearable.standalone"
-139-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:103:13-66
+139-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:103:13-66
 140            android:value="true" />
-140-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:104:13-33
+140-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:104:13-33
 141        <meta-data
-141-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:105:9-107:71
+141-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:105:9-107:71
 142            android:name="com.google.android.geo.API_KEY"
-142-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:106:13-58
+142-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:106:13-58
 143            android:value="AIzaSyAPkUdZTFZnS2rgOugb_vPsA_KP1RMiQtc" />
-143-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:107:13-68
+143-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:107:13-68
 144
 145        <service
-145-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:109:9-113:56
+145-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:109:9-113:56
 146            android:name="com.easter.watch.presentation.service.LocationTrackingService"
-146-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:110:13-73
+146-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:110:13-73
 147            android:enabled="true"
-147-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:111:13-35
+147-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:111:13-35
 148            android:exported="false"
-148-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:112:13-37
+148-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:112:13-37
 149            android:foregroundServiceType="location" />
-149-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:113:13-53
+149-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:113:13-53
 150        <service
-150-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:114:9-117:63
+150-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:114:9-117:63
 151            android:name="com.easter.watch.presentation.service.RunService"
-151-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:115:13-60
+151-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:115:13-60
 152            android:exported="false"
-152-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:116:13-37
+152-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:116:13-37
 153            android:foregroundServiceType="health|location" />
-153-->C:\SSAFY\ProjectMaon\S11P31C207\Watch\app\src\main\AndroidManifest.xml:117:13-60
+153-->C:\SSAFY\ProjectMaon\TestMAON\S11P31C207\Watch\app\src\main\AndroidManifest.xml:117:13-60
 154
 155        <activity
 155-->[androidx.compose.ui:ui-tooling-android:1.6.6] C:\Users\SSAFY\.gradle\caches\transforms-4\f41abd40dd0dc16d4c04d1b62f7de9b4\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39

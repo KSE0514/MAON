@@ -6,12 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.easter.watch.presentation.dataModel.RunInfo
 import com.easter.watch.presentation.dataModel.RunResult
+import com.easter.watch.presentation.dataModel.StartInfo
 import com.easter.watch.presentation.service.LocationTrackingService
 import com.easter.watch.presentation.view.RecordActivity
 import com.google.android.gms.maps.model.LatLng
@@ -24,6 +26,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.log
 
 
 class RunViewModel : ViewModel() {
@@ -52,7 +55,6 @@ class RunViewModel : ViewModel() {
     private val _recordId = MutableLiveData<String>()
     val recordId: LiveData<String> = _recordId
 
-
     init {
         viewModelScope.launch(Dispatchers.Main) {
             _pace.value = "00'00''"
@@ -63,7 +65,7 @@ class RunViewModel : ViewModel() {
     //---------------
 
     // WebSocket 연결 시작
-    fun startWebSocket(memberId: String, recordId: String) {
+    fun startWebSocket(memberId: String, recordId: String, context: Context) {
         stompClient = StompWebSocketClient("wss://k11c207.p.ssafy.io/maon/route/ws/location")
 
         // WebSocket 연결
@@ -101,14 +103,14 @@ class RunViewModel : ViewModel() {
                 val jsonBody = extractJsonFromStompMessage(payload)
                 Log.d(TAG, "추출된 JSON: $jsonBody")
 
-                // Gson을 사용해 JSON을 RunResult 객체로 변환
+                // Gson을 사용해 JSON을 StartInfo 객체로 변환
                 val runResult = Gson().fromJson(jsonBody, RunResult::class.java)
-                Log.d(TAG, "runResult에 넣은 데이터 : $runResult ")
+                Log.d(TAG, "데이터에 넣은 데이터 : $runResult ")
 
                 _recordId.value = recordId
 
                 // Intent 생성
-                val intent = Intent(context, ResultActivity::class.java).apply {
+                val intent = Intent(context, RecordActivity::class.java).apply {
                     putExtra("runResult", runResult)
                 }
                 context.startActivity(intent)
@@ -133,13 +135,14 @@ class RunViewModel : ViewModel() {
         stompClient.disconnect()
     }
 
+
     // RunningData 생성
     private fun createRunningData(memberId: String, recordId: String): RunInfo {
 
         val heartRateValue = heartRate.value ?: 0
         val totalDistanceValue = totalDistance.value ?: 0.0
         val paceValue = pace.value ?: "00'00''"
-        val timerTextValue = timerText.value ?: "00:00:00"
+        val timerTextValue = timerText.value ?: "00:00"
 
         return RunInfo(
             memberId = memberId,
@@ -165,7 +168,7 @@ class RunViewModel : ViewModel() {
     // 타이머 관련
     private var timerJob: Job? = null
     private var timeInSeconds = 0
-    private val _timerText = MutableLiveData("00:00:00")
+    private val _timerText = MutableLiveData("00:00")
     val timerText: LiveData<String> = _timerText
 
     // 달린 거리 관련
@@ -265,13 +268,11 @@ class RunViewModel : ViewModel() {
         val minutes = (timeInSeconds % 3600) / 60
         val seconds = timeInSeconds % 60
 
-        _timerText.value =String.format(" %02d:%02d:%02d ", hours, minutes, seconds)
-
-//        _timerText.value = if (hours > 0) {
-//            String.format(" %02d:%02d:%02d ", hours, minutes, seconds)
-//        } else {
-//            String.format(" %02d:%02d ", minutes, seconds)
-//        }
+        _timerText.value = if (hours > 0) {
+            String.format(" %02d:%02d:%02d ", hours, minutes, seconds)
+        } else {
+            String.format(" %02d:%02d ", minutes, seconds)
+        }
     }
 
     private fun calculatePace(distance: Double, tt: Int) {
@@ -340,8 +341,6 @@ class RunViewModel : ViewModel() {
     fun formatDistance(distance: Double): String {
         return String.format("%.2f", distance)
     }
-
-
 
 
 
