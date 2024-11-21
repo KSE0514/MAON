@@ -380,7 +380,7 @@ const RunningAlone = ({ navigation, route }) => {
                   // setPace(parsedData.pace);
                   // setElapsedTime(parsedData.time);
                   // setRunningDistance(parsedData.runningDistance);
-                  setHeartRate(parsedData.heartRate);
+                  setHeartRate(parseInt(parsedData.heartRate, 10));
                   // setWatchData((prev) => [
                   //   ...prev,
                   //   {
