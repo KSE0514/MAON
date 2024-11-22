@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 
 export const LocationContext = createContext();
@@ -6,19 +6,20 @@ export const LocationContext = createContext();
 export const LocationProvider = ({ children }) => {
   const [location, setLocation] = useState(null); // 위치 데이터 상태
   const [permissionGranted, setPermissionGranted] = useState(false); // 권한 상태
+  const [getData, setGetData] = useState(false);
+  const getDataRef = useRef(false);
 
+  const checkPermissions = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permission to access location was denied");
+      setPermissionGranted(false);
+      return;
+    }
+    console.log("Permission granted");
+    setPermissionGranted(true); // 권한 승인 상태로 설정
+  };
   useEffect(() => {
-    const checkPermissions = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
-        setPermissionGranted(false);
-        return;
-      }
-      console.log("Permission granted");
-      setPermissionGranted(true); // 권한 승인 상태로 설정
-    };
-
     checkPermissions();
   }, []); // 컴포넌트가 마운트될 때 한 번 실행
 
@@ -33,12 +34,15 @@ export const LocationProvider = ({ children }) => {
           });
 
           const { latitude, longitude } = newLocation.coords; // 좌표 추출
-          const timestamp = new Date(newLocation.timestamp); // 타임스탬프 변환
 
           setLocation({ latitude, longitude }); // 위치 데이터 저장
-
+          if (!getDataRef.current) {
+            console.log("위치데이터 가져오기 완료");
+            setGetData(true);
+            getDataRef.current = true;
+          }
           // 상태를 직접 사용해 로그 출력
-          // console.log("변경된 값: ", { latitude, longitude, timestamp });
+          // console.log("변경된 값: ", { latitude, longitude });
         } catch (error) {
           console.log("위치 요청 실패:", error);
         }
@@ -57,7 +61,7 @@ export const LocationProvider = ({ children }) => {
   }, [permissionGranted]); // 권한 상태가 변경될 때 실행
 
   return (
-    <LocationContext.Provider value={location}>
+    <LocationContext.Provider value={{ location, permissionGranted, getData }}>
       {children}
     </LocationContext.Provider>
   );

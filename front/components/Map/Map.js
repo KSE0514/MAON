@@ -7,28 +7,29 @@ import color from "../../styles/colors";
 import { baseGps } from "../../text_gpx_data";
 import { LocationContext } from "../../utils/LocationProvider";
 export default function Map({
-  navigation,
   setShowStartModal,
   runStart,
   setRunningDistance,
   mode,
-  onLocationChange, // 위치 변경 콜백
+  onLocationChange,
   connectedWatch,
-  running,
   currentLocation,
-  startPoint, // 시작점 좌표 prop 추가
+  startPoint,
   selectedRoute,
   runRoute,
   heartRate,
+  showLoading,
 }) {
   //현재 위치를 받아옴
   const location = useContext(LocationContext);
+
   // 지도 준비 상태
   const [isMapReady, setIsMapReady] = useState(false);
+
   //내 위치
   const [mapRegion, setmapRegion] = useState({
-    latitude: location.latitude,
-    longitude: location.longitude,
+    latitude: currentLocation.latitude,
+    longitude: currentLocation.longitude,
     latitudeDelta: 0.002,
     longitudeDelta: 0.002,
   });
@@ -39,53 +40,19 @@ export default function Map({
   //마커
   const [markers, setMarkers] = useState([]);
 
-  // currentLocation이 변경될 때마다 마커 위치 업데이트
+  //위치값을 가져올 수 있을때  초기 위치 업데이트
   useEffect(() => {
-    if (currentLocation) {
-      setMarkers((prevMarkers) =>
-        prevMarkers.map((marker) =>
-          marker.id === "current-point"
-            ? {
-                ...marker,
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
-              }
-            : marker
-        )
-      );
-
-      // 지도 위치도 업데이트
+    if (!showLoading) {
+      //내 위치 업데이트
+      console.log("지도 정보 업데이트", currentLocation);
       setmapRegion({
-        ...mapRegion,
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude,
-      });
-    }
-  }, [currentLocation]);
-
-  useEffect(() => {
-    console.log("여기까진옴?");
-    const startTracking = async () => {
-      console.log("트래킹 시작");
-      handleUserLocationChange();
-    };
-    console.log("심박수 받아옴 ");
-    if (runStart && connectedWatch) {
-      startTracking();
-    }
-  }, [heartRate]);
-  /**
-   * 내 위치 첫 위치 설정
-   */
-  useEffect(() => {
-    const getLocation = async () => {
-      console.log("Map: ", location.latitude, " ", location.longitude);
-      setmapRegion({
-        latitude: location.latitude,
-        longitude: location.longitude,
         latitudeDelta: 0.002,
         longitudeDelta: 0.002,
       });
+
+      //시작 위치 마커 추가
       setMarkers((prevMarkers) => {
         // 기존 마커들 유지
         const updatedMarkers = [...prevMarkers];
@@ -105,7 +72,6 @@ export default function Map({
         const currentPointIndex = updatedMarkers.findIndex(
           (marker) => marker.id === "current-point"
         );
-
         const currentPointMarker = {
           id: "current-point",
           latitude: location.latitude,
@@ -120,36 +86,37 @@ export default function Map({
         } else {
           updatedMarkers.push(currentPointMarker);
         }
-
         return updatedMarkers;
       });
-      setIsMapReady(true);
-    };
-
-    getLocation();
-    if (mode === "notSelectedRoute") {
-      setShowStartModal(true);
     }
-  }, []);
+  }, [showLoading]);
 
-  /**
-   * 1초마다 위치 변경하기 -> 전달하는 함수 실행
-   */
+  //지도가 아직 안띄워졌을때 - 내 위치가 받아와지면 지도 준비 완료 상태로 변경
+  useEffect(() => {
+    if (!isMapReady) {
+      console.log("mapRegion", mapRegion);
+      setIsMapReady(true);
+    }
+  }, [setmapRegion]);
+
+  //변한 위치에 대한 처리 함수
   const handleUserLocationChange = () => {
-    console.log("위치변경 함수 실행 ", runStart);
     if (runStart) {
-      console.log("Map: ", location);
+      //새 위치 변수
       const newCoordinate = {
-        latitude: location.latitude,
-        longitude: location.longitude,
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
         latitudeDelta: 0.002,
         longitudeDelta: 0.002,
       };
-      console.log(
-        "트래킹한 값 기반으로 데이터 변경 예정",
-        newCoordinate.latitude,
-        newCoordinate.longitude
-      );
+      //콘솔로 확인
+      // console.log(
+      //   "트래킹한 값 기반으로 데이터 변경 예정",
+      //   newCoordinate.latitude,
+      //   newCoordinate.longitude
+      // );
+
+      //gps 배열에 추가
       setGps((prevGps) => {
         if (prevGps.length > 0) {
           const lastPosition = prevGps[prevGps.length - 1];
@@ -170,8 +137,8 @@ export default function Map({
           },
         ];
       });
-      onLocationChange(newCoordinate);
 
+      //마커 업데이트
       setMarkers((prevMarkers) =>
         prevMarkers.map((marker) =>
           marker.id === "current-point"
@@ -183,7 +150,11 @@ export default function Map({
             : marker
         )
       );
+
+      //지도 상의 위치 업데이트를 위한 함수
       setmapRegion(newCoordinate);
+      //데이터 전달
+      onLocationChange(newCoordinate);
     }
   };
 
@@ -192,12 +163,9 @@ export default function Map({
       handleUserLocationChange();
     };
 
-    //시작이 되었고 워치 연동이 안된 경우
+    //시작이 되었고 워치 연동이 안된 경우 데이터 처리
     if (runStart && !connectedWatch) {
-      console.log("tracking 시도함");
       startTracking();
-    } else {
-      console.log("트래킹 멈춤");
     }
   }, [runStart, location]); // runStart가 변경될 때마다 실행
 
@@ -258,7 +226,8 @@ export default function Map({
             customMapStyle={MapStyle}
             style={{ alignSelf: "stretch", height: "100%" }}
             region={mapRegion}
-            showsUserLocation={false}>
+            showsUserLocation={false}
+          >
             {markers.map((marker) => (
               <Marker
                 key={marker.id}
@@ -267,7 +236,8 @@ export default function Map({
                   longitude: marker.longitude,
                 }}
                 title={marker.title}
-                description={marker.description}>
+                description={marker.description}
+              >
                 {/* 시작 */}
                 {marker.title == "Start Point" && (
                   <View
@@ -283,7 +253,8 @@ export default function Map({
                       shadowOpacity: 1,
                       shadowRadius: 5,
                       elevation: 15, // Android 그림자 효과
-                    }}></View>
+                    }}
+                  ></View>
                 )}
                 {/* 내 위치 */}
                 {marker.title == "Current Point" && (

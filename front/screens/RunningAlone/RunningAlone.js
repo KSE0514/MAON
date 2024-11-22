@@ -1,66 +1,64 @@
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  Button,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { Alert, View } from "react-native";
 import { useFontsLoaded } from "../../utils/fontContext";
-import {
-  Bottom,
-  RunInfo,
-  RunInfoCol,
-  StopBtn,
-  Top,
-  Wrapper,
-} from "./RunningAloneStyle";
-import { useEffect, useRef, useState } from "react";
+import { Bottom, RunInfo, RunInfoCol, StopBtn, Top } from "./RunningAloneStyle";
+import { useContext, useEffect, useRef, useState } from "react";
 import Map from "../../components/Map/Map";
 import RunStartModal from "../../components/Modal/RunStartModal/RunStartModal";
 import Timer from "../../components/Timer/Timer";
 import DefaultModal from "../../components/Modal/DefaultModal/DefaultModal";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import GoalDonutChart from "../../components/DonutChart/GoalDonutChart";
 import Pace from "../../components/Pace/Pace";
 import HeartBeat from "../../components/HeartBeat/HeartBeat";
-import { locationDtoPrint } from "../../utils/console";
-import useAuthStore from "../../store/AuthStore";
-import { fetchPairedWatch } from "../../utils/checkPairedWatch";
+import LoadingModal from "../../components/Modal/LoadingModal/LoadingModal";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { getPracticeRoomId } from "../../utils/getRoomId";
-import PairingWatch from "../PairingWatch/PairingWatch";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import useAuthStore from "../../store/AuthStore";
+import { LocationContext } from "../../utils/LocationProvider";
+import { locationDtoPrint } from "../../utils/console";
 
 const RunningAlone = ({ navigation, route }) => {
+  const { location, permissionGranted, getData } = useContext(LocationContext);
+
   const fontsLoaded = useFontsLoaded();
   if (!fontsLoaded) {
     return null; // 폰트 로드 전까지 렌더링 방지
   }
 
-  const { user } = useAuthStore();
-  const { mode } = route.params;
+  const { user } = useAuthStore(); //유저 정보
+  const { mode } = route.params; //달리기 모드
 
+  //모달
   const [showStartModal, setShowStartModal] = useState(false); // 시작 모달
   const [runStart, setRunStart] = useState(false); // 달리기 시작 / 멈춤
   const [showStopModal, setShowStopModal] = useState(false); // 종료 모달
+  const [showLoading, setShowLoading] = useState(true); // 워치데이터 가져올 수 있는지 판단
+
+  //달리기 관련 useState
   const [running, setRunning] = useState(false); // 달리기 진행 여부
   const [runningDistance, setRunningDistance] = useState(0); // 달린 거리
   const [elapsedTime, setElapsedTime] = useState("00:00:00"); // 경과 시간
   const [pace, setPace] = useState("00'00''"); // 페이스
-  const [heartRate, setHeartRate] = useState("--");
+  const [heartRate, setHeartRate] = useState(0); // 심박수
   const [connectedWatch, setConnectedWatch] = useState(false); // 워치 연결 여부
-  const [recordId, setRecordId] = useState();
+  const [recordId, setRecordId] = useState(); // 레코드 Id
+  const [currentLocation, setCurrentLocation] = useState({});
 
-  const [watchData, setWatchData] = useState([]);
+  //ref
+  const kafkaStompClientRef = useRef(null); // stomp ref
+  const runningData = useRef({
+    recordId: "",
+    time: "00:00:00",
+    memberId: user.id,
+    latitude: 0,
+    longitude: 0,
+    heartRate: 0,
+    pace: "00'00''",
+    runningDistance: 0,
+  });
 
-  const kafkaStompClientRef = useRef(null);
-  const elapsedTimeRef = useRef(elapsedTime);
-  const paceRef = useRef(pace);
-  const runningDistanceRef = useRef(runningDistance);
-  const recordIdRef = useRef(null);
-
+  //결과값 담을 변수
   const [resultData, setResultData] = useState({
     id: "",
     routeId: "",
@@ -112,7 +110,7 @@ const RunningAlone = ({ navigation, route }) => {
             }
           };
 
-          sendEndSession(recordId); // 종료 요청 전송
+          sendEndSession(runningData.current.recordId); // 종료 요청 전송
         },
       },
     ],
@@ -122,17 +120,16 @@ const RunningAlone = ({ navigation, route }) => {
   const handleUserLocationChange = (location) => {
     //워치가 없을때만 가능하다는거임
     if (!connectedWatch) {
-      console.log("recordId: ", recordIdRef.current);
+      console.log("서버에 보낼 데이터 ", runningData.current);
       const locationDto = {
-        recordId: recordIdRef.current,
-        time: elapsedTimeRef.current,
+        recordId: runningData.current.recordId,
+        time: runningData.current.time,
         memberId: user.id,
         latitude: location.latitude,
         longitude: location.longitude,
-        heartRate: 0,
-        pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
-        // pace: "10'10\"", // 최신 페이스
-        runningDistance: runningDistanceRef.current.toFixed(2),
+        heartRate: runningData.current.heartRate,
+        pace: runningData.current.pace,
+        runningDistance: runningData.current.runningDistance.toFixed(2),
       };
       // locationDtoPrint(locationDto);
       if (
@@ -142,24 +139,27 @@ const RunningAlone = ({ navigation, route }) => {
         // STOMP 프레임을 구성하여 데이터 전송
         const sendFrame =
           `SEND\n` +
-          `destination:/pub/running/${recordIdRef.current}\n` +
+          `destination:/pub/running/${runningData.current.recordId}\n` +
           `content-type:application/json\n\n` +
           `${JSON.stringify(locationDto)}\0`;
 
         kafkaStompClientRef.current.send(sendFrame);
+        // console.log("보낸 데이터 ", sendFrame);
       }
-    } else if (connectedWatch) {
-      console.log("recordId: ", recordIdRef.current);
+    }
+    //워치가 있을 때
+    else if (connectedWatch) {
+      console.log("recordId: ", runningData.current.recordId);
       const locationDto = {
-        recordId: recordIdRef.current,
-        time: elapsedTimeRef.current,
+        recordId: runningData.current.recordId,
+        time: runningData.current.time,
         memberId: user.id,
         latitude: location.latitude,
         longitude: location.longitude,
-        heartRate: heartRate,
-        pace: paceRef.current == undefined ? 0 : paceRef.current, // 최신 페이스
+        heartRate: runningData.current.heartRate,
+        pace: runningData.current.pace,
         // pace: "10'10\"", // 최신 페이스
-        runningDistance: runningDistanceRef.current.toFixed(2),
+        runningDistance: runningData.current.runningDistance.toFixed(2),
       };
       // locationDtoPrint(locationDto);
       if (
@@ -169,7 +169,7 @@ const RunningAlone = ({ navigation, route }) => {
         // 서버로 데이터 전송 STOMP 프레임을 구성하여 데이터 전송
         const sendFrame =
           `SEND\n` +
-          `destination:/pub/running/${recordIdRef.current}\n` +
+          `destination:/pub/running/${runningData.current.recordId}\n` +
           `content-type:application/json\n\n` +
           `${JSON.stringify(locationDto)}\0`;
 
@@ -178,7 +178,7 @@ const RunningAlone = ({ navigation, route }) => {
 
         const paceData = {
           pace: paceRef.current == undefined ? 0 : paceRef.current,
-          distance: runningDistanceRef.current.toFixed(2),
+          distance: runningData.current.runningDistance.toFixed(2),
         };
 
         // STOMP 프로토콜에 맞춘 메시지 작성
@@ -193,28 +193,40 @@ const RunningAlone = ({ navigation, route }) => {
     }
   };
 
-  // 1. 연동 여부 가져오기 (비동기 함수로 상태 설정)
+  //위치 허용 여부 봐서 허용이 안된 경우 해달라고 하기 / 워치 여부
+  const getPairedWatchStatus = async () => {
+    try {
+      const storedPairedWatch = await AsyncStorage.getItem("pairedWatch");
+      setConnectedWatch(storedPairedWatch === "true");
+    } catch (error) {
+      console.error("Error fetching paired watch:", error);
+    }
+  };
+
   useEffect(() => {
-    const getPairedWatchStatus = async () => {
-      try {
-        const storedPairedWatch = await AsyncStorage.getItem("pairedWatch");
-        console.log("Stored Paired Watch:", storedPairedWatch);
+    if (permissionGranted) {
+      getPairedWatchStatus();
+    } else {
+      Alert.alert(
+        "달리기 불가",
+        "설정 > MA:ON 에서 위치정보 사용 허가를 해주세요",
+        [
+          {
+            text: "확인",
+            onPress: () => navigation.navigate("Home"), // 페이지 이동
+          },
+        ]
+      );
+    }
+  }, []); // 컴포넌트가 마운트될 때 한 번 실행
 
-        // 비동기 함수로 상태 업데이트 시 안전한 값 사용하기
-        setConnectedWatch(storedPairedWatch === "true");
-      } catch (error) {
-        console.error("Error fetching paired watch:", error);
-      }
-    };
-
-    getPairedWatchStatus();
-    // setConnectedWatch(false);
-  }, []);
-
-  // connectedWatch의 상태가 변경될 때마다 로그 출력
+  //위치정보를 가져오고있다면 달리기 버튼 보여주기
   useEffect(() => {
-    console.log("connectedWatch: ", connectedWatch);
-  }, [connectedWatch]);
+    if (getData) {
+      setShowLoading(false);
+      setShowStartModal(true);
+    }
+  }, [getData]);
 
   const getRoomId = async () => {
     try {
@@ -223,7 +235,7 @@ const RunningAlone = ({ navigation, route }) => {
         user.accessToken
       );
       console.log("get recordId 함수 실행 결과", responseRecordId);
-      recordIdRef.current = responseRecordId; // 최신 값 저장
+      runningData.current.recordId = responseRecordId; // 최신 값 저장
       setRecordId(responseRecordId);
     } catch (error) {
       console.error("Error fetching room ID:", error);
@@ -232,15 +244,16 @@ const RunningAlone = ({ navigation, route }) => {
 
   //2. 달리기 시작을 늘렀을 경우
   useEffect(() => {
-    if (running && !connectedWatch) {
+    //달리기를 시작했을 경우
+    if (running) {
       getRoomId(); // 비동기 함수 호출
     }
   }, [running]);
 
   //3. 레코드 아이디 받아왔을때
   useEffect(() => {
-    if (recordIdRef.current) {
-      console.log("가져온 recordId: ", recordIdRef.current);
+    if (runningData.current.recordId.length !== 0) {
+      console.log("가져온 recordId: ", runningData.current.recordId, recordId);
 
       //웹소켓 연결
       const kafkaWs = new WebSocket(
@@ -287,17 +300,17 @@ const RunningAlone = ({ navigation, route }) => {
             kafkaWs.send(sendFrame);
 
             //stomp에 연결된 경우 데이터를 받을 sub을 구독하고있기
-            // const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-running-${recordIdRef.current}\ndestination:/sub/running/${recordIdRef.current}\n\n\0`;
+            // const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-running-${runningData.current.recordId}\ndestination:/sub/running/${runningData.current.recordId}\n\n\0`;
             // kafkaWs.send(getDataSubscribeFrame);
             // console.log("데이터 받을 곳 구독하기", getDataSubscribeFrame);
 
             //심박수 받을 곳
-            const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-heartrate-${recordIdRef.current}\ndestination:/sub/heartRate/${recordIdRef.current}\n\n\0`;
+            const getDataSubscribeFrame = `SUBSCRIBE\nid:sub-heartrate-${runningData.current.recordId}\ndestination:/sub/heartRate/${runningData.current.recordId}\n\n\0`;
             kafkaWs.send(getDataSubscribeFrame);
             console.log("데이터 받을 곳 구독하기", getDataSubscribeFrame);
 
             //stomp에 연결된 경우 종료 sub 구독하고 있기
-            const endSubscribeFrame = `SUBSCRIBE\nid:sub-end-${recordIdRef.current}\ndestination:/sub/running/${recordIdRef.current}/end\n\n\0`;
+            const endSubscribeFrame = `SUBSCRIBE\nid:sub-end-${runningData.current.recordId}\ndestination:/sub/running/${runningData.current.recordId}/end\n\n\0`;
             kafkaWs.send(endSubscribeFrame);
             console.log("종료 데이터 받을 곳 구독하기", endSubscribeFrame);
           }
@@ -409,8 +422,9 @@ const RunningAlone = ({ navigation, route }) => {
             console.log("STOMP 연결 성공!");
 
             //stomp에 연결된 경우 종료 sub 구독하고 있기
-            const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${recordIdRef.current}/end\n\n\0`;
+            const subscribeFrame = `SUBSCRIBE\nid:sub-1\ndestination:/sub/running/${runningData.current.recordId}/end\n\n\0`;
             kafkaWs.send(subscribeFrame);
+            console.log("종료 구독 ", subscribeFrame);
           } else {
             try {
               const parsedMessage = message.data.trim(); // 메시지 데이터를 정리
@@ -492,7 +506,7 @@ const RunningAlone = ({ navigation, route }) => {
         kafkaWs.close(); // 컴포넌트 언마운트 시 WebSocket 연결 해제
       };
     }
-  }, [recordIdRef.current]);
+  }, [recordId]);
 
   //4.결과 데이터가 변경이 되면 종료를 의미하기에 종료페이지로 이동
   useEffect(() => {
@@ -500,96 +514,113 @@ const RunningAlone = ({ navigation, route }) => {
       navigation.navigate("RunResult", {
         resultData: resultData,
         mode: mode,
-        recordId: recordIdRef.current,
+        recordId: runningData.current.recordId,
       });
     }
   }, [resultData]);
 
   //바뀐 측정값 바로 적용시켜주기
   useEffect(() => {
-    elapsedTimeRef.current = elapsedTime;
-    paceRef.current = pace;
-    runningDistanceRef.current = runningDistance;
+    console.log("변경된 값 : ", elapsedTime, pace, runningDistance);
+    runningData.current.time = elapsedTime;
+    runningData.current.pace = pace;
+    runningData.current.runningDistance = runningDistance;
+    console.log("Updated runningData:", runningData.current);
   }, [elapsedTime, pace, runningDistance]);
 
+  //위치가 바뀔 떄마다 정보 업데이트하기
+  useEffect(() => {
+    setCurrentLocation(location);
+  }, [location]);
+
   return (
-    <View style={{ flex: 1 }}>
-      {running && (
-        <Top>
-          <StopBtn
-            onPress={() => {
-              if (!showStopModal) {
-                setShowStopModal(true);
-                setRunStart(false);
-              }
-            }}>
-            {!showStopModal && (
-              <FontAwesomeIcon icon={faPause} color="white" size={25} />
-            )}
-            {showStopModal && (
-              <FontAwesomeIcon icon={faPlay} color="white" size={25} />
-            )}
-          </StopBtn>
-          <Timer
-            elapsedTime={elapsedTime}
-            connectedWatch={connectedWatch}
-            showStopModal={showStopModal}
+    <>
+      {showLoading ? (
+        <LoadingModal />
+      ) : (
+        <View style={{ flex: 1 }}>
+          {running && !showStartModal && (
+            <Top>
+              <StopBtn
+                onPress={() => {
+                  if (!showStopModal) {
+                    setShowStopModal(true);
+                    setRunStart(false);
+                  }
+                }}
+              >
+                {!showStopModal && (
+                  <FontAwesomeIcon icon={faPause} color="white" size={25} />
+                )}
+                {showStopModal && (
+                  <FontAwesomeIcon icon={faPlay} color="white" size={25} />
+                )}
+              </StopBtn>
+              <Timer
+                elapsedTime={elapsedTime} // 경과시간
+                connectedWatch={connectedWatch} //워치연동여부 - 연동된 경우엔 시간을 앱에서 계산하지않음
+                showStopModal={showStopModal} //종료모달이 열려있으면 시간 카운팅 x
+                runStart={runStart} // 달리기 시작
+                setElapsedTime={setElapsedTime} // 경과시간 업데이트 함수
+              />
+            </Top>
+          )}
+          <Map
+            showLoading={showLoading}
+            connectedWatch={connectedWatch} //워치연동여부
+            showStartModal={showStartModal} //시작모달 열림 여부
+            setShowStartModal={setShowStartModal}
             runStart={runStart}
-            onTimeUpdate={setElapsedTime}
+            setRunningDistance={setRunningDistance}
+            mode={mode}
+            running={running}
+            onLocationChange={handleUserLocationChange}
+            currentLocation={currentLocation}
           />
-        </Top>
+          {running && !showStartModal && (
+            <Bottom>
+              <RunInfo>
+                <RunInfoCol style={{ flex: 1 }}>
+                  <GoalDonutChart
+                    connectedWatch={connectedWatch}
+                    currentDistance={parseFloat(runningDistance)}
+                    goalDistance={0}
+                    mode={mode}
+                  />
+                </RunInfoCol>
+                <RunInfoCol style={{ flex: 2, paddingLeft: 21 }}>
+                  <Pace
+                    connectedWatch={connectedWatch}
+                    mode={mode}
+                    elapsedTime={elapsedTime}
+                    currentDistance={runningDistance}
+                    setPace={setPace}
+                    pace={pace}
+                  />
+                  <HeartBeat heartRate={heartRate} mode={mode} />
+                </RunInfoCol>
+              </RunInfo>
+            </Bottom>
+          )}
+          {showStartModal && (
+            <RunStartModal
+              getRoomId={getRoomId}
+              connectedWatch={connectedWatch}
+              showStartModal={showStartModal}
+              setShowStartModal={setShowStartModal}
+              setRunStart={setRunStart}
+              setRunning={setRunning}
+            />
+          )}
+          {showStopModal && (
+            <DefaultModal
+              isVisible={showStopModal}
+              content={StopModalContent}
+            />
+          )}
+        </View>
       )}
-      <Map
-        heartRate={heartRate}
-        connectedWatch={connectedWatch}
-        showStartModal={showStartModal}
-        setShowStartModal={setShowStartModal}
-        navigation={navigation}
-        runStart={runStart}
-        setRunningDistance={setRunningDistance}
-        mode={mode}
-        running={running}
-        onLocationChange={handleUserLocationChange}
-      />
-      {running && (
-        <Bottom>
-          <RunInfo>
-            <RunInfoCol style={{ flex: 1 }}>
-              <GoalDonutChart
-                connectedWatch={connectedWatch}
-                currentDistance={parseFloat(runningDistanceRef.current)}
-                goalDistance={0}
-                mode={mode}
-              />
-            </RunInfoCol>
-            <RunInfoCol style={{ flex: 2, paddingLeft: 21 }}>
-              <Pace
-                connectedWatch={connectedWatch}
-                mode={mode}
-                elapsedTime={elapsedTime}
-                currentDistance={runningDistanceRef}
-                setPace={setPace}
-                pace={pace}
-              />
-              <HeartBeat heartRate={heartRate} mode={mode} />
-            </RunInfoCol>
-          </RunInfo>
-        </Bottom>
-      )}
-      {showStartModal && (
-        <RunStartModal
-          getRoomId={getRoomId}
-          connectedWatch={connectedWatch}
-          showStartModal={showStartModal}
-          setShowStartModal={setShowStartModal}
-          setRunStart={setRunStart}
-          setRunning={setRunning}
-        />
-      )}
-      {showStopModal && (
-        <DefaultModal isVisible={showStopModal} content={StopModalContent} />
-      )}
-    </View>
+    </>
   );
 };
 

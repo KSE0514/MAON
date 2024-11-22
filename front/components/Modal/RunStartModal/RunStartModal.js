@@ -27,14 +27,11 @@ const RunStartModal = ({
       // console.log("달리기 시작!");
       setShowStartModal(false);
       setRunStart(true);
-      setRunning(true);
     }
   }, [count]);
   useEffect(() => {
     if (!startTap) {
-      if (connectedWatch) {
-        getRoomId();
-      }
+      setRunning(true);
       const timer = setInterval(() => {
         setCount((prevCount) => Math.max(prevCount - 1, -2)); // count가 0 이하로 내려가지 않도록 설정
       }, 1000);

@@ -5,8 +5,8 @@ import fonts from "../../styles/fonts";
 const Timer = ({
   showStopModal,
   runStart,
-  onTimeUpdate,
   elapsedTime,
+  setElapsedTime,
   connectedWatch,
 }) => {
   const [seconds, setSeconds] = useState(0);
@@ -25,14 +25,14 @@ const Timer = ({
     return () => clearInterval(interval);
   }, [runStart, showStopModal]);
 
-  // 초 단위 타이머 업데이트를 onTimeUpdate로 전달
+  // 초 단위 타이머 업데이트를 setElapsedTime로 전달
   useEffect(() => {
     const hours = String(Math.floor(seconds / 3600)).padStart(2, "0");
     const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
     const secs = String(seconds % 60).padStart(2, "0");
 
     // 타이머 포맷을 업데이트
-    onTimeUpdate(`${hours}:${minutes}:${secs}`);
+    setElapsedTime(`${hours}:${minutes}:${secs}`);
   }, [seconds]); // seconds 변경 시마다 호출
 
   return (
