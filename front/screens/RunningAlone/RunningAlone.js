@@ -120,7 +120,6 @@ const RunningAlone = ({ navigation, route }) => {
   const handleUserLocationChange = (location) => {
     //워치가 없을때만 가능하다는거임
     if (!connectedWatch) {
-      console.log("서버에 보낼 데이터 ", runningData.current);
       const locationDto = {
         recordId: runningData.current.recordId,
         time: runningData.current.time,
@@ -149,7 +148,6 @@ const RunningAlone = ({ navigation, route }) => {
     }
     //워치가 있을 때
     else if (connectedWatch) {
-      console.log("recordId: ", runningData.current.recordId);
       const locationDto = {
         recordId: runningData.current.recordId,
         time: runningData.current.time,
@@ -234,7 +232,6 @@ const RunningAlone = ({ navigation, route }) => {
         user.id,
         user.accessToken
       );
-      console.log("get recordId 함수 실행 결과", responseRecordId);
       runningData.current.recordId = responseRecordId; // 최신 값 저장
       setRecordId(responseRecordId);
     } catch (error) {
@@ -521,11 +518,9 @@ const RunningAlone = ({ navigation, route }) => {
 
   //바뀐 측정값 바로 적용시켜주기
   useEffect(() => {
-    console.log("변경된 값 : ", elapsedTime, pace, runningDistance);
     runningData.current.time = elapsedTime;
     runningData.current.pace = pace;
     runningData.current.runningDistance = runningDistance;
-    console.log("Updated runningData:", runningData.current);
   }, [elapsedTime, pace, runningDistance]);
 
   //위치가 바뀔 떄마다 정보 업데이트하기
@@ -593,7 +588,7 @@ const RunningAlone = ({ navigation, route }) => {
                     connectedWatch={connectedWatch}
                     mode={mode}
                     elapsedTime={elapsedTime}
-                    currentDistance={runningDistance}
+                    currentDistance={parseFloat(runningDistance)}
                     setPace={setPace}
                     pace={pace}
                   />

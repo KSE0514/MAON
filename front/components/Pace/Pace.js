@@ -20,10 +20,12 @@ const Pace = ({
     // 거리와 시간으로 페이스 계산
     const calculatePace = () => {
       const timeInSeconds = timeStringToSeconds(elapsedTime);
-      if (currentDistance.current > 0) {
+      console.log("tiem: ", timeInSeconds, " distance: ", currentDistance);
+      if (currentDistance > 0) {
         const timeInMinutes = timeInSeconds / 60;
         const paceInMinutes = timeInMinutes / currentDistance.current;
 
+        console.log("paceInMinutes: ", paceInMinutes);
         // 분과 초로 변환
         const minutes = Math.floor(paceInMinutes);
         const seconds = Math.round((paceInMinutes - minutes) * 60);
@@ -40,9 +42,7 @@ const Pace = ({
       calculatePace();
     }
   }, [currentDistance.current, elapsedTime]);
-  useEffect(() => {
-    // console.log(currentDistance.current, "  =  ", elapsedTime);
-  });
+  useEffect(() => {});
 
   return (
     <View>
@@ -56,7 +56,8 @@ const Pace = ({
               fontSize: 20,
               fontFamily: fonts.gMarketBold,
               paddingTop: 12,
-            }}>
+            }}
+          >
             /km
           </Text>
         </View>
