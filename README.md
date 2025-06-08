@@ -84,8 +84,6 @@
 
 ###
 
-<img src=""
-style="width:50%"/>
 
 </div>
 
